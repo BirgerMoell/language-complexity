@@ -1,0 +1,2982 @@
+Sammanfattning 
+ 
+Tillsammans med Carl Bro AB har vi utvecklat och förbättrat verktyg som ingår i Carl Bros 
+koncept för driftoptimering av fastigheter. Detta har genomförts genom att vidareutveckla och 
+förbättra EBBA, ett Excellbaserat beräkningsverktyg. Dessutom har ett nytt verktyg, EBBA 
+Default, skapats som använder sig av defaultvärden vid energiberäkningar.   
+ 
+Målet med examensarbetet har varit att förbättra och vidareutveckla EBBA till ett 
+användarvänligt men ändå tillräckligt noggrant verktyg som skall göra arbetet med 
+energibesiktningar åskådligt, lättförståeligt och fungera som ett underlag för lönsamma 
+åtgärdsförslag. Arbetet har i största möjliga mån anpassats efter de regler och direktiv som 
+framförs i ”Energideklarering av byggnader – För effektivare energianvändning” (2004) som 
+är ett betänkande från Statens offentliga utredningar. Det är en utredning om byggnaders 
+energiprestanda och behandlar frågor om hur energideklarationer för fastigheter i Sverige ska 
+se ut. 
+ 
+Arbetet har anpassats till de idag framtagna Europastandarderna för energiberäkning av 
+byggnader. Alla regler har av praktiska skäl inte kunnat implementeras i EBBA. För att nå 
+tillräcklig noggrannhet i beräkningarna avseende kylbehov har timvärden används. Dessa har 
+införts i beräkningarna för ventilation, köldbryggor, transmission och luftläckage då alla är 
+beroende av utomhustemperaturens variation över dygnet. För solinstrålningen har en 
+beräkningsmetodik som utgår från solens rörelse över himlen använts. Tillsammans med data 
+för antal mulna och soliga dagar kan sedan ett förväntat värde för solstrålningen för en given 
+plats räknas ut. 
+ 
+I arbetet med EBBA Default har målet varit att ta fram ett enkelt verktyg som är lätt att 
+använda och som samtidigt ger brukaren en god uppfattning och förståelse för resultatet. Det 
+har gjorts med en grundlig genomgång av referenser och statistiska värden för olika 
+kategoriers byggnader med avseende på energiförbrukning och energiprestanda. 
+ 
+Båda verktygen EBBA och EBBA Default har jämförts med andra beräkningsprogram såväl 
+som mot en existerande fastighet. De förbättringar avseende energianvändning för kyla som 
+gjorts har jämförts med beräkningar i IDA ICE och TeknoSim 2000. Testerna visar att 
+beräkningen av kylbehov med hjälp av EBBA i en fiktiv byggnad ligger i samma intervall 
+som det två andra programmen. EBBA Default har jämförts med beräkningar i EBBA och 
+BVF för fastigheten Tegen i Solna som ägs av Vasakronan. Jämförelsen gav samma resultat 
+för de tre olika verktygen. 
+ 
+Slutligen konstaterar vi att vårt arbete att utveckla verktygen fungerat väl och att vi ser stora 
+möjligheter för användandet av dem i studier av fastigheters energianvändning och 
+energistatus. 
+ 
+1
+ 
+Abstract 
+ 
+In cooperation with Carl Bro AB a toolbox already in use for energy consumption 
+optimization for real estate has been further developed and improved. The already existing 
+excel based calculation tool EBBA was used as starting point for this thesis. In addition to 
+further developing EBBA, a new tool has been developed. This new tool is called EBBA 
+Default and it uses default values for energy calculations. 
+ 
+The aim of this thesis has been to improve and refine EBBA to a tool that is user friendly in 
+aspects of easy overview, easy understanding and it also offers an easy learning process. 
+EBBA still has to be accurate enough to be able to handle the tasks assigned to it and being 
+able to generate economically solid solutions. As for rules and regulations, the ones presented 
+in ”Energideklarering av byggnader – För effektivare energianvändning” (2004) have been 
+followed as closely as possible. It is a commission that discusses what approach to use when 
+dealing with energy management for real estate in Sweden. 
+ 
+The work in this thesis has also been modified to agree with the European standards for 
+energy calculations for real estate. All these rules could not be implemented in EBBA due to 
+reasons involved in implementation of EBBA. To ensure sufficient accuracy in the 
+calculations regarding space cooling, an hourly method has been used. These have been 
+integrated into the calculations for ventilation, cold bridges, transmission and air leakage 
+since all of the above is highly dependant of the outside temperature fluctuations over the day. 
+To calculate the energy added by sunbeams entering the building through windows, a 
+calculation method using the suns movement during the day has been applied.  
+ 
+The aim of EBBA Default has been to develop a simple tool that is easy to use and also 
+present the user with results that are easy to interpret and analyze. To accomplish this, a 
+thorough investigation was performed analyzing the references and static values for different 
+sorts of buildings with respect to energy consumption and performance. 
+ 
+Both EBBA and EBBA Default have been compared to similar calculation toolboxes and also 
+to the values obtained from an existing building. The calculations of improvements 
+concerning energy consumption involved in cooling a building have been compared to 
+calculations performed by IDA ICE and TeknoSim 2000. These tests show that the 
+calculation of the energy required for cooling is in the same interval as for the other two 
+toolboxes. EBBA Default has also been tested on the building Tegen in Solna, owned by 
+Vasakronan. The results from this test have been compared to the results from calculations in 
+EBBA and BVF and all three show similar results. 
+ 
+The developments of EBBA and EBBA Default have been a success with good prospects for 
+future use of said tools when performing studies of energy consumption and status in real 
+estate. 
+ 
+2
+ 
+ 
+Förord 
+ 
+Detta examensarbete av Anders Kjellander och Gustav Oscarsson är utfört i samarbete med 
+företaget Carl Bro AB i Stockholm. Carl Bro avdelning Energi & Miljö har under tiden för 
+examensarbetet tillfört värdefull information och kompetens som underlättat vårt arbete i stor 
+omfattning. Handledare för examensarbetet har varit Herman Hallstedt Carl Bro AB, Per 
+Levin Carl Bro AB/KTH och Folke Björk KTH. Dessa har bidragit med sin erfarenhet och tid 
+för att göra arbetet möjligt, vi vill tacka dem för deras trevliga bemötande. 
+ 
+Examensarbetet är uppdelat i två ansvarsområden. Gustav Oscarsson har haft det 
+övergripande ansvaret för arbetet med att förbättra kylberäkningarna i EBBA och Anders 
+Kjellander har haft det övergripande ansvaret för utvecklingen av EBBA Default. 
+ 
+Vi vill tacka alla de som kommit med synpunkter, åsikter och tips som bidragit till att vi 
+kunnat genomföra arbetet. Vi vill även tacka medarbetarna på avdelningen Energi & Miljö för 
+glada tillrop.  
+ 
+Anders Kjellander 
+ 
+Gustav Oscarsson 
+ 
+ 
+ 
+Stockholm 
+Juni 2005 
+ 
+3
+ 
+ 
+Innehållsförteckning 
+ 
+Sammanfattning ...................................................................................................................................................... 1 
+Abstract................................................................................................................................................................... 2 
+Förord..................................................................................................................................................................... 3 
+1. Bakgrund............................................................................................................................................................. 6 
+2. Syfte..................................................................................................................................................................... 7 
+3. Kylbehovsberäkning............................................................................................................................................ 8 
+3.1 Utförande.......................................................................................................................... 8 
+3.1.1 Solinstrålning ............................................................................................................ 8 
+3.1.2 Interna laster............................................................................................................ 12 
+3.1.3 Transmission ........................................................................................................... 14 
+3.1.4 Luftläckage.............................................................................................................. 15 
+3.1.5 Köldbryggor ............................................................................................................ 15 
+3.1.6 Kylbehov i ventilationssystem ................................................................................ 16 
+3.1.6.1 Kylbehov/Värmebehov .................................................................................... 17 
+3.1.6.2 Återvinning....................................................................................................... 18 
+3.1.6.3 Avluft ............................................................................................................... 19 
+3.1.6.4 Resultat och presentation ................................................................................. 19 
+3.1.7 Energibalans............................................................................................................ 20 
+3.1.8 Presentationsblad..................................................................................................... 21 
+3.2 Jämförelse med IDA ICE och TeknoSims 2000 ............................................................ 23 
+3.2.1 Förklaring................................................................................................................ 23 
+3.2.2 Indata....................................................................................................................... 23 
+3.2.2.1 Simulering av ett objekt i juni.......................................................................... 23 
+3.2.2.2 Simulering av ett objekt i juli........................................................................... 23 
+3.2.2.3  Simulering av ett objekt i augusti.................................................................... 23 
+3.2.3 Resultat och kommentar.......................................................................................... 24 
+3.2.3.1 Simulering i juni............................................................................................... 24 
+3.2.3.2 Simulering i juli................................................................................................ 25 
+3.2.3.3 Simulering i augusti ......................................................................................... 27 
+3.2.4 Utvärdering av simulerings jämförelse ................................................................... 29 
+3.3 Jämförelse temperaturformel med SMHI data............................................................... 29 
+3.3.1 Föklaring ................................................................................................................. 29 
+3.3.2 Resultat.................................................................................................................... 30 
+3.3.3Utvärdering av resultat............................................................................................. 32 
+ 
+4
+ 
+4. Ebba Default ..................................................................................................................................................... 33 
+4.1 Syfte ............................................................................................................................... 33 
+4.1.1 Allmän Ram för beräkningsverktyg........................................................................ 34 
+4.2 Utförande........................................................................................................................ 35 
+4.2.1 Ebbadefault.............................................................................................................. 35 
+4.2.1.1 Uppbyggnad ..................................................................................................... 35 
+4.2.1.2 Indatabladets punkter ....................................................................................... 35 
+4.2.1.3 Resultat............................................................................................................. 41 
+4.2.1.4 Förbättringar och referens ................................................................................ 43 
+4.2.1.5 Presentation...................................................................................................... 44 
+4.2.1.6 Beräkningsstandard.......................................................................................... 44 
+4.2.1.7 Energibalans..................................................................................................... 45 
+4.2.2 Repab....................................................................................................................... 46 
+4.2.3 SCB ......................................................................................................................... 47 
+4.3 Resultatjämförelse med BVF ......................................................................................... 47 
+4.3.1 Resultat från BVF Kv.Tegen................................................................................... 47 
+4.3.2 Resultat från Ebba Default Kv.Tegen ..................................................................... 48 
+4.3.3 Kommentar till jämförelsen .................................................................................... 49 
+5. Fältstudie .......................................................................................................................................................... 50 
+5.1 Presentation av kvarteret Tegen ................................................................................. 50 
+5.2 Utförande.................................................................................................................... 51 
+5.3 Resultat....................................................................................................................... 53 
+6. Slutsats.............................................................................................................................................................. 56 
+7. Litteraturförteckning......................................................................................................................................... 57 
+Litteratur............................................................................................................................... 57 
+Artiklar ................................................................................................................................. 58 
+Intervjuer .............................................................................................................................. 58 
+Internet ................................................................................................................................. 58 
+Övrigt ................................................................................................................................... 58 
+8. Bilagor .............................................................................................................................................................. 59 
+Bilaga 1 ................................................................................................................................ 59 
+ 
+ 
+5
+ 
+1. Bakgrund 
+ 
+Carl Bro Gruppen är ett internationellt konsultföretag med 2 700 anställda. I Sverige jobbar 
+c:a 800konsulter inom affärsområdena Miljö, Industri & Marin, IT & Telekommunikation, 
+Management, Bygg, Anläggning och Energi. 
+ 
+Carl Bro AB avdelning Energi och Miljö använder sig av en energibesiktningsmodell 
+”Statusbesiktningar av fastigheter”. Modellen resulterar i att man får en överskådlig bild av 
+fastighetens energistatus där teknik, miljö och funktion tas i beaktande. Besiktningen inleds 
+med en okulär inspektion då installationernas status, drift och funktion dokumenteras. Vidare 
+genomgås fastighetens dokumentation och driftpersonal intervjuas för att få en bra bild av hur 
+funktionen av energianvändning och behov fungerar. 
+ 
+I denna modell ingår ett verktyg EBBA som är Excelbaserat. Det har utvecklats av Carl Bro i 
+ett tidigare examensarbete. I verktyget bearbetas de data om byggnaden som erhålls vid en 
+tidigare besiktning. Resultatet visas i form av tillförd, använd och bortförd energi. Grundidén 
+med EBBA är att man på ett förhållandevis snabbt och enkelt sätt får ett tillräckligt noggrant 
+och kostnadseffektivt underlag för att kunna föreslå effektiva energibesparande åtgärder. 
+ 
+För att göra en energibesiktning i enlighet med EBBA krävs genomförande av följande 
+moment: 
+ 
+– Granskning av energistatistik för fastigheten 
+– Undersökning av bygghandlingar och ritningar 
+– Fältstudie på plats 
+– Rapport och analys 
+ 
+Resultatet presenteras i form av ett stapeldiagram där de olika energikvantiteterna tydligt 
+åskådliggörs. I delen ”Tillförd energi” ingår den energi som är köpt och är i princip den energi 
+som fastighetsägaren betalt i sina fakturor t.ex. el, fjärrvärme etc. . ”Använd energi” är den 
+energi som åtgår till fastighetens drift, t.ex. fläktar, radiatorsystem, belysning etc. ”Bortförd 
+energi” är den del av energin som går förlorad från klimatskalet genom transmission, 
+luftläckage och andra förluster. 
+ 
+Bakgrunden till examensarbetet är att Carl Bro AB vill förbättra EBBA med vissa tillägg. Ett 
+av tilläggen är att förbättra EBBA med avseende på kylberäkningar. Den nuvarande versionen 
+bygger på månadsberäkningar och det innebär att vissa förenklingar har gjorts. Bland annat 
+innebär det att för utomhustemperaturen så används, istället för en dynamisk temperatur som 
+varierar över dygnet, en månadsmedeltemperatur. Det får till följd att beräkningarna för 
+eventuellt kylbehov blir mindre noggranna och framför allt kan man inte avgöra när på dygnet 
+behovet uppstår. 
+ 
+Det har även framkommit önskemål om en version av EBBA som är lättare att hantera bland 
+annat för de kunder som på egen hand vill göra enkla överslagsberäkningar för energi och 
+kylbehov. Önskemålet är att denna förenklade ska vara så pass precist att åtgärdsförslag på 
+energibesparande åtgärder ska kunna tas fram.   
+ 
+ 
+6
+2. Syfte 
+ 
+Syftet med examensarbetet är att vidareutveckla och förbättra verktyget EBBA som används 
+vid Carl Bros statusbesiktningar av fastigheter enligt de önskemål Carl Bro framfört. 
+Utvecklingen omfattar två olika uppgifter. Dels förbättring av de kylberäkningar som finns i 
+EBBA samt utveckling av ett nytt verktyg som kan använda sig av defaultvärden. 
+ 
+Förbättringarna av kylberäkningarna syftar till att på ett bättre sätt kunna avgöra hur stort 
+kylbehovet blir. Man skall även se vid vilken tidpunkt byggnaden har störst kylbehov. 
+Förbättringen utförs för att få än inblick i hur fastighetens kylanläggning bör optimeras. 
+ 
+Utvecklingen av den förenklade versionen syftar till att göra en snabbare och mer lättbegriplig 
+metod för energibesiktning. Metoden ska inspirera kunderna till djupare analyser som 
+förhoppningsvis leder till en bättre och ur miljösynpunkt hållbar energihushållning. I 
+dagsläget vittnar användare av olika besiktningsmodeller om att tydligheten var i fastigheten 
+man kan göra kostnadseffektiva åtgärder bör förbättras. En sådan förbättring bör även 
+inrymma pay-off tider för olika åtgärder. 
+ 
+Modellerna som idag används för att fastställa en fastighets energistatus är i vårt tycke för 
+grova i den mening att det är svårt att avgöra var i fastighetens tekniska funktion de stora 
+vinsterna i energibesparingar ligger. Vi avser att göra ett verktyg som trots enkelheten 
+gentemot användaren fortfarande har en sådan precision att underlag för förbättringar av 
+fastigheten skapas.  
+ 
+Syftet är också att förse användaren med ett så kallat ”börvärde” som i förhållande till de 
+inmatade parametrarna ska indikera hur fastigheten förhåller sig jämfört med liknande 
+byggnader eller i förhållande till riktvärden på energiförbrukningen. Verktyget skall även 
+inspirera fastighetsägaren till djupare analyser. 
+ 
+Målet med examensarbetet är att förbättra och vidareutveckla EBBA med tanke på 
+ovannämnda bakgrundsfakta.  Verktyget ska vara användarvänlig men ändock tillräckligt 
+noggrant, för att göra arbetet med energibesiktningar lättåskådligt, precist och lättförståeligt. 
+ 
+Till de ovannämnda målen tillkommer även att anpassa EBBA till de gällande förordningar 
+och regler som finns för energiberäkningar i fastigheter. Arbetet kommer att i största möjliga 
+mån anpassas efter framtida regler gällande energiberäkningsmodeller.  Det är vårat mål att 
+EBBA ska uppfylla de kriterier för beräkning av byggnaders energiprestanda som framförs i 
+”Energideklarering av byggnader – För effektivare energianvändning” (2004), som är ett 
+betänkande från statens offentliga utredningar. Det är en utredning om byggnaders 
+energiprestanda och behandlar frågor om hur den tänkta energideklarationen för fastigheter i 
+Sverige ska se ut. 
+ 
+7
+ 
+3. Kylbehovsberäkning 
+I detta kapitel beskrivs hur vi har gått tillväga för att skapa verktyget som beräknar kylbehovet 
+av en byggnad. Kapitel 3.1 redogör för hur verktyget är uppbyggt och vilka 
+beräkningsstandarder verktyget använder sig av. Nästa kapitel 3.2, är ett test mot två andra 
+program som visar att verktyget kan göra tillfredställande beräkningar av kylbehovet. I kapitel 
+3.3 så jämför vi den temperaturekvation som verktyget använder mot temperaturer från 
+SMHI.    
+3.1 Utförande 
+Här beskrivs det viktigaste delarna av kylbehovsberäkningarna som är implementerade i 
+verktyget. Kapitel 3.1.1-3.1.7 berättar om beräkningarna av värmelaster och förluster i 
+verkyget. Det sista kapitlet 3.1.8 visar hur resultatet presenteras.  
+3.1.1 Solinstrålning 
+Solinstrålning har en stor inverkan på byggnaden och är en viktig faktor när man designar en 
+byggnad. Med dagens krav på god energihushållning som leder till välisolerade byggnader, 
+blir solinstrålningen än viktigare än tidigare med tanke på byggnadens inomhusklimat. Form 
+och läge på fönster får stor inverkan på såväl komfort som eventuellt kylbehov i en fastighet. 
+ 
+För mindre bostäder medför ofta solinstrålningen ett positivt värmetillskott som kan 
+tillgodoräknas. För större fastigheter som till exempel kontorshus leder ofta stora glasytor till 
+förhållandevis stora värmetillskott som sommartid måste kylas bort. På så sätt ger 
+gratisvärmen från solinstrålningen upphov till nya energibehov. Hur mycket som måste kylas 
+bort beror bland annat på fastighetens läge, fönster och eventuell solavskärmning. 
+ 
+Beräkningarna i verktyget utförs för de tre sommarmånaderna, juni, juli och augusti. Under 
+var och en av dessa månader räknar programmet på en medeldag. Sammanställningen görs 
+sedan på kalkylbladet ”kylberäkning”. Där åskådliggörs under vilka tider på dygnet 
+solinstrålningen orsakar kylbehov. Alla beräkningar utförs på kalkylbladet ”kylbehovsol” i 
+energiberäkningsmodellen EBBA. Under detta blad är latituden för valt ort det enda som 
+måste matas in för att få tillfredställande beräkningar. Alla andra parametrar är hämtade från 
+andra kalkylblad. 
+ 
+ 
+8
+De beräkningar för solinstrålningen som redan ingår i EBBA är gjorda med en metod som 
+utgår ifrån olika månaders medelsolstrålning I1 som i sin tur ger värdet för solstrålningen på 
+fastigheten. Strålningsdata och faktorerna för graden av molnighet är hämtade från ”VVS – 
+tabeller och diagram” (1974). 
+ 
+I = ((Dk/D)*fk+(Dhk/D)*fhk+(Dm/D)*fm)*I1*D*(1/1000) 
+ 
+ 
+ 
+I = Reducerad solinstrålning med tanke på molnighet [kWh/(m2*mån)] 
+I1 = Solinstrålning för aktuell månad och väderstreck 
+Dk = Antal klara dagar för aktuell månad 
+Dhk = Antal halvklara dagar för aktuell månad 
+Dm = Antal mulna dagar för aktuell månad 
+D = Antal dagar för aktuell månad 
+fk = 1 klara dagar 
+fhk = 0,65 halvklara dagar 
+fm = 0,25 mulna dagar 
+ 
+Beräkningen resulterar i solstrålning per månad och väderstreck i kWh/m2. För att kunna 
+addera solinstrålningen till de värmefaktorer man kan tillräkna sig för uppvärmning av 
+fastigheten måste ytterligare en beräkning utföras där parametrar för fönstrets olika 
+egenskaper och form tas i beaktande.  
+ 
+Solinstrålning = I*Aeff  [kWh/(månad och värersträck)] 
+ 
+ 
+ 
+Där den effektiva fönsterarean är Aeff.  
+ 
+Aeff = A*FF*gw*Fc*Fs  [m2] 
+ 
+ 
+ 
+ 
+ 
+A = Fönsterarea fördelat på olika vädersträck [m2] 
+FF = Fönstrets glasandel, reduktionsfaktor 
+gw = Fönstrets solinstrålningsfaktor, reduktionsfaktor baserad på glasandelens transmittans 
+FC = Fönstrets skuggningsfaktor, reduktionsfaktor pga. tex. gardiner, persienner etc. 
+FS = Fönstrets solavskärmningsfaktor, reduktionsfaktor pga. avskärmning av byggnader, 
+annan bebyggelse osv. 
+ 
+Beräkningen är i enlighet med den gällande Europastandarden ISO 13790 (2004). 
+ 
+För att räkna ut solinstrålningen över dygnet har en del ändringar gjorts. Dessutom kommer 
+beräkningarna av solstrålningen att göras i effekt [W] istället för energi [Wh] då vi räknar per 
+timme istället för per månad som tidigare. Beräkningsmetodiken och formler är hämtade ur 
+Jóhannesson ”Lectures on Building Physics” (2002) om inte annat anges. Tre typer av 
+solstrålning bidrar till uppvärmning av fastigheter, ID direkt solstrålning, Idiff diffus 
+solstrålning och IR reflekterande solstrålning. 
+ 
+ 
+9
+Solinstrålning juni Kv. Johannes större 
+-350,0
+-300,0
+-250,0
+-200,0
+-150,0
+-100,0
+-50,0
+0,0
+1
+3
+5
+7
+9
+11
+13
+15
+17
+19
+21
+23
+tid på dygnet/timmar
+effekt/MW
+Serie1
+ 
+Figur 1 Exempel på resultat av beräkning av effekt från solinstrålning hos fastighet. 
+ 
+ 
+Det vi vill åstadkomma är att beräkna solinstrålningen per timme med enheten [W/m2] Ivikt. 
+ 
+Ivikt = ((Dk/D)*Itot,k+(Dhk/D)*Itot,hk+(Dm/D)*Itot,m)*Itot,H  
+ 
+ 
+ 
+Ivikt är således det viktade värdet som erhålles då klimatdata avseende molnighet tas med i 
+beräkningen och blir följaktligen ett medelvärde för solstrålningen i [W/m2]. Det kan vi 
+beräkna genom att använda oss av den totala solstrålningen för klara, halvklara och mulna 
+dagar. 
+ 
+Itot, k = (Itot,S*AS+Itot,V*AV+Itot,N*AN+Itot,O*AO+Itot,H*AH)*fk 
+ 
+ 
+Itot, hk = (Itot,S*AS+Itot,V*AV+Itot,N*AN+Itot,O*AO+Itot,H*AH)*fhk 
+ 
+ 
+Itot, m = (Itot,S*AS+Itot,V*AV+Itot,N*AN+Itot,O*AO+Itot,H*AH)*fm 
+ 
+ 
+ 
+Där Itot,H är den totala horisontella solstrålningen och ges av 
+Itot,H = ID,H+Idiff,H [W] där 
+ID,H = IDN*sinh 
+Idiff,H = 0,095(h-60)+107,15 
+ 
+för h>60° 
+Idiff,H = -0,823+5,236*h-0,94*h2+0,0006*h3 
+för h<60° 
+ 
+Den totala solstrålningen för varje väderstreck ges enligt 
+Itot,S = ID,S+Idiff,S [W] 
+ 
+ 
+ 
+ 
+ 
+Itot,V = ID,V+Idiff,V [W] 
+ 
+ 
+ 
+ 
+ 
+Itot,N = ID,N+Idiff,N [W] 
+ 
+ 
+ 
+ 
+ 
+Itot,O = ID,O+Idiff,O [W] 
+ 
+ 
+ 
+ 
+ 
+ 
+Där den direkta solstrålningen ID är  
+ID,S = IDN*sin*hS [W] 
+ 
+ 
+ 
+ 
+ 
+ID,V = IDN*sin*hV [W] 
+ 
+ 
+ 
+ 
+ 
+ID,O = IDN*sin*hO [W] 
+ 
+ 
+ 
+ 
+ 
+ID,N = IDN*sin*hN [W] 
+ 
+ 
+ 
+ 
+ 
+ID,H = IDN*sin*hH [W] 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+10
+Och den diffusa solstrålningen Idiff är 
+Idiff = 0,45 
+ 
+ 
+för cos i <-0,2 och 
+ 
+ 
+Idiff = 0,55+ 0,437cos i +0,313(cos i )2 
+för  -0,2<cos i <1,0 
+ 
+ 
+ 
+IDN är den solstrålning som har samma riktning som solstrålarna och är framtagen med hjälp 
+av empiriska försök: 
+ 
+h>15° 
+h<15° 
+Maj-September IDN = 1071*e(-0,139/sin h) 
+IDN = 101,9*h-8,13*h2+0,37*h3-0,0067*h4 
+Oktober-April 
+IDN = 1071*e(-0,109/sin h) 
+IDN = 117,2*h-9,5*h2+0,44*h3-0,0082*h4 
+Tabell 1 h är solens höjd över havet 
+ 
+Sin h = sin φ *sin δ+cos δ * cos δ *cos ω 
+ 
+ 
+ 
+φ = latitud för den avsedda orten [grader] 
+ω = tidsvinkel enligt formel 3.1.22 
+δ = deklinerande faktor enligt 3.1.23 
+ω = klockslag*15-180 
+ 
+ 
+ 
+ 
+ 
+δ = 23,45*sin((t-81)360/365) [grader] 
+ 
+ 
+ 
+ 
+där t är klockslaget i timmar. 
+ 
+Solens azimut a, ges enligt 
+Cos a = (sin h*sin φ - sin δ )/(cos h*cos φ) 
+ 
+Solens infallsvinkel i ges enligt 
+Cos iS = cos h*cos(a-0) 
+Cos iV = cos h*cos(90-a) 
+Cos iN = cos h*cos(a-180) 
+Cos iO = cos h*cos(-90-a) 
+ 
+ 
+Figur 2 h = solens höjd över havet, a = solens asimut, b = horisontvinkeln, i = solens infallsvinkel, v = väggens 
+asimut 
+ 
+11
+ 
+Genom att räkna ut Ivikt kan således en total effekt för solinstrålningen per timme tas fram. 
+Detta kan då läggas till den totala energibalansen där samtliga delar är anpassade till 
+beräkning med tidssteg 1 timme. Dessa är, transmission, köldbryggor, luftläckage, ventilation 
+och interna laster. 
+ 
+ 
+ 
+Figur 3 Exempel på beräkningsgång för solinstrålning över tiden. 
+3.1.2 Interna laster 
+De interna lasterna i verktyget delas upp i fyra olika kategorier. De är personvärme, värme 
+från tappvarmvatten, el från fastigheten samt el från hyresgäster. För att beräkna de fyra olika 
+lasterna så används följande formler: 
+ 
+Person värme:  
+Qperson = n*Tv*D*Pp 
+ 
+ 
+ 
+[Wh/månad] 
+n = Antal personer per dygn 
+Tv= Den aktuella personkategorins vistelsetid  
+ 
+[s/dygn] 
+D= Antal dagar för aktuell månad 
+Pp= Effekten från en normal människa   
+ 
+[W/person] 
+ 
+ 
+12
+El från fastigheten: 
+Qfastighet,nyttig = Qel,fastighet*U/100 
+ 
+ 
+[Wh/månad] 
+Qel,fastighet = 
+(
+)
+3600
+*
+*
+∑
++
+drift
+motorer
+drift
+pumpar
+T
+Q
+T
+Q
+&
+&
+ 
+ 
+[Wh/månad] 
+pumpar
+Q&
+ = Pumpens effekt  
+ 
+ 
+[W] 
+motorer
+Q&
+ = Motorns effekt  
+ 
+ 
+[W] 
+drift
+T
+ = Drifttid per månad  
+ 
+ 
+[s] 
+U = Andel som kan tillgodogöras  
+ 
+ 
+[%] 
+   
+El hyresgäster: 
+Qhyresgäst,nyttig = Qel,hyresgäst*U/100 
+ 
+ 
+[Wh/månad] 
+Qel,hyresgäst = 
+(
+)
+3600
+*
+*
+∑
++
+drift
+sapparatur
+verksamhet
+drift
+belysning
+T
+Q
+T
+Q
+&
+&
+ 
+[Wh/månad] 
+belysning
+Q&
+ = Belysningseffekt 
+ 
+ 
+[W] 
+sapparatur
+verksamhet
+Q&
+ = Verksamhetsapparaturens effekt 
+ 
+[W] 
+drift
+T
+ = Drifttid per månad  
+ 
+ 
+[s] 
+U = Andel som kan tillgodogöras  
+ 
+ 
+[%] 
+ 
+Värme från tappvarmvatten: 
+Qtappvarmvatten, nytt = Qtappvarmvatten*U/100 
+ 
+ 
+[Wh/månad] 
+Qtappvarmvatten = ∑
+ 
+ 
+ 
+[Wh/månad] 
+(
++
+vv
+El
+Q
+Q
+)
+El
+Q = Energi till att värma kallvatten 
+ 
+ 
+[Wh/månad] 
+vv
+Q  = Energi i köpt varmvatten 
+ 
+ 
+[Wh/månad] 
+U = Andel som kan tillgodogöras 
+ 
+ 
+[%] 
+ 
+För att beräkna den totala interna lasten summeras alla interna laster för hela byggnaden.  
+ 
+Qinternlast= Qperson + Qfastighet nyttig + Qhyresgäst nyttig + Qtappvarmvatten nyttig 
+[Wh/månad] 
+Qinternlast/dygn= 
+månad
+ 
+aktuell
+Dygn 
+Qinternlast
+ 
+ 
+ 
+[Wh/dygn] 
+ 
+ 
+ 
+ 
+13
+I verktyget finns det på kalkylbladet ”kylberäkning” tre indataceller som gör det möjligt att 
+bestämma hur de interna lasterna skall vara fördelade över dygnet. Två celler ger användaren 
+möjlighet att bestämma verksamhetstiden för lasterna. Användaren väljer från vilken tid 
+lasterna skall börja verka och vilken tid lasterna skall sluta verka. Den tredje cellen 
+bestämmer hur stor andel av de interna lasterna som skall fördelas över tidsintervall. Om 
+andelen är mindre än 100 % så fördelas återstående andel av lasterna jämt över dygnets 
+resterande timmar.  
+ 
+Fördelning av interna laster Till kl: 
+Från kl: 
+Juni 
+3917,1 kWh/dygn 
+  
+Verksamhetstid
+8 
+18 
+Juli 
+3917,1 kWh/dygn 
+  
+Andel att fördela
+95 
+% 
+Augusti 
+3970,6 kWh/dygn 
+Tabell 2 Exempel från kalkylbladet kylberäkning 
+ 
+3.1.3 Transmission 
+Beräkningarna för transmissionsförluster följer Europastandarden ISO 13790 (2004). Med 
+hjälp av indata från kalkylbladet ”B2b” för transmissionsberäkningar från den gamla 
+versionen av verktyget kan den nya versionen även beräkna ett transmissionstillskott. 
+ 
+Det görs med hjälp av indata från ingående byggnadsdelars U-värden och areor som 
+summeras. Samt ovanstående Europastandard för utomhustemperaturen över dygnets alla 
+timmar. Formeln för transmissionstillskottet ser ut som följer: 
+ 
+t
+Q& = HT ∗ (tu−ti)  
+[W]   
+t
+Q = HT ∗ (ti - tu )∗T 
+[MJ] (enligt Europastandard där T är i Ms, tillskott när tu > ti)    
+ 
+Ht = ∑(Ui∗Ai) = Produkten av alla byggnadsdelars U-värden och areor. 
+ti = Inomhustemperaturen 
+ 
+Formeln för utomhustemperaturen för dygnets alla timmar: 
+tu = tm+(Maxdiff*cos((Tklockan-15)/24*2*π/2) 
+tm = Medeltemperatur utomhus aktuell månad 
+Tklockan = Klockslag på dygnet   0<TKlockan<24 
+Maxdiff = 4,8+0,034∗IH 
+IH= Horisontell medelstrålning för den aktuella månaden 
+ 
+Utomhustemperaturen varierar under sommaren så att transmissionen både blir ett tillskott 
+(dagtid) och en förlust (kvällstid). När verktyget summerar det totala tillskotten och 
+förlusterna tar beräkningarna hänsyn till vilka timmar på dygnet som transmissionen är en 
+förlust alternativt ett tillskott. 
+ 
+14
+ 
+3.1.4 Luftläckage 
+Beräkningen av energiförluster på grund av luftläckage följer Europastandarden ”prEN 
+832”(1994). I likhet med transmissionsberäkningarna utförs beräkningarna varje timme under 
+sommarperiodens tre månader. Detta resulterar i att man inte enbart får förluster pga. 
+läckflöden utan också tillskott under det timmar som det är en högre utomhustemperatur än 
+inomhus. I energibalansen så håller verktyget reda på om luftläckaget är en förlust eller ett 
+tillskott. 
+ 
+Formeln som har använts för att beräkna energiförlusten/tillskottet är följande: 
+qlf = Vi*ni*(1/3600) 
+ 
+ 
+ 
+[m3/s] 
+ 
+lf
+Q& = qlf*ρ*cp*(ti-tu) 
+qlf  = Läckflödet för den aktuella zonen   
+ 
+[m3/s] 
+Vi = Volymen för den aktuella zonen  
+ 
+ 
+[m3] 
+ni = Antalet luftomsättningar per timme  
+ 
+[oms/h] 
+ρ = Densiteten för luft [kg/m3] = 1,2 
+cp= Specifik värmekapacitet för luft  
+ 
+ 
+[J/kg* C] 
+ti = Inomhustemperatur  
+ 
+ 
+ 
+[C] 
+tu = Utomhustemperatur som varierar för varje timme  
+ 
+Formeln för utomhustemperaturen för dygnets alla timmar: 
+tu = tm+(Maxdiff*cos((Tklockan-15)/24*2*π/2) 
+tm = Medeltemperatur utomhus aktuell månad 
+Tklockan = Klockslag på dygnet   0<TKlockan<24 
+Maxdiff = 4,8+0,034∗IH 
+IH= Horisontell medelstrålning för den aktuella månaden 
+ 
+Den nya versionen av verktyget använder sig av samma indatablad för luftläckage som den 
+tidigare. Det vill säga man behöver inte göra några extra inmatningar i den nya versionen för 
+att beräkningarna av luftläckage per timme skall kunna utföras. Beräkningarna görs för varje 
+timme under månaderna juni-augusti. Presentationen av beräkningarna åskådliggörs i 
+kalkylbladet ”kylberäkning”.  
+ 
+ 
+3.1.5 Köldbryggor 
+Beräkningarna av köldbryggor följer Europastandarden ISO 13790 (2004). Förlusterna 
+respektive tillskotten på grund av köldbryggorna beräknas över sommarperioden för varje 
+timme på dygnet. Det för att man vid högre utomhustemperatur än inomhustemperatur 
+kommer att ha tillskott istället för förluster på grund av köldbryggorna.  
+Beräkningen utav köldbryggor bygger på ett antaget värde som kallas för köldbryggornas 
+antagna förlustfaktor f [W/(m2∗°C)]. Värdet uppskattas efter att en besiktning av fastigheten 
+är utförd. 
+ 
+ 
+15
+För att beräkna köldbryggornas påverkan i energibalansen har följande formel använts: 
+KB
+Q&
+= f∗Atot∗(tu−tm) 
+ 
+ 
+ 
+[W]   
+f = Köldbryggornas antagna förlustfaktor  
+ 
+[W/(m2∗°C)] 
+Atot= Totala golvarean innanför ytterväggarna 
+ 
+[m2] 
+tm = Medeltemperatur inomhus 
+ 
+ 
+[°C ] 
+tu = Utomhustemperatur varje timme 
+ 
+ 
+[°C ] 
+ 
+Formeln för utomhustemperaturen för dygnets alla timmar: 
+tu = tm+(Maxdiff*cos((Tklockan-15)/24*2*π/2) 
+ 
+[°C ] 
+tm = Medeltemperatur utomhus aktuell månad 
+ 
+[°C ] 
+Tklockan = Klockslag på dygnet   0<TKlockan<24 
+Maxdiff = 4,8+0,034∗IH 
+ 
+ 
+ 
+[W/m2 ] 
+IH= Horisontell medelstrålning för den aktuella månaden  
+[W/m2] 
+ 
+När beräkningarna för varje timme är utförd så summeras de timmar på dygnet som 
+köldbryggorna ger upphov till en förlust respektive ett tillskott. Sedan tar beräkningsmodellen 
+i energibalansen hänsyn till detta för att beräkna det totala kylbehovet eller värmebehovet.  
+ 
+3.1.6 Kylbehov i ventilationssystem 
+För att räkna ut kylbehovet i ventilationssystemet så behöver man följande indata. Vilken typ 
+av ventilationssystem som finns. Beräkningarna kräver information om önskad 
+tilluftstemperatur, tilluftsflöde, frånluftstemperatur och frånluftsflöde. 
+ 
+Om fastigheten har  FTX- eller FT -system skall indata för de aggregaten skrivas in i de tio 
+första aggregatplatserna i indatabladet för ventilationen, ”Kylbehovventilation”. Detta för att 
+endast det tio första aggregatplatserna i indatamallen för ventilationen är kopplade till 
+kylbehovsberäkningarna. 
+ 
+För att räkna ut kylbehovet i systemet så är följande beräkning nödvändig. Beräknad data av 
+tilluftstemperaturen efter återvinning jämförs i verktyget med önskad tilluftstemperatur efter 
+värmning/kylning. För att få tilluftstemperaturen efter återvinning måste beräkningar av 
+återvinning och avluftstemperatur tas i beaktande. Återvinningen beräknas med hjälp av 
+utomhustemperaturen som i kylbehovsberäkningarna görs varje timme. 
+Utifrån resultatet av denna jämförelse så beräknar verktyget hur mycket energi som kommer 
+att krävas för att värma eller kyla ventilationsluften.  
+ 
+ 
+16
+Alla effektberäkningar utförs i verktyget varje timme ett medel dygn i respektive månad juni-
+augusti. För att beräkna det totala energibehovet så summeras effektbehoven över hela 
+dygnet. Energibehov för uppvärmning av tilluften redovisas i verktyget även fast det inte har 
+någonting med kylbehovet att göra, detta för att man lättare skall kunna följa vart energin tar 
+vägen. 
+ 
+ 
+ 
+Ut 
+tu 
+VV 
+tf     qf 
+ 
+ 
+ 
+tt2 qt 
+ 
+ta 
+tt1 
+ 
+ 
+ 
+ 
+tt1 = Tillluftstemperatur före eftervärmning  [°C] tu = Utetemperatur  [°C] 
+qt = Tilluftsflöde  [m
+3 / s] 
+tt2 = Tillluftstemperatur efter eftervärmning  [°C] ta = Avluftstemperatur [°C] qf = Frånluftsflöde  [m
+3 / s] 
+tf = Frånluftstemperatur  [°C] 
+ 
+ 
+ 
+Figur 4 Bild på hur ventilationssystemet kan vara uppbyggt med rätt beteckningar 
+ 
+ 
+3.1.6.1 Kylbehov/Värmebehov 
+Kylbehovet/värmebehovet (Qkyl/Qvb) för ventilationsaggregatet är den energimängd som 
+erfordras för att kyla/värma tilluften till önskad temperatur. I beräkningarna så återvinns 
+värme i ett FTX- system då frånluftens temperatur är lägre än utomhustemperaturen. Om 
+frånluftstemperaturen skulle vara lägre än utomhustemperaturen så kommer även kyla att 
+återvinnas för att sänka tilluftstemperaturen. 
+ 
+Beräkningen i modellen är gjord så att om temperaturen efter återvinning är för låg så räknas 
+ett värmebehov fram, och om den skulle vara för hög så räknas ett kylbehov fram. Alla 
+beräkningar görs för varje timme under dygnets 24 timmar. Formeln för att erhålla 
+kylbehovet/värmebehovet ser ut så här: 
+ 
+Kyl
+Q&
+= qt∗ρ∗cp∗( tt1−tt2)  [W]  (där tt1 = tu) 
+Vb
+Q&
+= qt∗ρ∗cp∗( tt2−tt1)  [W]   
+ 
+ρ  = Luftens densitet [kg/m3] = 1,2 
+cp = Specifik värmekapacitet [J/Kg°C] =  1006 
+tt1 = Tilluftstemperatur före kylning/värmning [°C] 
+tt2 = Önskad tilluftstemperatur [°C] 
+ 
+ 
+17
+Temperaturen tt1 vid återvinning av värme i värmeväxlaren beror av utomhustemperaturen tu, 
+frånluftstemperaturen tf , och om aggregatet innehåller återvinning, även 
+energiverkningsgraden ηe. Beräkningen av temperaturen tt1 görs med följande formel: 
+ 
+tt1 = ηe∗(qf/qt)∗(tf−tu)+tu     [°C ] 
+ 
+Utomhustemperaturen tu räknas fram för varje timme som kylbehovet skall beräknas. 
+Temperaturen beräknas med hjälp av medeltemperaturen, samt den horisontella solinstrålning 
+för aktuell månad.  
+ 
+tu = tm+(Maxdiff*cos((Tklockan-15)/24*2*π/2) 
+ 
+tm = Medeltemperatur utomhus aktuell månad 
+Tklockan = Klockslag på dygnet 
+Maxdiff = 4,8+0,034∗IH 
+IH= Horisontell medelstrålning för den aktuella månaden  
+ 
+Vid beräkning av temperaturen tt1 så ser verktyget till så att temperaturen tt1 inte kan bli större 
+än frånluftstemperaturen efter återvinning.  
+ 
+Faktorn (qf/qt) korrigerar temperaturen tt1 med hänsyn till om tilluftsflödet qt och 
+frånluftsflödet qf  ej skulle vara av samma storlek. Om till exempel frånluftsflödet qf skulle 
+vara större än tilluftsflödet qt erhålls ett högre värde på temperaturen tt1 till följd av att en 
+större mängd frånluft värmer en mindre mängd tilluft. 
+ 
+ 
+3.1.6.2 Återvinning 
+Den andel energi som återförs i form av återvinning, Q
+, styrs av en verkningsgrad, η
+Åt
+&
+e. Vid 
+ventilationsaggregat med återvinning anger användaren ett värde på energiverkningsgraden i 
+annat fall är energiverkningsgraden lika med noll vilket gör att 
+ även det antar värdet noll. 
+Beräkningen av andelen energi som återvinns redovisas i denna formel: 
+Åt
+Q&
+ 
+ 
+= q
+Åt
+Q&
+t∗ρ∗cp∗(tt1−tu) 
+[W] 
+ 
+Med hjälp av denna formel så beräknar verktyget hur stor effekt som återvinns i aggregatet. 
+Det vill säga hur mycket tilluften värms upp från utomhustemperatur tu till temperaturen tt1. 
+Vid det fall då tu, utomhustemperaturen är högre än tt1 temperatur efter återvinnig så kommer 
+återvinningen att bli negativ. Detta betyder endast att det är kyla som har återvunnits istället 
+för värme.   
+ 
+18
+ 
+3.1.6.3 Avluft 
+Den andel energi som går förlorad i avluften Q  är den energi som förts bort från fastigheten 
+på grund av ventilationsaggregatet. Beräkningen av den andelen energi som går förlorad i 
+avluften redovisas i denna formel: 
+av
+&
+ 
+av
+Q&
+= qf∗ρ∗cp∗(ta−tu) 
+[W] 
+ 
+För att beräkna avluftstemperaturen ta så används följande formel: 
+ 
+ta = tf −(qt/qf)∗(tt1−tu) 
+[°C] 
+ 
+Som framgår av formeln påverkas avluftstemperaturen ta av lufttemperaturen efter växlaren tt1 
+vilket gör att beräkningen av avluftstemperaturen påverkas av temperaturen, tt1. 
+ 
+3.1.6.4 Resultat och presentation 
+Resultatet av ventilationsberäkningarna presenteras både som en värdetabell under 
+kalkylbladet ”kylbehovventilation” och som diagram på samma kalkylblad. Presentationen 
+består av det indata som har använts för beräkningarna och härrör från indatabladet för 
+ventilationssystemet, ”IndataA2”. Indata består av verkningsgrad på värmeväxlare, 
+tilluftsflöde och frånluftsflöde samt temperaturer för dessa flöden. 
+ 
+Presentationen innefattar även resultatet från beräkningarna av värmebehov, återvinning, 
+förlust samt kylbehov. Beräkningarna presenteras för varje timme ett medeldygn i aktuell 
+månad. Varje aggregat i ventilationssystemet har en värdetabell med effektbehov, alla 
+aggregats värden summeras för att få det totala effektbehovet för varje timme. För att beräkna 
+det totala energibehovet för månaden så summeras varje timmes effektbehov över dygnet och 
+multipliceras med antal dagar den aktuella månaden. 
+ 
+19
+ 
+ 
+ 
+Figur 5 Exempel på en värdetabell för ett aggregat i ventilationsberäkningarna. 
+ 
+ 
+3.1.7 Energibalans 
+Energibalansen bygger på Europastandarden ISO 13790 (2004).  Beräkningarna redovisas på 
+kalkylbladet ”kylberäkningar” i verktyget. Här kan man se indata från interna laster, UA-
+värde, köldbryggor samt luftläckage. Värdena används av energiekvationen för beräkning av 
+kylbehovet och hämtas från respektive indatablad. Med andra ord krävs inga nya indata för att 
+göra en kylbehovsberäkning. 
+ 
+Alla beräkningar av laster och förluster utförs varje timme och presenteras i en värdetabell i 
+kalkylbladet ”kylberäkningar”. Förluster presenteras som positiva tal och tillskotten som 
+negativa. I värdetabellen finns en OM-sats som summerar alla förluster under varje timme och 
+presenterar summan i cellen ΣQförlust. Samma procedur utförs för tillskotten som presenteras i 
+cellen ΣQtillskott. 
+ 
+Enligt Europastandarden ISO 13790 (2004) så beräknas kylbehovet på följande sätt. 
+QNC = QG,C −ηL,C ⋅ QL,C 
+ 
+QNC = Byggnadens kylbehov 
+ 
+[MJ] 
+QG,C = Byggnadens värmekällor, tillskott. 
+[MJ] 
+QL,C = Byggnadens värmeförluster. 
+ 
+[MJ] 
+ηL,C = Dimensionslös faktor för utnyttjandegraden. 
+ 
+ηL,C = (1−λc
+Ac)/(1-λc
+Ac+1) 
+λc    = Dimensionslös förlust/tillskotts grad 
+Ac   = Dimensionslös numeriskparameter som beror på byggnadens tidskonstant τc. 
+Ac   = A0,c+ (τc/ τ0,c) 
+A0,c  = Dimensionslöst tabellvärde 1.0 för våra beräkningar. 
+ 
+20
+τc     = Byggnadens tidskonstant 
+ 
+[ h ] 
+τc     = Tabellvärde för byggnadens tidskonstant 
+[ h ] 
+ 
+τc = (Cm/3,6)/Hc 
+ 
+ 
+[ h ] 
+Cm = Byggnadens värmekapacitet 
+ 
+[KJ/°C] 
+Hc = Värmeförlust koefficient 
+ 
+[W/°C] 
+ 
+Byggnadens kylbehov beräknas för varje timme på dygnet. Kylbehovet summeras över 
+dygnets 24 timmar. För att få ett månadsvärde på kylbehovet så multipliceras dygnets 
+kylbehov med antal dagar i den aktuella månaden. Varje månads medelvärde för kylbehov 
+presenteras högst upp i kalkylbladet ”kylbehov”.     
+ 
+3.1.8 Presentationsblad 
+Kylbehovsberäkningarna presenteras på kalkylbladet ”kylbehov”. En datatabell visar 
+timvärdena för tillskotten och förlustena i varje månad. 
+  
+ 
+ 
+Figur 6 Kalkylbladet kylbehov. Sammanfattning av beräkningarna över dygnet under juni månad. Liknande 
+översikt för sommarmånaderna juli och augusti. 
+ 
+ 
+21
+Värmelasterna presenteras i ett diagram för varje månad. Diagrammet visar hur lasterna 
+varierar med tidpunkten på dygnet. 
+ 
+ 
+ 
+Figur 7 Kalkylbladet kylbehov. Resultatet över beräkningarna presenteras i ett diagram för varje månad. 
+ 
+Diagrammet längst ner på kalkylbladet ”kylbehov” summerar det totala värmetillskottet över 
+varje månad för respektive last. 
+ 
+ 
+ 
+Figur 8 Diagram över energitillskottet som skall kylas bort för juni, juli och augusti för att inte inomhusklimatet 
+skall påverkas. Här syns tydligt vilka delar som har störst påverkan på kylbehovet hos fastigheten. 
+ 
+ 
+22
+3.2 Jämförelse med IDA ICE och TeknoSims 2000 
+Detta kapitel visar ett test som vi har utfört mot två andra program. Testet visar att verktyget 
+kan göra tillfredställande beräkningar av kylbehovet i jämförelse med andra väl beprövade 
+program 
+3.2.1 Förklaring 
+För att undersöka om våra beräkningar är i enlighet med andra beräkningsprogram så 
+jämförde vi våra resultat med resultat från två olika etablerade energiberäkningsprogram. 
+Programen som vi jämförde med var IDA ICE och TeknoSims 2000. Resultatjämförelsen 
+genomfördes på tre olika modeller av byggnader i de tre sommarmånaderna. Resultatet som vi 
+var intresserade av var främst lasterna på grund av solinstrålning under dygnet. Även 
+värmelasterna som uppstår på grund av interna laster tittade vi närmare på.  
+3.2.2 Indata 
+Samtliga modeller skapades i det tre verktygen. Datatabell över det tre olika objekten som vi 
+simulerade för att jämföra EBBA med det två andra programmen följer nedan: 
+ 
+Objekt Agolv 
+AfönsterN AfönsterS AfönsterÖ AfönsterV AfönsterH Solfaktor Ramfaktor Väder Internapers 
+Juni 
+300m2 
+15 m2 
+15 m2 
+15 m2 
+15 m2 
+0 m2 
+1 
+1 
+Viktat 
+0 
+Juli 
+1000m2 100 m2
+100 m2 
+50 m2 
+50 m2 
+0 m2 
+1 
+1 
+Viktat 
+100 
+Augusti 450m2 
+40 m2 
+40 m2 
+20 m2 
+20 m2 
+64 m2 
+0,76 
+20 % 
+Klart 
+0 
+Tabell 3 
+3.2.2.1 Simulering av ett objekt i juni 
+Första beräkningen simulerades i juni månad. Modellen var en mycket enkel rektangulär 
+byggnad på 300 m2 i bottenplattan. Väggarna bestämdes till tre meter höga och 15 respektive 
+20m breda. Den totala fönsterarean sattes till 60m2 och uppdelades på 15m2 tvåglasfönster på 
+varje vägg. I denna beräkning sattes de interna lasterna till noll, de vill säga ingen belysning 
+och inga personer i byggnaden. I beräkningen var det vår solberäkningsalgoritm som vi ville 
+testa i första hand. Modellen simulerades under ett dygn i juni. 
+3.2.2.2 Simulering av ett objekt i juli 
+Nästa modell var större än den första med en area på bottenplattan på 1000m2. Ytterfasaden 
+var 8m hög med ena sidan 25m och andra 40m. Fönstrena var vanliga 2-glas fönster. Den 
+totala fönsterarean var 300m2. Fönsterarean var 50m2 på de 25m breda väggarna och 100m2 
+på väggarna som var 40m breda. I denna beräkningsmodell infördes också internalaster vilka 
+utgjordes av 100 personer dagtid. Modellen simulerades ett dygn i juli. 
+ 
+3.2.2.3  Simulering av ett objekt i augusti 
+Sista modellen var den mest komplicerade. Modellen var 450m2. Modellen var placerad så att 
+långsidan stod i rakt söderläge. En väggsida var 15m den andra 30m, höjden på väggarna var 
+8m. Den hade både vertikala och horisontella fönster. Fönsterarean vertikalt var 120m2 
+fördelat på 40m2 på långsidorna och 20m2 på kortsidorna. Den horisontella fönsterarean var 
+64m2. I denna beräkning användes fönster med 20 % fönsterram samt en solfaktor på 0,76. 
+ 
+ 
+23
+3.2.3 Resultat och kommentar 
+3.2.3.1 Simulering i juni 
+Resultaten av den första simuleringen visar att vår solalgoritm stämmer bra överens med 
+övriga programs algoritmer. Både solinstrålning med avseende på tiden på dygnet stämmer 
+med de andra två programmen och även effekten på solinstrålningen. 
+ 
+Solinstrålning juni objekt 1
+-16
+-14
+-12
+-10
+-8
+-6
+-4
+-2
+0
+1
+3
+5
+7
+9
+11
+13
+15
+17
+19
+21
+23
+Tid på dygnet
+Effekt / kW
+ 
+Figur 9 Resultat från EBBA-simulering av junimodell 
+ 
+ 
+Figur 10 Resultat från teknosimssimulering av juni. 
+ 
+ 
+24
+Heat from air flows and cold bridges, W
+Heat from occupants (incl. latent), W
+Heat from equipment, W
+Heat from heating and/or cooling room units, W
+Heat from windows (including absorbed solar), W
+Heat from walls and floors (structure), W
+Heat from lighting, W
+Heat from daylight (direct solar), W
+0
+2
+4
+6
+8
+10
+12
+14
+16
+18
+20
+22
+24
+W 
+-6000.0
+-4000.0
+-2000.0
+ 0.0
+2000.0
+4000.0
+6000.0
+8000.0
+10000.0
+12000.0
+Last day of simulation: 2005-06-15
+ 
+Figur 11 Resultat från Idasimulering av junimodell. 
+ 
+3.2.3.2 Simulering i juli 
+I resultatet från juli ser man att även våra beräkningar för internalaster stämmer bra med 
+övriga program. Det som skiljer EBBA och Teknosim i personlasterna är att man inte kan få 
+alla att komma och gå samtidigt i Teknsosims. Båda beräkningsmetoderna har sina för och 
+nackdelar men för resultatet av kylbehov så har det en ganska marginell påverkan. Modellen 
+är i detta test betydligt större än junimodellen vilket man kan se på effekten från 
+solinstrålningen.  
+ 
+ 
+ 
+25
+Solinstrålning & Interna laster juli objekt 2
+-80,0
+-70,0
+-60,0
+-50,0
+-40,0
+-30,0
+-20,0
+-10,0
+0,0
+1
+3
+5
+7
+9
+11
+13
+15
+17
+19
+21
+23
+Tid på dygnet
+Effekt / kW
+Sol
+Interna laster
+ 
+Figur 12 Resultat från Ebbasimulering av julimodell 
+ 
+ 
+Figur 13 Resultat från Teknosim av julimodell. Röd linje är solinstrålning. 
+ 
+ 
+ 
+ 
+26
+Heat from air flows and cold bridges, W
+Heat from occupants (incl. latent), W
+Heat from equipment, W
+Heat from heating and/or cooling room units, W
+Heat from windows (including absorbed solar), W
+Heat from walls and floors (structure), W
+Heat from lighting, W
+Heat from daylight (direct solar), W
+0
+2
+4
+6
+8
+10
+12
+14
+16
+18
+20
+22
+24
+W 
+-30000.0
+-20000.0
+-10000.0
+ 0.0
+10000.0
+20000.0
+30000.0
+40000.0
+50000.0
+Last day of simulation: 2005-07-15
+ 
+Figur 14 Resultat från IDA av julimodell. Gul linje är solinstråling. 
+ 
+3.2.3.3 Simulering i augusti 
+Detta var den modell som var mest komplicerad av det tre testade. Man kan se att det börjar 
+bli små skillnader mellan resultaten från samtliga tre program. Skillnaderna är dock så små att 
+det kan försummas. Dessutom så skiljer sig inte EBBAS beräkningar mer än vad IDA ICE 
+och teknsosim2000 skiljer sig mellan varandra. 
+  
+ 
+27
+Solinstrålning klar dag augusti
+0,0
+10,0
+20,0
+30,0
+40,0
+50,0
+60,0
+1
+3
+5
+7
+9
+11
+13
+15
+17
+19
+21
+23
+Tid på dygn
+Effekt kW
+Solinstrålning
+ 
+Figur 15 Resultat från Ebbaberäkning augustimodell 
+ 
+Figur 16 Resultat från Teknsosim2000 simulering augustimodel. Röd linje är solinstrålnning. 
+ 
+28
+Heat from air flows and cold bridges, W
+Heat from occupants (incl. latent), W
+Heat from equipment, W
+Heat from heating and/or cooling room units, W
+Heat from windows (including absorbed solar), W
+Heat from walls and floors (structure), W
+Heat from lighting, W
+Heat from daylight (direct solar), W
+0
+2
+4
+6
+8
+10
+12
+14
+16
+18
+20
+22
+24
+W 
+-40000.0
+-30000.0
+-20000.0
+-10000.0
+ 0.0
+10000.0
+20000.0
+30000.0
+40000.0
+Last day of simulation: 2005-08-15
+ 
+Figur 17 Resultat från IDA simulering augustimodell. Gul linje är solinstrålning. 
+ 
+3.2.4 Utvärdering av simulerings jämförelse 
+Av resultaten från jämförelsen kan man se att utvecklingen av EBBA fungera helt till 
+belåtenhet. Att beräkningarna inte stämmer exakt med de andra programmen bör man inte 
+lägga för stor vikt vid då det inte finns några program som ger samma resultat. Från 
+jämförelsen kan vi dra slutsatsen att vår beräkningsmodell ligger inom ramen för vad som kan 
+vara acceptabelt i jämförelse med andra program. 
+ 
+I testet har visserligen relativt enkla objekt används. Men beräkningsmetodiken ändrar sig inte 
+med storleken på objekten. Dessutom är solinstrålningen den absolut viktigaste faktorn i 
+kylberäkningar och modellen i EBBA som beräknar solinstrålningen stämmer mycket bra 
+överens med övriga program. Vid simulering utav mer komplicerade objekt så är risken stor 
+att indata till de olika programmen kommer att skilja sig mer på grund av att de olika 
+programmen har olika rutiner för inmatningar.    
+ 
+3.3 Jämförelse temperaturformel med SMHI data 
+I detta kapitel så jämför vi den temperaturekvation som verktyget använder mot temperaturer 
+från SMHI. Ekvationen stämmer bra överens med avseende på amplituden men den verkar ha 
+en fasförskjutning på ungefär 1.5 timmar. 
+3.3.1 Föklaring 
+För att utföra beräkningar varje timme för förluster och tillskott på grund av transmission, 
+ventilation och läcklflöde så behöver man utomhustemperaturens variation över dygnet. Till 
+detta ändamål finns det i verktyget en ekvation som beskriver temperaturens fördelning över 
+dygnet beroende på vilken månad man vill beräkna temperaturen för. Den ser ut enligt nedan: 
+ 
+ 
+29
+tu = Utomhustemperaturen som funktion av tiden på dygnet, Tklockan. 
+tu = tm+(Maxdiff*cos((Tklockan-15)/24*2*π/2) 
+tm = Medeltemperatur utomhus aktuell månad 
+Tklockan = Klockslag på dygnet   0<TKlockan<24 
+Maxdiff = 4,8+0,034∗IH 
+IH= Horisontell medelstrålning för den aktuella månaden 
+ 
+För att undersöka hur pass bra ekvationen stämmer överens med verkligheten så har vi 
+jämfört denna med data om utomhustemperaturen från sommaren 2004 som vi har fått från 
+SMHI. Tyvärr kunde bara SMHI erbjuda oss temperaturer för var tredje timme under 
+perioden 040601 till 040831. 
+ 
+Undersökningen har gått till på följande sätt. Temperaturerna från SMHI har plottats i ett 
+diagram för varje månad. En funktion för medeltemperaturen har ritats in i diagrammet med 
+hjälp av uträknade medeltemperaturer för var tredje timme. Funktionen är satt som en 
+polynomtrendlinje med sjätte ordningen över medeltemperaturen. För att kunna jämföra 
+SMHI:s data med EBBAS temperaturekvation har ekvationen ritats in i samma diagram. 
+Resultaten visas nedan. 
+ 
+3.3.2 Resultat 
+Den blåa linjen är EBBA:s temperaturekvation och den röda linjen är funktionen över SMHI:s 
+data. R2 värdet beskriver hur pass bra den röda funktionen stämmer med data där R2= 1 är 
+exakt. R2 värdet har vi valt att skriva ut då vi endast har data för var tredje timme på dygnet. 
+ 
+Juni  
+Temperatur juni 2004 värden från SMHI jämfört med EBBAS temperaturekvation
+10,85
+10,18
+13,21
+16,12
+17,46
+17,41
+15,61
+12,97
+R2 = 0,9998
+0
+5
+10
+15
+20
+25
+30
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+Tid
+Temperatur
+Figur 18 Röd linje = medeltemp SMHI  Blå linje= EBBA:S temperaturekavtion 
+ 
+ 
+30
+Juli 
+Temperatur Juli 2004 värden från SMHI jämfört med EBBAS temperaturekvation
+13,96
+13,40
+16,06
+18,37
+19,76
+19,30
+17,87
+15,26
+R2 = 0,9992
+0
+5
+10
+15
+20
+25
+30
+35
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+Tid
+Temperatur
+ Figur 19 Röd linje = medeltemp SMHI  Blå linje= EBBA:S temperaturekavtion 
+ 
+Augusti  
+Temperatur i Aug 2004 värden från SMHI jämfört med EBBAS temperaturekvation
+15,00
+14,55
+17,08
+19,35
+21,66
+19,82
+18,78
+15,89
+R2 = 0,9822
+0,00
+5,00
+10,00
+15,00
+20,00
+25,00
+30,00
+35,00
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+Tid
+Temperatur
+ Figur 20 Röd linje = medeltemp SMHI  Blå linje= EBBA:S temperaturekavtion 
+ 
+31
+ 
+3.3.3Utvärdering av resultat 
+I diagrammen kan man se att temperaturekvationens värden över utomhustemperaturen 
+stämmer bra överens med det plottade värdena från SMHI:s data. Det som däremot kan vara 
+oroväckande är att det verkar finnas en fasförskjutning på ca 1,5-2 timmar mellan SMHI:s 
+data och EBBAS temperaturekvation.  
+Man kan se att under juni månad sommaren 2004 så var det lägst temperatur klockan 02.00 på 
+natten. EBBAS temperaturekvation ger det lägsta värdet klockan 03.30 det vill säga en 
+förskjutning på 1,5 timmar. Det högsta temperaturvärdet enligt SMHI var klockan 13.30 i juni 
+2004. Temperaturekvationen ger de högsta värdena klockan 15.30. 
+Denna iakttagelse kan man se även i juli och augusti. Tyvärr så kunde SMHI endast ge oss 
+kontrollerade data för var tredje timme så vi kan inte dra några direkta slutsatser utav dessa 
+observationer. Det bör dock absolut undersökas av någon som har tillgång till mer data över 
+temperaturfördelning över dygnet. 
+ 
+32
+ 
+4. Ebba Default 
+Kapitel 4 beskriver vår andra uppgift av examensarbetet. Det vill säga att skapa ett verktyg 
+som på ett enkelt sätt kan ge en överskådlig bild av olika typer av fastigheters energistatus. 
+Verktyget har anpassats till den ram som finns för beräkning av energideklarationer. Det kan 
+också visa statistikjämförelse mot andra byggnader i samma kategori. Dessutom så finns det 
+en möjlighet att se hur en förbättring av byggnadens tekniska funktion kommer att påverka 
+energiförbrukningen i byggnaden. 
+4.1 Syfte 
+Under den första tiden under arbetet gjorde vi grundläggande studier i vilka regler och 
+metoder som gäller med avseende på energiberäkningar. Vi tittade också på vilka program 
+som redan finns på marknaden och som idag tillämpas av branschfolk. Under tiden för 
+examensarbetet och när det här skrivs pågår ett intensivt arbete från energimyndighetens sida 
+att tolka EU-direktivet 2002/91/EG om byggnaders energiprestanda och hur det ska 
+genomföras i Sverige. Direktivets syfte är att främja en effektiv energianvändning i 
+byggnader. Utredningen har gjorts i samarbete med Boverket och i samråd med 
+Konsumentverket och Styrelsen för ackreditering och teknisk kontroll (SWEDAC). 
+ 
+Direktivet är så utformat att varje medlemsland själva får tolka det och välja metod samt 
+kravnivåer inom angivna ramar. Som helhet innehåller direktivet fem krav som 
+medlemsländerna på eget sätt skall införa: 
+ 
+• 
+En metodik för beräkning av byggnaders integrerade energiprestanda 
+• 
+Minimikrav på energiprestanda för nya byggnader 
+• 
+Minimikrav på energiprestanda för stora byggnader som renoveras/ändras 
+• 
+Energicertifiering av byggnader 
+• 
+Besiktning av värmesystem, med panna/brännare och luftkonditioneringssystem samt 
+en bedömning av värmesystem som är äldre än 15 år. 
+ 
+Det krav som får störst konsekvenser och kommer att innebära stora förändringar för 
+fastighetsägare är kravet på att ägaren till en byggnad skall göra ett energicertifikat som skall 
+vara tillgängligt för eventuella köpare eller hyresgäster ”när byggnader byggs, säljs eller hyrs 
+ut”. Liknande certifikat finns sedan tidigare i bland annat Danmark och Österrike. Några fasta 
+krav för certifikatet är att giltighetstiden inte får överstiga 10 år, det skall innehålla uppgift om 
+byggnadens energiprestanda, ett eller flera referensvärden och förslag på kostnadseffektiva 
+åtgärder för att minska energiförbrukningen. 
+Direktivet trädde i kraft den 4 januari 2003 och det skall vara infört i svensk lag och träda i 
+kraft senast den 4 januari 2006. Dock får, på grund av bristande tillgång på kvalificerade 
+och/eller auktoriserade experter, full tillämpning av bestämmelserna om energicertifiering 
+samt besiktning av pannor och luftkonditioneringssystem vänta ytterligare tre år, dvs. senast 
+den 4 januari 2009. Mer ingående information finns att läsa i ”Energideklarering av 
+byggnader – För effektivare energianvändning” (2004). 
+ 
+33
+I dagsläget är det alltså ingen som vet exakt hur energideklarationen kommer att se ut och hur 
+omfattande den kommer att bli. Vi har efter bästa förmåga försökt ta de delar som vi anser är 
+mest troligt att de kommer bli genomförda och anpassat oss efter dem. 
+ 
+4.1.1 Allmän Ram för beräkningsverktyg 
+Syftet med arbete var att hålla sig inom den allmänna ramen för beräkning av byggnaders 
+energiprestanda. Den ser ut på följande viss: 
+ 
+1. Beräkningsmetodikerna för byggnaders energiprestanda skall åtminstone integrera 
+följande faktorer: 
+a) Termiska egenskaper hos byggnaden (yttre skal och mellanväggar osv). Dessa 
+egenskaper kan också inbegripa lufttäthet. 
+b) Värmeanläggningar och varmvattenförsörjning, inbegripet deras 
+isoleringsegenskaper. 
+c) Luftkonditioneringsanläggningar. 
+d) Ventilation. 
+e) Inbyggda belysningsinstallationer (huvudsakligen den sektor som inte är 
+avsedd för bostadsändamål). 
+f) Placering och orientering av byggnaderna, inklusive utomhusklimat. 
+g) Passiva solvärmesystem och solskydd. 
+h) Naturlig ventilation. 
+i) Förhållanden avseende inomhusklimatet, inklusive planerat inomhusklimat. 
+ 
+2. Positiv påverkan av följande aspekter skall tas med i beräkningen i tillämpliga fall: 
+a) Aktiva solvärmesystem och andra värme- eller elsystem som baseras på 
+förnybara energikällor. 
+b) El från kombinerad värme- och elproduktion. 
+c) Fjärr-/närvärmesystem och fjärr-/närkylsystem. 
+d) Naturligt ljus. 
+ 
+3. I syfte att användas i beräkningen bör byggnader delas i i kategorier, såsom följande: 
+a) Enfamiljshus av olika typer. 
+b) Flerfamiljshus 
+c) Kontor 
+d) Utbildningsanstalter 
+e) Sjukhus 
+f) Hotell och restauranger. 
+g) Idrottsanläggningar. 
+h) Byggnader för parti- och detaljhandel. 
+i) Andra typer av energianvändande byggnader. 
+ 
+ 
+34
+ 
+4.2 Utförande 
+Här beskrivs hur vi har gått tillväga i arbetet med att utveckla verktyget. Samt hur en 
+användare kan på ett enkelt sätt arbete med verktyget. Vi beskriver även statistisk och 
+riktvärden som verktyget använder sig av för att kunna ge referenser till flera olika typer av 
+byggnader. 
+4.2.1 Ebbadefault 
+4.2.1.1 Uppbyggnad 
+Verktyget är skrivet så att det skall vara enkelt att skriva in data som behövs för att utföra en 
+beräkning. Det är uppbyggt kring ett indatablad där man fyller i all indata. Antingen skriver 
+man i en indatacell eller använder sig av rullistorna i verktyget. Under några punkter i 
+indatabladet finns det möjlighet att vara mer eller mindre exakt i sin inmatning. Detta för att 
+man skall kunna göra en ungefärlig beräkning trots att man inte har det exakta värdena på 
+byggnaden. Dels har man möjligheten att skriva in en exakt siffra, men det finns också 
+möjlighet att använda sig av statistikvärden från byggnader inom samma kategori. Statistiken 
+som man kan välja på kommer från Statistiska centralbyrån och Repab. Under andra punkter 
+kan man även uppskatta värdet eller konstruera byggnadsdelar med hjälp av en färdig 
+materiallista.  
+För att minimera risken för att användaren skall fylla i samma indata upprepade gånger så 
+används ett färgschema. Färgschemat visar en ljusgrön färg i det området som skickas till 
+beräkningarna och en blå färg för det områden som inte kommer att användas. Vita rutor skall 
+fyllas i med tal medan gröna rutor räknas ut med hjälp av statistik eller 
+konstruktionsberäkningar. Vid de punkter där det finns flera möjligheter till indata blir 
+indatacellen för övriga alternativ röd då en indatacell är ifylld.  Det finns även anvisningar till 
+höger om hela indatabladet som förklarar hur inmatningen skall gå till punkt för punkt. Det 
+finns totalt 11 punkter i indatabladet som alla måste vara ifyllda för att en beräkning skall 
+kunna utföras korrekt. 
+4.2.1.2 Indatabladets punkter 
+Det finns 11 punkter i Indatabladet som skall fyllas i. 
+1. Objektinformation 
+2. Klimat 
+3. Köpt energi 
+4. Inomhusklimat 
+5. Tappvatten 
+6. El användning 
+7. Ventilation 
+8. Transmission 
+9. Solinstrålning 
+10. Luftläckage 
+11. Avlopp 
+ 
+ 
+35
+1 Objektinformation 
+I första punkten skall man skriva i mått och volymer på byggnaden. Antal personer som vistas 
+i byggnaden och vilken vistelsetid som det befinner sig i byggnaden skall också matas in. Det 
+är viktiga indata för att beräkningarna skall kunna utföras. Vilken typ av kategori på 
+byggnaden och byggnadsår måste man också välja.  Kategorin man väljer styr vilket statistik 
+man har att välja på längre ner i indatabladet, olika typer av byggnader har olika 
+förbrukningstatistik. Byggnadsåret bestämmer vilka nyckeltal som kommer att vara 
+referensvärden i presentationen. 
+ 
+2 Klimat 
+I den andra punkten väljer man var byggnaden är geografiskt placerad. Det finns tio olika 
+städer i Sverige att välja mellan. Det här valet gör man för att få rätt klimat- och soldata till 
+sina beräkningar. Nedanstående tio städer går att välja mellan. 
+1 Stockholm 
+2 Örebro 
+3 Kiruna 
+4 Umeå 
+5 Gävle 
+6 Falun 
+7 Karlstad 
+8 Göteborg 
+9 Kalmar 
+10 Malmö 
+ 
+ 
+Figur 21 
+ 
+36
+ 
+3 Köpt energi 
+I punkt nummer tre skall man fylla i hur mycket värmeenergi och elenergi som har köpts till 
+byggnaden under ett år. Lämpligt underlag för denna punkt är fakturor från el- och 
+värmeleverantörer. Man kan välja mellan att skriva in elen för hela fastigheten eller 
+hyresgästel och fastighetsel var för sig. Den köpta värmeenergin kan matas in som fem olika 
+energikällor, olja, fjärrvärme, el, biobränsle eller gas. 
+4 Inomhusklimat 
+I den fjärde punkten skall man välja en inomhustemperatur som är representativ för hela 
+byggnaden. Denna temperatur kommer att användas i en stor del av beräkningarna i verktyget 
+och är mycket viktig för resultatet. 
+ 
+ 
+Figur 22 
+5 Tappvatten 
+Den femte punkten är den första som har flera noggrannhetsnivåer. Här skall man skriva in 
+den totala tappvattenförbrukningen i fastigheten under ett år. Den mest exakta siffran är den 
+uppmäta förbrukningen och skrivs in i ruta 5.1. Om man inte har den exakta siffran kan man i 
+5.2 använda sig av förbrukningsstatistik från byggnader av samma kategori. Det är därför 
+viktigt att man har valt rätt kategori i punkt 1. Statistiken bygger på information från minst 
+100 byggnader i denna kategori. När man har valt tappvattenförbrukning ska man bestämma 
+hur stor del av denna som värms upp till varmvatten samt vilken energikälla som används för 
+att värma upp vattnet. Man måste också skriva in vilken temperatur som vattnet värms upp till 
+och vilken temperatur det hade från början. 
+ 
+Figur 23
+ 
+37
+ 
+6 Elanvändning 
+Punkt nummer sex har tre olika noggrannhetsnivåer. Den första är till för om man tidigare har 
+gjort en beräkning med hjälp av tex. BEF eller annan besiktning. Den andra bygger på 
+statistik från andra byggnader i samma kategori. Tredje punkten är en mycket noggrann 
+uppskattning med hjälp av ett elprotokoll. I protokollet skriver man in all belysning som både 
+hyresgästerna och fastigheten använder. Man tar även med apparatur, fläktar, pumpar etc. som 
+förbrukar el i fastigheten. Protokollet summerar sedan all elanvändning och använder det i 
+beräkningarna. Sista delen i denna punkt är att bestämma hur mycket av elförbrukningen som 
+sker inom den uppvärmda volymen. Detta för att verktyget skall kunna beräkna den gratis 
+värme som kommer från elanvändningen. 
+ 
+ 
+Figur 24 
+7 Ventilation 
+Punkt nummer sju behandlar ventilationssystemet i byggnaden. Det finns möjlighet att 
+beräkna 16 olika system i varje byggnad. Det man skall skriva in är från- och tilluftsflöden 
+samt tillufttemperatur. Om systemet har en värmeväxlare skall man skriva in 
+temperaturverkningsgraden för den. Även drifttiderna för de olika systemen skall skrivas in, 
+både antal timmar per dag och antal dagar per vecka skall fyllas i. 
+ 
+ 
+Figur 25 
+ 
+38
+8 Transmissionsförluster 
+Den åttonde punkten tar upp transmissionsförluster och köldbryggor. För 
+transmissionsförlusterna i väggar och tak finns det tre olika nivåer att bestämma U-värdet på 
+konstruktionen. Den första är färdiga vägg- och takkonstruktioner som finns och används. Det 
+finns även ett antal olika tidstypiska konstruktioner att välja mellan. Den andra nivån är att 
+skapa en väggkonstruktion med hjälp av en materiallista och mått på konstruktionen. I listan 
+finns de vanligaste byggnadsmaterialen, det går även att lägga till nya material om man saknar 
+något. Den sista nivån är att man vet eller antar ett U- värde på tak- och väggkonstruktionen 
+som kan vara representativt för byggnaden. 
+Sedan återstår att välja vilken typ av stomme som fastigheten har samt att bestämma vilken 
+typ av dörrar och areor på dörrarna som finns.  Man skall även ange hur mycket köldbryggor 
+som finns samt bottenplattans konstruktion. 
+ 
+ 
+Figur 26 
+ 
+39
+ 
+9 Solinstrålning 
+Punkt nummer nio tar upp byggnadens fönstertyper och areor. Tre olika fönstertyper kan man 
+ha i varje byggnad. När man valt fönstertyp så skall man skriva in areorna i det fyra 
+väderstrecken och eventuell horisontell fönsterarea. Det finns nio olika alternativ att välja 
+skuggning av fönstrena i de olika väderstrecken. Man kan också välja om det finns någon 
+yttre solavskärmning på fönstret.  
+ 
+ 
+Figur 27 
+10 Luftläckage 
+I punkt tio skall man uppskatta luftläckage i byggnaden. Detta gör man med hjälp av rullistan 
+med olika alternativ. 
+ 
+11 Avlopp 
+I den sista punkten skall man bestämma hur stor andel av avloppsvattnet som kan nyttiggöras 
+för uppvärmning av fastigheten. Erfarenhetsmässigt brukar det värdet var ca 20%. 
+ 
+40
+ 
+4.2.1.3 Resultat 
+När alla inmatningar är klara kan man klicka sig vidare till resultatbladet. På detta blad 
+presenteras den beräknade energin som tillförd energi, använd energi och bortförd energi. 
+ 
+Den tillförda energin består av dessa poster. Fjärrvärme, el, olja, annan värmeproduktion 
+och sol + person. Det motsvarar den energi som man har köpt till fastigheten eller den energi 
+som tillförs fastigheten på grund av person- och sollaster.  
+ 
+Den använda energin består av följande poster: 
+Uppvärmning, klimatskärm = Energin som verktyget har räknat fram att de kommer gå åt 
+för att kunna hålla önskat inomhusklimat. 
+Uppvärmning, ventilation = Energin som verktyget har räknat fram att de kommer gå åt för 
+att värma ventilationsluften till önskad tilluftstemperatur. 
+Uppvärmning, gratisenergi = Är den andel av energi från person- och sollasterna som 
+verktyget har räknat fram att de kan tillgodogöras för uppvärmning av fastigheten. 
+Tappvarmvatten = Den energi som verktyget har räknat fram som går åt för att värma upp 
+tappvarmvattnet. 
+El, fastighet = Den elenergi som förbrukas i fastigheten 
+El, hyresgäst = Den elenergi som förbrukas av hyresgästerna. 
+Ej nyttiggjord gratisenergi = Den del av de tillförda person- och sollasterna som verktyget 
+har räknat fram inte tillgodogörs för byggnadens uppvärmning. 
+Återvinning på avluften = Den energi som verktyget har räknat fram att man kan återvinna 
+av frånluften till tilluften i ventilationsvärmeväxlarna. 
+ 
+Den bortförda energin består av följande poster. 
+Transmission = Den av verktyget uträknade transmissionsförlusten. 
+Luftläckage = Den av verktyget uträknade förlusten på grund av luftläckage. 
+Avluft = Den av verktyget uträknade förlusten i ventilationssytemet. 
+Avlopp = Den av verktyget uträknade förlusten i tappvarmvatten i avloppet. 
+Köldbryggor = Den av verktyget uträknade förlusten på grund av köldbryggor. 
+Överskott = Den andel av det tillförda gratisenergin, sol, person, el fastighet, el hyresgäst och 
+tappvarmvatten, som inte kan tillgodogöras för uppvärmning. Plus den andel energi som går 
+åt för att kyla bort övervärme i ventilationssystemet för att få önskad tilluftstemperatur. 
+ 
+41
+ 
+Figur 28 
+ 
+Resultatet presenteras även i ett stapeldiagram som gör det hela lite överskådligare. Exempel 
+på ett sådant resultat står nedanför. 
+ 
+ 
+Figur 29 
+ 
+42
+ 
+4.2.1.4 Förbättringar och referens 
+På resultatsidan finns det även möjlighet att se vilken prestanda byggnaden skulle få med en 
+eller flera förbättringar av olika slag. Resultat av förbättringarna presenteras på samma sätt 
+som den första beräkningen. Verktyget visar också hur mycket energi som skulle sparas in på 
+ett år med de valda förbättringarna. Om man vet vad en sådan förbättring skulle kosta att 
+utföra kan man skriva in det så räknar verktyget ut payoff-tiden för denna investering.  
+ 
+ 
+Figur 30 
+ 
+Längre ner på sidan presenteras referenserna till denna byggnad. Det finns fyra olika 
+referenser. Den första, den som står till vänster, är baserad på statistik från energiförbrukning 
+av andra byggnader i samma kategori. Nästa är baserad på riktvärden för byggnader i samma 
+kategori och som har ungefär samma byggnadsålder som är uppvärmda med olja. Den tredje 
+är baserad på riktvärden för byggnader i samma kategori och som har ungefär samma 
+byggnadsålder som är uppvärmda med fjärrvärme. Den sista är en referens till den inmatade 
+byggnaden med det förbättringar man har valt att titta på. 
+ 
+ 
+Figur 31
+ 
+43
+ 
+4.2.1.5 Presentation 
+Själva presentationen består av allmän byggnadsinformation och tre beräknade diagram. Det 
+första diagrammet visar den aktuella byggnadens energistatus både med och utan 
+förbättringar. Diagrammet till höger visar fyra referensvärden till den totala 
+värmeförbrukningen. Värmeförbrukningen i byggnaden inkluderar värme till 
+ventilationsluften, värme till radiatorsystemet samt uppvärmningen av tappvarmvatten. Det 
+nedre diagrammet åskådliggör den värmelast som skall kylas bort under sommarhalvåret. 
+Kurvan visar effektbehovet/m2 ett medeldygn för varje sommarmånad. 
+ 
+ 
+Figur 32 
+4.2.1.6 Beräkningsstandard 
+Verktyget bygger på beräkningar enligt Europastandarden (ISO 13790:2004). Beräkningarna 
+är uppdelade i tillskott och förluster, uppdelningen förklaras närmare under nästa rubrik 
+Energibalans. Själva beräkningsformlerna för tillskott och förluster är samma som för 
+beräkningar av kylbehov, se kapitel 3.1. 
+ 
+44
+ 
+4.2.1.7 Energibalans 
+Energibalansen bygger på europastandarden (ISO 13790:2004). Förlusterna i energibalansen 
+är transmissionsförluster, förluster på grund av köldbryggor, förluster i avluften i 
+ventilationen och förluster på grund av luftläckage. 
+Tillskotten är energin som kommer från solen och tillskotten från personlasterna. 
+Energibalansen ser ut på följande sätt:  
+QNH = QL,H - ηL,H ⋅QG,H  
+ 
+QNH = Byggnadens värmebehov 
+ 
+[MJ] 
+QG,H = Byggnadens värmekällor, tillskott. 
+[MJ] 
+QL,H = Byggnadens värmeförluster. 
+ 
+[MJ] 
+ηL,H = Dimensionslös faktor för utnyttjandegraden. 
+ 
+ηL,H = (1−λh
+AH)/(1-λh
+AH+1) 
+λH    = Dimensionslös förlust/tillskotts grad 
+AH   = Dimensionslös numeriskparameter som beror på byggnadens tidskonstant τH. 
+AH   = A0,H+ (τH/ τ0,H) 
+A0,H  = Dimensionslös tabellvärde 1.0 för våra beräkningar. 
+τH     = Byggnadens tidskonstant 
+ 
+[ h ] 
+τH     = Tabellvärde för byggnadens tidskonstant 
+[ h ] 
+ 
+τH = (Cm/3,6)/HH 
+ 
+ 
+[ h ] 
+Cm = Byggnadens värmekapacitet 
+ 
+[KJ/°C] 
+HH = Värmeförlust koefficient 
+ 
+[W/°C] 
+ 
+Byggnadens värmebehov är det behovet som radiatorsystemet kommer att förbruka. I 
+energibalansen räknas en utnyttjandegrad ut. Denna används för att beräkna hur stor del av 
+den tillförda gratisenergin som tillgodogörs för byggnadens uppvärmning. Det vill säga hur 
+mycket av den tillförda solenergin och personenergi som kan utnyttjas för uppvärmning. 
+Denna post redovisas i resultatet under använd energi i cellen tillförd gratisenergi. På samma 
+sätt redovisas den gratisenergin som inte kan utnyttjas i posten ej nyttigjord gratisenergi.    
+  
+ 
+45
+ 
+4.2.2 Repab 
+Böckernas innehåll 
+Referenserna som verktyget använder sig av kommer från Repabs upplagor av böckerna Fakta 
+årskostnader kontor, bostäder, skolor, vårdbyggnader och industri från 2004. Böckerna 
+innehåller både förbrukningsstatistik för fastigheter inom samma kategori och riktvärden för 
+energiförbrukning. 
+Underlaget för statistiken kommer från en stor population av fastigheter i varje kategori. 
+Riktvärdena baseras på kalkyler av typfastigheter för värmeisolering och täthet för olika års 
+energinormer. Populationen av respektive kategori redovisas här nertill. 
+ 
+Skolor  
+Underlagets totala area = 682 500 m2. 
+Genomsnittsarea per skola = 6039 m2 -->ca 113 skolor. 
+ 
+Kontor 
+Underlagets totala area LOA = 1 555 400m2. 
+Genomsnittsarea per fastighet = 10 439 m2 -->ca 150 fastigheter  
+ 
+Bostäder 
+Underlagets totala area BOA = 1 994 350m2. 
+Genomsnittsarea per fastighet = 9 407 m2 -->ca 212 fastigheter. 
+ 
+Vårdbyggnader 
+Underlagets totala area BRA = 1 452 800m2 
+Genomsnittsarea per vårdbyggnader = 11 959 m2 -->ca 120 vårdbyggnader. 
+ 
+Industri 
+Underlagets totala area LOA = 1 262 800m2 
+Genomsnittsarea per industri = 4 370 m2 -->ca 290 industrier. 
+ 
+Använd statistik 
+Förbrukningsstatistiken som finns tillgänglig som defaultvärden i verktyget är elförbrukning 
+och vattenförbrukning. Det val man kan göra är mellan följande sex värden: 
+ 
+Lågvärde = Det värde som 10% av insamlad statistik ligger under.  
+Undre kvartil = Det värde som 25% av insamlad statistik ligger under. 
+Median värde = Det värde som storleksmässigt ligger i mitten av all insamlad statisik 
+Övre kvartil = Det värde som 75% av insamlad statistik ligger under 
+Högvärde = Det värde som 90% av insamlad statistik ligger under 
+Medelvärde = Genomsnittsvärde av den insamlade statistiken. 
+ 
+Referensvärdena som verktyget ger kommer från statistik för värmeförbrukning samt 
+riktvärden för värmeförbrukningen.  Den statistiska värmeförbrukningsreferensen är 
+medelvärdet av hela populationens förbrukning. Riktvärdena är beroende på vilket årtal som 
+byggnaden är uppförd. Det finns tre olika kategorier, innan 1959, mellan 1960 och 1974 samt 
+efter 1974. 
+ 
+ 
+46
+4.2.3 SCB 
+Verktyget är förberett för att använda statistik för hotell och restauranger, idrottsanläggningar, 
+byggnader för parti och detalj handel samt övriga typer av byggnader. Detta för att verktyget 
+skall vara anpassat för den ram som finns för beräkning av byggnaders energiprestanda. För 
+tillfället ligger endast statistik från statistiska centralbyrån inlagt i verktyget. Då denna 
+statistik inte är komplett och bearbetad har vi valt att inte koppla in det till indatabladet, 
+användaren kan för tillfället använda det fem tidigare beskrivna kategorierna. 
+ 
+4.3 Resultatjämförelse med BVF 
+I dagsläget är det vanligaste verktyget, som fastighetsägare använder sig av för att beräkna 
+fastigheters energiförbrukning, BVF. Det är ett 5 sidigt A4 kompendium som ger användaren 
+möjlighet att beräkna årsenergi förbrukningen på ett enkelt sätt. Dock har BVF en del brister i 
+sin presentation då det är mycket svårt att se vart det är lämpligt att göra energi förbättrande 
+åtgärder. Vi har jämfört resultaten från Ebba Default med BVF. Indata i testet kommer från en 
+fältstudie, går att läsa mer om i kap 5, samt fastigheten Tegens BVF från 2003. 
+ 
+4.3.1 Resultat från BVF Kv.Tegen 
+Resultat BVF 2003
+ 
+kWh
+ 500 000 kWh
+ 1 000 000 kWh
+ 1 500 000 kWh
+ 2 000 000 kWh
+ 2 500 000 kWh
+ 3 000 000 kWh
+ 3 500 000 kWh
+ 4 000 000 kWh
+ 4 500 000 kWh
+kWh/år
+Ventilation
+ 1 616 773 kWh
+Varmvatten
+  195 800 kWh
+Markvärme
+  5 000 kWh
+Transmission
+ 2 036 544 kWh
+Energianvändning BVF
+ 
+ 
+ 
+47
+4.3.2 Resultat från Ebba Default Kv.Tegen 
+Energianvändning EBBA Default
+ kWh
+ 2000000 kWh
+ 4000000 kWh
+ 6000000 kWh
+ 8000000 kWh
+ 10000000 kWh
+ 12000000 kWh
+Tillförd energi
+kWh/år
+ Använd
+energi kWh/år
+ Bortförd
+energi kWh/år
+Total
+energibehov
+Bortförd Överskott
+Bortförd Överskott
+Bortförd Köldbryggor
+Bortförd Avlopp
+Bortförd Avluft
+Bortförd Luftläckage
+Bortförd Transmission
+Använd Återvinning på avluften
+Använd Ej nyttiggjord gratisenergi
+Använd El, hyresgäst
+Använd El, fastighet
+Använd Tappvarmvatten
+Använd Uppvärmning, gratisenergi
+Använd Uppvärmning, ventilation
+Använd Uppvärmning, klimatskärm
+Tillförd Sol+person
+Tillförd Annan värmeproduktion
+Tillförd Olja
+Tillförd El
+Tillförd Fjärrvärme
+ 
+Figur 33  
+ 
+ 
+Tillförd 
+Energi 
+kWh/år 
+Använd 
+Energi 
+kWh/år 
+Bortförd Energi 
+kWh/år 
+Totalt energibehov fastighet 
+kWh/år 
+Tillförd 
+Fjärrvärme 
+3310000
+Tillförd 
+El 
+277500
+Tillförd 
+Olja 
+0
+Tillförd 
+Sol + person 
+4238690
+Tillförd 
+Annan värmeproduktion 
+0
+Använd 
+Uppvärmning klimatskärm 
+2212768
+2212768
+Använd 
+Uppvärmning ventilation 
+1366488
+1366488
+Använd 
+Uppvärmning gratisenergi 
+303850
+Använd 
+Tappvarmvatten 
+70059
+70059
+Använd 
+El, fastighet 
+622880
+Använd 
+El, hyresgäst 
+1209120
+Använd 
+Ej, nyttigjord gratis energi 
+120018
+Använd 
+Återvinning avluft 
+3755890
+Bortförd Transmission 
+1574649
+Bortförd Luftläckage 
+1035436
+Bortförd Avluft 
+2038088
+Bortförd Avlopp 
+59189
+Bortförd Köldbryggor 
+570395
+Bortförd Överkott 
+686617
+Tabell 4 
+ 
+48
+ 
+4.3.3 Kommentar till jämförelsen 
+Jämförelsen visar att bägge verktygen ger ungefär samma resultat för energianvändningen i 
+byggnaden. Däremot så presenteras posterna av energianvändningen på olika sätt. BVF visar 
+endast fyra poster som ger upphov till ett energibehov. Ebba Default ställer upp en tydlig bild 
+av hur husets olika energianvändande poster står i relation till varandra. Dessutom så finns det 
+i EBBA Default en energibalans som gör att de energianvändande posterna är beroende av 
+varandra. Ett sådant beroende finns inte i BVF. 
+Från fältstudien i kapitel 5 ser man att EBBA ger samma resultat som EBBA Default för 
+samma fastighet. Då EBBA har använts i snart 5 år som verktyg med användbara resultat kan 
+vi dra slutsatsen att även EBBA Default kommer att vara ett bra verktyg vid arbetet med 
+energiutredningar.    
+ 
+49
+ 
+ 
+5. Fältstudie 
+Som objekt för vår fältstudie där vi testar de ändringar och förbättringar vi gjort i verktyget 
+EBBA samt versionen med defaultvärden, EBBA Default, har vi av Vasakronan fått kvarteret 
+Tegen tillhanda. 
+ 
+För att få en bra bild av hur arbetet fungerar på en verklig byggnad kommer fältstudien att 
+både innefatta EBBA och EBBA Default, då de båda baseras på samma beräkningsmodell och 
+energibalans. 
+ 
+5.1 Presentation av kvarteret Tegen 
+Kvarteret Tegen ägs av fastighetsbolaget Vasakronan AB. Fastigheten är belägen strax söder 
+om Solna centrum, på Sollentunavägen i Solna. Huskroppen har en total uthyrbar area på 
+31821 m2. Tegen byggdes 1974 med tillbyggnad som uppfördes 1996. Tegen har den 
+huvudsakliga huskroppen belägen i nord-sydlig riktning. 
+ 
+ 
+Figur 34 
+ 
+Byggnaden består av totalt 31850 kvm uthyrbar area. Några av de största hyresgästerna är 
+Västerortspolisen, Guldfynd och Åklagarmyndigheten. Cirka 4500 kvm står för tillfället tomt 
+i avvaktan på nya hyresgäster. Byggnaden är utformad med fyra stycken högre 
+byggnadskroppar med en mindre byggnadsdel i bottenplan som sammanbinder dessa högre 
+byggnader. En större tillbyggnad på 14000kvm uthyrbar area i den västra delen byggdes 
+under mitten på 90-talet. Den delen hyrs främst ut till Västerortspolisen och en restaurang. 
+ 
+En intressant detalj som Tegen använder sig av är prognosstyrd klimatstyrning från och med 
+februari 2005. För närvarande är ca 21000m2 av den totala arean prognosstyrt. Systemet är 
+idag inte i full drift, men enligt driftpersonalen har det fungerat tillfredställande den period 
+som man använt sig av det. Systemet går ut på att man prenumererar på en tjänst som SMHI 
+tillhandahåller och som sedan genom beräkningar styr byggnadens radiatorkretsar. 
+ 
+Huvuddelen av kvarteret Tegen är byggd 1974 och har tegelfasad. Stommen består av 
+betongpelare, med ett isolerande skikt av mineralull, luftspalt och ytterst en 1 ½ stens 
+tegelfasad. Utformningen är tidstypisk för de större byggnader som gjordes på mitten av 70-
+talet. 
+ 
+50
+ 
+Vidare är taket av modell uppstolpat tak med invändig takavvattning.  På några av taken är 
+vissa förbättringar gjorda i form av nytt tätskikt och tilläggsisolering. Fönstren är till cirka  
+70 % 2-glasfönster som är från byggnadsåret. Dock har tillbyggnaden modernare fönster av 
+typen 2-glas isolerfönster. Totalt har man sju stycken större portar varav två brukas mer eller 
+mindre ständigt i polisens verksamhet för transport av fordon. 
+ 
+Fastigheten inkluderar två restauranger, en större som inkluderar matsal och en mindre som 
+har caféverksamhet. Dessa står för större delen av varmvattenförbrukningen.  Byggnaden 
+brukas mestadels kontorstid klockan 7-18 men har på grund av polisens verksamhet finns det 
+även personer i lokalerna nattetid på cirka 12000m2. Totalt arbetar runt 1000 personer 
+regelbundet i fastigheten varav 500 stycken är poliser. I bottendelen av byggnaden finns ett 
+garage för 90 platser. I den delen av fastigheten polisen har sin verksamhet finns också ett 
+gym och tillhörande gymnastiksal av mindre modell. Det finns även en skjutbana i bottenplan. 
+ 
+Huvudbyggnaderna består i huvudsak av kontorslokaler i sjätte våningsplan. Det skiljer sig en 
+del emellan men generellt sett har de en bruksarea på 700 m2. Varje kontorsplan har tillgång 
+till ett pentry med diskmaskin och mikrovågsugnar. 
+ 
+5.2 Utförande 
+Till en början bestämde vi att på grund av fastighetens komplexa struktur och installationer att 
+göra vissa generaliseringar. Vi beslöt att endast titta på de delar som är av stor vikt för 
+energiberäkningarna och lämna detaljer som vi med vårt begränsade tidsschema inte kan på 
+ett rättvist sätt förklara ur energisynpunkt. 
+ 
+Under ett möte med representant för Vasakronan Per Wetterström och biträdande förvaltare 
+Anders Liljegren, förklarades bakgrunden till fältstudien och vilken information vi behövde 
+för att genomföra den. 
+ 
+Det material och information som tillhandahållits under fältstudien av kv. Tegen är följande: 
+ 
+• Sektions- och planritningar över byggnaden. 
+• BVF protokoll från 2003. 
+• Förbrukningsstatistik för värme, kallvatten, köpt el, fjärrkyla. 
+• Mediaavläsning med nyckeltal för förbrukningen av el 2002, 2003, 2004. 
+• Besök och okulärbesiktning av Tegen. 
+ 
+Efter vårt inledande möte erhöll vi BVF protokoll samt förbrukningsstatistik för kv. Tegen. 
+För att göra arbetet strukturerat delades fastigheten in i olika zoner beroende på verksamhet. 
+Dessa innefattar kontor, garage, restaurang, källare, allmänna utrymmen och tomma lokaler. 
+Hur uppdelningen förenklat ser ut kan ses nedan. 
+ 
+ 
+51
+ 
+Figur 35, zonindelning i fastigheten 
+ 
+ 
+För att bilda oss en uppfattning om fastighetens funktion och drift gjorde vi en rundvandring 
+med Anders Liljegren under en dag. Vi besökte några typiska lokaler som kan antas 
+representativa för respektive indelad zon. Vi tittade också på centraler för installationer, 
+ventilationsutrustning och värmeanläggningar. Anteckningar fördes där viktiga punkter för 
+byggnadens energianvändning noterades. 
+ 
+ 
+Figur 36 översikt drift och installationer 
+ 
+Ovan visas en översiktlig bild av de installationer som finns i fastigheten. I huskropp D1 finns 
+den del som för närvarande inte är uthyrd. Där är inomhustemperaturen sänkt till omkring 16-
+17°C och ventilationen är sänkt med 70 % av det normala flödet.  
+ 
+ 
+52
+Eftersom det inte finns någon större verksamhet i den delen av lokalen och den energi som 
+kan tillgodogöras från interna laster blir signifikant mindre måste istället radiatorerna stå för 
+en större del av uppvärmningen jämfört med övriga fastigheten.  
+ 
+Efter att all indata har samlats in har en del beräkningar utförts innan EBBA verktygen kunnat 
+användas. Dessa beräkningar innefattar bland annat summering av fastighetens fasad-, 
+fönster- och takareor. Det har gjorts med hjälp av översiktliga planritningar. Summering av 
+fönsterarealer har även utförts i de olika väderstrecken för att enkelt kunna passas in i 
+verktygen. 
+ 
+5.3 Resultat 
+Målet med fältstudien är dels att se om vår förbättring avseende kylberäkningar i EBBA 
+motsvarar den faktiskt inköpta kylan i en fastighet, dels testa EBBA Default och jämföra 
+resultatet med EBBA och uträkningar enligt BVF. 
+ 
+De beräkningar som gjorts i EBBA beträffande kylan skiljer sig en aning från det som faktiskt 
+är inköpt fjärrkyla från 2003. Vid de beräkningar som vi gjort i EBBA har en 
+inomhustemperatur på 22°C använts. 
+ 
+Månad 
+Beräknat kylbehov enligt 
+EBBA 
+Kylbehov enligt 
+statistik 2003 
+Skillnad 
+Juni 
+180 MWh 
+94 MWh 
+86 MWh 
+Juli 
+209 MWh 
+159 MWh 
+50 MWh 
+Augusti 
+188 MWh 
+129 MWh 
+59 MWh 
+Tabell 5 
+ 
+Som det framgår av tabellen ovan är det en relativt stor skillnad i vad som faktiskt köpts in i 
+form av fjärrkyla och teoretiska värde som verktyget räknat fram. Dock har det vid intervju 
+med Anders Liljegren och vid besök i fastigheten framkommit att man till viss del använder 
+värmepumpar för att kyla byggnaden då utomhustemperaturen understiger 10°C. Vid 
+temperaturer över 10°C används endast fjärrkyla. Dock finns det ingen statistik på den extra 
+kyleffekt som värmepumparna tillför över året. 
+ 
+Resultatet stämmer väl överens med det vi förväntade oss. Enligt de tidigare testerna med 
+IDA och TeknoSim 2000 vet vi att beräkningarna är i enlighet med dessa program. Att vi 
+totalt sett hamnar över det som faktiskt är köpt kan bero på flera orsaker. Dels som nämnts 
+ovan, om den extra kyleffekt som värmepumparna ger och dels den kyleffekt som erhålls 
+gratis vid vädring i de många portar och dörrar som finns i fastigheten. Vid beräkningar antas 
+en konstant inomhustemperatur sommartid och ingen temperaturhöjning sker i teorin. I 
+verkligheten förekommer en viss ökning av inomhustemperaturen sommartid samtidigt som 
+den mänskliga faktorn gör att fönster och dörrar ställs upp. På så sätt sjunker det faktiska 
+kylbehovet. 
+ 
+53
+Resultatet beträffande EBBA Default visar att verktygen räknar på samma energibalans och 
+kommer fram till liknande värden för tillförd-, använd-, och bortförd energi. 
+ 
+ 
+Figur 37 energibalans EBBA 
+ 
+ 
+ 
+Figur 38 översikt resultat EBBA 
+ 
+ 
+ 
+ 
+54
+ 
+Figur 39 energibalans EBBA Default 
+ 
+ 
+ 
+ 
+Figur 39 Översikt resultat EBBA Default 
+ 
+Som vi ser ovan visar diagrammen att beräkningsverktyget EBBA Default ger ett resultat som 
+är inte långt ifrån det som verktyget EBBA ger. Vi har alltså använt oss av samma byggnad 
+och indatavärden. Båda verktygen använder samma energibalans, det är endast inmatningen 
+av värden som skiljer dem åt.  
+Hur det sedan överensstämmer med fastighetens verkliga energianvändning kan man 
+spekulera i. EBBA har av Carl Bro använts som verktyg för att få en större förståelse hur 
+energianvändningen ser ut i en mängd olika fastigheter med tillfredsställande resultat. Nu kan 
+vi konstatera att EBBA Default i den här fastigheten räknar på samma sätt som EBBA.  
+ 
+ 
+55
+6. Slutsats 
+Kylberäkningarna stämmer väl överens med jämförelser med andra beräkningsprogram. 
+Resultatet motsätter sig inte vid en jämförelse med data för inköpt kyla från en riktig 
+byggnad. Att det beräknade resultatet skiljer sig i viss omfattning från den inköpta kylan kan 
+bero på flera orsaker. Det är svårt att uppskatta de exakta tillskotten som ger upphov till ett 
+kylbehov i en byggnad. Sådana tillskott är bland annat belysning och personlaster som 
+påverkas av människors beteenden.  Vid beräkningar antas även en konstant 
+inomhustemperatur sommartid och ingen temperaturhöjning sker i teorin. I verkligheten 
+förekommer en viss ökning av inomhustemperaturen sommartid samtidigt som den mänskliga 
+faktorn gör att fönster och dörrar ställs upp. 
+ 
+Under utvecklingen av EBBA har nya möjligheter till förbättringar uppdagats. Ett tillägg som 
+skulle vara användbart är en möjlighet till uppdelning av det totala kylbehovet på fjärrkyla 
+och värmepumpar. Möjligheten att räkna kylbehov i flera zoner är också en möjlig förbättring 
+för större noggrannhet. 
+ 
+EBBA Default har visat sig vara både lätthanterligt och tidsbesparande i arbetet med att 
+utreda byggnaders energistatus. Resultaten visar också att beräkningarna stämmer väl överens 
+med andra använda beräkningsverktyg. Med de uppställda förutsättningarna som bakgrund 
+har arbetet varit lyckat. Dock finns det fortfarande en stor förbättringspotential i verktyget. 
+ 
+Förbättringar som kan införas i EBBA Default är bland annat fler olika möjligheter till 
+åtgärdsförslag, större databas gällande både förbrukningsstatistik och referensvärden, 
+möjlighet att skapa fler huskroppar med olika egenskaper. Dessutom bör verktyget utsättas för 
+fler tester för att finna eventuella brister och felaktigheter.        
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+56
+ 
+7. Litteraturförteckning 
+Litteratur 
+Statens offentliga utredningar. 2004. Energideklarering av byggnader. 
+ 
+Nevander Lars-Erik & Elmarsson Bengt. 1994. Fukthandboken, praktik och teori. 
+ 
+Malmström Tor-Göran. 2002. Installationstekniska grunder. Introduktion samordnig med 
+byggnad värme ventilation 
+ 
+Malmström Tor-Göran. 2001. Installationsteknik fördjupningskurs.   
+ 
+Chalmers, 2001. Teknisk termodynamik, särtryck för installationsteknik KTH 
+ 
+Jóhannesson Gudni. 2002. Lectures on Building Physics. 
+ 
+Bostadsstyrelsen – Statens planverk tillsammans med HSB, Fastighetsägarförbundet,  
+ 
+Riksbyggen, Kommunförbundet, Sabo 1986. Förvaltningsplanering 
+  
+REPAB. Kontor, nyckeltal och förbrukningar, 2004. 
+ 
+REPAB. Bostäder, nyckeltal och förbrukningar, 2004. 
+ 
+REPAB. Skolor, nyckeltal och förbrukningar, 2004. 
+ 
+REPAB. Vårdbyggnader, nyckeltal och förbrukningar, 2004. 
+ 
+REPAB. Industri, nyckeltal och förbrukningar, 2004. 
+ 
+Bostadsstyrelsen-statens planverk tillsammans med HSB, Fastighetsägareförbundet,  
+Riskbyggen, Kommunförbundet, SABO. Ytterväggar, 1986. 
+ 
+Nilsson A, Uppström R, Hjalmarsson C. Energieffektivisering i kontorsbyggnader, en vinst 
+inte bara för miljön, 1996. 
+ 
+Engelbrekt I, Johnsson H. Stockholmsprojektet, Effekt- och energisimuleringar med 
+datorprogrammet BRIS och DEROB, Byggforskningsrådet, 1996. 
+ 
+Byggforskningsrådet. Energianvändning i bebyggelse, 1984. 
+Höglund I, Åhlgren B. Teknisk högskolelitteratur, 1980. 
+ 
+ 
+57
+ 
+Artiklar 
+European committee for standardization. 2004. Thermal performance of buildings – 
+calculation of energy use for space heating. (ISO 13790:2004) 
+ 
+ISO/TC 163/SC 2/WG N128 Thermal performance of buildings – Heat transfer via the ground 
+– Calculations methods 
+ 
+CEN/TC 89 N 870 TNO Building and construction Research Department of Sustainable 
+Energy and building. Monthly method to calculate cooling deman for EP regulations. 
+ 
+CEN/TC 89 N 974 E Energy performance of buildings- Calculation of energy use for space 
+heating and cooling 
+ 
+CEN/TC 89 N 979 E Thermal performance of buildings – Sensible room cooling load 
+calculation – General criteria and validation procedures. 
+ 
+SCB, Energistatistik för småhus 2003. EN 16 SM 0403, 2003. 
+ 
+SCB. Energistatistik för lokaler 2003, EN 16 SM, 0402, 2003. 
+ 
+Boverket. Nyckeltal för energianvändning i byggnader, 2001. 
+ 
+Andreas Vestlund Examensarbete 2000. Metod/modell för energibesiktning av fastigheter.  
+Intervjuer  
+Roger Teassler SMHI 
+ 
+ 
+ 
+ 
+22/3-05 
+ 
+Anders Liljengren, Vaskronan 
+ 
+ 
+ 
+13/4, 2/5-05 
+Internet 
+www.sten.se  
+Energimyndigheten. 
+ 
+ 
+16/2-05 
+ 
+www.boverket.se 
+Boverket 
+ 
+ 
+ 
+15/4-05 
+ 
+http://www.flaktwoods.se Fläktwoods AB 
+ 
+ 
+19/4-05 
+ 
+http://www.hvac.lth.se 
+Installationsteknink, Lunds Tekniska Högskola 
+11/3-05 
+ 
+Övrigt 
+Skanska Fastigheter, Examensarbete KTH. BVF 2000. 
+ 
+1D1314 Simulering och systemstudier, IDA ICE. VT 2005.  
+ 
+58
+ 
+8. Bilagor 
+Bilaga 1 
+Värdetabell till kapitel 3.2   
+Beräkningsresultat för objekt 1 under juni månad. [W] 
+Klockslag 
+EBBA 
+IDA ICE 
+TeknoSim 2000 
+Medelvärde 
+1 
+0 
+0 
+0 
+0 
+2 
+0 
+0 
+0 
+0 
+3 
+700 
+0 
+0 
+231 
+4 
+6100 
+0 
+0 
+2000 
+5 
+8900 
+4000 
+1500 
+4800 
+6 
+10500 
+8000 
+5000 
+7800 
+7 
+10600 
+9500 
+7600 
+9200 
+8 
+12500 
+10700 
+9100 
+10800 
+9 
+13200 
+11900 
+11600 
+12200 
+10 
+13200 
+12500 
+12900 
+12900 
+11 
+12200 
+12100 
+13100 
+12500 
+12 
+10700 
+11000 
+12600 
+11400 
+13 
+12400 
+10500 
+11800 
+11600 
+14 
+13500 
+11200 
+12900 
+12500 
+15 
+12900 
+12050 
+13100 
+12700 
+16 
+11200 
+11900 
+12500 
+11800 
+17 
+11100 
+10500 
+10900 
+10800 
+18 
+11000 
+9400 
+8200 
+9500 
+19 
+9300 
+8500 
+7000 
+8300 
+20 
+6200 
+6100 
+3500 
+5300 
+21 
+700 
+2000 
+600 
+1100 
+22 
+0 
+0 
+0 
+0 
+23 
+0 
+0 
+0 
+0 
+Beräkningsresultat för objekt 3 under juli månad. [W] 
+Klockslag 
+EBBA 
+IDA ICE 
+TeknoSim 2000 
+Medelvärde 
+1 
+0 
+0 
+0 
+0 
+2 
+0 
+0 
+0 
+0 
+3 
+0 
+0 
+0 
+0 
+4 
+0 
+0 
+0 
+0 
+5 
+25600 
+10000 
+7500 
+14400 
+6 
+46000 
+34000 
+27000 
+35700 
+7 
+58700 
+47000 
+43000 
+49600 
+8 
+63700 
+55000 
+54000 
+57600 
+9 
+70300 
+59000 
+64000 
+64400 
+10 
+71000 
+59000 
+66000 
+65000 
+11 
+66300 
+52000 
+65000 
+61100 
+12 
+57100 
+43000 
+57000 
+52400 
+13 
+45400 
+38000 
+51000 
+44800 
+14 
+57800 
+45000 
+60000 
+54300 
+15 
+67400 
+55000 
+66000 
+62800 
+16 
+72500 
+59000 
+66000 
+65800 
+17 
+72100 
+58000 
+55000 
+61700 
+18 
+65600 
+52000 
+50000 
+55900 
+19 
+60300 
+44000 
+38000 
+47400 
+20 
+47100 
+30000 
+20000 
+32400 
+21 
+26000 
+5000 
+3000 
+11300 
+22 
+0 
+0 
+0 
+0 
+23 
+0 
+0 
+0 
+0 
+ 
+59
+ 
+60
+ 
+Beräkningsresultat för objekt 3 under augusti månad. [W] 
+Klockslag 
+EBBA 
+IDA ICE 
+TeknoSim 2000 
+Medelvärde 
+1 
+0 
+0 
+0 
+0 
+2 
+0 
+0 
+0 
+0 
+3 
+0 
+0 
+0 
+0 
+4 
+0 
+0 
+0 
+0 
+5 
+0 
+0 
+0 
+0 
+6 
+9500 
+1800 
+5000 
+5400 
+7 
+18400 
+10000 
+17000 
+15100 
+8 
+27400 
+18700 
+30000 
+25400 
+9 
+38400 
+28600 
+42000 
+36300 
+10 
+46800 
+38200 
+50000 
+45000 
+11 
+52200 
+44700 
+54000 
+50300 
+12 
+54300 
+47500 
+54000 
+51900 
+13 
+53400 
+47900 
+47000 
+49400 
+14 
+54800 
+47700 
+45000 
+49200 
+15 
+53100 
+45600 
+40000 
+46200 
+16 
+48100 
+40000 
+35000 
+41000 
+17 
+49100 
+30900 
+25000 
+35000 
+18 
+39800 
+20600 
+15000 
+25100 
+19 
+28800 
+12000 
+8000 
+16300 
+20 
+19400 
+3500 
+0 
+7600 
+21 
+9800 
+0 
+0 
+3300 
+22 
+0 
+0 
+0 
+0 
+23 
+0 
+0 
+0 
+0 
+ 
+ 

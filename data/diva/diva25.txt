@@ -1,0 +1,6164 @@
+ 
+ 
+ 
+Accelerometertillbehör till mobiltelefon 
+ 
+ 
+ 
+ 
+ 
+HÅKAN OLSSON 
+ 
+ 
+ 
+ 
+ 
+Examensarbete 
+Stockholm, Sverige 2008 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Accelerometertillbehör till mobiltelefon 
+ 
+av 
+ 
+Håkan Olsson 
+ 
+ 
+ 
+ 
+Examensarbete MMK 2008:70 MDA315 
+KTH  Industriell teknik och management 
+Maskinkonstruktion 
+SE-100 44  STOCKHOLM 
+1 
+ 
+Examensarbete MMK 2008:70 MDA315 
+ 
+ 
+Accelerometertillbehör till mobiltelefon  
+ 
+- Utveckling av Blåtands ansluten accelerometermodul till 
+smartphone 
+ 
+ 
+ 
+ 
+Håkan Olsson 
+Godkänt 
+ 2008-12-02 
+Examinator 
+Jan Wikander 
+Handledare 
+Jan Wikander 
+ 
+Uppdragsgivare 
+ÅF Combra AB 
+Kontaktperson 
+Lennart Persson 
+Sammanfattning 
+Examensarbetet har genomförts som ett prototyputvecklingsprojekt. Projektet har utförts i 
+samarbete med ÅF Combra AB. Syftet med examensarbetet är att konstruera ett 
+Blåtandsgränssnitt mellan en accelerometer och en smartphone och konstruera en fysisk 
+prototyp innehållande accelerometern. Detta för att kunna experimentera med ett nytt 
+användarinterface till mobiltelefoner. Examensarbetet har även innefattat en undersökning av 
+hur en avståndsbedömning skulle kunna genomföras med Blåtand. Combra har tidigare 
+arbetat med både Blåtand och smartphones men aldrig i samma tillämpning. 
+ 
+Då det ingick i examensarbetet att konstruera en fungerande fysisk prototyp, har detta medfört 
+att examensarbete varit av övervägande praktisk karaktär. Speciellt fokus har lagts på 
+konstruktionsfasen. Logik har programmerats på båda sidorna av Blåtandsgränssnittet. Det 
+innebär såväl till den egenhändigt konstruerade accelerometermodulen som till smartphonen. 
+ 
+Prototypen är uppbyggd kring en mikroprocessor och har förutom en accelerometer och en 
+Blåtandslänk även två tryckknappar och två lysdioder. Majoriteten av signalbehandlingen 
+ligger i telefonen. Systemet konstruerades på detta sätt för att lätt kunna bygga ut 
+funktionalitet i ett senare skede. Fokus lades dessutom på att få accelerometermodulen så 
+energisnål som möjligt.  
+ 
+Slutsatsen av projektet är att det är möjligt att konstruera en mängd olika applikationer och 
+användargränssnitt till det konstruerade systemet. Mjukvara behöver enbart läggas till på 
+telefonsidan vid vidareutveckling. Avståndsbedömning med blåtand är möjligt, dock måste en 
+kompromiss göras mellan noggrannhet, energiförbrukning och robusthet.  
+2 
+ 
+MSc Thesis MMK 2008:70 MDA315 
+ 
+ 
+Accelerometer accessory to a mobile phone 
+ 
+− 
+Development of Blutooth connected accelerometer to a 
+smartphone 
+ 
+ 
+ 
+ 
+Håkan Olsson 
+Approved 
+ 2008-12-02 
+Examiner 
+Jan Wikander 
+Supervisor 
+Jan Wikander 
+ 
+Commissioner 
+ÅF Combra AB 
+Contact person 
+Lennart Persson 
+Abstract: 
+This master thesis has been carried out as a prototype development project. The project has 
+been performed in cooperation with ÅF Combra AB. The purpose with the master thesis is to 
+construct a Bluetooth interface between an accelerometer and a smartphone and constructing 
+a physical prototype containing an accelerometer. This is done to test a new user interface to 
+mobile phones. The master thesis has also included a research about the possibility to 
+implement distance measuring with Bluetooth. Combra has in the past worked with both 
+Bluetooth and smartphones, but never in the same application. 
+ 
+One part of the master thesis was to construct a working physical prototype. This resulted in 
+that the master thesis has a predominantly practical characteristic. Special focus has been 
+placed on the construction phase. The logic has been programmed on both sides of the 
+Bluetooth interface. This means in both the accelerometer module and in the smartphone. 
+The prototype is built around a microprocessor and has apart from the accelerometer and the 
+Bluetooth link, two push buttons and two light diodes. The majority of the signal management 
+is located in the phone. The system is constructed in that way to simplify further 
+developments later on. Focus was placed on getting the accelerometer module as energy 
+efficient as possible. 
+The conclusion of the project is that it is possible to construct a lot of different applications 
+and user interfaces to the developed system. Application software is only needed to be added 
+to the phone in further developments. Distance measuring with Bluetooth is possible but a 
+compromise between accuracy, energy efficiency and stability has to be made. 
+3 
+1 Inledning ............................................................................................................................ 4 
+1.1 Bakgrund..................................................................................................................... 4 
+1.2 Syfte............................................................................................................................ 4 
+1.3 Avgränsningar ............................................................................................................. 4 
+1.4 Metod .......................................................................................................................... 5 
+2 Förstudie ............................................................................................................................ 6 
+2.1 Avståndsbedömning..................................................................................................... 6 
+2.1.1 Proximity Detection (PD)...................................................................................... 6 
+2.1.2 Received Signal Strength (RSSI)........................................................................... 6 
+2.1.3 Time Of Arrival (TOA)......................................................................................... 7 
+2.2 Smartphones, operativsystem och utvecklingsverktyg.................................................. 8 
+2.2.1 Operativsystem till mobiltelefoner ........................................................................ 8 
+2.2.2 Symbian................................................................................................................ 9 
+2.2.3 Carbide ................................................................................................................. 9 
+2.3 Accelerometer.............................................................................................................10 
+2.4 Blåtand .......................................................................................................................11 
+2.4.1 Historia ................................................................................................................11 
+2.4.2 Teknik..................................................................................................................12 
+3 Specifikation .....................................................................................................................13 
+4 Systemering.......................................................................................................................14 
+4.1 Mobiltelefon ...............................................................................................................15 
+4.2 Blåtandsmodul............................................................................................................15 
+4.3 Accelerometer.............................................................................................................16 
+4.4 Mikroprocessor...........................................................................................................16 
+4.5 Utvecklingsplattform för hårdvara ..............................................................................18 
+5 Konstruktion......................................................................................................................21 
+5.1 Hårdvara.....................................................................................................................21 
+5.1.1 Batteri..................................................................................................................21 
+5.1.2 Elektronik ............................................................................................................22 
+5.1.3 Tryckknappar.......................................................................................................22 
+5.1.4 Lysdioder.............................................................................................................23 
+5.1.5 Programmeringsport.............................................................................................23 
+5.2 Mjukvara ....................................................................................................................24 
+5.2.1 Blåtandgränssnitt..................................................................................................24 
+5.2.2 Programvara i telefonen .......................................................................................24 
+5.2.3 Programvara i accelerometermodulen...................................................................25 
+6 Resultat .............................................................................................................................26 
+6.1 Avståndsbedömning....................................................................................................26 
+6.2 Problem under utvecklingen........................................................................................27 
+7 Slutsats..............................................................................................................................27 
+7.1 Avståndsbedömning....................................................................................................27 
+7.2 Begränsningar.............................................................................................................27 
+7.3 Utvecklingsmöjligheter...............................................................................................28 
+7.3.1 Hårdvaran ............................................................................................................28 
+7.3.2 Mjukvara..............................................................................................................28 
+7.3.3 Applikationer.......................................................................................................28 
+8 Centrala begrepp................................................................................................................28 
+9 Referenser .........................................................................................................................30 
+ 
+4 
+1 Inledning 
+1.1 Bakgrund 
+Mobiltelefoner har fått fler och utökade funktioner de senaste åren, allt från olika Internet-
+applikationer till mediafunktioner. Användargränssnittet har dock inte utvecklats i samma 
+takt. Mobiltelefonerna har idag nästan exakt likadant användargränssnitt som för 5 år sedan. 
+Detta användargränssnitt består av knappar, display, högtalare och mikrofon. Knapparna 
+används till nästan all inmatning. 
+ 
+Många av de nyare mobiltelefonerna har pekskärm, vilket är ett utmärkt användargränssnitt. 
+Pekskärmen kan anpassa vilka knappar som visas beroende på tillfället. Detta ger ett mycket 
+dynamiskt användargränssnitt samt möjligheten att ta bort den traditionella knappsatsen vilket 
+ger utrymme för större skärm. 
+ 
+I vissa situationer vill man ha ett enkelt användargränssnitt som man kan använda utan att ta 
+upp telefonen ur fickan. Exempelvis om användaren befinner sig i en kall eller farlig miljö. 
+Vissa mobiltelefoner har röstigenkänning, exempelvis ska användaren kunna ringa genom att 
+enbart säga samtalsmottagarens namn. Tekniken är dock i dagsläget för dålig för att fungera 
+effektivt. Ett alternativt användargränssnitt skulle istället kunna vara ett som liknar det man 
+har med en Wii kontroll4. Istället för att spela spel på en tv skärm kan man svara i telefonen 
+med ett lätt ryck med kontrollen. Ett annat scenario kan vara då man har en mobil med media 
+funktioner. Ett ryck åt sidan med kontrollen byter låt, ett ryck uppåt höjer volymen och ett 
+ryck neråt sänker volymen. 
+1.2 Syfte 
+Syftet med examensarbetet är att ta fram ett användargränssnitt till mobiltelefoner som genom 
+rörelser kan påverka mobilens funktioner. Arbetet består av att utveckla en fysiskt fristående 
+modul som ska ansluta till en Ericsson smartphone via Blåtand. Modulen ska innehålla en 
+accelerometer som ska registrera modulens rörelser. Genom att utsätta modulen för rörelser 
+ska sedan olika applikationer kunna styras i mobiltelefonen.  
+ 
+En annan del av examensarbetet är att försöka genomföra avståndsbedömning med hjälp av 
+Blåtand. Tänkta applikationer skulle kunna vara stöldlarm. Exempelvis kan man tänka sig att 
+ett larm går om mobiltelefonen och Blåtandsenheten kommer för långt ifrån varandra. 
+1.3 Avgränsningar 
+Examensarbetet skall endast implementera enklare Blåtandsapplikationer då det räcker för att 
+demonstrera att den här typen av användargränssnitt fungerar ihop med mobiltelefoner. Fokus 
+ligger på en praktisk utveckling av en fysisk Blåtandsmodul med accelerometer.  
+ 
+Accelerometermodulen testas mot en mobiltelefonmodell då detta är fullt tillräckligt för att 
+visa och utvärdera systemets funktionalitet. Mobiltelefonmodellen som används är en av 
+Ericssons smartphones. Valet av Ericsson grundas i god kännedom om företaget och dess 
+mobiltelefonmodeller. Smartphones valdes för de goda möjligheterna att lägga till och 
+modifiera program, den specifika modellen valdes för att den använder operativsystemet 
+Symbian som är ett stort och väletablerat operativsystem.  
+5 
+Kommunikationen skall gå över en Blåtandskanal. Alltså måste både mobiltelefonen och 
+accelerometermodulen stödja Blåtand. Att Blåtand valdes för kommunikationen baseras på att 
+det är den största standarden för medellång trådlös överföring samt att den används av de 
+flesta mobiltelefoner. 
+ 
+Examensarbetet innehåller ett delmoment som ska studera möjligheten att bedöma avstånd 
+med Blåtand samt även implementera detta om möjligt. Dock framkom en avgränsning under 
+arbetets gång. Den Blåtandsmodul som valdes klarade inte av de krav som en 
+avståndsbedömning ställer. Därför genomfördes försöket med avståndsbedömningen endast 
+som en teoretisk del. 
+1.4 Metod 
+• Förstudie 
+Arbetet inleddes med att titta på befintliga system med liknande funktionalitet. Därefter 
+undersöktes trådlösa kommunikationsstandarder med störst fokus på Blåtand då 
+användandet av Blåtand var ett krav för arbetet. Vidare utreddes vilken hårdvara som 
+passade till projektet samt tillhörande utvecklingsmiljöer. Hårdvaruenheterna som 
+undersöktes för projektet var: 
+1. Accelerometer 
+2. Mikrodatormodul till vilken accelerometer och Blåtandschip skall integreras 
+3. Mobiltelefon 
+4. Blåtandschip 
+5. Batteri 
+Avslutningsvis undersöktes möjligheten att införa avståndsbedömning med Blåtand. 
+• Specifikation 
+Beslutstagande om funktionella och andra krav på den tekniska lösningen och hur den 
+skall se ut på en översiktlig nivå, samt beslut om projektets upplägg.  
+• Systemering 
+Lösningsförslaget som togs fram i prototypspecifikationen skall systemeras. Detta 
+innefattar val av systemets hårdvarukomponenter och val av i vilken kronologisk ordning 
+systemet skall byggas. 
+• Konstruktion 
+Konstruktionsfasen har delats upp i fyra delar som följer här under i kronologisk ordning.  
+1. Uppsättning av utvecklingsmiljö 
+2. Programmering av den mikrodatormodul som skall ha anslutning till 
+accelerometer och Blåtandschip 
+3. Upprättande av Blåtands kommunikation 
+4. Fysisk design och konstruktion av hårdvara 
+• Resultat 
+Test av prototypen görs genom att fysiskt testa dess funktionalitet. Testerna ska ligga till 
+grund för utvärdering av hur väl projektet har lyckats och redovisas som resultat.  
+• Slutsatser 
+Resultatet skall sedan användas för att dra slutsatser om projektets genomförande. En 
+slutsats som ska dras är om prototypen är tillräckligt väl konstruerad för att kunna 
+implementera komplexa applikationer. 
+6 
+2 Förstudie 
+2.1 Avståndsbedömning 
+Det har funnits en Bluetooth SIG (Special Interest Group) som har specialiserat sig för att 
+utveckla en Blåtandsstandard med avståndsbedömning och lokalisering, nämligen The Local 
+Positioning Working Group. De gick dock senare in i Bluesoft14 i oktober 2001. Bluesoft var 
+ledande på trådlös avståndsbedömning på korta avstånd. Bluesoft bytte senare namn till 
+AeroScout i juni 2004 och verkar idag lagt ner all utveckling av avståndsbedömning med 
+Blåtand. Istället utvecklar AeroScout13 avståndsbedömning med WLAN. 
+ 
+Det finns olika sätt att bedöma avstånd med radiovågor, RSSI3 (Received Signal Strength 
+Indication), TOA (Time Of Arrival) och PD (Proximity Detection) 
+2.1.1 Proximity Detection (PD) 
+Proximity detection är den minst noggranna av de tre olika metoderna som nämns ovan. PD 
+fungerar så att den enbart känner av om det finns en anslutning mellan de två Blåtands-
+modulerna som avståndet ska bedömas mellan. Med hjälp av ett nätverk av fasta 
+Blåtandsmoduler kan positionen bestämmas genom att se vilka moduler som har anslutits med 
+varandra. Problemet med noggrannheten är att den bara kan ge två olika svar. Antingen är den 
+ansluten eller inte. Dessutom så är området där Blåtandsmodulerna kan vara anslutna väldigt 
+varierande. Detta för att Blåtandsantennerna skickar ut Blåtandssignalerna inhomogent och 
+för att väggar och andra hinder begränsar signalen. 
+ 
+Tekniken kan inte betraktas som en äkta avståndsbedömning utan är som namnet antyder bara 
+en närhets detektion. Den skulle därför fungera bra i applikationer som till exempel stöldlarm 
+men inte i triangulering. 
+2.1.2 Received Signal Strength (RSSI) 
+RSSI metoden använder signalstyrkan för att bedöma avståndet, vilket ger en ökad 
+noggrannhet. Den sändande Blåtandsmodulen skickar iväg en signal vars styrka är känd för 
+den mottagande modulen. Mottagaren kontrollerar signalstyrkan och får ut hur mycket 
+signalstyrkan har minskat på sin väg genom luften. Radiovågornas styrka minskar kvadratiskt 
+beroende på att de sprider sig som en svär i luften. Detta medför att sträckan kan beskrivas 
+med formeln nedan. 
+s
+k
+x =
+ 
+x = sträckan 
+k = en obestämd konstant 
+s = signalstyrkan 
+ 
+Problemet med denna teknik är samma som för PD. Signalstyrkan varierar på grund av 
+inhomogena antenner och hinder mellan Blåtandsmodulerna. 
+ 
+7 
+2.1.3 Time Of Arrival (TOA) 
+För att minimera störningar från inhomogena antenner och signalblockerande material mellan 
+Blåtandsenheterna kan man mäta tiden det tar att skicka en signal mellan enheterna. Detta 
+fungerar på grund av att radiovågor approximativt har samma hastigheter i alla material de 
+passerar. Radiovågorna brukar vanligtvis approximeras med ljushastigheten i vakuum, det vill 
+säga 299792 km/s. På grund av ljusets höga hastighet kommer klockorna som räknar tiden att 
+behöva väldigt hög frekvens. Enklaste sättet att genomföra tidmätning är att låta signalen eka 
+mot den ena Blåtandsmodulen och ta tid tills signalen kommer tillbaka. 
+ 
+För att få en uppfattning om vilken noggrannhet klockorna behöver så används uttrycken 
+nedan.  
+taimot
+studsa
+skicka
+total
+t
+c
+s
+t
+c
+s
+t
+t
++
++
++
++
+=
+ 
+ter
+tidsförlus
+total
+t
+c
+s
+t
++
+⋅
+= 2
+ 
+ 
+s = sträckan  
+c = ljushastigheten i vakuum 
+t = olika tider 
+ 
+Idén är att alla tidsförluster består av två delar. En fördröjning som är slumpmässig och 
+inträffar på grund av att en Blåtandsenhet skickar om data som inte kommit fram eller att 
+processorerna är upptagna med mera prioriterade uppgifter. Den andra fördröjningen består av 
+en konstant tidsförlust som är den tid som processorerna kan behandla uppgiften under 
+optimala förhållanden. Om tillräckligt högt antal tidsmätningar genomförs och den mätningen 
+som tog kortast tid väljs ut, så är den tidsmätningen minst påverkad av den slumpmässiga 
+tidsfördröjningen. Genom experiment kan sedan den konstanta tidsförlusten bestämmas och 
+då är ekvationen lösbar.  
+uster
+gatidsförl
+slumpmässi
+uster
+tatidsförl
+kons
+total
+t
+t
+c
+s
+t
++
++
+⋅
+=
+tan
+2
+ 
+ 
+Vid oändligt många mätningar är den kortaste slumpmässiga tidsförlusten noll. 
+ 
+0
+=
+uster
+gatidsförl
+slumpmässi
+t
+ 
+ 
+För att beräkna noggrannheten jämförs differensen i tid med differensen i sträcka. 
+uster
+tatidsförl
+kons
+uster
+tatidsförl
+kons
+t
+t
+c
+s
+c
+s
+t
+t
+tan
+tan
+2
+1
+2
+1
+2
+2
+−
++
+⋅
+−
+⋅
+=
+−
+ 
+(
+)
+c
+s
+s
+t
+t
+2
+1
+2
+1
+2
+−
+⋅
+=
+−
+ 
+c
+s
+t
+∆
+⋅
+=
+∆
+2
+ 
+ 
+s
+c
+h
+∆
+⋅
+= 2
+ 
+ 
+h = klockfrekvensen en processor skulle behöva för att klara av noggrannheten. 
+8 
+ 
+RSSI:s styrka är en hög noggrannhet men tekniken störs väldigt lätt ut av signalblockerande 
+material. TOA har dålig noggrannhet men klarar störningar väldigt bra. En kombination borde 
+kunna utnyttja styrkorna i respektive system. Det vill säga, man mäter med RSSI och 
+kontrollerar om svaret är rimligt med TOA. Skulle svaret vara orimligt så använder man 
+TOA. 
+2.2 Smartphones, operativsystem och utvecklingsverktyg 
+Projektet är avgränsat till att använda en av Ericssons smartphones. En smartphone är en 
+mobiltelefon med utökad prestanda och funktionalitet. Tanken är att de enklare funktioner 
+som en dator har ska finnas i mobilen. Smartphones riktar sig framförallt mot personer som 
+behöver kunna komma åt e-brev och dokument var de än befinner sig. 
+ 
+Ericsson första smartphon30&6 kom ut i början av 2000-talet. Dessa telefoner använde sig av 
+operativsystemet EPOC. EPOC utvecklades senare till Symbian. Ericssons mobiltillverkning 
+slog ihop med Sony 2001 och heter nu Sony Ericsson. Några av de smartphones som hittills 
+är släppta av Ericsson är P1, P990, M600 och W950. 
+2.2.1 Operativsystem till mobiltelefoner  
+Det finns flera olika operativsystem ute på marknaden. Det mest utbredda är Symbian.  
+ 
+Smartphone OS marknads uppdelning
+65%
+12%
+11%
+7%
+5%
+Symbian
+Windows Mobile
+Blackberry
+Iphone
+Linux
+ 
+Bild 1.  Uppdelningen av olika operativsystem till smartphones 200710. 
+ 
+Symbian OS 
+Företaget som tillverkar och underhåller Symbian OS grundades juni 1998 och heter i likhet 
+med sin produkt Symbian Ltd. Symbian beskrive ytterligare under rubriken ”Symbian”. 
+ 
+Windows Mobile 
+9 
+Microsoft har under 2000 släppt ett operativsystem för mobiltelefoner. Operativsystemet är 
+framförallt utbrett på den Asiatiska marknaden. 
+ 
+RIM Blackberry 
+Detta operativsystem var först tänkt att bara kunna hantera jobbrelaterade applikationer men 
+har på senare tid fått ett fullt multimedia stöd. 
+ 
+Iphone 
+Iphone använder sig av Apples egen tillverkade smartphone OS som bygger på deras PC OS 
+”MAC OS X” 
+ 
+Linux 
+Linux är i det här fallet ett samlingsnamn på alla smartphone operativsystem som använder 
+sig av Linux kärnan. Där ingår LiMo Platform, Android, Internet Tablet OS, Qtopia, Access 
+Linux Platform, Openmoko Linux 
+2.2.2 Symbian 
+65% av alla smartphones som produceras använder operativsystemet Symbian. Symbian är 
+speciellt utvecklat för de begränsningar mobiltelefoner har i minne och beräkningshastighet. 
+Symbian är ett operativsystem som utvecklats från ett operativsystem som heter EPOC. 
+Övergången från EPOC till Symbian skedde 1998. Symbian är för närvarande ägt av Nokia 
+(47.9%), Ericsson (15.6%), Sony Ericsson (13.1%), Panasonic (10.5%), Siemens AG (8.4%) 
+och Samsung (4.5%). Det vill säga de ledande mobiltillverkarna i världen. 
+ 
+Symbian använder sig av flera olika grafiska gränssnitt. Ett av de större av dessa är UIQ. 
+November 2006 köpte Ericsson upp UIQ. UIQ används av fler mobiltelefontillverkare än 
+Ericsson tillexempel Motorola. Ericsson använder sig uteslutande av UIQ 
+2.2.3 Carbide 
+Carbide är ett utvecklingsverktyg för mjukvara. Carbide används till att skriva C++ kod till 
+Symbian OS och till applikationer till detta operativsystem. Utvecklingsplattformen är en 
+vidareutveckling av Eclipse IDE. Det är Nokia som är tillverkaren av Carbide och det har 
+kommit att ersätta CodeWarrior som huvudutvecklingsmiljö till Symbian OS. 
+ 
+Då det är Nokia som tillverkar Carbide och de inte använder sig av UIQ så är inte UIQ stött i 
+installationen av Carbide. Det krävs en kompletterande installation av en expansion till 
+Carbide för att kunna kompilera kod till UIQ telefoner. Expansionen är gratis och finns på 
+UIQs hemsida. Expansionen underhålls av Sony Ericsson. 
+ 
+Carbide användare har också möjligheten att installera en simulator där koden kan testas 
+innan den förs över till telefonen. Koden kompileras till en ”sis” fil som sedan kan skickas 
+över till telefonen via Blåtand eller USB. Väl i telefonen så installerar man filen och får då ett 
+körbart program. 
+ 
+10 
+ 
+Bild 2.  Screenshot på Carbide utvecklingsmiljö för Symbian 
+ 
+2.3 Accelerometer 
+En accelerometer mäter alla typer av accelereration, detta innebär gravitation, centrifugalkraft, 
+vibrationer och stötar. Då jordens gravitationsfält beter sig som en acceleration visar en 
+stillastående accelerometer ändå en acceleration vilken uppgår till 1 G (9.82m/s2) som all 
+materia på jorden utsätts för.   
+ 
+Det finns en mängd olika typer av accelerometerkonstruktioner men den vanligaste bygger på 
+en känd massa  applicerad i ena änden av ett elastiskt material. När den andra änden av det 
+elastiska materialet sedan rör sig med en acceleration så kommer massans tröghet utöva en 
+deformation på det elastiska materialet. Denna deformation kan mätas och då kan 
+accelerationen beräknas. 
+ 
+ 
+Bild 3.  Den västra figuren accelererar inte och den elastiska stången som massan är fäst vid  
+deformeras inte. På den högra figuren så accelererar kroppen och massans tröghet tvingar 
+stången att böja sig. 
+ 
+En accelerometer mäter i regel bara acceleration i en riktning. Då världen är tredimensionell 
+så måste man ha tre accelerometrar monterade i x, y och z riktning för att kunna registrera 
+acceleration i alla riktningar. 
+ 
+11 
+Accelerometrar finns i många storlekar och med många gränssnitt för att få ut 
+accelerometerdata. I dagsläget ligger de flesta i så kallade MEMS (Micro Electro Mechanical 
+Systems) chip. I dessa chips ligger ofta flera accelerometrar bredvid varandra. Ett medelvärde 
+av accelerometrarna räknas ut och skickas vidare. Många sådana MEMS chip har 
+accelerometrar i flera riktningar så att det räcker med ett chip för att registrera alla rörelser. 
+Dessa kretsar är enkla att montera på kretskort och har ett förhållandevis lågt pris.  
+ 
+En accelerometer kan mäta alla accelerationer den påverkas av. Integralen av accelerationen 
+är hastigheten. Så om man vet accelerometerns starthastighet så vet man även dess hastighet 
+efter en acceleration. Integralen av hastigheten är positionen. Är en accelerometers 
+startposition och starthastighet kända så kan man även beräkna accelerometerns position efter 
+en förflyttning. Detta kallas för ”död räkning” och används på många ställen i samhället. Det 
+finns dock svagheter. Om accelerometern skulle rotera kring sin egen axel så skulle den inte 
+kunna uppfatta rotationen. Jorden påverkar dock accelerometern med en kraft vilket man kan 
+utnyttja för att mäta vissa rotationer. Likt ett vattenpass kan också en accelerometer alltid 
+avgöra vilket håll upp är och på så sätt registrera rotation. Så om accelerometern har 
+rotationsaxeln i jordens tangent så kan rotationen uppfattas men inte i fallet med 
+rotationsaxeln i jordens normal. Svagheten med att inte kunna mäta alla rotationer brukar 
+kompenseras genom att man lägger till ett gyroskop. 
+En annan svaghet är att ”dödräkning” är integrerande. Felen tar därför inte ut sig utan 
+fortsätter bara att växa. Så ”dödräkning” fungerar bara kortare perioder innan felet blir för 
+stort. Felet som uppstår beror helt på noggrannheten i mätningarna samt mätfrekvensen. 
+ 
+ 
+Bild 4.  Exempel på hur felet i ”dödräkning” kan öka med varje iterering 
+2.4 Blåtand  
+Blåtand är ett protokoll för trådlös kommunikation. Blåtandsprotokollet15 är utvecklat för att 
+kommunicera på mellanstora avstånd (1 meter till 100 meter). Fördelar med Blåtanden är att 
+den är relativt billig vad gäller hårdvara. Blåtandskommunikation är väldigt robust mot 
+störningar samtidigt som den inte stör annan trådlös kommunikation.  
+2.4.1 Historia 
+Blåtand utvecklades ursprungligen av Ericsson under namnet Multi-communicator Link. 1997 
+började Ericsson samarbeta med Intel och 1998 grundades Bluetooth Special Interest Group, 
+Bluetooth SIG. Strax efteråt gick också IBM, Microsoft, Motorola, Nokia och Toshiba med i 
+Bluetooth SIG. 
+12 
+Blåtandsstandarden har fått sitt namn från den dansknorska Vikingakungen Harald Blåtand. 
+Harald Blåtand är känd för att ha förenat de nordiska stammarna i Danmark, Norge och 
+Svenska Skåne (där Blåtandsteknologin är uppfunnen). Blåtandsteknologin var skapad för att 
+förena persondatorer och mobiltelefoner.  
+ 
+Blåtandsloggan kommer från de två Nordiska runorna för H och B (Harald Blåtand). Dessa 
+har sammanfogats till en symbol. 
+ 
+    
+ 
+Bild 5.  Till vänster ses de två runorna som bygger upp Blåtandsloggan till höger 
+2.4.2 Teknik 
+Blåtandsprotokollet sänder på ISM bandet. ISM är ett licensfritt område som ligger på 2.4 till 
+2.4835 GHz. För att undvika störningar från andra protokoll som också sänder i ISM bandet 
+så delar Blåtandsprotokollet upp bandet i 79 kanaler och byter kanal 1600 gånger per sekund. 
+Det är denna frekvenshoppning som gör att Blåtanden är så robust mot störningar. Fördelar 
+som följer av detta är att sändningssignalen kan vara mycket låg, vilket är strömsnålt samt 
+innebär att andra enheter inte störs lika lätt.  
+ 
+Version 1.1 och 1.2 kan komma upp i dataöverföringshastigheter på 723.1 Kbit/s. Version 2.0 
+använder sig av Enchanted Data Rate (EDR) och kommer upp i 2.1 Mbit/s. 
+ 
+Klass 
+Max kraft 
+Max avstånd (Öppen träng) 
+Klass 1 
+100 mW (20dBm) 
+100 m 
+Klass 2 
+2.5 mW (20dBm) 
+10 m 
+Klass 3 
+1 mW (20dBm) 
+1 m 
+Tabell 1.  Energi förbrukning och max avstånd för de olika Blåtands klasserna 
+ 
+Blåtand stödjer två olika typer av trådlösa nätverk, Piconet och Scatternet. 
+ 
+Piconet är den vanliga anslutningen mellan Blåtands moduler. Även om varje anslutning 
+består av exakt en master node och en eller flera slavnoder så är detta inget som användaren 
+märker av. Max antal aktiva slavar är sju, detta beror på att piconetadresser bara är tre bitar 
+långa, (23 = 8) åtta enheter minus en master är sju. Dock kan det totalt finnas 255 oaktiverade 
+enheter som mastern kan väcka upp vid behov, men aldrig mer än 8 aktiva samtidigt. 
+ 
+Scatternet består av två eller flera ihopkopplade Piconet. Scatternets uppstår när en master 
+eller slav i ett Piconet ansluter som slav i ett annat, helt sparat Piconet. Detta ger möjligheten 
+att alla enheter i de två nätverken kan dela data. På detta sätt kan man sammanföra flera olika 
+Piconet till ett stort Scatternet. Detta ökar också nätverkets fysiska storlek utöver Blåtandens 
+vanliga avstånd. 
+13 
+Blåtand använder sig av olika protokoll och profiler för att överföra olika sorters data. Några 
+av dessa följer nedan. 
+ 
+• L2CAP, som står för Logical Link Control and Adaptation Protocol, används i 
+blåtandsstacken. Den skickar datapaket till antingen Host Controller Interface (HCI) 
+eller i fallet med ett system utan värd direkt till Link Manager. 
+L2CAP funktioner inkluderar: 
+o Överföring av data mellan olika högre nivåers protokoll. 
+o Uppdelning och återmontering av datapaket. 
+o Tillhandahållande av envägs utsändning till en grupp av Blåtands enheter 
+o Quality of service (QoS) kontroll för protokoll på högre nivå. 
+ 
+• BNEP, som står för Bluetooth Network Encapsulation Protocol, används för att 
+leverera nätverkspaket på nivåer över L2CAP. Det här protokollet används av 
+Personal Area Networking (PAN) profilen. 
+ 
+• RFCOMM är förkortningen av Radio Frequency Communication. Blåtands 
+protokollet RFCOMM är ett enkelt antal överföringsprotokoll som ligger över L2CAP 
+protokollet och emulerar en RS232 seriell kommunikation. Bluetooth Serial Port 
+profilen är baserad på det här protokollet 
+ 
+• SDAP står för Service Discovery Application Profile. Den används för att söka efter 
+aktiva Blåtandsenheter. Den tar dessutom reda på vilka Blåtandsprofiler som de funna 
+enheterna använder, detta för att kunna möjliggöra en anslutning mellan en eller flera 
+enheter. 
+ 
+• OBEX är en förkortning för Generic Object Exchange Profile och är ett 
+kommunikationsprotokoll som tillhandahåller funktionen att kunna överföra binära 
+objekt mellan enheter. Protokollet skapades först av Infrared Data Association men 
+har också tillämpats av Bluetooth Special Interest Group. En av OBEXs första 
+populära applikationer var Palm III personal digital assistant (PDA). PDA och dess 
+många efterföljare använder OBEX för att överföra visitkort, data och även 
+applikationer. 
+ 
+3 Specifikation 
+Arbetet består som tidigare nämnts av att utveckla en fysiskt fristående modul som ska ansluta 
+till en Ericsson Smartphone via Blåtand. Modulen ska innehålla en accelerometer som ska 
+registrera modulens rörelser. Genom att utsätta modulen för rörelser ska sedan olika 
+applikationer kunna styras i mobiltelefonen.  
+ 
+Accelerometermodulen skall ha följande enheter och till dessa kopplade funktioner. 
+ 
+• 2 tryckknappar 
+För att ge utökad funktionalitet till accelerometermodulen skall två tryckknappar 
+implementeras. Dessa skall användas i samband med accelerometerfunktionerna. 
+Exempelvis så kan systemet ställas in så att det endast skall reagerar på 
+rörelsekommandon om knappen är intryckt. Detta för att inte systemet skall reagera på 
+falska rörelsekommandon. 
+14 
+• En treaxlig accelerometer  
+För att kunna detektera alla translations rörelser är det viktigt att enhetens sensorer kan 
+känna av accelerationen i alla tre riktningar. Detta ger också möjligheten att uppfatta vissa 
+rotations rörelser (se 2.3 ). För att uppnå tidseffektivitet i konstruktionsfasen skall en 
+treaxlig accelerometer implementeras istället för flera accelerometrar med detektion på 
+färre axlar. 
+• 2 Lysdioder 
+För att ge återkoppling till användaren av accelerometermodulen skall två lysdioder 
+monteras. 
+• En blåtandsenhet 
+Blåtandsenhet skall vara skild från den logiska enheten och inte innehålla någon logik. 
+Detta för att undvika behovet av en utvecklingsmiljö för Blåtandens mjukvara 
+• En logisk enhet med programmeringsmöjligheter 
+En mikroprocessor som är möjlig att programmera när den är monterad i 
+acccelerometermodulen. 
+• Batteri 
+Laddningsbart batteri 
+• Felsökningsmöjligheter 
+Någon form av möjlighet att få ut text från modulen till en dator för att underlätta 
+felsökning. 
+ 
+Funktionerna som ska implementeras i mobiltelefonen är: 
+ 
+• Anslutningsfunktionalitet. Finns det fler moduler skall användaren kunna söka efter 
+Blåtandsenheter och sedan ansluta till en av de Blåtandsenheter som hittas. 
+• Presentation av data som skickas från accelerometern. 
+• Funktionaliteten att slå på accelerometern och ställa in vilken frekvens 
+accelerometerdata ska skickas med.  
+4 Systemering 
+När hårdvaran valdes lades vikt på enkel implementering och robusthet.  
+ 
+Bild 6.  Grafisk presentation över prototypens koncept 
+15 
+4.1 Mobiltelefon 
+Sony Ericsson P15 är efterträdaren till P990. P1 har många av de funktioner som P990 har 
+men med en design som påminner om M600. Den introducerades Maj 2007. Det finns en 
+modell som är släppt på den kinesiska marknaden som heter P1c. Till skillnad mot P1 så har 
+P1c inga möjligheter att använda 3G nätet men har istället tillgång till EDGA nätet . EDGA 
+nätet är långsammare men är mer utbyggt, speciellt i Amerika. 
+ 
+P1 använder sig av mjukvaruplattformen UIQ variation 3.0. UIQ 3.0 är baserad på Symbian 
+9.1. P1 är en lite tjockare mobil än M600 vilket är en följd av den utökade hårdvaran. Den är 
+dock betydligt tunnare än P990. 
+ 
+P1 är utrustad med Blåtand 2.0 och har också goda möjligheter att lägga till olika program. 
+När man programmerar i Symbian miljö använder man sig uteslutande av Carbide. Carbide är 
+närmare beskriven i förstudien (2.2.3 Carbide) 
+ 
+Tillgänglig hårdvara och mjukvara på mobiltelefonen P1. 
+ 
+• 3.15 megapixel kamera med autofocus 
+• Rocker QWERTY Tangentbord med två bokstäver på varje knapp 
+• Video samtal med kamera både fram och bak  
+• 256MB Flash, 160MB fritt minne 
+• 128MB RAM (76MB ledigt efter start) 
+• Symbian OS v9.1 UIQ v3.0 
+• Blåtand v2.0 
+ 
+ 
+Bild 7.  Ericsson telefonen P1 
+4.2 Blåtandsmodul 
+För att förenkla implementeringen valdes en redan färdig Blåtandsmodul. Det vill säga 
+Blåtandschip, antenn och externa komponenter färdigmonterade på ett kretskort. 
+Blåtandsmodulen som valdes produceras av Ezurio9. Ezuriomodulen använder sig av 
+Blåtandschipet Bluecore412 som är utvecklat av CRS11. Chipserien Bluecore är 
+programmerbar, dock krävs CRS:s egna programmeringsmiljö Bluelab för detta. Då en 
+Bluelab licens var för dyr för att köpas in till examensarbetet så valdes en annan lösning. 
+Denna lösning var att kommunicera med Ezuriomodulen från en extern mikroprocessor. 
+Denna kommunikation sker med AT kommandon över ett USART protokoll. 
+ 
+16 
+Det visade sig dock att överföringen via USART gjorde Blåtandsöverföringshastigheten för 
+dålig för att avståndsbedömning med Blåtand skulle bli möjlig. Därför lades försöket med att 
+implementera den delen av projektet ner. Dock fortsätter den teoretiska delen med bl.a. ett 
+räkneexempel i kapitlet Resultat (6.1). 
+ 
+ 
+Bild 8.  Blåtandsmodul från Ezurio 
+4.3 Accelerometer 
+Den Accelerometer som valts till projektet är LIS3LV02DQ som utvecklas av Fabr ST 
+Microelectronics. Anledningen till att just denna accelerometer valdes är att den kan mäta 
+acceleration i alla tre riktningarna och att den har två digitala gränssnitt. Dessutom klarar den 
+av att mäta acceleration upp till 6 g ( 9,82*6 m/s2) i alla riktningar vilket är tillräckligt för de 
+situationer som den tänkta produkten ska utsättas för. Kretsen används genom att man skriver 
+och läser till olika registerplatser i kretsen. Dessa register kan anslutas med hjälp av två olika 
+digitala interface I2C och SPI. 
+ 
+ 
+ 
+Bild 9.  Accelerometermodul monterad med tillhörande externa komponenter 
+4.4 Mikroprocessor 
+Atmels AVR-serie är en grupp integrerade mikroprocessorer med RISC-arkitektur. AVR-
+serien bestod till en början enbart av 8-bitars processorer men Atmel har även börjat 
+producera 32-bitars processorer. Processorerna har inbyggt ROM, RAM och ett stort antal 
+inbyggda enheter såsom räknare, A/D-omvandlare, "Watch-dog", med mera. AVR familjen 
+var en av de första som inkluderade on-chip flash minnen för program-lagring. Att fokus lades 
+på Atmels processorer beror på dess robusta kompilator och hårdvara samt att märket är 
+välkänt och det finns rikligt med forum och information på Internet. 
+ 
+Den mikroprocessor som valdes var en av Atmels AVR mikroprocessorer, närmare bestämt 
+Atmega128L7. Anledningen att just den här processorn valdes var att den har två stycken 
+17 
+USART kanaler (de flesta andra mikroprocessorerna i AVR familjen har bara en). Tanken är 
+att den första USART kanalen ska ansluta till Blåtandsmodulen medan den andra USART 
+kanalen ska användas till felsökning. Dessutom har den en tredje digital kanal, en TWIn kanal, 
+denna kanal kan användas till att ansluta accelerometern. 
+ 
+ 
+ 
+Bild 10.  Atmels mikroprocessor Atmega128 
+18 
+ 
+För att programmera Atmel processorn har Atmels egna utvecklingsmiljö använts, nämligen 
+AVR Studio 4. AVR Studio är ett IDE (Integrated Development Environment) och används 
+för att skriva och felsöka AVR applikationer i Windows miljö. AVR Studio innehåller en 
+simulator där man kan simulera kod innan man flyttar den till processorn. Koden överförs 
+enkelt till processorn om man har en STK500 inkopplad mellan processorn och datorn (se 
+nedan). Programvaran är gratis och underhålls av Atmel. 
+ 
+ 
+Bild 11.  Screenshot på utvecklingsmiljön AVR Studio 4 
+ 
+4.5 Utvecklingsplattform för hårdvara 
+Atmels huvudsakliga utvecklingsplattform för sina ”flashbara” mikrokontrollers heter 
+STK500. Utvecklingsplattformen ger användaren möjligheten att snabbt börja utveckla kod 
+till mikroprocessorn utan att behöva ordna någon mjukvara först. Plattformen har stabil 
+strömförsörjning och programmeringsmöjligheter. Programmeringen fungerar så att 
+utvecklingskortet ansluter till en dator via Seriell kommunikation. På kortet konverteras sedan 
+signalerna från seriella länken till ISP (In- System Programming). Via ISP kan sedan 
+processorn programmeras. Även om mikroprocessorn skulle tas bort från utvecklingskortet 
+kan den ändå programmeras bara man drar fram den 6 poliga ISP anslutningen till de korrekta 
+pinnarna på processorn. STK500 har förutom en seriellport för programmeringsmöjligheter en 
+andra seriell port som kan användas för att kommunicera mellan mikroprocessorn över 
+RS232. Lösningen är sådan att Atmel processorn skickar ut signaler över USART som i sin tur 
+omvandlats på STK500 kortet till RS232. 
+ 
+19 
+ 
+Bild 12.  Utvecklingsplattform STK500 
+ 
+För att kunna använda de mer avancerade processorerna i Atmel familjen så som Atmega128 
+och Atmega64 behövs ett expansionskort till utvecklingsplattformen STK500. Detta 
+expansionskort heter STK501 och är också utvecklat av Atmel. Kortet har en extra seriell port 
+(tre totalt med de två på STK500). Detta för att kunna utnyttja att Atmega64 och Atmega128 
+har två stycken kommunikations portar och en programmerings port. 
+ 
+ 
+Bild 13.  Expansionskort STK 501 
+ 
+I likhet med utvecklingsplattformen för Atmels mikroprocessorer så finns det en utvecklings-
+plattform för den Ezurio Blåtandsmodul som användes. Även denna plattform har en port för 
+kommunikation över seriell länk. Dessutom finns det tre olika system för strömförsörjning. 
+Det ena tar ström från en USB länk. Det andra är en separat anslutning som ska matas med +5 
+Volt och jord. Det sista tar strömmen över en icke standardiserad seriell port. 
+ 
+20 
+ 
+Bild 14.  Ezurio Blåtands utvecklingsmiljö med Blåtands modul 
+ 
+Atmega processorn har två USART kanaler som plattformarna STK500 tillsammans med 
+STK501 kan göra om till RS232. Den ena RS232 kanalen kopplas till en dator för felsökning 
+medan den andra kanalen kopplas till utvecklingsplattformen för Blåtandsmodulen8. Där görs 
+signalen om till USART igen som kan kommunicera med Blåtandsmodulen. 
+Strömförsörjningen till Blåtandsmodulens utvecklingsplattform sker från STK500 med 5 
+Volt. En spänningsdelare på Blåtandsmodulens utvecklingsplattform skalar ner spänningen 
+till 3.6 Volt innan den går till Blåtandsmodulen. 
+ 
+Från mikroprocessorn är en I2C kanal direkt dragen till accelerometerchipet. 
+Accelerometerchipet matas från STK500 plattformen  med +5volt. På vägen går strömmen 
+genom två dioder för att sänka ner spänningen till 3.6 Volt. (0.7 volt per diod). 
+ 
+ 
+Bild 15.  Utvecklingsmiljö 
+ 
+21 
+ 
+Bild 16.  Utvecklingsmiljö 
+5 Konstruktion 
+5.1 Hårdvara 
+5.1.1 Batteri 
+Som strömkälla valdes ett 3,6 volts litium batteri på 1000mAh. Detta borde ha gett en livstid 
+på 15 till 20 timmar. Dock visade det sig att batteriet förlorade sin spänningsnivå efter bara 
+några minuters aktivt bruk. Försök med knappbatterier gjordes. Även denna konstruktion 
+medförde en snabb urladdning. Problemet berodde på att alla batterier förlorar delar av sin 
+spänning redan då energinivån i batteriet har sjunkit endast i ringa omfattning. Då spännings 
+toleranserna i systemet var så små kunde inte ett passande batteri väljas. Den låga toleransen 
+beror på Blåtandsmodulens lägsta spänning på 3,6V och Accelerometerns högsta tillåtna 
+spänning på 3,6V. Lösningen på problemet kan vara att välja en Accelerometer som klarar 
+högre spänningar.  
+ 
+Enhet 
+Min V 
+Max V 
+Ström 
+Blåtands modulen 
+3.6V 
+7.0V 
+30mA 
+Accelerometer MEMS 
+2.2V 
+3.6V 
+0.65mA 
+Atmega128L 
+2.7V 
+5.5V 
+20mA 
+Lysdioder (2 stycken) 
+Vid 3,7V 
+5,8mA 
+Tabell 2.  De olika kretsarnas spännings intervall och strömförbrukning 
+22 
+5.1.2 Elektronik 
+Systemet har utformats med fokus på enkelhet och robusthet. De olika delsystemen och deras 
+anslutningar beskrivs mer utförligt i avsnitten här nedan. 
+ 
+ 
+Bild 17.  Kretskortet i Accelereometermodulen 
+ 
+ 
+Bild 18.  Kretsschema över hela accelerometermodulen 
+5.1.3 Tryckknappar 
+Prototypen skall ha två tryckknappar. Dessa är kopplade via lågpassfilter till två pinnar på 
+mikroprocessorn som aktiverar två avbrottsrutiner i mjukvaran. Lågpassfiltren är till för att ta 
+bort de knappstudsar som uppstår när man trycker på en knapp. För att få bort alla studsar 
+men ändå kunna få verkliga knapptryckningar så dimensionerades lågpassfiltret till 300Hz 
+brytfrekvens. 
+Hz
+C
+R
+f
+338
+10
+100
+4700
+2
+1
+1
+2
+1
+9 ≈
+⋅
+⋅
+⋅
+⋅
+=
+⋅
+⋅
+⋅
+=
+−
+π
+π
+ 
+ 
+23 
+ 
+Bild 19.  Kretsschema över lågpassfilter för en tryckknapp 
+5.1.4 Lysdioder 
+Lysdioders energiförbrukning är beroende av systemets spänningsnivå och av den 
+strömbegränsande resistans som kopplas i serie med dioden. Dessutom använder lysdioderna 
+omvänd logik för att förhindra att för mycket ström tas från mikroprocessorn. Man vill alltså 
+inte ha för stor ström men inte heller för låg ström då detta ger för svagt ljus. Formeln för 
+strömförbrukningen för systemets lysdioder följer nedan. 
+ 
+Bild 20.  Lysdiod och strömbegränsande resistor 
+ 
+R
+U
+I
+7.0
+−
+=
+ 
+U = 3.6V 
+R = 1000ohm 
+Detta ger I lika med 2,9mA 
+5.1.5 Programmeringsport 
+Programmeringsporten är den enda port som användaren har tillgång till. Denna port kan 
+användas till många fler funktioner än bara programmering. Dessa funktioner följer nedan. 
+• Programmering 
+Portens ursprungliga funktion. 
+• Debugging med USART 
+Vid programmering av Atmegan128L används samma pinnar som används vid USART 
+kommunikation. STK500 har förstärkarchip kopplat på sina USART ingångar. Om man 
+kopplar mikroprocessorns USART via en STK500s förstärkarchip görs signalen om till 
+RS232 som sedan kan kopplas till en dator, beskrivs i Utvecklingsplattform för hårdvara 
+(4.5 ). 
+• Reset av mikroprocessorn 
+Programmeringsporten har reset framdragen. För att starta om mikroprocessorn så skall 
+reset pinnen på ISP kopplas till jord. Ett lågpassfilter är kopplat på reset pinnen för 
+stabilitet.  
+• Strömförsörjning 
+ISP portens strömförsörjningspinnar kan användas till att driva hela 
+accelerometermodulen om batteriet är slut. 
+24 
+• Batteriladdning 
+På samma sätt som med strömförsörjningen så kan ISP porten användas till att ladda 
+accelerometermodulens batteri. 
+5.2 Mjukvara 
+5.2.1 Blåtandgränssnitt 
+Blåtandskanalen använder RFCOM. Det betyder att man skickar information tecken för 
+tecken och sen tar Blåtandshårdvaran hand om kommunikationen på lägre nivå. För att öka 
+stabilitet och felsökningsmöjligheter så har en inkapslingsstruktur skapats för examensarbetes 
+Blåtandstrafik. Denna struktur har tre delar. 
+ 
+Struktur del 
+Längd 
+Beskrivning 
+Command 
+1 byte 
+Kommandot som skickas 
+Lenght 
+1 byte 
+Längden på datan 
+Data 
+Length 
+Själva datan som skickas 
+Tabell 3.  De olika delarna av kommando strukturen 
+ 
+Strukturen ser ut som nedan 
+<P><C>Command</C><L>Lenght</L><D>Data</D></P> 
+ 
+De kommandon som är tillagda följer i tabellen nedan. Sista kolumnen beskriver om 
+kommandot skickas från telefonsidan (T) Eller accelerometermodulen (A). 
+Kommando Funktion 
+Längd 
+T eller A 
+A 
+Accelerometerdata. Totalt 6 byte, två byte per dimension. 
+6 
+A 
+C 
+Hur ofta accelerometerdata skickas. Noll för aldrig. 
+1 
+T 
+R 
+Skickar textsträng som skickas tillbaka med P 
+Length 
+T 
+P 
+Skickar textsträng som skrivs ut på telefonens skärm 
+Length 
+A 
+M 
+Knapp1 (1 = PÅ, 0 = AV) 
+1 
+A 
+N 
+Knapp2 (1 = PÅ, 0 = AV) 
+1 
+A 
+Tabell 4.  Kommandon som skickas över Blåtandskanalen 
+5.2.2 Programvara i telefonen 
+Användargränssnittet till Blåtand som har utvecklats till telefonen är programmerat i C++ 
+med Symbian dialekt. Det är uppbyggd runt tre olika objekt. Märk väl att UIQs grundstruktur 
+som detta program anammar innehåller ett flertal objekt. Denna grundstruktur är bara ett 
+ramverk och finns till för att ge konsekvent kod. De tre objekten som använts är två för 
+användargränssnittet och ett för Blåtandskommunikationen. 
+ 
+Blåtandsobjektet tar hand om all Blåtands kommunikation såsom sökning efter enheter, 
+anslutning, mottagande och skickande av data, frånkoppling och felhantering. 
+Blåtandsobjektet är ett så kallat aktivt objekt. Med ett aktivt objekt menas att det har en 
+speciell form som ger funktionalitet liknande trådprogrammering. Detta innebär att 
+Blåtandsobjektet väntar på att en förändring ska ske, den aktiveras bara om det behövs. 
+ 
+De två andra objekten är användargränssnittsobjekt. Ett objekt vardera för de två 
+visningssidorna som programmet använder sig av. Dessa objekt behandlar vad som visas på 
+skärmen och vad som ska ske om en tryckknapp aktiveras. Bara ett av 
+användargränssnittsobjekten är aktivt åt gången. 
+25 
+ 
+ 
+ 
+Bild 21.  Bild över de båda användargränssnittsobjekten och det gemensamma 
+Blåtandsobjektet 
+ 
+Då många kommandon som skickas över Blåtandskanalen ska visas upp på skärmen så måste 
+Blåtandsobjektet ha pekare till de två användargränssnittsobjekten. I 
+användargränssnittsobjekten finns funktioner som kan anropas för att hantera 
+Blåtandskommandon på korrekt sätt. 
+5.2.3 Programvara i accelerometermodulen 
+Modulen programmerades i C. Mjukvaran i modulen är uppbyggd runt ett flertal 
+avbrottsrutiner. Dessa avbrottsrutiner gör aldrig några beräkningar utan lägger snabbast 
+möjligt in händelsen i en tillhörande kö. Data i kön bearbetas sedan i ”while” loopen i ”main” 
+funktionen. Även när data skall skickas sker detta med hjälp av köer och avbrottsrutiner. Då 
+data ska skickas från ett ställe i ”while” loopen så läggs dessa data in i en kö och tillhörande 
+avbrottsrutin aktiveras. När sedan processorn har möjlighet att skicka data tar avbrottsrutinen 
+hand om det. 
+ 
+Det negativa med systemet är att det krävs fler operationer för att hantera avbrotten. Även då 
+själva avbrotten använder minsta möjliga antal operationer så blir summan av dessa och 
+operationerna i ”while” loopen fler. Dessutom blir systemet komplext jämfört med kod utan 
+avbrottsrutiner.  
+ 
+Positivt med systemet är att väntetiden mellan olika dataöverföringar till externa enheter kan 
+utnyttjas till annat. Alltså blir systemet mer effektivt. 
+ 
+ 
+26 
+ 
+ 
+Bild 22.  Struktur av programmet i modulen 
+ 
+6 Resultat 
+6.1 Avståndsbedömning 
+Avståndsbedömningen implementerades aldrig på grund av otillräcklig prestanda i hårdvaran. 
+Avståndet s ges av 
+ 
+uster
+gatidsförl
+slumpmässi
+uster
+tatidsförl
+kons
+total
+t
+t
+c
+s
+t
++
++
+⋅
+=
+tan
+2
+ 
+ 
+Nödvändig klockfrekvens ges av 
+ 
+s
+c
+h
+∆
+⋅
+= 2
+ 
+ 
+Se förstudien för mer noggrann beskrivning. 
+ 
+Detta ger att för avståndsbedömning med en meters noggrannhet måste man ha en processor 
+med en frekvens på ca 150MHz. Blåtandsmoduler är gjorda för att spara ström vilket betyder 
+att de i regel har väldigt låg klockfrekvens. Enligt specifikationen för CSRs Bluecore6 chip2 
+så kan man med hjälp av en extern kristall komma upp i 52MHz, alltså en noggrannhet på ca 
+3 meter. Atmel har ett Blåtandschip1 som klarar av en frekvens på 72MHz, detta ger en 
+noggrannhet på ca 2,1 meter. 
+ 
+Systemet begränsas i dag av USARTens överföringshastighet. Den kan max ställas in på 
+115200Bd. Detta ger en teckenöverförings på ca 14.4KHz. Vilket i sin tur ger en noggrannhet 
+på 10409 m. Alltså plus minus ca 5000m. Detta ligger helt utanför avstånden Blåtand verkar 
+inom och är därför omöjlig att implementera. Dessutom är detta räknat med USARTen som 
+enda begränsning, egentligen finns det fler begränsningar fast de förhåller sig approximativt 
+obetydliga i jämförelse. 
+27 
+6.2 Problem under utvecklingen 
+Ett flertal problem har påträffats under projektets gång. 
+ 
+Modulen var från början tänkt att vara laddningsbar med hjälp av en vanlig Ericsson laddare. 
+Det har dock visat sig att en bra laddningscykel är väldigt komplicerad att implementera. På 
+grund av tidsbrist utvecklades aldrig någon laddningskrets till modulen. Modulen går dock att 
+ladda med hjälp av en laddningscykel som bevakas och kontrolleras av operatören. Om inte 
+laddningen avbryts i tid eller laddningen sker för fort kan batteriet förstöras. 
+ 
+Att implementera Blåtandsgränssnittet på telefonsidan visade sig mycket mer tidsödande än 
+först beräknat. Detta berodde framförallt på oerfarenhet inom C++.  
+ 
+Sockeln till Blåtandsmodulen visade sig vara mycket svår att löda på grund av pinnarnas 
+täthet. Två kort gick sönder och mycket tid lades ner innan problemet löste sig. 
+ 
+Den dator som projektet skulle använda hade för låg prestanda för att kunna köra Carbide. En 
+ny dator skaffades till projektet med operativsystem Windows Vista. Det visade sig dock att 
+Windows Vista och Carbide inte var kompatibla. Efter många försök för att få kompatibilitet 
+skaffades en dator med Windows XP. Detta löste problemet och Carbide fungerade felfritt. 
+ 
+Batteritiden är väldigt kort då spänningsnivån måste ligga väldigt nära 3.6 volt och alla 
+batterier har en varierande spänningsnivå som beror av energiinnehållet (state of charge). 
+Lösningen är att skaffa en accelerometer som klarar högre spänningar. 
+7 Slutsats 
+7.1 Avståndsbedömning 
+RSSI är oanvändbar då den är känslig för störning. Endast i kombination med någon form av 
+övrig avståndsbedömning kan den fungera. Då RSSI och DP har samma svaghet så kvarstår 
+TOA att komplettera RSSI med. TOA kan användas separat men endast i applikationer som 
+inte kräver någon högre noggrannhet. Se Avståndsbedömning (kap 2.1 ). 
+7.2 Begränsningar 
+Systemets största begränsning är uppdateringsfrekvensen av accelerometerdata. Den är nu 
+felfritt testad upp till 10 uppdateringar per sekund. Begränsningen beror på låg hastighet på 
+dataöverföringsbussarna. Hastigheten kan höjas, tester på högre hastigheter genomfördes dock 
+aldrig. 
+ 
+En annan begränsning är att programmet på telefonsidan hänger sig om 
+Blåtandskommunikationen avbryts från något annat ställe än telefonen. Detta beror på en 
+bugg i Blåtands interfacet på telefonen. Kan lösas med vidare felsökning. 
+ 
+Då batteriet måste laddas manuellt av operatören och detta medför att batteriet ofta överladdas 
+så måste detta också ses som en begränsning. Separat laddare kan lösa problemet men det 
+innebär att ett enklare sätt att byta batteri implementeras. 
+ 
+Att det inte gick att implementera avståndsbedömning i modulen är också en begränsning. 
+Detta kan dock lösas med en bättre hårdvara. 
+28 
+7.3 Utvecklingsmöjligheter 
+Utvecklingsmöjligheterna är goda för prototypen. 
+7.3.1 Hårdvaran 
+Att lägga till extra knappar och lysdioder går bra utan att byta processor. Än så länge är bara 
+en bråkdel av processorns pinnar använda. Vill man lägga till flera digitala kretsar måste de 
+läggas på I2C bussen då alla USART kanaler är upptagna. I2C bussen har dock plats för 125 
+enheter till. Det finns också goda möjligheter att lägga till analoga komponenter. 
+7.3.2 Mjukvara 
+När mjukvaran skrevs lades fokus på robusthet. Detta innebär att många av bussarna körs på 
+en lägre hastighet än vad de klarar av. Om man vill ha högre uppdateringsfrekvens av 
+accelerometern så bör dessa busshastigheter höjas. 
+ 
+Om fler kommandon skulle behövas över Blåtandskanalen så kan dessa också enkelt läggas 
+till.  
+7.3.3 Applikationer 
+Programmet på telefonsidan är bara av demokaraktär och kan enkelt byggas ut. Antalet 
+applikationer som kan läggas till är många. Några förslag följer här nedan. 
+• Fjärrkontroll med skakfunktion 
+• Stegräknare 
+• Elektroniskt vattenpass 
+• Fall larm 
+• G-kraft mätare 
+ 
+8 Centrala begrepp 
+Mikroprocessor 
+Mikroprocessorer används till de flesta tekniska produkter. Den beskrivs bäst som en väldigt 
+enkel dator. Den har sitt eget minne och kommunicerar med omvärlden genom att styra 
+spänningen på metallpinnar som sticker ut från mikroprocessorn. Det finns olika varianter 
+med olika hastigheter, minnesstorlek och funktioner. 
+ 
+RS232 
+Överföringsprotokoll som bland annat används i seriell kommunikation med datorer. Detta är 
+ett vanligt sätt att kommunicera mellan dator och mikroprocessorer då det är ett jämförelsevis 
+okomplicerat protokoll. Informationen överförs via en 9 polig kontakt. 
+ 
+USART 
+USART påminner mycket om RS232. Skillnaden är att strömnivån är lägre och kontrollen på 
+överföringen mindre. Protokollet behöver bara 3 poler. Via vissa chip kan USART göras om 
+till RS232. 
+29 
+I2C 
+I2C är ett överföringsprotokoll som brukar användas när mikroprocessorer kommunicerar 
+med varandra. Det finns andra liknande protokoll som till stor del är kompatibla med I2C. I2C 
+består av två bussar varav den ena sänder en klockfrekvens. Klockfrekvensen behövs för att 
+de olika enheterna som ansluter på I2C kanalen ska kunna läsa från den andra bussen 
+(databussen). I2C kanalen kan ha max 127 olika enheter. 
+ 
+TWI 
+TWI (Two Wire Interface) är Atmels protokoll7 som är tänkt att vara kompatibelt med I2C. 
+Det finns dock brister i kompatibiliteten men dessa kan för det mesta förbises då 
+funktionaliteten sällan påverkas. 
+ 
+AT kommandon 
+En form av kommandon som används mellan digitala kretsar. Kommandona består av ASCII 
+tecken och är ofta förkortningar av funktionsbeskrivningen. Kommandona avslutas med ett 
+’return’ tecken, den digitala kretsen svarar då med ett bekräftade kommando. 
+ 
+ISP 
+ISP står för In System Programming. Detta är ett gränssnitt som vissa mikroprocessorer har 
+som medför att man kan programmera genom att ansluta och skicka data till vissa pinnar på 
+processorerna. Atmel använder sig framför allt av en sexpolig ISP för att programmera sina 
+processorer. 
+ 
+USB 
+Detta gränssnitt är ett av de största. De flesta hushåll har idag någon form av USB koppling 
+till sin dator. USB används för allt, från koppvärmare till dataöverföring från digitalkameror.  
+USB standarden har 5 volts spänningsförsörjning vilket i de flesta fallen gör att USB enheter 
+inte behöver en extra strömförsörjning. USB står för Universal Serial Bus.  
+ 
+Avbrottsrutin 
+Är ett ord som används för avbrottsrutiner till bland annat mikroprocessorer. När en 
+avbrottsrutin inträffar avbryter processorn vad sin dåvarande uppgift och går till en funktion 
+som hör till avbrottsrutinen efter att funktionen är utförd så går processorn till baks till vad 
+den gjorde innan. Det finns två olika sorters avbrottsrutiner vissa som inträffar på grund av 
+mjukvaran och vissa som inträffar på grund av hårdvaran (tillexempel att en av processorns 
+pinnar byter spänningsnivå). 
+ 
+IDE 
+IDE är utvecklingsmiljö programmering. Ett datorprogram eller en programsvit som 
+vanligtvis innehåller en texteditor, kompilator, och debugger, tillsammans med ett antal andra 
+funktioner avsedda att underlätta vid programmering. 
+ 
+SPI 
+SPI står för Seriel Peripheral Interface och är en protokollstandard som standardiserades av 
+Motorola. SPI verkar med full duplex och är en synkron seriell datalänk. Enheterna på 
+databussen använder sig av antingen slav eller master mode. Det är enheten i master mode 
+som startar dataöverföringen. Flera olika slavenheter kan vara anslutna på samma databuss 
+men varje buss måste ha exakt en master. Slavarna har enskilda ”slave select kopplingar” som 
+styrs från mastern. Detta för att mastern skall kunna meddela vilken av slavarna den försöker 
+kommunicera med. 
+30 
+9 Referenser 
+1. Low Power-High Speed Bluetooth v1.2 Baseband with Audio Codec [Elektronisk] (2005). 
+(läst 11-01-08) Atmel. Tillgänglig: 
+http://www.atmel.com/dyn/resources/prod_documents/AT76C557_DS_5679AS.pdf 
+ 
+2. BlueCore6-ROM Specification [Elektronisk] (2008). (läst 11-01-08) CSR. Tillgänglig: 
+http://www.csr.com/products/bc6rom_spec.htm 
+ 
+3. Indoor Location [Elektronisk] (2004). (läst 11-01-08) Tadlys Ltd. Tillgänglig: 
+http://www.tadlys.com/media/downloads/Indoor_location_Systems.pdf 
+ 
+4. Wii officiell hemsida (2007). (läst 30-05-08) Nintendo. Tillgänglig: 
+http://www.nintendo.co.uk/NOE/en_GB/wii_54.html 
+ 
+5. P1i officiell hemsida (2007). (läst 02-06-08) Sony Ericsson Mobile Communications AB. 
+Tillgänglig: 
+http://www.sonyericsson.com/cws/products/mobilephones/overview/p1i?cc=gb&lc=en 
+ 
+6. The R380s – The first smartphone from the Ericsson-Symbian partnership (2001). (läst 
+02-06-08) Sony Ericsson Mobile Communications AB. Tillgänglig: 
+http://www.ericsson.com/ericsson/corpinfo/publications/review/2001_01/files/2001015.pd
+f 
+ 
+7. Atmega128 manual (2008). (läst 02-06-08) Atmel Corporation. Tillgänglig: 
+http://www.atmel.com/dyn/resources/prod_documents/doc2467.pdf 
+ 
+8. Ezurio Development Kit (2006). (läst 02-06-08). Ezurio Ltd. Tillgänglig: 
+http://www.elfa.se/pdf/73/730/07302052.pdf 
+ 
+9. Ezurio BISM2 Bluetooth™ Version 2.0 Serial Module (2006). (läst 02-06-08). Ezurio 
+Ltd. Tillgänglig: http://www.elfa.se/pdf/73/730/07300635.pdf 
+ 
+10. World wide smart mobile market (2008). (läst 02-06-08). Canalys estimates Ltd. 
+Tillgänglig: http://www.canalys.com/pr/2008/r2008021.htm 
+ 
+11. CSR officiella hemsida (2008). (läst 02-06-08). Cambridge Silicon Radio. Tillgänglig: 
+http://www.csr.com/products/overview.htm 
+ 
+12. BlueCore4 [Elektronisk] (2008). (läst 02-06-08). Cambridge Silicon Radio. Tillgänglig: 
+http://www.csr.com/products/bc4range.htm 
+ 
+13. Aeroscout officiella hemsida (2008). (läst 27-10-08). Aeroscout. Tillgänglig: 
+http://articles.directorym.net/Bluesoft_Reveals_Aeroscout_Location-a882150.html 
+ 
+14. Bluesoft Reveals Aeroscout Location (2003). (läst 27-10-08) Interaction Media Group. 
+Tillgänglig: http://www.aeroscout.com/ 
+ 
+31 
+15. Bluetooth Technology Overview [Elektronisk] (2003). (läst 19-09-08). The Wireless 
+Directory. Tillgänglig: http://www.thewirelessdirectory.com/Bluetooth-
+Overview/Bluetooth-Specification.htm 
+Accelerometermodulkod 
+ 
+main.c 
+#include "Meny.h" 
+#include "Bluetooth.h" 
+#include "I2c.h" 
+#include "Define.h" 
+#include "Usart.h" 
+ 
+#include <avr/io.h> 
+#include <avr/interrupt.h> 
+//#include <util/delay.h> 
+ 
+char onoff_knapp1; 
+char onoff_knapp2; 
+ 
+ISR(INT4_vect){ 
+ 
+if (1&(PINE>>PE4)) 
+ 
+ 
+onoff_knapp1 = 0; 
+ 
+ 
+//PORTC |= (1<<PC0); 
+ 
+else 
+ 
+ 
+onoff_knapp1 = 1; 
+ 
+ 
+//PORTC &= ~(1<<PC0); 
+} 
+ 
+ISR(INT5_vect){ 
+ 
+if (1&(PINE>>PE5)) 
+ 
+ 
+onoff_knapp2 = 0; 
+ 
+ 
+//PORTC |= (1<<PC1); 
+ 
+else 
+ 
+ 
+onoff_knapp2 = 1; 
+ 
+ 
+//PORTC &= ~(1<<PC1); 
+} 
+ 
+void LED1(char status){ 
+ 
+if (status) 
+PORTC &= ~(1<<PC0); 
+ 
+else  
+ 
+ 
+PORTC |= (1<<PC0); 
+} 
+ 
+void LED2(char status){ 
+ 
+if (status) 
+PORTC &= ~(1<<PC1); 
+ 
+else  
+ 
+PORTC |= (1<<PC1); 
+} 
+ 
+void Init(void){ 
+ 
+// Set Speed at TWI 
+ 
+I2C_Init(TWI_TWRB, TWI_TWPS); 
+ 
+// Init usart number 1 
+ 
+USART1_Init ( MYUBRR ); 
+ 
+// Init usart number 0 
+ 
+USART0_Init ( MYUBRR ); 
+ 
+// Init external interrupts 
+ 
+DDRE &= ~(1<<PE4)&~(1<<PE5); 
+// PD2 (INT0) as input, for 
+driver key switch. 
+ 
+EICRB |= (1<<ISC40)|(1<<ISC50); // Ext INT0, any level change 
+ 
+EIMSK |= (1<<INT4)|(1<<INT5); 
+ 
+// Enable global interrupts 
+ 
+ 
+ 
+//Bluetooth_Init(); 
+ 
+ 
+//_delay_ms (500); 
+ 
+ 
+ 
+sei(); 
+} 
+ 
+//////////////////////////////////////////////////////////////////// 
+// Main 
+ 
+int main (void){ 
+ 
+ 
+ 
+Init(); 
+ 
+I2C_Send_Command( (TW_WRITE<<7)|REGISTER, DATA ); 
+ 
+ 
+#ifdef DEBUG  
+ 
+ 
+USART_Test(); 
+ 
+#endif 
+ 
+#ifdef MENY  
+ 
+ 
+Goto_Read_Write(); 
+ 
+#endif 
+ 
+ 
+DDRC |= (1<<PC1)|(1<<PC0); 
+ 
+ 
+PORTC |= (1<<PC1); 
+ 
+PORTC |= (1<<PC0); 
+ 
+ 
+LED1(1); 
+ 
+ 
+while(1){ 
+ 
+ 
+#ifdef MENY  
+ 
+ 
+ 
+Meny(USART0_Resive_Buffert()); 
+ 
+ 
+#endif 
+ 
+ 
+ 
+Bluetooth_Check(); 
+ 
+ 
+ 
+if(onoff_knapp1 != 2){ 
+ 
+ 
+ 
+Send_Bluetooth_Pack(KNAPP1, 1, 
+&onoff_knapp1); 
+ 
+ 
+ 
+LED2(1); 
+ 
+ 
+ 
+onoff_knapp1 = 2; 
+ 
+ 
+ 
+} 
+ 
+ 
+if(onoff_knapp2 != 2){ 
+ 
+ 
+ 
+Send_Bluetooth_Pack(KNAPP2, 1, 
+&onoff_knapp2); 
+ 
+ 
+ 
+LED2(0); 
+ 
+ 
+ 
+onoff_knapp2 = 2; 
+ 
+ 
+} 
+ 
+ 
+} 
+ 
+return 0; 
+} 
+ 
+Bluetooth.c 
+#include "Bluetooth.h" 
+ 
+char buffer[BUFFER_SIZE]; 
+int i = 0; 
+ 
+char bluetooth_command; 
+char bluetooth_length; 
+char bluetooth_data[40]; 
+char last_stop; 
+ 
+enum BluetoothState{ 
+ 
+StateOff, 
+ 
+StateOnCommand, 
+ 
+StateOnLength, 
+ 
+StateOnData, 
+ 
+StateOnStop 
+}state = StateOff; 
+ 
+void Bluetooth_Check(void){ 
+ 
+while (!Is_USART1_Empty()){ 
+ 
+ 
+buffer[i++] = USART1_Resive_Buffert(); 
+ 
+ 
+if ((buffer[i-1] == '\n') || (buffer[i-1] == '\r') || 
+(buffer[i-1] == '>')){ 
+ 
+ 
+ 
+if (strlcmp(buffer, DISCONNECT_MASK, i)){ 
+ 
+ 
+ 
+ 
+I2C_Start(0); 
+ 
+ 
+ 
+ 
+state = StateOff; 
+ 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( 
+"State OFF\n\r" ); 
+ 
+ 
+ 
+ 
+I2C_Start(0); 
+ 
+ 
+ 
+ 
+USART1_Add_To_Send_Buffert('\r'); 
+ 
+ 
+ 
+ 
+i = 0; 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+else{ 
+ 
+ 
+ 
+ 
+switch (state){ 
+ 
+ 
+ 
+ 
+ 
+case StateOff: 
+ 
+ 
+ 
+ 
+ 
+if ( strlcmp( buffer, 
+CONNECT_MASK, (i-CONNECT_SIZE) ) ){ 
+ 
+ 
+ 
+ 
+ 
+ 
+state = 
+StateOnCommand; 
+ 
+ 
+ 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( "State ON\n\r" ); 
+ 
+ 
+ 
+ 
+ 
+ 
+i = 0; 
+ 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+ 
+else{ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+buffer[i] 
+= '\0'; 
+ 
+ 
+ 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( buffer ); 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+i = 0; 
+ 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+ 
+break; 
+ 
+ 
+ 
+ 
+ 
+case StateOnCommand: 
+ 
+ 
+ 
+ 
+ 
+if (strlcmp(buffer, 
+COMMAND_MASK, i )){ 
+ 
+ 
+ 
+ 
+ 
+ 
+state = 
+StateOnLength; 
+ 
+ 
+ 
+ 
+ 
+ 
+#ifdef 
+DEBUG  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( "Command\n\r" ); 
+ 
+ 
+ 
+ 
+ 
+ 
+#endif 
+ 
+ 
+ 
+ 
+ 
+ 
+i = 0; 
+ 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+ 
+else  if (i>strlen 
+(COMMAND_MASK)) 
+ 
+ 
+ 
+ 
+ 
+ 
+i = 0; 
+ 
+ 
+ 
+ 
+ 
+break; 
+ 
+ 
+ 
+ 
+ 
+case StateOnLength: 
+ 
+ 
+ 
+ 
+ 
+if (strlcmp(buffer, 
+LENGTH_MASK, i)){ 
+ 
+ 
+ 
+ 
+ 
+ 
+bluetooth_command = *buffer; 
+ 
+ 
+ 
+ 
+ 
+ 
+state = 
+StateOnData; 
+ 
+ 
+ 
+ 
+ 
+ 
+#ifdef 
+DEBUG  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( "Length\n\r" ); 
+ 
+ 
+ 
+ 
+ 
+ 
+#endif 
+ 
+ 
+ 
+ 
+ 
+ 
+i = 0;
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+ 
+else if (i>strlen 
+(LENGTH_MASK)){ 
+ 
+ 
+ 
+ 
+ 
+ 
+state = 
+StateOnCommand; 
+ 
+ 
+ 
+ 
+ 
+ 
+i = 0; 
+ 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+ 
+break; 
+ 
+ 
+ 
+ 
+ 
+case StateOnData: 
+ 
+ 
+ 
+ 
+ 
+if (strlcmp(buffer, 
+DATA_MASK, i)){ 
+ 
+ 
+ 
+ 
+ 
+ 
+bluetooth_length = *buffer; 
+ 
+ 
+ 
+ 
+ 
+ 
+state = 
+StateOnStop; 
+ 
+ 
+ 
+ 
+ 
+ 
+#ifdef 
+DEBUG  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( "Data\n\r" ); 
+ 
+ 
+ 
+ 
+ 
+ 
+#endif 
+ 
+ 
+ 
+ 
+ 
+ 
+i = 0; 
+ 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+ 
+else if (i>strlen 
+(DATA_MASK)){ 
+ 
+ 
+ 
+ 
+ 
+ 
+state = 
+StateOnCommand; 
+ 
+ 
+ 
+ 
+ 
+ 
+i = 0;
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+ 
+break; 
+ 
+ 
+ 
+ 
+ 
+case StateOnStop: 
+ 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+ 
+if (strlcmp( buffer, 
+STOP_MASK, i)){ 
+ 
+ 
+ 
+ 
+ 
+ 
+strncpy( 
+bluetooth_data,  buffer,  bluetooth_length ); 
+ 
+ 
+ 
+ 
+ 
+ 
+bluetooth_data[(int)bluetooth_length] = '\0'; 
+ 
+ 
+ 
+ 
+ 
+ 
+CommandHandler( bluetooth_command, bluetooth_length, 
+bluetooth_data ); 
+ 
+ 
+ 
+ 
+ 
+ 
+state = 
+StateOnCommand; 
+ 
+ 
+ 
+ 
+ 
+ 
+#ifdef 
+DEBUG  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( "Stop\n\r" ); 
+ 
+ 
+ 
+ 
+ 
+ 
+#endif 
+ 
+ 
+ 
+ 
+ 
+ 
+i = 0; 
+ 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+ 
+else if 
+(i>(bluetooth_length + strlen (STOP_MASK))){ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+state = 
+StateOnCommand; 
+ 
+ 
+ 
+ 
+ 
+ 
+i = 0; 
+ 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+ 
+break; 
+ 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+} 
+ 
+ 
+} 
+ 
+ 
+if ( BUFFER_SIZE <= i){ 
+ 
+ 
+ 
+//#ifdef DEBUG  
+ 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( 
+"Stop\n\r" ); 
+ 
+ 
+ 
+//#endif 
+ 
+ 
+ 
+int temp_i = 0; 
+ 
+ 
+ 
+while ( temp_i < (BUFFER_SIZE - temp_i) ){ 
+ 
+ 
+ 
+ 
+buffer[temp_i] = 
+buffer[BUFFER_SIZE/2 + temp_i]; 
+ 
+ 
+ 
+ 
+temp_i++; 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+i = temp_i; 
+ 
+ 
+ 
+} 
+ 
+} 
+ 
+} 
+ 
+void CommandHandler(char commando, char len, char *data){ 
+ 
+switch (commando){ 
+ 
+ 
+case COMMAND: 
+ 
+ 
+ 
+I2C_Start(*data); 
+ 
+ 
+ 
+break; 
+ 
+ 
+case REPET: 
+ 
+ 
+ 
+Send_Bluetooth_Pack( PRINT, len, data); 
+ 
+ 
+ 
+break; 
+ 
+ 
+ 
+/* 
+ 
+ 
+case ACC_DATA: 
+ 
+ 
+ 
+state = StateOff; 
+ 
+ 
+ 
+I2C_Start(0); 
+ 
+ 
+ 
+break; 
+ 
+ 
+ 
+*/ 
+ 
+ 
+default: 
+ 
+ 
+ 
+state = StateOff; 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( "Unknown 
+command\n\r" ); 
+ 
+} 
+ 
+} 
+ 
+char strlcmp( char* string1, char* string2, char len){ 
+ 
+return !strncmp(&(string1[(int)len - strlen (string2)]), 
+string2, strlen (string2) ); 
+} 
+ 
+void Send_Acc_Pack(){ 
+ 
+if (state == StateOff) 
+ 
+ 
+I2C_Start(0); 
+ 
+unsigned char data1; 
+ 
+unsigned char data2; 
+ 
+char temp_data[6]; 
+ 
+int j; 
+ 
+for(j = 0; j<6; j++){ 
+ 
+ 
+I2C_Get_Acc_Data( &data1, &data2); 
+ 
+ 
+temp_data[j] = (char)data2; 
+ 
+} 
+ 
+Send_Bluetooth_Pack(ACC_DATA, 6, temp_data); 
+} 
+ 
+void Send_Bluetooth_Pack(char commando, char len, char* data){ 
+ 
+if (state != StateOff){ 
+ 
+ 
+int j; 
+ 
+ 
+USART1_Add_String_To_Buffert ("<P><C>"); 
+ 
+ 
+USART1_Add_To_Send_Buffert(commando); 
+ 
+ 
+USART1_Add_String_To_Buffert ("</C><L>"); 
+ 
+ 
+USART1_Add_To_Send_Buffert(len); 
+ 
+ 
+USART1_Add_String_To_Buffert ("</L><D>"); 
+ 
+ 
+for(j = 0; j<len; j++){ 
+ 
+ 
+ 
+USART1_Add_To_Send_Buffert(*data++); 
+ 
+ 
+} 
+ 
+ 
+USART1_Add_String_To_Buffert ("</D></P>"); 
+ 
+} 
+} 
+ 
+/* 
+void Bluetooth_Init(){ 
+ 
+USART1_Add_String_To_Buffert ( "AT+BTP\r" ); 
+ 
+USART1_Add_String_To_Buffert ( "ATS0=1\r" ); 
+}*/ 
+ 
+Double_queue.c 
+#include "Double_Queue.h" 
+ 
+/* Skapar en kö med längen 'size' som skickas med. En pekare till kön 
+retureras*/ 
+char** Create_Double_Queue ( char size ){ 
+ 
+char **pekare;  
+ 
+pekare = malloc( 4 * sizeof (char*)); 
+ 
+*pekare = malloc(2 * size * sizeof (char)); 
+ 
+pekare[1] = *pekare; 
+ 
+pekare[2] = *pekare; 
+ 
+pekare[3] = &((*pekare)[2 * size - 2]); 
+ 
+ 
+int i; 
+ 
+for (i = 0; i<size*2; i++) 
+ 
+ 
+ (*pekare)[i]= 0; 
+ 
+return pekare; 
+} 
+ 
+/* Köar upp värden i en kö. Första invärdet är en pekare till  
+kön som ska användas andra värdet är det värde som ska in i kön. 
+Retureras o lyckades inte värdes köas. */ 
+char Queue_Double ( char** pekare, char data1, char data2 ){ 
+ 
+if ( !*pekare[2] && data1) { 
+ 
+ 
+(pekare[2])[0] = data1; 
+ 
+ 
+(pekare[2])[1] = data2; 
+ 
+ 
+if (pekare[2] >= pekare[3]) 
+pekare[2] = 
+pekare[0]; 
+ 
+ 
+else  
+ 
+ 
+ 
+ 
+ 
+pekare[2] = pekare[2] + 2; 
+ 
+} 
+ 
+else data1 = 0; 
+ 
+return data1; 
+} 
+ 
+char Change_Double_Queue_Poste ( char** pekare, char data1, char data2 ){ 
+ 
+if ( *pekare[1] && data1) { 
+ 
+ 
+(pekare[1])[0] = data1; 
+ 
+ 
+(pekare[1])[1] = data2; 
+ 
+} 
+ 
+else data1 = 0; 
+ 
+return data1; 
+} 
+ 
+/* Tar ut ett värde ur den kö som invärdes pekaren pekar mot.Retureras 0  
+misslyckades funktionen allt annat som retureras är det avköade värdet. */ 
+char Dequeue_Double ( char** pekare, char where ){ 
+ 
+return (pekare[1])[(int)where]; 
+} 
+ 
+void Delete_Double_Poste( char** pekare ){ 
+ 
+(pekare[1])[0] = 0; 
+ 
+if (pekare[1] >= pekare[3]) 
+pekare[1] = pekare[0]; 
+ 
+else  
+ 
+ 
+ 
+ 
+ 
+pekare[1] = pekare[1] + 2; 
+ 
+} 
+ 
+/* Kontrollerar om kön är tom. Är kön tom retureras 0 */ 
+char Empty_Double_Queue ( char** pekare ){ 
+ 
+return *(pekare[1]); 
+} 
+ 
+/* Tar in pekaren till en kö och kontrollerar om kön är full eller inte. R 
+etureras 0 är kön inte full och om något annat retureras är den full */ 
+char Full_Double_Queue ( char** pekare ){ 
+ 
+return *(pekare[2]); 
+} 
+ 
+/* Den här funktonen tar in en pekare till en kö och tar bort kön */ 
+void Delete_Double_Queue ( char** pekare ){ 
+ 
+free ( *pekare );  
+ 
+free ( pekare ); 
+} 
+ 
+I2c.c 
+#include "I2c.h" 
+#include "Bluetooth.h" 
+ 
+#ifdef DEBUG  
+ 
+#include "Usart.h" 
+ 
+#include <stdio.h> 
+ 
+char text[16]; 
+#endif 
+ 
+char data_recuest = OFF; 
+char twi_status = OFF; 
+char **i2c_od; 
+char **i2c_in; 
+void (*i2c_function_pointer)(unsigned char); 
+ 
+/////////////////////////////////////////////////// 
+ 
+void I2C_Send_Start(void){ 
+ 
+/* Send START condition */ 
+ 
+#ifdef DEBUG  
+ 
+ 
+USART0_Add_String_To_Buffert ( "\n\rS" ); 
+ 
+#endif 
+ 
+i2c_function_pointer = I2C_Send_Address; 
+ 
+TWCR |= (1<<TWINT)|(1<<TWSTA)|(1<<TWEN); 
+} 
+ 
+void I2C_Send_Address(unsigned char status){ 
+ 
+if (status == TW_START){ 
+ 
+ 
+/* Load SLA_W into TWDR Register. Clear 
+ 
+ 
+TWINT bit in TWCR to start transmission of 
+ 
+ 
+address */ 
+ 
+ 
+#ifdef DEBUG  
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( "A" ); 
+ 
+ 
+#endif 
+ 
+ 
+if ((Dequeue_Double ( i2c_in, 0 ) >> 7) == TW_WRITE) 
+ 
+ 
+ 
+i2c_function_pointer = 
+I2C_Transmit_Send_Register; 
+ 
+ 
+else 
+ 
+ 
+ 
+i2c_function_pointer = 
+I2C_Resiv_Send_Register; 
+ 
+ 
+TWDR = (ACC_ADDRESS<<1)|TW_WRITE; 
+ 
+ 
+TWCR &= ~(1<<TWSTA); 
+ 
+ 
+TWCR |= (1<<TWINT) |(1<<TWEN); 
+ 
+ 
+} 
+ 
+else I2C_Error( status ); 
+} 
+ 
+void I2C_Resiv_Send_Register( unsigned char status ){ 
+ 
+if (status == TW_MT_SLA_ACK){ 
+ 
+ 
+/* Load DATA into TWDR Register. Clear TWINT 
+ 
+ 
+bit in TWCR to start transmission of data */ 
+ 
+ 
+#ifdef DEBUG  
+ 
+ 
+ 
+sprintf(text, "R'%x'", 
+(1<<7)|(Dequeue_Double ( i2c_in, 0 )&0x7F)); 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( text ); 
+ 
+ 
+#endif 
+ 
+ 
+i2c_function_pointer = I2C_Resiv_Restart; 
+ 
+ 
+TWDR = (1<<7)|(Dequeue_Double ( i2c_in, 0 )&0x7F); 
+ 
+ 
+TWCR |= (1<<TWINT) | (1<<TWEN);  
+ 
+} 
+ 
+else I2C_Error( status ); 
+} 
+ 
+void I2C_Resiv_Restart( unsigned char status ){ 
+ 
+if (status == TW_MT_DATA_ACK){ 
+ 
+/* Send START condition */ 
+ 
+#ifdef DEBUG  
+ 
+ 
+USART0_Add_String_To_Buffert ( "S" ); 
+ 
+#endif 
+ 
+i2c_function_pointer = I2C_Resiv_Address; 
+ 
+TWCR |= (1<<TWINT)|(1<<TWSTA)|(1<<TWEN); 
+ 
+} 
+ 
+else I2C_Error( status ); 
+} 
+ 
+void I2C_Resiv_Address( unsigned char status ){ 
+ 
+if (status == TW_REP_START){ 
+ 
+ 
+/* Load SLA_W into TWDR Register. Clear 
+ 
+ 
+TWINT bit in TWCR to start transmission of 
+ 
+ 
+address */ 
+ 
+ 
+#ifdef DEBUG  
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( "A" ); 
+ 
+ 
+#endif 
+ 
+ 
+i2c_function_pointer = I2C_Resive_First_Data; 
+ 
+ 
+TWDR = (ACC_ADDRESS<<1)|TW_READ;  
+ 
+ 
+TWCR &= ~(1<<TWSTA); 
+ 
+ 
+TWCR |= (1<<TWINT) |(1<<TWEN); 
+ 
+} 
+ 
+else I2C_Error( status ); 
+} 
+ 
+void I2C_Resive_First_Data( unsigned char status ){ 
+ 
+if (status == TW_MR_SLA_ACK){ 
+ 
+ 
+/* Load SLA_W into TWDR Register. Clear 
+ 
+ 
+TWINT bit in TWCR to start transmission of 
+ 
+ 
+address */ 
+ 
+ 
+#ifdef DEBUG  
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( "F" ); 
+ 
+ 
+#endif 
+ 
+ 
+i2c_function_pointer = I2C_Resive_Secund_Data; 
+ 
+ 
+ 
+if (1<=Dequeue_Double ( i2c_in, 1)) 
+ 
+ 
+ 
+TWCR |= (1<<TWEA); 
+ 
+ 
+else  
+ 
+ 
+ 
+TWCR &= ~(1<<TWEA); 
+ 
+ 
+TWCR |= (1<<TWINT) | (1<<TWEN); 
+ 
+} 
+ 
+else I2C_Error( status ); 
+} 
+ 
+void I2C_Resive_Secund_Data( unsigned char status ){ 
+ 
+if ((status == TW_MR_DATA_ACK) || (status == TW_MR_DATA_NACK)){ 
+ 
+ 
+char temp_data = TWDR; 
+ 
+ 
+Queue_Double ( i2c_od, (Dequeue_Double ( i2c_in, 0 
+)&0x7F), temp_data ); 
+ 
+ 
+ 
+ 
+ 
+#ifdef DEBUG  
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( "R" ); 
+ 
+ 
+#endif 
+ 
+ 
+if (0 >= Dequeue_Double ( i2c_in, 1 )) 
+ 
+ 
+ 
+I2C_Send_Stop(); 
+ 
+ 
+else { 
+ 
+ 
+ 
+if (1 < Dequeue_Double ( i2c_in, 1 )) 
+ 
+ 
+ 
+ 
+TWCR |= (1<<TWEA); 
+ 
+ 
+ 
+else  
+ 
+ 
+ 
+ 
+TWCR &= ~(1<<TWEA); 
+ 
+ 
+ 
+TWCR |= (1<<TWINT) | (1<<TWEN); 
+ 
+ 
+} 
+ 
+ 
+Change_Double_Queue_Poste ( i2c_in, Dequeue_Double ( 
+i2c_in, 0 ) + 1,Dequeue_Double ( i2c_in, 1 ) - 1); 
+ 
+ 
+ 
+} 
+ 
+else I2C_Error( status ); 
+} 
+ 
+//////////////////////////////////////////////// 
+ 
+void I2C_Transmit_Send_Register( unsigned char status ){ 
+ 
+if (status == TW_MT_SLA_ACK){ 
+ 
+ 
+/* Load DATA into TWDR Register. Clear TWINT 
+ 
+ 
+bit in TWCR to start transmission of data */ 
+ 
+ 
+#ifdef DEBUG  
+ 
+ 
+ 
+sprintf(text, "R'%x'", Dequeue_Double ( 
+i2c_in, 0 )&0x7F); 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( text ); 
+ 
+ 
+#endif 
+ 
+ 
+i2c_function_pointer = I2C_Transmit_Send_Data; 
+ 
+ 
+TWDR = Dequeue_Double ( i2c_in, 0 )&0x7F; 
+ 
+ 
+TWCR |= (1<<TWINT) | (1<<TWEN); 
+ 
+} 
+ 
+else I2C_Error( status ); 
+} 
+ 
+void I2C_Transmit_Send_Data( unsigned char status ){ 
+if (status == TW_MT_DATA_ACK){ 
+ 
+/* Load DATA into TWDR Register. Clear TWINT 
+ 
+bit in TWCR to start transmission of data */ 
+ 
+#ifdef DEBUG  
+ 
+ 
+sprintf(text, "D'%x'", (unsigned char)Dequeue_Double 
+( i2c_in, 1 )); 
+ 
+ 
+USART0_Add_String_To_Buffert ( text ); 
+ 
+#endif 
+ 
+i2c_function_pointer = I2C_Transmit_Send_Stop; 
+ 
+TWDR = Dequeue_Double ( i2c_in, 1 ); 
+ 
+TWCR |= (1<<TWINT) | (1<<TWEN); 
+ 
+} 
+ 
+else I2C_Error( status ); 
+} 
+ 
+void I2C_Transmit_Send_Stop( unsigned char status ){ 
+ 
+if (status == TW_MT_DATA_ACK) 
+ 
+ 
+I2C_Send_Stop(); 
+ 
+else I2C_Error( status ); 
+} 
+ 
+/////////////////////////////////////////////////////// 
+ 
+void I2C_Send_Stop( void ){ 
+ 
+/* Transmit STOP condition */ 
+ 
+/* 
+ 
+#ifdef DEBUG  
+ 
+ 
+USART0_Add_To_Send_Buffert('O'); 
+ 
+#endif 
+ 
+i2c_function_pointer = I2C_Klar;*/ 
+ 
+TWCR |= (1<<TWINT)|(1<<TWEN)|(1<<TWSTO); 
+ 
+/* wait until stop condition is executed and bus released */ 
+/*} 
+ 
+ 
+ 
+void I2C_Klar( unsigned char status ){ 
+*/ 
+ 
+while((TWCR & (1<<TWSTO))); 
+ 
+Delete_Double_Poste( i2c_in ); 
+ 
+#ifdef DEBUG  
+ 
+ 
+USART0_Add_To_Send_Buffert('K'); 
+ 
+#endif 
+ 
+ 
+Resive_Complet(); 
+ 
+ 
+if (Empty_Double_Queue ( i2c_in )) 
+ 
+ 
+I2C_Send_Start(); 
+ 
+else 
+ 
+ 
+ 
+twi_status = OFF; 
+} 
+ 
+void I2C_Error( unsigned char status ){ 
+ 
+I2C_Send_Stop(); 
+ 
+#ifdef DEBUG  
+ 
+ 
+sprintf(text, "Error in I2c\n\rStatus: %X\n\r", 
+status ); 
+ 
+ 
+USART0_Add_String_To_Buffert ( text ); 
+ 
+#endif 
+ 
+i2c_function_pointer = I2C_Error; 
+ 
+} 
+ 
+////////////////////////////////////////////// 
+ 
+void Resive_Complet(void){ 
+ 
+if(data_recuest == ON) 
+ 
+ 
+Send_Acc_Pack(); 
+ 
+data_recuest = OFF; 
+} 
+ 
+char I2C_Get_Acc_Data(unsigned char* data1, unsigned char* data2){ 
+ 
+char status = FAILD; 
+ 
+if (Empty_Double_Queue ( i2c_od )){ 
+ 
+ 
+*data1 = Dequeue_Double ( i2c_od, 0 ); 
+ 
+ 
+*data2 = Dequeue_Double ( i2c_od, 1 ); 
+ 
+ 
+Delete_Double_Poste( i2c_od ); 
+ 
+ 
+status = SUCCEED; 
+ 
+} 
+ 
+return status; 
+} 
+ 
+char I2C_Send_Command( unsigned char regi, unsigned char data ){ 
+ 
+char status = FAILD; 
+ 
+#ifdef DEBUG  
+ 
+ 
+sprintf(text, "\r\nR:'%x'D:'%x'", regi, data ); 
+ 
+ 
+USART0_Add_String_To_Buffert ( text ); 
+ 
+#endif 
+ 
+if (Queue_Double ( i2c_in, regi, data )){ 
+ 
+ 
+if (twi_status == OFF) { 
+ 
+ 
+ 
+I2C_Send_Start(); 
+ 
+ 
+ 
+twi_status = ON; 
+ 
+ 
+} 
+ 
+ 
+status = SUCCEED; 
+ 
+ 
+} 
+ 
+else; 
+ 
+return status; 
+} 
+ 
+ISR(TWI_vect) { 
+ 
+i2c_function_pointer( TWSR & TW_STATUS ); 
+} 
+ 
+ 
+ISR(TIMER1_COMPA_vect) { 
+ 
+I2C_Send_Command( (TW_READ<<7)|REGISTER_X_L, 5 ); 
+ 
+data_recuest = ON; 
+} 
+ 
+//////////////////////////////////////////////////////////////////// 
+// Initsiering 
+ 
+void I2C_Start(char accpersec){ 
+ 
+if (accpersec == 0) 
+ 
+ 
+TCCR1B &= ~(1<<CS12)&~(1<<CS11)&~(1<<CS10); 
+ 
+else{ 
+ 
+ 
+TCCR1B |= (1<<CS12); 
+ 
+ 
+OCR1A = F_CPU/(256*accpersec); 
+ 
+// Timer1 
+slut tid 
+ 
+} 
+ 
+}  
+ 
+void I2C_Init(unsigned char twi_twrb, unsigned char twi_twps){ 
+ 
+TWBR = twi_twrb; 
+ 
+if (twi_twps > 3) twi_twps = 3; 
+ 
+TWSR &= 0xFC; 
+ 
+TWSR |= twi_twps; 
+ 
+TWCR |= (1<<TWIE); 
+ 
+ 
+// Timer1 - periodiskt interrupt 
+ 
+TCCR1B |= (1<<WGM12); 
+ 
+TIMSK |= (1<<OCIE1A);  
+// Timer1 compare match
+ 
+ 
+ 
+ 
+ 
+TCNT1 = 0;  
+ 
+ 
+ 
+// Timer1 
+start tid 
+ 
+ 
+i2c_od = Create_Double_Queue ( I2C_OUT_DATA_SIZE ); 
+ 
+i2c_in = Create_Double_Queue ( I2C_INSTRUCTIONS_SIZE ); 
+} 
+ 
+Meny.c 
+#include "Meny.h" 
+ 
+#define BUFFERT_SIZE 2 
+ 
+void (*meny_function_pointer)( char); 
+char input_string[BUFFERT_SIZE]; 
+char* input_string_pointer = input_string; 
+char* end_string_pointer = &(input_string[BUFFERT_SIZE]); 
+ 
+ 
+unsigned char 
+data_temp; 
+ 
+ 
+ 
+unsigned char 
+regi0; 
+unsigned char 
+data0; 
+unsigned char 
+read_or_write0; 
+ 
+unsigned char* 
+regi = &regi0; 
+unsigned char* 
+data = &data0; 
+unsigned char* 
+read_or_write = &read_or_write0; 
+ 
+unsigned char 
+data1; 
+unsigned char 
+data2; 
+ 
+//////////////////////////////////////////////////////////////////// 
+// Funktions 
+ 
+void Goto_Read_Write(void){ 
+ 
+USART0_Add_String_To_Buffert ( "\n\rEnter 'R' or 'W'\n\rHit 'H' 
+for help\n\r=>" ); 
+ 
+meny_function_pointer = Read_Write; 
+} 
+ 
+void Read_Write(char value){ 
+ 
+if ((value == 'p') || (value == 'P')) 
+ 
+ 
+Goto_Print_Log(); 
+ 
+else if ((value == 'h') || (value == 'H')) 
+ 
+ 
+Print_Help(); 
+ 
+ 
+else if ((value == 'w') || (value == 'W')){ 
+ 
+ 
+*read_or_write = TW_WRITE; 
+ 
+ 
+USART0_Add_To_Send_Buffert ( value ); 
+ 
+ 
+Goto_Input_Register(); 
+ 
+} 
+ 
+else if ((value == 'r') || (value == 'R')){ 
+ 
+ 
+*read_or_write = TW_READ; 
+ 
+ 
+USART0_Add_To_Send_Buffert ( value ); 
+ 
+ 
+Goto_Input_Register(); 
+ 
+} 
+ 
+else; 
+} 
+ 
+void Print_Help(void){ 
+ 
+*input_string = 0; 
+ 
+input_string_pointer = input_string; 
+ 
+USART0_Add_String_To_Buffert ( "\n\rHelp menu\n\rP > Print acc 
+value" ); 
+ 
+USART0_Add_String_To_Buffert ( "\n\rX > Go to enter 'R' or 
+'W'\n\rH > Help menu\n\r=>" ); 
+} 
+ 
+void Goto_Input_Register(void){ 
+ 
+*input_string = 0; 
+ 
+input_string_pointer = input_string; 
+ 
+USART0_Add_String_To_Buffert ( "\n\rEnter register\n\r=>" ); 
+ 
+meny_function_pointer = Input_Register; 
+} 
+ 
+void Input_Register(char value){ 
+ 
+if ((value == 'p') || (value == 'P')) 
+ 
+ 
+Goto_Print_Log(); 
+ 
+else if ((value == 'x') || (value == 'X')) 
+ 
+ 
+Goto_Read_Write(); 
+ 
+else if ((value == 'h') || (value == 'H')) 
+ 
+ 
+Print_Help(); 
+ 
+else if (value == '\r'){ 
+ 
+ 
+if (*input_string){ 
+ 
+ 
+ 
+sscanf (input_string,"%x", (int*)regi); 
+ 
+ 
+ 
+if (*regi<=0x3f) { 
+ 
+ 
+ 
+ 
+if (*read_or_write == TW_WRITE) 
+ 
+ 
+ 
+ 
+ 
+Goto_Input_Data(); 
+ 
+ 
+ 
+ 
+else 
+ 
+ 
+ 
+ 
+ 
+Goto_Input_Incre(); 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+else 
+ 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( 
+"\n\rHave to be betwin 0 and 3f\n\r=>" ); 
+ 
+ 
+} 
+ 
+ 
+else 
+ 
+ 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( "\n\rEnter 
+a number\n\r=>" ); 
+ 
+ 
+*input_string = 0; 
+ 
+ 
+input_string_pointer = input_string; 
+ 
+} 
+ 
+else if (((value >= '0') && (value <= '9')) || ((value >= 'a') 
+&& (value <= 'f'))) 
+ 
+ 
+Write_Number(value); 
+ 
+else if (value == '\b') 
+ 
+ 
+Delete_Number(); 
+ 
+else ; 
+} 
+ 
+void Write_Number(unsigned char value){ 
+ 
+if (input_string_pointer != end_string_pointer){ 
+ 
+ 
+USART0_Add_To_Send_Buffert ( value ); 
+ 
+ 
+*input_string_pointer = value; 
+ 
+ 
+input_string_pointer++; 
+ 
+ 
+*input_string_pointer = 0; 
+ 
+} 
+} 
+ 
+void Delete_Number(void){ 
+ 
+if (input_string_pointer != input_string){ 
+ 
+ 
+USART0_Add_String_To_Buffert ( "\b \b" ); 
+ 
+ 
+input_string_pointer--; 
+ 
+ 
+*input_string_pointer = '\0'; 
+ 
+} 
+} 
+ 
+void Goto_Input_Incre(void){ 
+ 
+*input_string = 0; 
+ 
+input_string_pointer = input_string; 
+ 
+USART0_Add_String_To_Buffert ( "\n\rEnter times of 
+incrementation\n\r=>" ); 
+ 
+meny_function_pointer = Input_Incre; 
+} 
+ 
+void Input_Incre(char value){ 
+ 
+if ((value == 'p') || (value == 'P')) 
+ 
+ 
+Goto_Print_Log(); 
+ 
+else if ((value == 'x') || (value == 'X')) 
+ 
+ 
+Goto_Read_Write(); 
+ 
+else if ((value == 'h') || (value == 'H')) 
+ 
+ 
+Print_Help(); 
+ 
+else if (value == '\r'){ 
+ 
+ 
+sscanf (input_string,"%d", (int*)data); 
+ 
+ 
+if ((*data<=64 - *regi) && (*data<=6) && 
+(*input_string)) 
+ 
+ 
+ 
+Goto_Print_Output();  
+ 
+ 
+else { 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( "\n\rEnter 
+a nuber" ); 
+ 
+ 
+ 
+if (!*input_string){ 
+ 
+ 
+ 
+ 
+if (*data>6) 
+ 
+ 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( "betwin 0 and 6\n\r=>" ); 
+ 
+ 
+ 
+ 
+else{ 
+ 
+ 
+ 
+ 
+ 
+char text[16]; 
+ 
+ 
+ 
+ 
+ 
+sprintf(text, "betwin 
+0 and %d\n\r=>", 64 - *regi); 
+ 
+ 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( text ); 
+ 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+*input_string = 0; 
+ 
+ 
+ 
+input_string_pointer = input_string; 
+ 
+ 
+} 
+ 
+} 
+ 
+else if (((value >= '0') && (value <= '9')) || ((value >= 'a') 
+&& (value <= 'f'))) 
+ 
+ 
+Write_Number(value); 
+ 
+else if (value == '\b') 
+ 
+ 
+Delete_Number(); 
+ 
+else ; 
+} 
+ 
+void Goto_Input_Data(void){ 
+ 
+*input_string = 0; 
+ 
+input_string_pointer = input_string; 
+ 
+USART0_Add_String_To_Buffert ( "\n\rEnter data\n\r=>" ); 
+ 
+meny_function_pointer = Input_Data; 
+} 
+ 
+void Input_Data(char value){ 
+ 
+if ((value == 'p') || (value == 'P')) 
+ 
+ 
+Goto_Print_Log(); 
+ 
+else if ((value == 'x') || (value == 'X')) 
+ 
+ 
+Goto_Read_Write(); 
+ 
+else if ((value == 'h') || (value == 'H')) 
+ 
+ 
+Print_Help(); 
+ 
+else if (value == '\r'){ 
+ 
+ 
+if (*input_string){ 
+ 
+ 
+ 
+sscanf (input_string,"%x", (int*)data); 
+ 
+ 
+ 
+Goto_Print_Output(); 
+ 
+ 
+} 
+ 
+ 
+else { 
+ 
+ 
+ 
+*input_string = 0; 
+ 
+ 
+ 
+input_string_pointer = input_string; 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( "\n\rHave 
+to enter a number\n\r=>" ); 
+ 
+ 
+ 
+ 
+ 
+} 
+ 
+} 
+ 
+else if (((value >= '0') && (value <= '9')) || ((value >= 'a') 
+&& (value <= 'f'))) 
+ 
+ 
+Write_Number(value); 
+ 
+else if (value == '\b') 
+ 
+ 
+Delete_Number(); 
+ 
+else ; 
+ 
+} 
+ 
+void Goto_Print_Log(void){ 
+ 
+USART0_Add_String_To_Buffert ( "\n\rAcc data" ); 
+ 
+I2C_Start(ON); 
+ 
+meny_function_pointer = Print_Log; 
+} 
+ 
+void Print_Log(char value){ 
+ 
+if ( value ){ 
+ 
+ 
+I2C_Start(OFF); 
+ 
+ 
+Goto_Read_Write(); 
+ 
+} 
+ 
+/* 
+ 
+else if (SUCCEED == I2C_Get_Acc_Data( &data1, &data2)){ 
+ 
+ 
+if ((data1 == 40) || (data1 == 42) || (data1 == 44)) 
+ 
+ 
+ 
+data_temp = data2; 
+ 
+ 
+else { 
+ 
+ 
+ 
+ 
+if (data1 == 41) 
+ 
+USART0_Add_String_To_Buffert ( "\n\rX:" ); 
+ 
+ 
+ 
+else if (data1 == 43)
+ 
+USART0_Add_String_To_Buffert ( "\tY:" ); 
+ 
+ 
+ 
+else if (data1 == 45)
+ 
+USART0_Add_String_To_Buffert ( "\tZ:" ); 
+ 
+ 
+ 
+char text[16]; 
+ 
+ 
+ 
+sprintf(text, "%d", (data2<<8)+data_temp); 
+ 
+ 
+ 
+USART0_Add_String_To_Buffert ( text ); 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+}*/ 
+ 
+else; 
+} 
+ 
+void Goto_Print_Output(void){ 
+ 
+USART0_Add_String_To_Buffert ( "\n\rEntering complet\n\rHit any 
+key" ); 
+ 
+meny_function_pointer = Print_Output; 
+ 
+I2C_Send_Command(  *regi|(*read_or_write<<7), *data ); 
+} 
+ 
+void Print_Output(char value){ 
+ 
+if (value) 
+ 
+ 
+Goto_Read_Write(); 
+ 
+else if (SUCCEED == I2C_Get_Acc_Data( &data1, &data2)){ 
+ 
+ 
+char text[16]; 
+ 
+ 
+sprintf(text, "\n\rR:%X\tD:%X", data1, data2); 
+ 
+ 
+USART0_Add_String_To_Buffert ( text ); 
+ 
+} 
+ 
+else; 
+} 
+ 
+void Meny(char value){ 
+ 
+meny_function_pointer(value); 
+ 
+} 
+ 
+Queue.c 
+#include "queue.h" 
+#include <stdlib.h> 
+ 
+#define MinQueueSize (5) 
+ 
+struct QueueRecord { 
+  int Capacity; 
+  int Front; 
+  int Rear; 
+  int Size; 
+  ElementType *Array; 
+}; 
+ 
+int IsEmpty(Queue Q) { 
+  return Q->Size == 0; 
+} 
+ 
+int IsFull(Queue Q) { 
+  return Q->Size == Q->Capacity; 
+} 
+ 
+Queue CreateQueue(int MaxElements) { 
+  Queue Q; 
+ 
+  if (MaxElements < MinQueueSize) { 
+    //Error("CreateQueue Error: Queue size is too small."); 
+  } 
+ 
+  Q = malloc (sizeof(struct QueueRecord)); 
+  if (Q == NULL) { 
+    //FatalError("CreateQueue Error: Unable to allocate more memory."); 
+  } 
+ 
+  Q->Array = malloc( sizeof(ElementType) * MaxElements ); 
+  if (Q->Array == NULL) { 
+    //FatalError("CreateQueue Error: Unable to allocate more memory."); 
+  } 
+ 
+  Q->Capacity = MaxElements; 
+  MakeEmpty(Q); 
+ 
+  return Q; 
+} 
+ 
+void MakeEmpty(Queue Q) { 
+ 
+  Q->Size = 0; 
+  Q->Front = 1; 
+  Q->Rear = 0; 
+ 
+} 
+ 
+void DisposeQueue(Queue Q) { 
+  if (Q != NULL) { 
+    free(Q->Array); 
+    free(Q); 
+  } 
+} 
+ 
+static int Succ(int Value, Queue Q) { 
+  if (++Value == Q->Capacity) { 
+    Value = 0; 
+  } 
+  return Value; 
+} 
+ 
+void Enqueue(ElementType X, Queue Q) { 
+ 
+  if (!IsFull(Q)) { 
+    Q->Size++; 
+    Q->Rear = Succ(Q->Rear, Q); 
+    Q->Array[Q->Rear] = X; 
+  } 
+ 
+} 
+ 
+ElementType Front(Queue Q) { 
+ 
+  if (!IsEmpty(Q)) { 
+    return Q->Array[Q->Front]; 
+  } 
+  return 0; 
+ 
+} 
+ 
+void Dequeue(Queue Q) { 
+ 
+  if (!IsEmpty(Q)) { 
+    Q->Size--; 
+    Q->Front = Succ(Q->Front, Q); 
+  } 
+ 
+} 
+ 
+ElementType FrontAndDequeue(Queue Q) { 
+ 
+  ElementType X = 0; 
+ 
+  if (!IsEmpty(Q)) { 
+    Q->Size--; 
+    X = Q->Array[Q->Front]; 
+    Q->Front = Succ(Q->Front, Q); 
+  } 
+  return X; 
+ 
+} 
+ 
+Usart.c 
+#include "Usart.h" 
+ 
+Queue usart1_rs; 
+Queue usart1_ts; 
+ 
+Queue usart0_rs; 
+Queue usart0_ts; 
+ 
+char USART1_Resive_Buffert(void){ 
+ 
+return FrontAndDequeue(usart1_rs); 
+} 
+ 
+char USART1_Add_To_Send_Buffert (char value){ 
+ 
+Enqueue(value,usart1_ts); 
+ 
+UCSR1B |= (1<<UDRIE1); 
+ 
+return 1; 
+} 
+ 
+char USART1_Add_String_To_Buffert (char *string){ 
+ 
+while ( *string ) 
+ 
+ 
+USART1_Add_To_Send_Buffert (*string++); 
+ 
+return 1; 
+} 
+ 
+char USART0_Resive_Buffert(void){ 
+ 
+return FrontAndDequeue(usart0_rs); 
+ 
+ 
+} 
+ 
+char USART0_Add_To_Send_Buffert (char value){ 
+ 
+Enqueue(value,usart0_ts); 
+ 
+UCSR0B |= (1<<UDRIE0); 
+ 
+return 1; 
+} 
+ 
+char USART0_Add_String_To_Buffert (char *string){ 
+ 
+while ( *string ) 
+ 
+ 
+USART0_Add_To_Send_Buffert (*string++); 
+ 
+return 1; 
+} 
+ 
+void USART_Test(void){ 
+ 
+USART1_Add_String_To_Buffert ( "\n\rBT USART fungerar" ); 
+ 
+USART0_Add_String_To_Buffert ( "\n\rPC USART fungerar" ); 
+} 
+ 
+int Is_USART1_Empty(){ 
+ 
+return IsEmpty(usart1_rs); 
+} 
+ 
+int Is_USART0_Empty(){ 
+ 
+return IsEmpty(usart0_rs); 
+} 
+ 
+void Clear_USART0_Send_Interrupts(){ 
+ 
+// 
+} 
+ 
+//////////////////////////////////////////////////////////////////// 
+// Interrupts 
+ 
+ISR(USART1_UDRE_vect) { 
+ 
+UDR1 = FrontAndDequeue ( usart1_ts ); 
+ 
+if (IsEmpty(usart1_ts)) 
+ 
+ 
+UCSR1B &= ~(1<<UDRIE1); 
+} 
+ 
+ISR(USART1_RX_vect) { 
+ 
+Enqueue ( UDR1, usart1_rs ); 
+} 
+ 
+ISR(USART0_UDRE_vect) { 
+ 
+UDR0 = FrontAndDequeue ( usart0_ts ); 
+ 
+if (IsEmpty(usart0_ts)) 
+ 
+ 
+UCSR0B &= ~(1<<UDRIE0); 
+} 
+ 
+ISR(USART0_RX_vect) { 
+ 
+Enqueue ( UDR0, usart0_rs ); 
+} 
+ 
+//////////////////////////////////////////////////////////////////// 
+// Initsiering 
+ 
+void USART1_Init( unsigned int baud){ 
+ 
+/* Set baud rate */ 
+ 
+UBRR1H = (unsigned char)(baud>>8); 
+ 
+UBRR1L = (unsigned char)baud; 
+ 
+/* Enable receiver and transmitter */ 
+ 
+UCSR1B |= (1<<RXEN1)|(1<<TXEN1); 
+ 
+/* Enable resive interrupts */ 
+ 
+UCSR1B |= (1<<RXCIE1); 
+ 
+/* Set frame format: 8data, 2stop bit */ 
+ 
+UCSR1C = (1<<USBS1)|(3<<UCSZ10); 
+ 
+ 
+usart1_rs = CreateQueue(QUEUE_L); 
+ 
+usart1_ts = CreateQueue(QUEUE_L); 
+} 
+ 
+void USART0_Init( unsigned int baud){ 
+ 
+/* Set baud rate */ 
+ 
+UBRR0H = (unsigned char)(baud>>8); 
+ 
+UBRR0L = (unsigned char)baud; 
+ 
+/* Enable receiver and transmitter */ 
+ 
+UCSR0B = (1<<RXEN0)|(1<<TXEN0); 
+ 
+/* Enable resive interrupts */ 
+ 
+UCSR0B |= (1<<RXCIE0); 
+ 
+/* Set frame format: 8data, 2stop bit */ 
+ 
+UCSR0C = (1<<USBS0)|(3<<UCSZ00); 
+ 
+ 
+usart0_rs = CreateQueue(QUEUE_L); 
+ 
+usart0_ts = CreateQueue(QUEUE_L); 
+} 
+ 
+ 
+Mobilkod 
+BlueCon.cpp 
+#include "BlueCon.h" 
+#include "BlueCodeView.h" 
+#include "BlueCodeGlobals.h" 
+ 
+#include <eiklabel.h> 
+#include <eikedwin.h> 
+#include "BlueCode.hrh" 
+ 
+easyBlue* easyBlue::NewL() 
+ 
+{ 
+ 
+easyBlue* self = new (ELeave) easyBlue(); 
+ 
+CleanupStack::PushL (self); 
+ 
+self->ConstructL (); 
+ 
+CleanupStack::Pop (); 
+ 
+return self; 
+ 
+} 
+ 
+//Constructor 
+easyBlue::easyBlue() : 
+ 
+CActive(CActive::EPriorityStandard) 
+ 
+{ 
+ 
+} 
+ 
+void easyBlue::SetPointer(CBlueCodeView* aView, CBlueCodeDispView* 
+aDispView) 
+ 
+{ 
+ 
+iPtrView = aView; 
+ 
+iPtrDispView = aDispView; 
+ 
+} 
+ 
+//Initialize active object. 
+void easyBlue::ConstructL() 
+ 
+{ 
+ 
+//Add the active object to the Active Scheduler.  
+ 
+//If not will end up with the E32User-CBase panic when our async 
+request completes.  
+ 
+//CActiveScheduler::Add() method is leave-safe so actually it 
+can be called in active object's constructor. 
+ 
+CActiveScheduler::Add (this); 
+ 
+array = new CArrayFixSeg<TNameEntry>(20); 
+ 
+accState = EAccOff; 
+ 
+} 
+ 
+//Destructor. 
+void easyBlue::DoCancel() 
+ 
+{ 
+ 
+_LIT(alertTxt,"Why??"); 
+ 
+TBufC<128> bufr(alertTxt); 
+ 
+} 
+easyBlue::~easyBlue() 
+ 
+{ 
+ 
+_LIT(alertTxt,"Destructor"); 
+ 
+TBufC<128> bufr(alertTxt); 
+ 
+CEikonEnv::Static()->AlertWin (bufr); 
+ 
+ 
+//Cancel() should be always called in active object's destructor 
+to cancel an outstanding request if there is one.  
+ 
+//If there is no request pending then Cancel() just does 
+nothing,  
+ 
+//but if we do not call Cancel() when having an outstanding 
+request E32User-CBase panic 40 will be raised. 
+ 
+iSocketServ.Close (); 
+ 
+ 
+if ( array) 
+ 
+ 
+delete array; 
+ 
+ 
+Cancel (); 
+ 
+} 
+ 
+void easyBlue::blueDiscoverL() 
+ 
+{ 
+ 
+// 
+__ASSERT_ALWAYS(!IsActive(), 
+User::Panic(KMyActivePanic, EAlreadyActive)); 
+ 
+// 
+__ASSERT_ALWAYS(aObserver, 
+User::Panic(KMyActivePanic, ENoObserver)); 
+ 
+//Socket protocol information for use by clients. 
+ 
+ 
+ 
+array->Delete( 0, array->Count() ); 
+ 
+iPtrView->ClearList (); 
+ 
+iPtrView->SetSearchInvisible (ETrue); 
+ 
+Searching = ETrue; 
+ 
+ 
+TProtocolDesc pInfo; 
+ 
+_LIT(KLinkMan, "BTLinkManager"); 
+ 
+TProtocolName name(KLinkMan); 
+ 
+ 
+// precondition : iSocketServer has been connected succesfully 
+ 
+TInt retVal = KErrNone; 
+ 
+if ( User::LeaveIfError (iSocketServ.Connect ())== KErrNone) 
+ 
+ 
+{ 
+ 
+ 
+//print pInfo for info below for debugging 
+ 
+ 
+if ( (retVal = User::LeaveIfError 
+(iSocketServ.FindProtocol (name, pInfo)))== KErrNone) 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+//Open an host resolver, this generates 
+KErrPermissionDenied, because of no capabilities? 
+ 
+ 
+ 
+if ( (retVal = 
+(iHostResolver.Open(iSocketServ,pInfo.iAddrFamily,pInfo.iProtocol))) == 
+KErrNone) 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+//set up inquiry adress, KGIAC 
+mean general discovery 
+ 
+ 
+ 
+ 
+iInquiryAddr.SetIAC (KGIAC); 
+ 
+ 
+ 
+ 
+iInquiryAddr.SetAction 
+(KHostResInquiry|KHostResName); 
+ 
+ 
+ 
+ 
+iHostResolver.GetByAddress 
+(iInquiryAddr, iNameEntry, iStatus); 
+ 
+ 
+ 
+ 
+//Indicates that the active 
+object has issued a request and that it is now outstanding. 
+ 
+ 
+ 
+ 
+ 
+iCurrentState = ESearchDone; 
+ 
+ 
+ 
+ 
+ 
+SetActive (); 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+else 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+_LIT(alertTxt,"Not opened: "); 
+ 
+ 
+ 
+ 
+TBuf<128> bufr(alertTxt); 
+ 
+ 
+ 
+ 
+bufr.AppendNum (retVal); 
+ 
+ 
+ 
+ 
+ 
+CEikonEnv::Static()->AlertWin 
+(bufr); 
+ 
+ 
+ 
+ 
+SetActive (); 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+} 
+ 
+ 
+} 
+ 
+} 
+ 
+void easyBlue::Disconnect() 
+ 
+{ 
+ 
+ 
+ 
+iCurrentState = EDisconnectDone; 
+ 
+iSocket.CancelRecv (); 
+ 
+if ( !IsActive()) 
+ 
+ 
+SetActive (); 
+ 
+} 
+ 
+void easyBlue::blueAnslut(TInt aItemIndex) 
+ 
+{ 
+ 
+mrItemIndex = aItemIndex; 
+ 
+if ( Searching ) 
+ 
+ 
+{ 
+ 
+ 
+iCurrentState = ECancelSearchDone; 
+ 
+ 
+iHostResolver.Cancel (); 
+ 
+ 
+if ( !IsActive()) 
+ 
+ 
+ 
+SetActive (); 
+ 
+ 
+} 
+ 
+else 
+ 
+ 
+Connect (); 
+ 
+} 
+ 
+ 
+void easyBlue::Connect() 
+ 
+{ 
+ 
+TProtocolDesc pInfo; 
+ 
+ 
+User::LeaveIfError (iSocketServ.Connect (2)); 
+ 
+ 
+_LIT(KLinkMan, "RFCOMM"); 
+ 
+//_LIT(KLinkMan, "BTLinkManager"); 
+ 
+TProtocolName name(KLinkMan); 
+ 
+User::LeaveIfError (iSocketServ.FindProtocol (name, pInfo)); 
+ 
+ 
+iSocket.Open (iSocketServ, pInfo.iAddrFamily, pInfo.iSockType, 
+KRFCOMM); 
+ 
+ 
+TNameEntry iName = array->At (mrItemIndex); 
+ 
+remBTSockAddr = iName().iAddr; 
+ 
+//turn off all security 
+ 
+securitySettings.SetUid (KUidBlueCodeApp); 
+ 
+securitySettings.SetAuthentication (EFalse); 
+ 
+securitySettings.SetAuthorisation (EFalse); 
+ 
+securitySettings.SetEncryption (EFalse); 
+ 
+securitySettings.SetDenied ( EFalse); 
+ 
+//myUid = securitySettings.Uid (); 
+ 
+// Create a Bluetooth socket address and set the sequrity 
+settings 
+ 
+iBTSockAddr.SetSecurity (securitySettings); 
+ 
+remBTSockAddr.SetSecurity (securitySettings); 
+ 
+//set the adress 
+ 
+remBTSockAddr.SetBTAddr (remBTSockAddr.BTAddr ()); 
+ 
+remChannel = 1; 
+ 
+channel = 1; 
+ 
+remBTSockAddr.SetPort (remChannel); 
+ 
+ 
+iBTSockAddr.SetPort (channel); 
+ 
+ 
+iSocket.Connect (remBTSockAddr, iStatus); 
+ 
+ 
+iCurrentState = EConnectingDone; 
+ 
+ 
+if ( !IsActive()) 
+ 
+ 
+SetActive (); 
+ 
+} 
+ 
+//runL is called when the active object wants to request complete 
+void easyBlue::RunL() 
+ 
+{ 
+ 
+switch (iCurrentState) 
+ 
+ 
+{ 
+ 
+ 
+case ESearchDone: 
+ 
+ 
+ 
+switch (iStatus.Int ()) 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+case KErrNone: 
+ 
+ 
+ 
+ 
+ 
+iPtrView->AddToList 
+(iNameEntry().iName); 
+ 
+ 
+ 
+ 
+ 
+array->AppendL 
+(iNameEntry); 
+ 
+ 
+ 
+ 
+ 
+iHostResolver.Next 
+(iNameEntry, iStatus); 
+ 
+ 
+ 
+ 
+ 
+SetActive (); 
+ 
+ 
+ 
+ 
+ 
+break; 
+ 
+ 
+ 
+ 
+case KErrHostResNoMoreResults: 
+ 
+ 
+ 
+ 
+ 
+Searching = EFalse; 
+ 
+ 
+ 
+ 
+ 
+iPtrView-
+>SetSearchInvisible (EFalse); 
+ 
+ 
+ 
+ 
+ 
+break; 
+ 
+ 
+ 
+ 
+default: 
+ 
+ 
+ 
+ 
+ 
+Searching = EFalse; 
+ 
+ 
+ 
+ 
+ 
+_LIT(alertTxt,"Error 
+SearchDone: "); 
+ 
+ 
+ 
+ 
+ 
+TBuf<128> 
+bufr(alertTxt); 
+ 
+ 
+ 
+ 
+ 
+bufr.AppendNum 
+(iStatus.Int ()); 
+ 
+ 
+ 
+ 
+ 
+CEikonEnv::Static()-
+>AlertWin (bufr); 
+ 
+ 
+ 
+ 
+ 
+iPtrView-
+>SetSearchInvisible (EFalse); 
+ 
+ 
+ 
+ 
+ 
+break; 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+break; 
+ 
+ 
+case ECancelSearchDone: 
+ 
+ 
+ 
+if ( iStatus.Int ()== KErrCancel) 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+Connect (); 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+else 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+_LIT(alertTxt,"Error 
+CancelReadingDone: "); 
+ 
+ 
+ 
+ 
+TBuf<128> bufr(alertTxt); 
+ 
+ 
+ 
+ 
+bufr.AppendNum (iStatus.Int ()); 
+ 
+ 
+ 
+ 
+CEikonEnv::Static()->AlertWin 
+(bufr); 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+break; 
+ 
+ 
+case EConnectingDone: 
+ 
+ 
+ 
+if ( iStatus.Int ()== KErrNone) 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+BlueRead (); 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+else 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+_LIT(alertTxt,"Error 
+ConnectingDone: "); 
+ 
+ 
+ 
+ 
+TBuf<128> bufr(alertTxt); 
+ 
+ 
+ 
+ 
+bufr.AppendNum (iStatus.Int ()); 
+ 
+ 
+ 
+ 
+CEikonEnv::Static()->AlertWin 
+(bufr); 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+break; 
+ 
+ 
+case ESendingDone: 
+ 
+ 
+ 
+if ( iStatus.Int ()== KErrNone) 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+BlueRead (); 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+else 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+_LIT(alertTxt,"Error 
+SendingDone: "); 
+ 
+ 
+ 
+ 
+TBuf<128> bufr(alertTxt); 
+ 
+ 
+ 
+ 
+bufr.AppendNum (iStatus.Int ()); 
+ 
+ 
+ 
+ 
+CEikonEnv::Static()->AlertWin 
+(bufr); 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+break; 
+ 
+ 
+case EReadingDone: 
+ 
+ 
+ 
+if ( iStatus.Int ()== KErrNone) 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+if (buf.Length() >= 128) 
+ 
+ 
+ 
+ 
+ 
+buf.Delete (0, 128); 
+ 
+ 
+ 
+ 
+buf.Append (iMsgBuffer); 
+ 
+ 
+ 
+ 
+TInt commandnum; 
+ 
+ 
+ 
+ 
+TBuf8<32> data_buf; 
+ 
+ 
+ 
+ 
+if ( CommandIn ( &buf, 
+&commandnum, &data_buf)) 
+ 
+ 
+ 
+ 
+ 
+CommandHandler 
+(&commandnum, &data_buf); 
+ 
+ 
+ 
+ 
+BlueRead (); 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+else 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+_LIT(alertTxt,"Error 
+ReadingDone: "); 
+ 
+ 
+ 
+ 
+TBuf<128> bufr(alertTxt); 
+ 
+ 
+ 
+ 
+bufr.AppendNum (iStatus.Int ()); 
+ 
+ 
+ 
+ 
+CEikonEnv::Static()->AlertWin 
+(bufr); 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+break; 
+ 
+ 
+case ECancelReadingDone: 
+ 
+ 
+ 
+if (( iStatus.Int ()== KErrCancel) || ( 
+iStatus.Int ()== KErrNone)) 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+SendOnOffAcc(); 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+else 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+_LIT(alertTxt,"Error 
+CancelReadingDone: "); 
+ 
+ 
+ 
+ 
+TBuf<128> bufr(alertTxt); 
+ 
+ 
+ 
+ 
+bufr.AppendNum (iStatus.Int ()); 
+ 
+ 
+ 
+ 
+CEikonEnv::Static()->AlertWin 
+(bufr); 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+break; 
+ 
+ 
+case EDisconnectDone: 
+ 
+ 
+ 
+if (( iStatus.Int ()== KErrCancel) || ( 
+iStatus.Int ()== KErrNone)) 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+iSocket.Close (); 
+ 
+ 
+ 
+ 
+iSocketServ.Close (); 
+ 
+ 
+ 
+ 
+iPtrView->SetSearchInvisible 
+(EFalse); 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+else 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+_LIT(alertTxt,"Error 
+EDisconnectDone: "); 
+ 
+ 
+ 
+ 
+TBuf<128> bufr(alertTxt); 
+ 
+ 
+ 
+ 
+bufr.AppendNum (iStatus.Int ()); 
+ 
+ 
+ 
+ 
+CEikonEnv::Static()->AlertWin 
+(bufr); 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+break; 
+ 
+ 
+} 
+ 
+} 
+ 
+void easyBlue::BlueRead() 
+ 
+{ 
+ 
+iCurrentState = EReadingDone; 
+ 
+iSocket.RecvOneOrMore (iMsgBuffer, 0, iStatus, iLength); 
+ 
+if ( !IsActive()) 
+ 
+ 
+SetActive (); 
+ 
+} 
+ 
+void easyBlue::BlueSend(TChar command, TBuf8<32>* data) 
+ 
+{ 
+ 
+TBuf8<64> SendBuffer; 
+ 
+ 
+SendBuffer.Append (Command_Mask); 
+ 
+SendBuffer.Append (command); 
+ 
+SendBuffer.Append (Length_Mask); 
+ 
+SendBuffer.Append (data->Length ()); 
+ 
+SendBuffer.Append (Data_Mask); 
+ 
+SendBuffer.Append (*data); 
+ 
+SendBuffer.Append (Stop_Mask); 
+ 
+ 
+iCurrentState = ESendingDone; 
+ 
+TRAPD(err, iSocket.Write(SendBuffer, iStatus)); 
+ 
+if ( !IsActive()) 
+ 
+ 
+SetActive (); 
+ 
+} 
+ 
+TInt easyBlue::CommandIn(TBuf8<256>* buf, TInt* command, TBuf8<32>* data) 
+ 
+{ 
+ 
+TInt pos; 
+ 
+TInt stringlength; 
+ 
+TInt datalength; 
+ 
+TInt status = EFalse; 
+ 
+ 
+if ( KErrNone == (pos = buf->Find (Command_Mask))) 
+ 
+ 
+{ 
+ 
+ 
+stringlength = buf->Length ()- pos; 
+ 
+ 
+buf->Delete (0, pos); 
+ 
+ 
+if ( stringlength>= 30) 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+if ( buf->MidTPtr(7).CompareC 
+(Length_Mask)) 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+if (buf->MidTPtr(15).CompareC 
+(Data_Mask)) 
+ 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+ 
+*command = (*buf)[6]; 
+ 
+ 
+ 
+ 
+ 
+datalength = 
+(*buf)[14]; 
+ 
+ 
+ 
+ 
+ 
+if ( stringlength>= 
+30 + datalength) 
+ 
+ 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+if ( 0 <= 
+buf->MidTPtr(datalength + 22).CompareC (Stop_Mask)) 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+data->Copy ((*buf).Mid (22, datalength)); 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+buf->Delete (0, 30+datalength); 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+status = ETrue; 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+} 
+ 
+ 
+} 
+ 
+else  
+ 
+ 
+{ 
+ 
+ 
+if (buf->Length ()>6) 
+ 
+ 
+ 
+buf->Delete (0, stringlength-6); 
+ 
+ 
+} 
+ 
+ 
+return status; 
+ 
+} 
+ 
+void easyBlue::CommandHandler(TInt* command, TBuf8<32>* data) 
+ 
+{ 
+ 
+switch (*command) 
+ 
+ 
+{ 
+ 
+ 
+case 'A': 
+ 
+ 
+ 
+iPtrDispView->LabelPrinter 
+(EBlueCommandoLabelCtrl, _L("A Command")); 
+ 
+ 
+ 
+iPtrDispView->LabelPrinter 
+(EBlueDataLabelCtrl, _L("Data Resived")); 
+ 
+ 
+ 
+ 
+TInt16 AccXData, AccYData, AccZData; 
+ 
+ 
+ 
+ResiveAccData (data, &AccXData, &AccYData, 
+&AccZData); 
+ 
+ 
+ 
+DisplayAccData (&AccXData, &AccYData, 
+&AccZData); 
+ 
+ 
+ 
+break; 
+ 
+ 
+case 'P': 
+ 
+ 
+ 
+iPtrDispView->PrintMsg ( *data); 
+ 
+ 
+ 
+break; 
+ 
+ 
+case 'N': 
+ 
+ 
+ 
+if ( 0 == (*data)[0]) 
+ 
+ 
+ 
+ 
+iPtrDispView->PrintMsg 
+(_L8("Knapp1 ON")); 
+ 
+ 
+ 
+else 
+ 
+ 
+ 
+ 
+iPtrDispView->PrintMsg 
+(_L8("Knapp1 OFF")); 
+ 
+ 
+ 
+break; 
+ 
+ 
+case 'M': 
+ 
+ 
+ 
+ 
+if ( 0 == (*data)[0]) 
+ 
+ 
+ 
+ 
+iPtrDispView->PrintMsg 
+(_L8("Knapp2 ON")); 
+ 
+ 
+ 
+else 
+ 
+ 
+ 
+ 
+iPtrDispView->PrintMsg 
+(_L8("Knapp2 OFF")); 
+ 
+ 
+ 
+break; 
+ 
+ 
+default: 
+ 
+ 
+ 
+CEikonEnv::Static()->AlertWin (_L("A Other 
+command")); 
+ 
+ 
+ 
+break; 
+ 
+ 
+} 
+ 
+} 
+ 
+void easyBlue::ResiveAccData(TBuf8<32>* data, TInt16* aAccXData, 
+ 
+ 
+TInt16* aAccYData, TInt16* aAccZData) 
+ 
+{ 
+ 
+*aAccXData = (*data)[0] + (*data)[1]*256; 
+ 
+*aAccYData = (*data)[2] + (*data)[3]*256; 
+ 
+*aAccZData = (*data)[4] + (*data)[5]*256; 
+ 
+} 
+ 
+void easyBlue::DisplayAccData(TInt16* aAccXData, TInt16* aAccYData, 
+ 
+ 
+TInt16* aAccZData) 
+ 
+{ 
+ 
+TBuf<32> string; 
+ 
+ 
+string = _L("X:"); 
+ 
+string.AppendNum (*aAccXData); 
+ 
+iPtrDispView->LabelPrinter (EBlueXLabelCtrl, string); 
+ 
+ 
+string = _L("Y:"); 
+ 
+string.AppendNum (*aAccYData); 
+ 
+iPtrDispView->LabelPrinter (EBlueYLabelCtrl, string); 
+ 
+ 
+string = _L("Z:"); 
+ 
+string.AppendNum (*aAccZData); 
+ 
+iPtrDispView->LabelPrinter (EBlueZLabelCtrl, string); 
+ 
+} 
+ 
+void easyBlue::SendOnOffAcc(void) 
+ 
+{ 
+ 
+TBuf8<32> temp_buf; 
+ 
+switch (accState) 
+ 
+ 
+{ 
+ 
+ 
+case EAccOff: 
+ 
+ 
+ 
+temp_buf.Append (4); 
+ 
+ 
+ 
+BlueSend ('C', &temp_buf); 
+ 
+ 
+ 
+accState = EAccOn; 
+ 
+ 
+ 
+break; 
+ 
+ 
+case EAccOn: 
+ 
+ 
+ 
+temp_buf.Append (0); 
+ 
+ 
+ 
+BlueSend ('C', &temp_buf); 
+ 
+ 
+ 
+accState = ESendRepet; 
+ 
+ 
+ 
+break; 
+ 
+ 
+case ESendRepet: 
+ 
+ 
+ 
+temp_buf.Append (_L8("Test send!")); 
+ 
+ 
+ 
+BlueSend ('R', &temp_buf); 
+ 
+ 
+ 
+accState = EAccOff; 
+ 
+ 
+ 
+break; 
+ 
+ 
+} 
+ 
+} 
+ 
+void easyBlue::CancelReading(void) 
+ 
+{ 
+ 
+iCurrentState = ECancelReadingDone; 
+ 
+iSocket.CancelRecv (); 
+ 
+if ( !IsActive()) 
+ 
+ 
+SetActive (); 
+ 
+} 
+ 
+BlueCodeView.cpp 
+/* 
+ 
+===========================================================================
+= 
+ Name 
+ 
+: CBlueCodeView from BlueCodeView.h 
+ Author 
+  :  
+ Version 
+ : 
+ Copyright   : Your copyright notice 
+ Description : CBlueCodeView implementation 
+ 
+===========================================================================
+= 
+ */ 
+ 
+#include <QikCommand.h> 
+#include <BlueCode.rsg> 
+#include <QikListBoxModel.h> 
+#include <QikListBox.h> 
+#include <QikListBoxData.h> 
+#include <eiklabel.h> 
+ 
+#include "BlueCodeAppUi.h" 
+#include "BlueCodeView.h" 
+#include "BlueCode.hrh" 
+#include "BlueCodeGlobals.h" 
+ 
+/** 
+ Creates and constructs the view. 
+ 
+ @param aAppUi Reference to the AppUi 
+ @return Pointer to a CBlueCodeView object 
+ */ 
+CBlueCodeView* CBlueCodeView::NewLC(CQikAppUi& aAppUi, easyBlue* aeasyBlue) 
+ 
+{ 
+ 
+CBlueCodeView* self = new(ELeave) CBlueCodeView(aAppUi, 
+aeasyBlue); 
+ 
+CleanupStack::PushL (self); 
+ 
+self->ConstructL (); 
+ 
+return self; 
+ 
+} 
+ 
+/** 
+ Constructor for the view. 
+ Passes the application UI reference to the construction of the super 
+class. 
+ 
+ KNullViewId should normally be passed as parent view for the applications 
+ default view. The parent view is the logical view that is normally 
+activated 
+ when a go back command is issued. KNullViewId will activate the system 
+ default view. 
+ 
+ @param aAppUi Reference to the application UI 
+ */ 
+CBlueCodeView::CBlueCodeView(CQikAppUi& aAppUi, easyBlue* aeasyBlue) : 
+ 
+CQikViewBase(aAppUi, KNullViewId), 
+iCommandManager(CQikCommandManager::Static(*iCoeEnv)), mrBlue(aeasyBlue) 
+ 
+{ 
+ 
+} 
+ 
+/** 
+ Destructor for the view 
+ */ 
+CBlueCodeView::~CBlueCodeView() 
+ 
+{ 
+ 
+} 
+ 
+/** 
+ 2nd stage construction of the App UI. 
+ */ 
+void CBlueCodeView::ConstructL() 
+ 
+{ 
+ 
+// Calls ConstructL that initialises the standard values. 
+ 
+// This should always be called in the concrete view 
+implementations. 
+ 
+CQikViewBase::ConstructL (); 
+ 
+//mrBlue = easyBlue::NewL (this);
+ 
+/*CActive::EPriorityStandard, */ 
+ 
+} 
+ 
+/** 
+ Inherited from CQikViewBase and called upon by the UI Framework. 
+ It creates the view from resource. 
+ */ 
+void CBlueCodeView::ViewConstructL() 
+ 
+{ 
+ 
+// Loads information about the UI configurations this view 
+supports 
+ 
+// together with definition of each view. 
+ 
+ViewConstructFromResourceL (R_MY_LISTBOX_UI_CONFIGURATIONS); 
+ 
+// Get a pointer to the list box 
+ 
+CQikListBox 
+ 
+ 
+ 
+* listBox = 
+LocateControlByUniqueHandle<CQikListBox> (EListBoxListViewListCtrl); 
+ 
+// To be able to handle the list box events, 
+HandleListBoxEventL. 
+ 
+listBox->SetListBoxObserver (this); 
+ 
+} 
+ 
+/** 
+ Returns the view Id 
+ 
+ @return Returns the Uid of the view 
+ */ 
+TVwsViewId CBlueCodeView::ViewId()const 
+ 
+{ 
+ 
+return TVwsViewId (KUidBlueCodeApp, KUidBlueCodeView); 
+ 
+} 
+ 
+/* 
+ Handles all commands in the view 
+ Called by the UI framework when a command has been issued. 
+ The command Ids are defined in the .hrh file. 
+ 
+ @param aCommand The command to be executed 
+ @see CQikViewBase::HandleCommandL 
+ */ 
+void CBlueCodeView::HandleCommandL(CQikCommand& aCommand) 
+ 
+{ 
+ 
+switch (aCommand.Id ()) 
+ 
+ 
+{ 
+ 
+ 
+// Just issue simple info messages to show that 
+ 
+ 
+// the commands have been selected 
+ 
+ 
+ 
+case EBlueCodeSearchCmd: //EBlueCodeInfoPrint1Cmd: 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+// Seartch for bluetooth devices 
+ 
+ 
+ 
+mrBlue->blueDiscoverL (); 
+ 
+ 
+ 
+mrBlue->DoCancel (); 
+ 
+ 
+ 
+break; 
+ 
+ 
+ 
+} 
+ 
+ 
+case EBlueCodeCloseCmd: 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+// close application 
+ 
+ 
+ 
+User::Exit (0); 
+ 
+ 
+ 
+break; 
+ 
+ 
+ 
+} 
+ 
+ 
+ 
+// Go back and exit command will be passed 
+to the CQikViewBase to handle. 
+ 
+ 
+default: 
+ 
+ 
+ 
+CQikViewBase::HandleCommandL (aCommand); 
+ 
+ 
+ 
+break; 
+ 
+ 
+} 
+ 
+} 
+ 
+void CBlueCodeView::HandleListBoxEventL(CQikListBox* /*aListBox*/, 
+ 
+ 
+TQikListBoxEvent aEventType, TInt aItemIndex, TInt 
+/*aSlotId*/) 
+ 
+{ 
+ 
+switch (aEventType) 
+ 
+ 
+{ 
+ 
+ 
+case EEventItemConfirmed: 
+ 
+ 
+case EEventItemTapped: 
+ 
+ 
+ 
+mrBlue->blueAnslut ( aItemIndex); 
+ 
+ 
+ 
+iQikAppUi.ActivateViewL(TVwsViewId 
+(KUidBlueCodeApp, KUidBlueCodeDispView)); 
+ 
+ 
+ 
+break; 
+ 
+ 
+default: 
+ 
+ 
+ 
+break; 
+ 
+ 
+} 
+ 
+} 
+ 
+void CBlueCodeView::AddToList(TBuf<128> aString) 
+ 
+{ 
+ 
+// Get the list box and the list box model 
+ 
+const CQikListBox 
+ 
+ 
+ 
+* listBox = 
+LocateControlByUniqueHandle<const CQikListBox> (EListBoxListViewListCtrl); 
+ 
+MQikListBoxModel& model(listBox->Model ()); 
+ 
+// Informs the list box model that there will be an update of 
+the data. 
+ 
+// Notify the list box model that changes will be made after 
+this point. 
+ 
+// Observe that a cleanupitem has been put on the cleanupstack 
+and  
+ 
+// will be removed by ModelEndUpdateL. This means that you have 
+to  
+ 
+// balance the cleanupstack. 
+ 
+// When you act directly on the model you always need to 
+encapsulate  
+ 
+// the calls between ModelBeginUpdateLC and ModelEndUpdateL. 
+ 
+model.ModelBeginUpdateLC (); 
+ 
+MQikListBoxData 
+ 
+ 
+ 
+* listBoxData = model.NewDataL 
+(MQikListBoxModel::EDataNormal); 
+ 
+// Pushes the data onto the cleanup stack.  
+ 
+// When CleanupStack::PopAndDestroy() is called, the data will 
+be closed. 
+ 
+CleanupClosePushL (*listBoxData); 
+ 
+// Adds the text that will be visible in the list box 
+ 
+listBoxData->AddTextL (aString, EQikListBoxSlotText1); 
+ 
+// Removes the listBoxData from the stack and calls close on 
+listBoxData 
+ 
+CleanupStack::PopAndDestroy (listBoxData); 
+ 
+// Informs that the update of the list box model has ended 
+ 
+model.ModelEndUpdateL (); 
+ 
+} 
+ 
+void CBlueCodeView::SetSearchInvisible(TBool TrueOrFalse) 
+ 
+{ 
+ 
+iCommandManager.SetInvisible(*this, EBlueCodeSearchCmd, 
+TrueOrFalse); 
+ 
+} 
+ 
+void CBlueCodeView::ClearList() 
+ 
+{ 
+ 
+const CQikListBox 
+ 
+ 
+ 
+* listBox = 
+LocateControlByUniqueHandle<const CQikListBox> (EListBoxListViewListCtrl); 
+ 
+MQikListBoxModel& model(listBox->Model ()); 
+ 
+model.RemoveAllDataL(); 
+ 
+} 
+ 
+//////////////////////////////////////////////////////////////// 
+//------------------------------------------------------------// 
+//--------------------- Display view -------------------------// 
+//------------------------------------------------------------// 
+//////////////////////////////////////////////////////////////// 
+ 
+CBlueCodeDispView* CBlueCodeDispView::NewLC(CQikAppUi& aAppUi, easyBlue* 
+aeasyBlue) 
+ 
+{ 
+ 
+CBlueCodeDispView* self = new(ELeave) CBlueCodeDispView(aAppUi, 
+aeasyBlue); 
+ 
+CleanupStack::PushL (self); 
+ 
+self->ConstructL (); 
+ 
+return self; 
+ 
+} 
+ 
+CBlueCodeDispView::CBlueCodeDispView(CQikAppUi& aAppUi, easyBlue* 
+aeasyBlue) : 
+ 
+CQikViewBase(aAppUi, KNullViewId), mrBlue(aeasyBlue) 
+ 
+{ 
+ 
+} 
+ 
+CBlueCodeDispView::~CBlueCodeDispView() 
+ 
+{ 
+ 
+} 
+ 
+void CBlueCodeDispView::ConstructL() 
+ 
+{ 
+ 
+CQikViewBase::ConstructL (); 
+ 
+} 
+ 
+void CBlueCodeDispView::ViewConstructL() 
+ 
+{ 
+ 
+ViewConstructFromResourceL (R_MY_VIEW_UI_CONFIGURATIONS); 
+ 
+} 
+ 
+TVwsViewId CBlueCodeDispView::ViewId()const 
+ 
+{ 
+ 
+return TVwsViewId (KUidBlueCodeApp, KUidBlueCodeDispView); 
+ 
+} 
+ 
+void CBlueCodeDispView::HandleCommandL(CQikCommand& aCommand) 
+ 
+{ 
+ 
+switch (aCommand.Id ()) 
+ 
+ 
+{ 
+ 
+ 
+case EBlueCodeCmd: 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+mrBlue->CancelReading(); 
+ 
+ 
+ 
+break; 
+ 
+ 
+ 
+} 
+ 
+ 
+case EBlueCodeCloseCmd: 
+ 
+ 
+ 
+{ 
+ 
+ 
+ 
+mrBlue->Disconnect(); 
+ 
+ 
+ 
+iQikAppUi.ActivateViewL(TVwsViewId 
+(KUidBlueCodeApp, KUidBlueCodeView)); 
+ 
+ 
+ 
+break; 
+ 
+ 
+ 
+} 
+ 
+ 
+default: 
+ 
+ 
+ 
+CQikViewBase::HandleCommandL (aCommand); 
+ 
+ 
+ 
+break; 
+ 
+ 
+} 
+ 
+} 
+ 
+void CBlueCodeDispView::LabelPrinter(TInt unicid, TBuf<32> text) 
+ 
+{ 
+ 
+CEikLabel* outputText = 
+LocateControlByUniqueHandle<CEikLabel>(unicid); 
+ 
+outputText->SetTextL(text); 
+ 
+outputText->DrawNow(); 
+ 
+ 
+} 
+ 
+void CBlueCodeDispView::PrintMsg(TBuf8<32> text){ 
+ 
+TBuf<32> msgText; 
+ 
+msgText.Copy (text); 
+ 
+iEikonEnv->InfoMsg(msgText); 
+} 
+ 
+BlueCodeDocument.cpp 
+/* 
+===========================================================================
+= 
+ Name 
+ 
+: CBlueCodeDocument from BlueCodeDocument.h 
+ Author 
+  :  
+ Version 
+ : 
+ Copyright   : Your copyright notice 
+ Description : CBlueCodeDocument implementation 
+===========================================================================
+= 
+*/ 
+ 
+#include <s32strm.h> 
+#include <QikApplication.h> 
+ 
+#include "BlueCodeDocument.h" 
+#include "BlueCodeAppUi.h" 
+#include "BlueCodeGlobals.h" 
+ 
+/** 
+Creates and constructs the document. This is called by 
+CBlueCodeApplication::CreateDocumentL() which in turn is called by the 
+UI framework. 
+*/ 
+CBlueCodeDocument* CBlueCodeDocument::NewL(CQikApplication& aApp) 
+ 
+{ 
+ 
+CBlueCodeDocument* self = new (ELeave) CBlueCodeDocument(aApp); 
+ 
+CleanupStack::PushL(self); 
+ 
+self->ConstructL(); 
+ 
+CleanupStack::Pop(self); 
+ 
+return self; 
+ 
+} 
+ 
+/** 
+The constructor of the document class just passes the 
+supplied reference to the constructor initialization list. 
+*/ 
+CBlueCodeDocument::CBlueCodeDocument(CQikApplication& aApp) 
+ 
+: CQikDocument(aApp) 
+ 
+{ 
+ 
+} 
+ 
+/** 
+2nd stage construction of the model. 
+All code that shall be called in initializing phase and might leave shall 
+be 
+added here. 
+*/ 
+void CBlueCodeDocument::ConstructL() 
+ 
+{ 
+ 
+} 
+ 
+/** 
+This is called by the UI framework as soon as the document has been 
+created. 
+It creates an instance of the ApplicationUI. The Application UI class is an 
+instance of a CEikAppUi derived class. 
+*/ 
+CEikAppUi* CBlueCodeDocument::CreateAppUiL() 
+ 
+{ 
+ 
+return new (ELeave) CBlueCodeAppUi; 
+ 
+} 
+ 
+BlueCodeAppUi.cpp 
+/* 
+===========================================================================
+= 
+ Name 
+ 
+: CBlueCodeAppUi from BlueCodeAppUi.h 
+ Author 
+  :  
+ Version 
+ : 
+ Copyright   : Your copyright notice 
+ Description : CBlueCodeAppUi implementation 
+===========================================================================
+= 
+*/ 
+ 
+#include "BlueCodeAppUi.h" 
+ 
+/** 
+2nd stage construction of the App UI. 
+Create view and add it to the framework. 
+The framework will take over the ownership. 
+*/ 
+void CBlueCodeAppUi::ConstructL() 
+ 
+{ 
+ 
+// Calls ConstructL that initiate the standard values. 
+ 
+CQikAppUi::ConstructL(); 
+ 
+ 
+easyBlue* mrBlue = easyBlue::NewL (); 
+ 
+ 
+ 
+// Create the view and add it to the framework 
+ 
+CBlueCodeView* appView = CBlueCodeView::NewLC (*this, mrBlue); 
+ 
+AddViewL (*appView); 
+ 
+CleanupStack::Pop (appView); 
+ 
+ 
+CBlueCodeDispView* appDispView=CBlueCodeDispView::NewLC (*this, 
+mrBlue); 
+ 
+AddViewL (*appDispView); // takes ownership 
+ 
+CleanupStack::Pop (appDispView); 
+ 
+ 
+ 
+mrBlue->SetPointer(appView, appDispView); 
+ 
+ 
+SetDefaultViewL (*appView); 
+ 
+} 
+ 
+BlueCodeApplication.cpp 
+/* 
+===========================================================================
+= 
+ Name 
+ 
+: CBlueCodeApplication from BlueCodeApplication.h 
+ Author 
+  :  
+ Version 
+ : 
+ Copyright   : Your copyright notice 
+ Description : CBlueCodeApplication implementation 
+===========================================================================
+= 
+*/ 
+ 
+#include <eikstart.h> 
+ 
+#include "BlueCodeApplication.h" 
+#include "BlueCodeDocument.h" 
+#include "BlueCodeGlobals.h" // contains the applications UID 
+ 
+/** 
+The function is called by the UI framework to ask for the 
+application's UID. The returned value is defined by the 
+constant KUidBlueCodeApp and must match the second value 
+defined in the project definition file. 
+*/ 
+TUid CBlueCodeApplication::AppDllUid() const 
+ 
+{ 
+ 
+return KUidBlueCodeApp; 
+ 
+} 
+ 
+/** 
+This function is called by the UI framework at application start-up. 
+It creates an instance of the document class. 
+*/ 
+CApaDocument* CBlueCodeApplication::CreateDocumentL() 
+ 
+{ 
+ 
+return CBlueCodeDocument::NewL(*this); 
+ 
+} 
+ 
+/** 
+The function is called by the framework immediately after it has started 
+the 
+application's EXE. It is called by the framework and is expected to have 
+exactly this prototype. 
+ 
+@return Instance of the application class. 
+*/ 
+CApaApplication* NewApplication() 
+ 
+{ 
+ 
+return new CBlueCodeApplication; 
+ 
+} 
+ 
+/** 
+E32Main() contains the program's start up code, the entry point for an EXE. 
+*/ 
+GLDEF_C TInt E32Main() 
+ 
+{ 
+ 
+return EikStart::RunApplication(NewApplication); 
+ 
+} 
+ 

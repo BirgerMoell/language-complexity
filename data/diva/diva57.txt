@@ -1,0 +1,2504 @@
+ 
+ 
+Beräkningsprogram för gasfjädrar 
+ 
+ 
+ 
+ 
+ 
+DAN ANDERSSON 
+ANDREAS LORENTZON 
+ 
+ 
+ 
+ 
+Examensarbete 
+Stockholm, Sverige 2008 
+ 
+ 
+ 
+ 
+ 
+ 
+Beräkningsprogram för gasfjädrar 
+ 
+ 
+ 
+Dan Andersson 
+Andreas Lorentzon 
+ 
+ 
+ 
+ 
+Examensarbete MMK 2008:56 MPK 603 
+ 
+KTH Industriell teknik och management 
+Maskinkonstruktion 
+SE-100 44  STOCKHOLM 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2
+ 
+3
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Examensarbete MMK 2008:56 MPK 603 
+ 
+Beräkningsprogram för gasfjädrar 
+ 
+ 
+ 
+ 
+ 
+Dan Andersson 
+Andreas Lorentzon 
+Godkänt 
+2008-09-10 
+Examinator 
+Priidu Pukk 
+Handledare 
+Priidu Pukk 
+ 
+Uppdragsgivare 
+Lesjöfors Stockholmsfjäder AB 
+Kontaktperson 
+Mårten Glas 
+Sammanfattning 
+Detta examensarbete utfördes av två studenter från inriktningen Maskinkonstruktion på KTH 
+för företaget Lesjöfors Stockholmsfjäder AB. Uppgiften gick ut på att utveckla ett 
+beräkningsprogram för gasfjädrar. Programmet ska underlätta valet av gasfjäder vid ett givet 
+problem med en lucka som ska öppnas. Det kommer att användas internt av företagets säljare 
+runt om i världen. Programmet är därför skrivet på engelska. 
+ 
+Programmet skapades i utvecklingsmiljön Microsoft Visual C# 2008 Express Edition. Det 
+innehåller funktioner för att enkelt skapa ett grafiskt användargränssnitt. Logiken i 
+programmet är skrivet i programmeringsspråket C#. Resultatet är ett fristående program som 
+inte kräver någon installation, dock krävs att plattformen Microsoft .NET Framework 3.5 är 
+installerat på användarens dator. 
+ 
+Användaren matar in information om luckans geometri, vikt och önskad öppningsvinkel. 
+Programmet visar då en tvådimensionell ritning över luckan och gasfjädern och en kurva över 
+hur stor kraft som erfordras av fjädern för att balansera luckan i alla vinklar. En lista över 
+föreslagna fjädrar ur företagets sortiment visas också. Eftersom kunder kan specialbeställa en 
+gasfjäder finns även möjligheten att skräddarsy en gasfjäder i programmet. När användaren 
+valt en fjäder visas en kurva över hur stor kraft användaren måste tillföra/hålla emot med i 
+alla vinklar. I ritningen visas också hur mycket luckan kommer att öppnas med den valda 
+fjädern. Användaren kan nu laborera med geometrin och fjädern för att hitta en optimal 
+lösning. 
+ 
+Projekt kan sparas på fil och öppnas vid ett senare tillfälle. När användaren är nöjd med 
+resultatet kan detta skrivas ut på papper för att kunnas faxas till kunden eller sparas som ett 
+PDF-dokument för att sändas via e-post. 
+ 
+ 
+4
+ 
+5
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2008:56 MPK 603
+ 
+Gas spring calculation program 
+ 
+ 
+ 
+ 
+ 
+Dan Andersson 
+Andreas Lorentzon 
+Approved 
+2008-09-10 
+Examiner 
+Priidu Pukk 
+Supervisor 
+Priidu Pukk 
+ 
+Commissioner 
+Lesjöfors Stockholmsfjäder AB 
+Contact person 
+Mårten Glas 
+Abstract 
+This master thesis work was done by two students at Machine Design at KTH for Lesjöfors 
+Stockholmsfjäder AB. The task was to develop a calculation program for gas springs. The 
+program is going to ease the selection of gas springs for a given case of a lid that should be 
+opened. The program is going to be used internal by sales people at Lesjöfors AB in Sweden 
+and internationally. The program is therefore written in English. 
+ 
+The program was developed in Microsoft Visual C# 2008 Express Edition. It contains 
+functions to easily create a graphical user interface. The logic in the program is written in the 
+programming language C#. The result is a stand-alone application which requires no 
+installation; however the platform Microsoft .NET Framework 3.5 needs to be installed on the 
+users computer. 
+ 
+The user provides information of the lid’s geometry, weight and desired opening angle. The 
+program then shows a two dimensional picture of the lid and the gas spring, and a curve of the 
+force that is required by the gas spring to balance out the lid in every angle. A list of 
+suggested gas springs from the company’s range of products is then shown. Because the 
+customer can special order a gas spring, there is an option to customize a gas spring in the 
+program. When the user has selected a gas spring, a curve of how much force the user must 
+add to open the lid in every angle, is shown. In the picture of the lid, an extra lid is presented 
+and shows how much the selected gas spring is able to open the lid. The user can then 
+experiment with the geometry and different gas springs to find the best solution. 
+ 
+The project can be saved as a file and opened at a later time. When the user is satisfied with 
+the result, the project can be printed and sent by fax to the customer or saved as a PDF-
+document and e-mailed to the customer. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+6
+ 
+7
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+8
+ 
+Innehållsförteckning 
+ 
+Beräkningsprogram för gasfjädrar................................................................................ 1 
+Sammanfattning.......................................................................................................................... 4 
+Abstract ...................................................................................................................................... 6 
+Innehållsförteckning................................................................................................................... 8 
+1. Inledning............................................................................................................................... 10 
+1.1 Om Lesjöfors AB ........................................................................................................... 10 
+1.2 Beskrivning av gasfjädrar............................................................................................... 11 
+1.3 Dagens gasfjäderberäkning ............................................................................................ 13 
+1.4 Fördelar med programmet.............................................................................................. 15 
+1.5 Programmeringsspråket C#............................................................................................ 16 
+2. Programmet.......................................................................................................................... 18 
+2.1 Användarinstruktioner.................................................................................................... 19 
+2.2 Bestämning av koordinater............................................................................................. 24 
+2.3 Beräkning av fjäderkraften............................................................................................. 26 
+2.3.1 Progressivitet........................................................................................................... 29 
+2.3.2 Friktion.................................................................................................................... 29 
+2.3.3 Temperaturberoendet .............................................................................................. 30 
+2.3.4 Plottning av fjäderkraften........................................................................................ 31 
+2.4 Gasfjäderns lutning ........................................................................................................ 32 
+2.5 Beräkning av kraft från användaren............................................................................... 34 
+2.6 Grafik ............................................................................................................................. 35 
+2.7 Läsning från Excel ......................................................................................................... 36 
+2.8 Spara och öppna filer...................................................................................................... 37 
+2.9 Skapa utskrifter och PDF-dokument.............................................................................. 39 
+2.10 Felhantering.................................................................................................................. 41 
+3. Avancerade inställningar ..................................................................................................... 42 
+3.1 Temperaturkurvor........................................................................................................... 42 
+3.2 Användarinformation ..................................................................................................... 43 
+3.3 Sidfot .............................................................................................................................. 44 
+3.4 Progressivitet.................................................................................................................. 45 
+3.5 Temperaturkonstant........................................................................................................ 46 
+3.6 Friktion........................................................................................................................... 47 
+4. Utformning av programlayouten.......................................................................................... 48 
+5. Slutsats ................................................................................................................................. 50 
+6. Tack ...................................................................................................................................... 52 
+7. Referenser............................................................................................................................. 54 
+Bilaga 1. Kravspecifikation...................................................................................................... 56 
+Bilaga 2. Utskrift från programmet.......................................................................................... 58 
+ 
+ 
+9
+ 
+10
+ 
+1. Inledning 
+ 
+1.1 Om Lesjöfors AB 
+Lesjöfors är en internationell fullsortimentsleverantör av standard- och kundanpassade fjädrar, 
+tråd- och banddetaljer. Verksamheten är organiserad i tre verksamhetsområden; 
+industrifjädrar, banddetaljer och chassifjädrar. Det område som står för störst omsättning är 
+industrifjädrar, vilket 2006 stod för 41 % av försäljningen.  
+ 
+Lesjöfors är idag en av Europas ledande fjädertillverkare. För tillfället har de tillverkning eller 
+egna säljkontor i Sverige, Finland, Norge, Danmark, Tyskland, England, Holland, Lettland, 
+Sydkorea och Kina och ägs av det börsnoterade företaget Beijer Alma AB. 
+ 
+Lesjöfors historia sträcker sig ända tillbaka till år 1675, då ett hammarverk anlades vid 
+Lesjöströmmar. Det var dock inte förrän år 1852 som fjädertillverkningen startade där. År 
+1897 registreras företaget under namnet AB Svenska Spiralfabriken, som senare skulle 
+komma att bli Lesjöfors AB. År 1988 köper Lesjöfors AB Stockholms Fjäderfabrik AB och 
+året efter förvärvades Lesjöfors AB av Alma Industri och Handel AB, med säte i Uppsala. 
+Detta innebar att Lesjöfors AB och Stockholms Fjäderfabrik AB slogs samman och fick 
+namnet Lesjöfors Stockholmsfjäder AB. 
+Lesjöfors har genom åren köpt upp eller in sig i flera olika fabriker och företag runt om i 
+världen. År 2005 blir Lesjöfors delägare i Hanil Precision Ltd som är en av Koreas ledande 
+tillverkare av gasfjädrar. De står för all tillverkning av Lesjöfors gasfjädrar. 
+ 
+Lesjöfors industrisortiment av gasfjädrar består av mer än 300 olika standardmodeller som 
+kan kombineras med en mängd olika ändfästen. Gasfjädrarna har slaglängder mellan 20 och 
+500 mm och finns i kraftområdet 40 till 2000 N. I sortimentet finns även låsbara gasfjädrar, 
+utlösningsmekanismer, handtag samt wirar. Lesjöfors har tagit fram en speciell serie 
+gasfjädrar och dämpare med designade ändfästen för möbelindustrin. I de flesta fall är det 
+fördelaktigt att använda en standardprodukt men det finns tillfällen då en speciell längd eller 
+funktion behövs. Lesjöfors har en lång erfarenhet av att tillhandahålla olika typer av 
+speciallösningar.  
+ 
+Lesjöfors har ett flertal konkurrenter världen över som tillverkar gasfjädrar. Några stora är 
+Bansbach (Tyskland), Stabilus (Tyskland), Gas Strut Engineering (Storbritannien), ACE 
+(USA), IGS (Storbritannien) och Suspa (Tyskland). Tidigare hade Lesjöfors ett samarbete 
+med Suspa, och de köpte in alla sina gasfjädrar från dem. Samarbetet bröts för några år sedan 
+och det är numera Lesjöfors delägda dotterbolag Hanil Precision Ltd (Sydkorea) som står för 
+gasfjädertillverkningen.  
+ 
+ 
+ 
+ 
+1.2 Beskrivning av gasfjädrar 
+En gasfjäder är en typ av fjäder som, till skillnad från en vanlig spiralfjäder använder 
+komprimerad gas i en cylinder för att utöva kraft på en kolv med en stång som sticker ut ur 
+cylindern. Gasfjädrar har en mängd olika användningsområden, t.ex. används de inom 
+bilindustrin för att underlätta öppnandet av bakluckor och motorhuvar och inom 
+möbelindustrin för att justera höjden på kontorsstolar. 
+ 
+ 
+Figur 1. Illustration av en gasfjäder i genomskärning 
+ 
+Gasfjädern är ett hydropneumatiskt justeringselement som består av en tryckcylinder, 
+kolvstång, kolv, tätningar samt några andra komponenter. I figur 1, som är hämtad ur 
+Lesjöfors gasfjäderbroschyr [1], illustreras de ingående delarna i gasfjädern. Cylindern är 
+fylld med komprimerad kvävgas och har samma tryck i hela cylindern, men på grund av att 
+arean på kolvsidan är större än den på kolvstångssidan blir det ett högre tryck på kolven på 
+kolvsidan, vilket trycker ut kolvstången. Slitsar i kolven tillåter gasen att förflytta sig från den 
+ena sidan till den andra. Storleken på dessa slitsar avgör kolvstångens utskjutningshastighet, 
+större slitsar ger högre hastighet.  
+Kraften i gasfjädern bestäms av gastrycket i cylindern, ju högre tryck desto starkare gasfjäder. 
+Det går att öka trycket i cylindern genom att pressa in mer gas där kolvstången går in i 
+cylindern med hjälp av en så kallad Schrader-ventil. Det går dock inte att släppa ut gas för att 
+minska trycket. Tätningarna ser till att ingen kvävgas sipprar ut i omgivningen.  
+Lesjöfors gasfjädrar innehåller förutom kvävgas även en mindre mängd olja, vilket ger en 
+dämpande effekt samt smörjer tätningarna. Genom att välja mängden olja i cylindern kan 
+utskjutningshastigheten justeras. En större volym olja ger en till början hög hastighet som 
+sedan dämpas på grund av oljan. Vid användning av gasfjädrar är kolvstången oftast monterad 
+nedåt, då oljan hindrar tätningarna från att torka ut. 
+ 
+Jämfört med andra typer av fjädrar är kraften i en gasfjäder relativt konstant, dock ökar den 
+vid kompression. Detta beror på att när gasfjädern komprimeras tar kolvstången upp en större 
+volym av cylindern, vilket medför att gastrycket ökar. Kraften betecknas F1 och är definierad 
+som kraften vid 5mm ifrån maximalt utskjutet läge. En approximation är att kraften ökar 
+linjärt vid kompression, och är ca 30 % högre än F1 när kolvstången är 5mm ifrån sitt helt 
+intryckta läge.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+11
+ 
+ 
+ 
+ 
+ 
+12
+I det högra diagrammet i figur 2, som är 
+hämtad ur Lesjöfors gasfjäderbroschyr [1], 
+kan det utläsas att kraften som krävs för att 
+komprimera gasfjädern är större än den 
+som ges då den expanderar. Detta beror på 
+progressiviteten 
+och 
+gasfjäderns 
+inre 
+friktion, främst från tätningarna. 
+En av fördelarna med gasfjädrar jämfört 
+med andra typer av fjädrar är att 
+slaglängden kan vara mycket lång, vilket 
+gör den användbar inom många områden. I 
+figur 3 illustreras förhållandet mellan kraft 
+och slaglängd hos fyra olika typer av 
+fjädrar. 
+ 
+ 
+ 
+ 
+ 
+ 
+  
+ 
+Figur 2. Hastighet och kraftförhållande 
+hos en gasfjäder 
+Tallriksfjädrar är den kraftigaste typen av 
+fjädrar men har en väldigt liten slaglängd. 
+Gummifjädrar 
+har 
+en 
+något 
+större 
+slaglängd, men är något svagare än 
+tallriksfjädrarna. 
+Steget 
+under 
+gummifjädrar 
+finns 
+traditionella 
+spiralfjädrar som har ett relativt jämnt 
+förhållande mellan kraft och slaglängd. 
+Gasfjädrar har störst slaglängd av alla 
+typer av fjädrar men är samtidigt de 
+svagaste. 
+ 
+Figur 3. Illustration av kraft i förhållande till 
+slaglängd hos olika typer av fjädrar
+ 
+ 
+ 
+ 
+Det finns en typ av gasfjäder där användaren har möjlighet att låsa gasfjädern i ett valbart 
+läge. På dessa sitter en knapp som reglerar en ventil vilken styr flödet av olja och gas mellan 
+de båda sidorna av kolven. Dessa behandlas dock inte av beräkningsprogrammet. 
+ 
+ 
+1.3 Dagens gasfjäderberäkning 
+Det vanliga förfarandet vid försäljning av gasfjädrar hos Lesjöfors är att en kund ringer och 
+beställer fjädrar ur standardsortimentet. Men det händer ofta att kunder har ett problem som 
+ska lösas med gasfjädrar, men de vet inte vilken sort som behövs och hur den ska placeras. 
+Kunden tar då kontakt med Lesjöfors och förklarar problemet. Ofta skickas en ritning över 
+applikationen med fax eller e-post. De intressanta parametrarna är luckans mått, vikt, 
+startläge, öppningsvinkel och en ungefärlig placering av gasfjädrarna. Uppgiften för 
+personalen på Lesjöfors blir sedan att komma så nära kundens önskemål som möjligt med 
+gasfjädrar ur sortimentet. Förut samarbetade Lesjöfors med den tyska gasfjädertillverkaren 
+Suspa. De hade då tillgång till deras datorprogram som underlättade problemlösandet. Sedan 
+samarbetet bröts sker alla lösningar av dylika problem för hand genom att rita upp problemet 
+grafiskt på millimeterpapper, se figur 4, för att sedan mätas med linjal och beräknas med 
+miniräknare. Formlerna som används vid beräkningen beskrivs senare, i avsnitt 2.3.  
+När en lösning har nåtts skickas förslaget till kunden i form av en kopia på handberäkningarna 
+med handskrivna kommentarer på. Denna process är tidsödande och kräver dessutom att 
+personalen är väl insatt i beräkningarna och redan från början har en känsla för vilken 
+gasfjäder som är lämplig. I nuläget är det bara ett fåtal anställda som gör detta.  
+ 
+ 
+ 
+Figur 4. Illustration av handberäkning på millimeterpapper 
+ 
+ 
+13
+ 
+ 
+ 
+ 
+ 
+Syftet med detta examensarbete har varit att utveckla ett program liknande det som fanns 
+under tiden för samarbetet med Suspa. En viktig skillnad är dock att det nya programmet är 
+kopplat till Lesjöfors nuvarande sortiment. Då representanter från Lesjöfors varit med under 
+hela utvecklingsarbetet har de specificerat precis de funktioner och det utseende de velat ha. 
+Med detta program är det tänkt att fler anställda ska kunna utföra dessa beräkningar eftersom 
+användaren inte behöver besitta samma kunskap och erfarenhet som vid beräkning med penna 
+och papper. Dessutom kommer det att spara tid och ge ett mer exakt resultat. Programmet är 
+även tänkt att användas internationellt av säljare inom hela koncernen. 
+ 
+Den tyska gasfjädertillverkaren Bansbach har ett offentligt beräkningsprogram på deras 
+hemsida [5], som vem som helst kan använda, se figur 5 för illustration. Då LGP (Lesjöfors 
+Gas spring Program) togs fram har detta givit en del inspiration. Dock kan deras program 
+framstå som komplicerat för användaren och denne kan inte själv bestämma kraften i 
+gasfjädern. Det gör programmet själv, utan att visa hur stark gasfjädern är. Vi har därför 
+inriktat oss på att få ett mer lättförståeligt och lättanvänt program samt att mer information ska 
+kunna utläsas.  
+ 
+ 
+Figur 5. Illustration av Bansbach online-program 
+ 
+ 
+ 
+ 
+ 
+14
+ 
+15
+ 
+ 
+1.4 Fördelar med programmet 
+Till skillnad från handberäkningarna så tar programmet hänsyn till inre friktion och 
+progressivitet i gasfjädrarna samt omgivande temperatur. Friktionen är uppmätt statiskt för 
+varje dimension av gasfjädrar. Lesjöfors har fyra olika dimensioner på gasfjädrar, 15-6, 18-8, 
+22-10 och 28-14 vilket representerar diametermåttet på cylindern och kolvstången. Friktionen 
+varierar mellan de olika dimensionerna på gasfjädrarna och beror dels på hur många tätningar 
+som sitter i gasfjädern samt vilken dimension och kraft gasfjädern har. I samarbete med 
+handledarna på Lesjöfors har en friktionskonstant för varje gasfjäderdimension bestämts efter 
+data från statiska friktionsmätningar. Progressiviteten är satt till 30 % efter överenskommelse 
+med handledarna och temperaturen ger en ökning/minskning av kraften med 3,5 % per 10º C 
+förändring av omgivningstemperaturen. Märktalet på gasfjädrarna utgår ifrån att temperaturen 
+är 20º C. 
+ 
+Kunden har i förfrågan angivit dels en önskad öppningsvinkel av luckan och ofta även en 
+önskad vinkel där luckan skall öppna sig själv. I programmet beräknas hur mycket kraft som 
+användaren måste anbringa vinkelrätt mot luckan vid varje vinkel för att den ska öppna sig, 
+samt vid vilken vinkel den öppnar sig själv och illustrerar detta visuellt i en graf samt med 
+siffror. Det beräknar och visar även hur mycket kraft som behövs för att stänga luckan, samt 
+vid vilken vinkel den stänger sig själv.  
+ 
+Programmet tillåter användaren att testa gasfjädrar med olika kraft och storlek och även flytta 
+fästpunkterna. Detta förenklar för användaren att experimentera sig fram till en lösning som 
+passar kundens önskemål. Programmet visar även hur mycket den valda gasfjädern klarar att 
+öppna luckan samt varnar om den valda gasfjädern inte får plats med de valda fästpunkterna. 
+Med datautskrifter från programmet kommer det att ge ett bättre intryck samt framstå som 
+mer professionellt och lättare att förstå för kunden. 
+ 
+ 
+ 
+16
+ 
+ 
+ 
+ 
+1.5 Programmeringsspråket C# 
+Efter att ha rådfrågat folk som arbetar med programutveckling och Lesjöfors IT-avdelning 
+stod det klart att programmeringsspråket C# (uttalas C Sharp) skulle användas för 
+utvecklingen av programmet. C# är ett relativt nytt objektorienterat programmeringsspråk 
+utvecklat av Microsoft. Utvecklingen leddes av den danske mjukvaruingenjören Anders 
+Hejlsberg och blev standardiserat år 2001. Språket bygger på C++, Java och Visual Basic men 
+även på nya idéer. C# har under senare år blivit något av en standard inom 
+programmeringsvärlden för utveckling av programvara för Windows. Plattformen som LGP 
+(Lesjöfors Gas spring Program) är utvecklad på heter Microsoft Visual C# 2008 Express 
+Edition. Programmet är gratis vilket har underlättat för Lesjöfors.  
+ 
+En av många fördelar med C# är att det har ett stort kodbibliotek vilket förenklar vid 
+utformning av komplexa system, dvs. många funktioner är inbyggda i programmet och kan 
+användas utan att allting behöver kodas av användaren.  
+Visual C# gör det mycket enkelt att tillverka ett användargränssnitt till programmet. Detta 
+görs grafiskt genom att placera ut de objekt som ska synas för användaren t.ex. knappar, 
+inmatningsfönster, bilder, textrutor etc. Dessa kopplas sedan till avsnitt i programkoden där de 
+får sina funktioner. I många andra utvecklingsmiljöer måste all sådan information skrivas med 
+programkod. Detta har skyndat på utvecklingen avsevärt. 
+C# har många inbyggda funktioner som förenklar för utvecklaren, så som att läsa och skriva 
+till textfiler eller att skapa utskriftsdokument. Det finns dock några funktioner som behövdes 
+vid utvecklingen av LGP som inte fanns inbyggda. Två av dessa är att läsa från Excel-filer 
+samt att skapa PDF-dokument. För att detta skulle vara möjligt användes två olika s.k. Open 
+Source Application Programming Interfaces, förkortat Open Source API. Dessa fungerar som 
+externa bibliotek av funktioner och metoder som C# läser in och sedan kan använda sig av. 
+De är skrivna i öppen källkod och är gratis att använda. 
+ 
+Lesjöfors sortiment av gasfjädrar och ändfästen finns beskrivna i två Excel-filer med all data 
+om krafter och längder. För att kunna läsa från dessa Excel-filer användes att Open Source 
+API som heter NExcel [4]. Det möjliggör för programmet att läsa Excel-filer utan att 
+Microsoft Excel är installerat på datorn.  
+I kravspecifikationen för examensarbetet, se bilaga 1, önskades att det färdiga projektet skulle 
+kunna sparas i form av ett PDF-dokument. För att kunna göra detta användes ett Open Source 
+API som heter PDFSharp [3] vilket möjliggör detta utan att något PDF-program är installerat 
+på datorn. 
+ 
+Vi hade redan innan examensarbetets början lite erfarenhet av programmering. Båda två har 
+läst en grundkurs i javaprogrammering i årskurs 2, samt använt oss av MatLab [referens?] i 
+olika kurser för att lösa matematiska problem. MatLab är ett beräkningsprogram som är 
+baserat på ett enkelt programmeringsspråk. Ingen av oss hade dock någon erfarenhet av C#. 
+Innan programmeringen inleddes införskaffades boken Microsoft Visual C# 2005 [2], som vi 
+båda studerade för att sätta oss in i språket. Den har även använts flitigt under arbetets gång. 
+Vänner och bekanta med erfarenhet av programmering och diverse internetforum har också 
+varit till stor hjälp när vi kört fast. 
+ 
+17
+ 
+ 
+2. Programmet 
+Figur 6 visar hur programmet ser ut för användaren. Nedan följer en beskrivning om hur en 
+beräkning genomförs ur användarens perspektiv, och hur programmet löser beräkningarna. 
+ 
+Figur 6. Illustration av användargränssnittet 
+ 
+ 
+18
+ 
+ 
+2.1 Användarinstruktioner 
+Detta program är avsett att användas av säljare på Lesjöfors 
+då en kund inte vet vilken gasfjäder som behövs när ett 
+specifikt problem ska lösas. Ofta får säljaren data om 
+problemet i form av en skiss. Första steget för användaren är 
+att mata in geometriska data för luckan och gasfjädern. I 
+figur 7 till höger visas panelen där detta sker. Programmet 
+förutsätter ett tvådimensionellt koordinatsystem med origo i 
+luckans gångjärn. Vinklar är noll vid en vågrät lucka och 
+positiva motsols. Alltså får en lucka som hänger rakt ned 
+vinkeln -90º. Längder anges i millimeter, vinklar i grader och 
+vikt i kg. 
+ 
+19
+ 
+Användaren börjar med att mata in data för luckan i 
+grupprutan Lid, såsom; längd, tyngdpunktens position, vikt, 
+startvinkel 
+samt 
+önskad 
+öppningsvinkel. 
+Luckans 
+tyngdpunkt, C.O.G. (Center Of Gravity), anges som ett 
+avstånd från origo, till en punkt utmed luckan. Programmet 
+sätter automatiskt C.O.G. till halva luckans längd (detta kan 
+dock senare ändras av användaren). Luckorna som beräknas i 
+detta program antas vara plana, d.v.s. tyngdpunkten är 
+placerad längs luckan. Om kunden har en lucka som inte har 
+en plan form måste användaren själv ta fram en generaliserad 
+bild av luckan och dess tyngdpunkt. Startvinkeln, Start 
+Angle, kan ställas mellan -90º och 90º. Opening Angle är den 
+öppningsvinkel som användaren önskar uppnå. 
+ 
+I grupprutan Gas Spring matar användaren in data om 
+gasfjädern/gasfjädrarna; koordinaterna för gasfjäderns fasta 
+fäste, Mounting Point, Fixed End, i X- och Y-led, 
+gasfjäderns rörliga fästes position längs luckan, Mounting Point on Lid, eventuell klack, 
+Offset, och antalet gasfjädrar, Number of Gas Springs. Thread anger gängdimensionen i 
+ändarna på gasfjädern. M6-gängor förekommer på gasfjädrar med beteckning 15-6 och 18-8, 
+medan M8-gängor förekommer på 22-10 och 28-14 modellerna.  
+ 
+Figur 7. Geometrisk indata 
+ 
+Från början är radioknappen All vald, då visas alla ändfästen i de två gardinlisterna End Fit 
+Tube (cylindersidan) och End Fit Rod (kolvstångssidan). Dessa läses in från en Excel-fil som 
+kan ändras om sortimentet ändras. Om användaren flyttar radioknappen till M6 eller M8 
+sorteras ändfästena i gardinlisterna ut så att endast de med motsvarande gänga visas. 
+Ändfästena i gardinlisterna är valbara för användaren och programmet tar sedan hänsyn till 
+den ökade bygglängden för fjädern. De valda ändfästena kommer att visas med bild på 
+utskriften och i PDF-dokumentet. Det begränsar även sökningen efter lämpliga gasfjädrar. Det 
+går t.ex. inte att välja en 15-6 eller 18-8 gasfjäder om M8 valts.  
+När alla fält fyllts i klickas knappen OK. Luckan och gasfjädern ritas då upp med grå färg i 
+stängt och öppet läge med den önskade öppningsvinkeln, se figur 8. Den ifyllda cirkeln på 
+luckan symboliserar tyngdpunktens placering och triangeln luckans gångjärn. Samtidigt ritas 
+även en graf upp som visar kraften som krävs från gasfjädern för att hålla luckan utbalanserad 
+i alla vinklar, se figur 9.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figur 8. Illustration av lucka och fjäder med önskad öppningsvinkel 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figur 9. Illustration av kraftgrafen som genererats med användarens indata 
+ 
+ 
+ 
+ 
+20
+ 
+ 
+ 
+ 
+I figur 10 visas geometrisk data för fjädern som erhållits från beräkningar gjorda baserade på 
+användarens inmatade data. 
+ 
+Min. Stroke, beskriver den minsta slaglängden som 
+gasfjädern måste ha för att kunna öppna till önskad 
+öppningsvinkel. Max. Comp L beskriver den maximala 
+längden som gasfjädern kan ha vid hoptryckt läge för att 
+luckan ska kunna stängas. Min. Ext L är den minimala 
+längden som gasfjädern måste ha vid utdraget läge för att 
+luckan ska kunna öppnas till önskad vinkel. 
+ 
+Figur 10. Geometrisk utdata 
+ 
+Dessa geometriska data används sedan för att söka igenom Lesjöfors sortiment efter lämpliga 
+gasfjädrar. Urvalet baseras på erforderlig totallängd och slaglängd. Gasfjädrar med passande 
+mått visas i en lista, se figur 11. Fjädrarna i listan anges på Lesjöfors standardform:  
+[Dimension Totallängd-Slaglängd-Kraft Artikelnummer]. 
+När en lämplig fjäder valts ur listan ritas ännu en lucka upp i bilden. Denna lucka ritas med 
+svart färg och visar hur stor luckans öppningsvinkel kommer att bli med den valda fjädern 
+installerad, se figur 12. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figur 12. Illustration av lucka med vald gasfjäder 
+ 
+Figur 11. Rekommenderade gasfjädrar 
+ 
+21
+ 
+ 
+ 
+ 
+ 
+ 
+22
+För att användaren lättare ska se hur nära denne är kundens 
+önskemål finns en panel som visar önskad och aktuell 
+öppningsvinkel, se figur 13. Den visar även skillnaden 
+mellan den önskade och aktuella vinkeln samt vid vilken 
+vinkel som luckan öppnar sig själv. 
+ 
+När en av de föreslagna gasfjädrarna valts ritas en graf upp, 
+som visar hur mycket kraft användaren måste ansätta 
+luckan med under hela öppningsförloppet för att den ska 
+öppna sig. Den heldragna linjen beskriver den kraft som krävs för att öppna luckan och den 
+streckade den kraft som krävs för att stänga luckan. Denna blir öppningskraften inverterad, 
+men p.g.a. den inre friktionen i gasfjädern blir kurvan förskjuten. Punkten där den heldragna 
+linjen korsar X-axeln visar vinkeln där luckan börjar öppna sig själv utan hjälp från 
+användaren. Detsamma gäller den streckade kurvan men då vid vilken vinkel som luckan 
+stänger sig själv. Detta illustreras i figur 14. 
+Figur 13. Gruppruta med  
+vinkelförhållanden 
+Figur 14. Illustration av öppnings- respektive stängningskraft per vinkel 
+ 
+ 
+Om inte luckan öppnas så som önskat kan användaren 
+välja en annan gasfjäder eller justera gasfjäderns 
+fästpunkter tills resultatet är tillfredsställande. Därefter 
+kan projektet sparas, skrivas ut eller så kan ett PDF-
+dokument skapas av projektet. Detta görs genom att 
+välja File från menylisten och sedan välja Save, Print 
+eller Make PDF, se figur 15. Det går även att 
+förhandsgranska utskriften genom att välja Print 
+Preview. Utskriften och PDF-dokumentet har näst intill 
+identiskt utseende. Vissa små skillnader förekommer 
+p.g.a. olikheter i dess koordinatsystem vid uppbyggnad 
+av dem. Detta förklaras närmare i avsnitt 2.9. 
+ 
+Figur 15. Illustration av menyn 
+ 
+ 
+ 
+ 
+ 
+ 
+Ett önskemål som Lesjöfors hade i kravspecifikationen, se bilaga 1, var att programmet skulle 
+kunna hantera specialtillverkade gasfjädrar. Vissa kunder har specifika önskemål angående 
+hur de vill att gasfjädern ska se ut. De kan t.ex. vilja ha en väldigt lång cylinder i förhållande 
+till slaglängden eller så finns det inga standardgasfjädrar som passar kundens önskemål. 
+ 
+ Programmet har försetts med en panel där användaren kan skapa en specialanpassad 
+gasfjäder och undersöka hur den uppför sig i den aktuella applikationen, se figur 16.. I 
+Dimension väljs dimensionen på gasfjädern, 15-6, 18-8, 22-10 eller 28-14. Beteckningarna 
+står för diametermåtten på cylindern respektive kolvstången. Beroende på vilken dimension 
+som valts begränsas kraften som 
+gasfjädern 
+tillåts 
+ha. 
+Även 
+gasfjäderns totala längd, Length, är 
+beroende på dimensionen, det går 
+inte att tillverka fjädrar under en viss 
+längd, vilken varierar mellan de olika 
+dimensionerna. Slaglängden, stroke, 
+är beroende på hur lång gasfjädern är 
+och kan beräknas genom stroke = 
+(totallängd – 28 mm) / 2, Där 28 mm 
+är ett byggmått för tätningar mm. 
+Begränsningarna för gasfjädrarnas olika dimensioner listas i tabell 1 nedan.  
+ 
+23
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Tabell 1. Begränsningar för gasfjädrarnas olika dimensioner 
+Dimension Max.  F1[N]
+Min.  F1 [N]
+Max. Slaglängd [mm] 
+15-6 
+400 
+40 
+200 
+18-8 
+600 
+100 
+300 
+22-10 
+1100 
+150 
+400 
+28-14 
+2100 
+500 
+500 
+ 
+Figur 16. Gruppruta för egendesignade gasfjädrar 
+ 
+Figur 16. Gruppruta för egendesignade gasfjädrar 
+ 
+ 
+2.2 Bestämning av koordinater 
+För att kunna beräkna krafter samt 
+för att kunna rita upp luckan, 
+fjädrarna 
+samt 
+tyngdpunkten 
+behövs 
+koordinaterna 
+för 
+respektive. 
+Beräkningarna 
+baserades på ett origo placerat i 
+luckans 
+gångjärn. 
+Luckans 
+utgångsläge ges av beräkningar 
+med 
+värden 
+från 
+användarens 
+inmatade 
+geometriska 
+data. 
+Beroende på luckans start- samt 
+öppningsvinkel 
+används 
+olika 
+formler 
+för 
+att 
+beräkna 
+dess 
+koordinater vid öppet läge. För att 
+underlätta vid bestämning av dessa 
+formler användes enhetscirkeln, se 
+figur 17. 
+ 
+Figur 17. Enhetscirkeln. 
+ 
+ 
+ 
+ 
+ 
+Luckan har vissa utgångslägen; 
+vertikalt nedåt, inom område 4, 
+horisontellt åt höger eller inom 
+område 1, se figur 17. Samma 
+utgångslägen 
+gäller 
+för 
+tyngdpunkten. Gasfjäderns rörliga 
+fäste har samma startlägen som 
+luckan och tyngdpunkten men kan 
+även ha ett startläge inom område 
+3. Slutpositionen för samtliga kan 
+vara inom alla områden samt 
+vertikalt uppåt. De tillåtna start- 
+och 
+slutpositionerna 
+bestämdes 
+tillsammans med handledarna på 
+Lesjöfors. 
+ 
+Figur 18. Illustration av lucka med öppningsvinkel 
+ 
+Uppställning 
+av 
+formler 
+för 
+beräkning av de nya koordinaterna 
+baseras på startläget och önskad 
+öppningsvinkel. 
+Som 
+exempel 
+antas att luckans startposition är 
+snett ned åt höger (svart streck) 
+och luckan ska öppnas snett upp åt 
+höger (grått streck), se figur 18. 
+ 
+ 
+ 
+24
+ 
+ 
+ 
+ 
+ 
+Vinklarna i programmet är definierade till  0º när luckan ligger horisontellt åt höger, och 
+motsols är positiv riktning. I exemplet ovan ges luckans startkoordinater av 
+)
+sin(
+1
+β
+⋅
+= r
+x
+ 
+och 
+)
+cos(
+1
+β
+⋅
+= r
+y
+, där r är längden på luckan som användaren bestämt. Vinkel α är den 
+önskade öppningsvinkel som användaren matar in och vinkeln
+β
+α
+γ
+−
+=
+. Koordinaterna för 
+luckans 
+öppna 
+läge 
+ges 
+då 
+av 
+)
+cos(
+)
+cos(
+2
+β
+α
+γ
+−
+⋅
+=
+⋅
+=
+r
+r
+x
+ 
+och 
+)
+sin(
+)
+sin(
+2
+β
+α
+γ
+−
+⋅
+=
+⋅
+=
+r
+r
+y
+. Om γ skulle vara 0º, dvs om
+ blir 
+ och 
+. 
+o
+90
+=
+−β
+α
+r
+x =
+2
+0
+2 =
+y
+För att beräkna de nya koordinaterna för tyngdpunkten samt för gasfjäderns rörliga fäste 
+används samma metod som beskrevs här ovanför. Användarens inmatade data samt start- och 
+öpningsvinkeln används för att beräkna de nya koordinaterna vid öppet läge. 
+ 
+25
+ 
+ 
+2.3 Beräkning av fjäderkraften 
+ 
+Den generella formeln för att beräkna kraften i gasfjädern ges av ekvation 1, illustrerad i figur 
+19. 
+ 
+ 
+n
+W
+L
+mg
+F
+⋅
+⋅
+=
+1
+ 
+ (1)  
+ 
+ 
+26
+Där; 
+F1 = Kraften i gasfjädern 
+mg = Luckans massa 
+L = Horisontella avståndet mellan 
+origo och tyngdpunkten 
+W = Vinkelräta avståndet mellan 
+gasfjädern och origo 
+n = Antalet gasfjädrar 
+ 
+ 
+ 
+ 
+ 
+ 
+Figur 19. Kraftuppställning för luckan 
+ 
+Figur 20. Illustration av 
+variabler till beräkning av W 
+ 
+Det svåraste med kraftberäkningen har varit att 
+bestämma det vertikala avståndet mellan origo och 
+gasfjädern, W. Detta löstes först genom två olika 
+formler för att beräkna arean av en triangel. Ekvation 3 
+fungerar endast då ett hörn befinner sig i origo, punkten 
+A, vilket det alltid gör eftersom luckans infästning 
+sitter i origo. Variablerna beskrivs i figur 20. 
+ 
+ 
+ 
+ 
+ 
+(
+)
+(
+)
+2
+2
+2
+3
+2
+2
+3
+2
+y
+y
+x
+x
+W
+L
+W
+A
+−
++
+−
+⋅
+=
+⋅
+=
+ 
+(2)
+ 
+ 
+ 
+3
+2
+3
+2
+2
+1
+2
+1
+det
+2
+1
+x
+y
+y
+x
+X
+Y
+Y
+X
+Y
+Y
+X
+X
+A
+C
+B
+C
+B
+C
+B
+C
+B
+⋅
+−
+⋅
+=
+⋅
+−
+⋅
+=
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+⋅
+=
+ 
+(3) 
+ 
+ 
+Genom att sätta (2) = (3) fås: 
+ 
+ 
+(
+)
+(
+)
+3
+2
+3
+2
+2
+3
+2
+2
+3
+2
+2
+1
+2
+x
+y
+y
+x
+y
+y
+x
+x
+W
+⋅
+−
+⋅
+=
+−
++
+−
+⋅
+ 
+(4) 
+ 
+ 
+ 
+ 
+Från denna ekvation kan sedan W lösas ut: 
+ 
+ 
+(
+)
+(
+)
+2
+3
+2
+2
+3
+2
+3
+2
+3
+2
+y
+y
+x
+x
+x
+y
+y
+x
+W
+−
++
+−
+⋅
+−
+⋅
+=
+ 
+(5) 
+ 
+ 
+ 
+Vid vissa positioner hos gasfjädern fungerar 
+dock inte denna metod eftersom W inte 
+alltid motsvarar höjden på triangeln mellan 
+origo och gasfjäderns två fästen. Istället 
+hamnar W utanför triangeln, i gasfjäderns 
+förlängning, se figur 21 för illustration. 
+Detta problem förekommer oftast då man 
+har en hängande lucka med en klack och då 
+gasfjäderns fixa punkt sitter längre till 
+höger än dess rörliga fäste. 
+För att lösa detta problem var det 
+nödvändigt 
+att 
+undersöka 
+vid 
+vilken 
+koordinat 
+som 
+W 
+och 
+gasfjäderns 
+förlängning skär varandra. Detta gjordes 
+med hjälp av räta linjens ekvation. 
+ 
+Figur 21. Illustration av W utanför triangeln.
+ 
+ 
+ 
+Gasfjäderns linjeekvation:  
+ 
+1
+1
+m
+x
+k
+y
++
+=
+ 
+(6) 
+ 
+W:s linjeekvation:  
+ 
+2
+2
+m
+x
+k
+y
++
+=
+ 
+(7) 
+ 
+Gasfjäderns lutning ges av följande formel: 
+ 
+ 
+1
+2
+1
+2
+1
+x
+x
+y
+y
+k
+−
+−
+=
+ 
+(8) 
+ 
+Lutningen för W:s linje ges av sambandet att produkten av två linjers lutningskoefficienter, 
+som är vinkelräta mot varandra, är -1: 
+ 
+ 
+1
+2
+1
+−
+=
+⋅k
+k
+ 
+(9) 
+ 
+Vilket ger: 
+ 
+1
+2
+1
+k
+k
+−
+=
+ 
+(10) 
+ 
+ 
+27
+ 
+ 
+ 
+ 
+Punkten där gasfjäderns linje skär Y-axeln, m1, fås genom att först beräkna k1 och sedan sätta 
+in k1 och en koordinat i (6) och lösa ut m1: 
+ 
+ 
+x
+k
+y
+m
+1
+1
+−
+=
+ 
+(11) 
+ 
+W:s linje kommer alltid att skära Y-axeln i origo vilket ger att m2 = 0. Detta gör att W:s 
+linjeekvation blir: 
+ 
+ 
+x
+k
+x
+k
+y
+⋅
+−
+=
+=
+1
+2
+1
+ 
+(12) 
+ 
+När båda linjernas ekvationer är kända kan linjernas skärningspunkt beräknas. Genom att sätta 
+gasfjäderns linjeekvation lika med W:s linjeekvation kan koordinatens X-värde lösas ut: 
+ 
+ 
+x
+k
+m
+x
+k
+2
+1
+1
+=
++
+ 
+(13) 
+Vilket ger: 
+ 
+1
+2
+1
+k
+k
+m
+x
+−
+=
+ 
+(14) 
+ 
+(10) och (11) insatt i (14) ger: 
+ 
+ 
+1
+1
+1
+1
+k
+k
+x
+k
+y
+xskär
+−
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛−
+⋅
+−
+=
+ 
+(15) 
+ 
+Y-koordinaten till linjernas skärningspunkt fås genom att sätta in (15) i (12): 
+ 
+ 
+1
+1
+1
+1
+1
+1
+k
+k
+x
+k
+y
+k
+yskär
+−
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛−
+⋅
+−
+⋅
+−
+=
+ 
+(16) 
+ 
+W ges sedan av Pythagoras sats: 
+ 
+ 
+(
+)
+(
+)
+(
+)
+(
+)
+2
+2
+2
+2
+2
+2
+0
+0
+skär
+skär
+skär
+skär
+origo
+skär
+origo
+skär
+y
+x
+y
+x
+x
+y
+x
+x
+W
++
+=
+−
++
+−
+=
+−
++
+−
+=
+(17) 
+ 
+ 
+För att komma närmare verkligheten vid kraftberäkningen har kraftekvationen korrigerats för 
+gasfjäderns progressivitet, inre friktion och temperaturberoende. Dock har ingen hänsyn tagits 
+till övriga yttre omständigheter, t.ex. friktionen i luckans gångjärn. 
+ 
+ 
+28
+ 
+ 
+2.3.1 Progressivitet 
+Kraften i gasfjädern är inte helt konstant. Allt eftersom gasfjädern trycks ihop ökar trycket i 
+cylindern. Detta beror på att kolvstången tar upp mer och mer volym i cylindern vilket gör att 
+kvävgasen komprimeras och trycket ökar. Vid 5mm från fullständig komprimering sägs 
+kraften F1 vara ca 30 % större än vid 5mm från fullständigt utdraget läge.  
+När kraftberäkningen ska justeras för progressiviteten beräknas hur långt ut kolvstången är i 
+förhållande till den totala slaglängden under hela öppningsförloppet, se ekvation 26. 
+ 
+ 
+ 
+)3,0
+)
+(
+3,0
+1(
+1
+⋅
++
+−
+−
++
+⋅
+=
+slaglängd
+slaglängd
+total
+aktuell
+prog
+L
+L
+L
+L
+F
+F
+ 
+(26) 
+2.3.2 Friktion 
+Beroende på hur många tätningar samt vilken dimension och kraft en gasfjäder har kommer 
+den inre friktionen i gasfjädern att variera. Som tidigare visades i avsnitt 1.2  krävs det mer 
+kraft för att komprimera gasfjädern än vad som fås ut då den expanderar. I samarbete med 
+handledarna på Lesjöfors har friktionskrafter för de olika dimensionerna på gasfjädrar 
+bestämts. Värdena för dessa är hämtade från diagram över statiska kraftmätningar utförda av 
+Hanil Precision Ltd. Dessa friktionsvärden visas i tabell 2. 
+ 
+ 
+Gasfjäderdimension
+15-6 
+18-8 
+22-10 
+28-14 
+Friktionskraft [N] 
+10 
+20 
+30 
+50 
+Tabell 2. Friktionskrafter för vardera gasfjäders dimension  
+ 
+ 
+29
+ 
+ 
+2.3.3 Temperaturberoendet 
+Kraften i en gasfjäder är temperaturberoende. Kraften sägs öka eller minska med 3,5 % då 
+omgivningstemperaturen stiger eller sjunker med 10° C. För att beräkna kraftökningen/-
+minskningen används ekvation 27. I figur 22 illustreras temperaturberoendet för öppnings- 
+och stängningskraften i en graf. De svarta linjerna symboliserar rumstemperatur medan de grå 
+övre och undre linjerna symboliserar en högre respektive en lägre temperatur. 
+ 
+ 
+)
+0035
+,0
+)
+1(
+20
+1
+1
+⋅
+−
++
+⋅
+=
+o
+T
+T
+F
+F
+omg
+temp
+ 
+(27) 
+ 
+ 
+Figur 22. Kraftkurvor vid tre olika temperaturer 
+ 
+30
+ 
+ 
+2.3.4 Plottning av fjäderkraften 
+För att programmet ska kunna rita upp grafen över fjäderkraften använder det en av oss 
+konstruerad metod som heter springForceCalc, se kodavsnittet nedan. Den har en slinga som 
+utför kraftberäkningen en gång per grad från startvinkeln till den vinkel som användaren 
+specificerat, i detta fall angleOpen.. Metoden beräknar även det vertikala avståndet W samt 
+undersöker gasfjäderns lutning för att bestämma vilken formel den ska beräkna kraften med, 
+vilket beskrivs i nästa avsnitt, 2.4. Kraften som beräknas vid varje vinkel sparas, tillsammans 
+med aktuell vinkel, i en två dimensionell vektor, forcePoints[i] som sedan skickas iväg till 
+klassen springDraw för att plottas upp i ett diagram, se figur 23. Detta förklaras mer detaljerat 
+i avsnitt 2.6. 
+ 
+public Point[] springForceCalc() 
+{ 
+   for (int i = 0; i < (angleOpen + 1); i++) 
+   { 
+     actualSpringLid = calcPoint(springLidClosed.X, springLidClosed.Y, i); 
+     double deltaX = actualSpringLid.X - springFix.X; 
+     double deltaY = actualSpringLid.Y - springFix.Y; 
+     // Determines at what coordinate the extension of the gas spring  
+     crosses W and calculates W. 
+     double k1 = deltaY / deltaX; 
+     double m1 = calcPoint(springLidClosed.X, springLidClosed.Y, i).Y –  
+     k1 * calcPoint(springLidClosed.X, springLidClosed.Y, i).X; 
+     double k2 = -1 / k1; 
+     double x2 = m1 / (k2 - k1); 
+     double y2 = k2 * x2; 
+     W = Math.Sqrt((x2 * x2) + (y2 * y2)); 
+     if (W < 1) 
+        W = 1; 
+     int L = calcPoint(cogClosed.X, cogClosed.Y, i).X; 
+     int F = (mg * L) / (W * n); 
+     forcePoints[i] = new Point(i, F); 
+  } 
+} 
+ 
+Figur 23. Illustration av kraften F1
+ 
+31
+ 
+ 
+2.4 Gasfjäderns lutning 
+Vid beräkning av fjäder- och handkraften är det viktigt att veta åt vilket håll gasfjädern lutar, 
+se figur 24. Detta för att W kommer att peka åt vänster eller höger om origo, vilket medför att 
+F1 kommer att orsaka moment antingen mot- eller medsols runt origo. 
+ 
+Om gasfjäderns förlängning pekar till vänster om origo kommer dess kraft, F1, att motverka 
+kraften som användaren anbringar luckan vid öppning, FH. Vid denna lutning används 
+formeln i ekvation 18 för beräkning av FH. 
+ 
+ 
+lucka
+COG
+H
+L
+W
+n
+F
+L
+mg
+F
+⋅
+⋅
+−
+⋅
+=
+1
+ 
+(18) 
+ 
+Om gasfjäderns förlängning istället lutar till höger om origo så kommer F1 att hjälpa till att 
+öppna luckan och formeln i ekvation 19 används för beräkning av FH istället.  
+ 
+ 
+lucka
+COG
+H
+L
+W
+n
+F
+L
+mg
+F
+⋅
+⋅
++
+⋅
+=
+1
+ 
+(19) 
+ 
+ 
+Figur 24. Illustration av gasfjäderns lutning 
+ 
+Detta inträffar oftast då man har en klack på en hängande lucka, se figur 21. Detta för att 
+gasfjädern ska suga in luckan vid stängning och sedan hålla den stängd. 
+För att programmet ska veta åt vilket håll gasfjäderns förlängning skär X-axeln 
+implementerades en variant av räta linjens ekvation. I vanliga fall är ekvationen för räta linjen 
+följande: 
+ 
+ 
+m
+kx
+y
++
+=
+ 
+(20) 
+ 
+Där lutningen är: 
+ 
+1
+2
+1
+2
+x
+x
+y
+y
+k
+−
+−
+=
+ 
+(21) 
+ 
+ 
+32
+ 
+ 
+ 
+ 
+Variabeln m är där linjen skär Y-axeln. I detta fall önskas dock att ta reda på var gasfjäderns 
+förlängning skär X-axeln. Därför inverterades k och ekvationen gjordes om till följande: 
+ 
+ 
+ 
+m
+ky
+x
++
+=
+ 
+(22) 
+ 
+ 
+1
+2
+1
+2
+y
+y
+x
+x
+k
+−
+−
+=
+ 
+(23) 
+ 
+Programmet beräknar hur gasfjädern lutar vid varje vinkel och kontrollerar på vilken sida om 
+origo gasfjäderns förlängning korsar X-axeln. Med hjälp av denna information bestäms vilken 
+ekvation som ska användas för att beräkna fjäderkraften och handkraften. 
+ 
+33
+ 
+ 
+ 
+ 
+2.5 Beräkning av kraft från användaren 
+En viktig aspekt vid valet av fjäder är hur 
+stor kraft användaren måste anbringa 
+luckan för att öppna och stänga den. När 
+en gasfjäder valts beräknas detta av 
+programmet 
+och 
+redovisas 
+i 
+diagramform. Ofta har kunden en önskan 
+om att luckan ska öppna sig själv vid en 
+viss vinkel. Detta sker när kraften från 
+användaren är lika med noll.  
+För att beräkna den erforderliga kraften 
+från användaren används en liknande 
+ekvation 
+som 
+vid 
+beräkningen 
+av 
+fjäderkraften, 
+se 
+avsnitt 
+2.3. 
+Beräkningarna utgår från en kraftjämvikt 
+runt 
+origo, 
+denna 
+gång 
+är 
+dock 
+fjäderkraften känd eftersom en gasfjäder 
+med en given kraft valts. Kraften från 
+användaren, FH, anses verka vinkelrät 
+mot luckan och positiv riktning är 
+motsols. Se figur 25 för en illustration av 
+kraftjämvikten. 
+ 
+Figur 25. Illustration av handkraften 
+ 
+ 
+ 
+                 
+Momentet runt origo: 
+ 
+ 
+0
+1
+=
+⋅
++
+⋅
+−
+⋅
+⋅
+r
+F
+L
+mg
+n
+W
+F
+H
+ 
+(24) 
+ 
+Vilket ger: 
+ 
+ 
+r
+n
+W
+F
+L
+mg
+FH
+⋅
+⋅
+−
+⋅
+=
+1
+ 
+(25) 
+Där: 
+F1 = Kraften i gasfjädern (given i detta fall) 
+mg = Luckans massa 
+L = Horisontella avståndet mellan origo och tyngdpunkten 
+W = Vinkelräta avståndet mellan origo och gasfjädern 
+n = Antalet gasfjädrar 
+r = Luckans längd 
+FH = Kraften som användaren måste utöva vinkelrät mot luckan för att balansera den 
+ 
+FH beräknas på samma sätt som F1, d.v.s. programmet utför kraftberäkningen i en slinga som 
+går igenom hela öppningsförloppet grad för grad. Värdena för FH plottas sedan i en graf för 
+att illustrera handkraften under hela öppningsprocessen, se figur 14. I samma graf plottas även 
+stängningskraften, d.v.s. hur mycket kraft som användaren måste anbringa luckan för att den 
+ska stängas.  
+ 
+ 
+ 
+34
+ 
+ 
+2.6 Grafik 
+I programmet finns tre grafiska fönster; ett som visar luckan och gasfjädern, en graf som visar 
+kraften från gasfjädern och en graf som visar kraften från användaren. Uppritandet sköts av en 
+egen klass i programmet, SpringDraw. Huvudprogrammet skickar information till 
+SpringDraw som sedan skapar bildobjekt som visas i användargränssnittet. 
+I fallet med uppritandet av luckan skickar huvudprogrammet alla koordinater som behövs till 
+SpringDraw; luckans yttre punkt, punkterna för gasfjäderns båda ändar och tyngdpunktens 
+läge. Det skickas tre uppsättningar av dessa koordinater; önskad lucka i öppet och stängt läge 
+och punkter för den verkliga luckan med vald gasfjäder. 
+Dessa är vanliga tvådimensionella kartesiska koordinater med origo i luckans gångjärn och 
+längdenheten millimeter. Det grafiska koordinatsystemet har origo i bildens övre vänstra hörn 
+med positiv Y-riktning nedåt och längdenheten bildpunkter (pixlar). SpringDraw måste alltså 
+först transformera koordinaterna innan uppritningen kan påbörjas, se figur 26. För att hela 
+motivet ska rymmas i bilden normeras alla längder efter luckan, som alltid har en bestämd 
+längd i pixlar oavsett hur lång den är i mm. Gångjärnet är en fix punkt i det grafiska 
+koordinatsystemet. När all information samlats in och processats ritas bilden upp enligt 
+principen; rita ett streck från punkt (x1, y1) till punkt (x2, y2) med färgen A och tjockleken W, 
+rita en fylld cirkel med centrum i (x3, y3) med radien R och färgen B, osv. När uppritningen är 
+färdig skapas en bitmapbild som hämtas av huvudprogrammet som sedan visar den i en 
+bildruta i användargränssnittet. 
+ 
+ 
+Figur 26. Transformation av koordinater 
+ 
+När graferna ska ritas upp skickar huvudprogrammet en tvådimensionell vektor till 
+SpringDraw. Denna motsvarar X- och Y-koordinater till varje punkt på kurvan. Även här 
+måste punkterna transformeras för att passa i det grafiska koordinatsystemet. De största X- 
+och Y-koordinaterna identifieras och jämförs med bredden och höjden av diagrammet, på så 
+sätt skapas en omskalningsfaktor som sedan används på alla punkter i vektorn. C# har en 
+inbyggd funktion för att rita kurvor, DrawCurve som endast kräver en vektor som indata samt 
+eventuell ytterligare information såsom linjestil, färg och linjetjocklek. Det visade sig att 
+kurvan blev mindre hackig när antalet punkter minskades. Därför sorterar SpringDraw ut var 
+tionde punkt från den ursprungliga vektorn innan DrawCurve används. Sedan ritas axlar och 
+skalstreck med etiketter ut. 
+ 
+35
+ 
+ 
+2.7 Läsning från Excel 
+Ett av kriterierna i specifikationen av examensarbetet, se bilaga 1, var att programmet skulle 
+kunna söka igenom Lesjöfors sortiment, för att sedan föreslå lämpliga gasfjädrar till den 
+applikation som användaren räknar på. Lesjöfors sortiment av gasfjädrar finns beskrivet i en 
+Excel-fil med data om fjäderns totala längd, slaglängd, kraft, artikelnummer och 
+gängdimension. Ett annat krav var att programmet skulle fungera även om sortimentet av 
+gasfjädrar ändras, vilket är möjligt så länge de nya gasfjädrarna läggs till på rätt sätt.    
+ 
+Eftersom C# inte har någon inbyggd funktion för att kunna läsa från Excel-filer har ett så 
+kallat Open Source API med namnet NExcel [4] använts. Det är ett externt bibliotek med 
+funktioner och metoder som är skrivet i öppen källkod. Fördelen med detta API jämfört med 
+andra är att datorn som användaren kör LGP på inte behöver ha Microsoft Excel installerat för 
+att det ska fungera. Genom att lägga till filen NExcel.dll som referens i programmet kan LGP 
+använda sig av NExcels funktioner för att kunna läsa från en Excel-fil. Programmet börjar 
+med att skapa en referens till Excel-filen gassprings.xls, som innehåller all data om Lesjöfors 
+sortiment av gasfjädrar. Varje blad innehåller en typ och varje rad motsvarar en gasfjäder. Se 
+figur 27 för ett avsnitt ur gassprings.xls. 
+ 
+ 
+Figur 27. Utdrag ur filen gassprings.xls  
+ 
+Programmet läser sedan in varje blad i filen och undersöker alla rader. Varje gasfjäder jämförs 
+med parametrarna från det aktuella problemet. Först kontrolleras om gasfjädern har rätt 
+gänga, sedan om den är tillräckligt lång i utskjutet läge och tillräckligt kort när den är 
+hoptryckt. De fjädrar som uppfyller kriterierna visas i en lista och är valbara för användaren, 
+se figur 11. Programmet tillåter fjädrar som är något för långa och för korta, för att urvalet 
+inte ska bli allt för snävt. Under utvecklingen var även kraften en parameter i urvalet, men det 
+slopades senare. Det innebär att listan kommer att visa flera gasfjädrar med samma längdmått 
+men med olika krafter. 
+ 
+Användaren av programmet kan välja vilka ändfästen som ska monteras på gasfjädern, 
+samtidigt passar bara vissa ändfästen på vissa gasfjädrar. Gasfjädrar med beteckning 15-6, 
+och 18-8 är försedda med M6-gängor i ändarna, medan gasfjädrar med beteckning 22-10 och 
+28-14 har M8-gängor. Därför kan användaren i menyn välja mellan att visa ändfästen med 
+antingen M6- eller M8-gänga, alternativt alla ändfästen. När användaren valt en gänga 
+sorteras gasfjädrar med andra gängor bort för att inte fel ska kunna uppstå. I Lesjöfors 
+sortiment finns även gasfjädrar med fastsvetsade öglor i ändarna. Dessa visas inte i listan över 
+lämpliga gasfjädrar om ändfästen har valts. För att de ska visas måste ”None” vara valt i båda 
+listorna över ändfästen, detta för att minska risken för misstag.  
+Med hjälp av NExcel läser programmet in och sorterar information från Excel-filen 
+endfittings.xls som innehåller data om alla ändfästen. Den viktigaste informationen om varje 
+ändfäste är bygglängd, gängdimension och artikelnummer. 
+ 
+36
+ 
+37
+ 
+ 
+2.8 Spara och öppna filer 
+Lesjöfors ville att det skulle gå att spara filer med all nödvändig geometrisk data, vald 
+gasfjäder och ändfästen från pågående projekt. Självklart skulle det också gå att öppna filen 
+och få fram all data, bilder och grafer igen. C# har en inbyggd funktion för att skriva och läsa 
+från textfiler. Sparfilen är i grunden en vanlig textfil av typen txt där filtypen döpts om till gsp 
+för att enkelt kännas igen. Nedan visas ett avsnitt av koden som sparar data till en fil. På första 
+raden skapas en SaveFileDialog, vilket är ett nytt fönster som öppnas. Där väljer användaren 
+namn på filen samt bestämmer vart den ska sparas. Från början är filnamnet automatiskt 
+samma som projektnamnet om det finns ett sådant. Sedan sätts diverse parametrar för filen 
+som ska sparas och för fönstret. I if-satsen undersöks om sparningsfönstret fungerar, och om 
+filnamnet innehåller minst ett tecken. Om svaret är positivt startas StreamWriter, vilket är 
+metoden som skriver i textfilen, och programmet sparar valda parametrar på varsin rad i 
+textfilen. Sist stängs StreamWriter för att kunna användas på flera ställen i programmet. 
+ 
+SaveFileDialog saveFileDialog = new SaveFileDialog(); 
+saveFileDialog.FileName = customerBox3.Text; 
+saveFileDialog.Filter = "gsp files (*.gsp)|*.gsp"; 
+saveFileDialog.RestoreDirectory = true; 
+ 
+if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK 
+                && saveFileDialog.FileName.Length > 0) 
+{ 
+    System.IO.StreamWriter sw = new    
+        System.IO.StreamWriter(saveFileDialog.FileName); 
+ 
+    sw.WriteLine(inputLidLength.Text);                  //  Case 1 
+    sw.WriteLine(inputStartAngle.Text);                 //  Case 2 
+    sw.WriteLine(inputCog.Text);                        //  Case 3 
+    ………… 
+    sw.WriteLine(customArtNrBox.Text);                  //  Case 31 
+    sw.Close(); 
+    } 
+} 
+ 
+För att öppna en sparad fil anropas metoden OpenFileDialog, vilket öppnar ett fönster där 
+användaren väljer vilken fil som ska öppnas. Fönstret är inställt så att endast filer med 
+ändelsen gsp visas och startkatalogen är den katalog där det senaste projektet öppnades ifrån. I 
+kodavsnittet nedan visas hur det går till att öppna och läsa en sparad fil. I if-satsen testar 
+programet om öppningen lyckats. Gör den det körs först en while-sats som läser varje rad i 
+filen tills raderna är slut och sedan en switch-sats som sätter värdet på variabler i programmet 
+utifrån värdet på motsvarande rad i filen. Precis som i sparandet stängs OpenFileDialog efter 
+att inläsningen är klar för att den skall kunna användas igen. 
+ 
+38
+ 
+ 
+ 
+ 
+ 
+string line; 
+int lineNumber = 1; 
+OpenFileDialog openFileDialog = new OpenFileDialog(); 
+openFileDialog.Filter = "gsp files (*.gsp)|*.gsp"; 
+openFileDialog.FilterIndex = 2; 
+openFileDialog.RestoreDirectory = true; 
+     
+if (openFileDialog.ShowDialog() == DialogResult.OK) 
+{ 
+    StreamReader file = new StreamReader(openFileDialog.FileName); 
+    while ((line = file.ReadLine()) != null) 
+    { 
+ 
+    switch (lineNumber) 
+    { 
+        case 1: 
+            inputLidLength.Text = line; 
+        break; 
+        case 2: 
+            inputStartAngle.Text = line; 
+        break;  
+        case 3: 
+            inputCog.Text = line; 
+        break; 
+        ………… 
+        case 31: 
+            customArtNrBox.Text = line; 
+        break; 
+        default: 
+        break; 
+    }   // End of switch 
+    lineNumber++; 
+}  
+file.Close(); 
+ 
+ 
+ 
+39
+ 
+ 
+2.9 Skapa utskrifter och PDF-dokument  
+Ett krav från Lesjöfors var att användaren skulle kunna skriva ut och skapa PDF-dokument av 
+beräkningen från programmet, för att sedan kunna skicka iväg det med fax eller e-post till 
+kunder. I dagsläget skickas endast en kopia av handberäkningen med handskrivna 
+kommentarer ut till kunden.  
+ 
+Grunden till utformningen av utskrifts- och PDF-layouten kommer från Lesjöfors förra 
+samarbetspartner Suspas beräkningsprogram. Dessa kunde, till och med för anställda på 
+Lesjöfors, tyckas aningen komplicerade att tyda och utgångspunkten med våra utskrifter har 
+varit att kunden, som i slutändan ska få dessa, lätt ska kunna förstå och utläsa all data och 
+information på utskrifterna. Utskriftssidorna skall även vara estetiskt tilltalande.  
+Layouten på de utskrivna sidorna och PDF-dokumentet skall vara identiska, dock förekommer 
+små avvikelser mellan dessa då antalet pixlar i koordinatsystemen avviker något från 
+varandra, vilket har gjort det svårt att få dem exakt likadana. I PDF-dokumentet blir alla 
+linjer, texter och bilder aningen större än i de utskrivna sidorna. För att lösa problemet med att 
+få så lika utseenden som möjligt skapades ett rutnät i PDF-dokumentet som sedan ritades in 
+för hand på utskriftssidorna. Därefter beräknades startpositioner samt storlekar för bilder, 
+linjer och texter genom mätning med linjal. Rutnätet bestod av horisontella och vertikala 
+linjer vid var hundrade pixel. En utskriven sida presenteras i bilaga 2. 
+ 
+Microsoft Visual C# har inbyggda funktioner för att skicka information från programmet till 
+en skrivare. Däremot går det inte att skapa utskriften grafiskt på samma sätt som med 
+användargränssnittet. Allt måste skrivas i programkod i ett printdokument, här kallat 
+printPages. T.ex. skriv denna textrad med typsnittet A vid pixel (x,y), visa denna bild vid 
+pixel (x,y) osv. Se kodavsnittet nedan. Denna procedur var mycket tidsödande då programmet 
+måste testköras efter varje ändring för att se resultatet. 
+ 
+ 
+void printPages(object sender, PrintPageEventArgs e) 
+{ 
+... 
+    // Geometric info 
+    e.Graphics.DrawString("Geometric Info", verdana10BoldFont, 
+    Brushes.Black, 55, 810); 
+    e.Graphics.DrawString("Lid length: " + lidLength.ToString() +  
+    " mm", verdana10Font, Brushes.Black, 55, 832); 
+    e.Graphics.DrawString("Lid weight: " + weight.ToString() +  
+    " kg", verdana10Font, Brushes.Black, 55, 854); 
+... 
+     
+    // Vertical Line Left of Customer Info 
+    e.Graphics.DrawLine(myPen, 400, 800, 400, 1031); 
+... 
+ 
+} 
+ 
+När användaren vill skriva ut ett projekt väljer denne Print från File-menyn, se figur 15. Då 
+anropas printPages och sidorna skickas till skrivaren. I Visual C# finns en fördefinierad 
+funktion för förhandsgranskning av utskrift. Om Print Preview från File-menyn väljs, öppnas 
+ett nytt fönster som visar hur utskriften kommer att se ut.  Användaren kan även välja att 
+skriva ut sidorna därifrån om så önskas. 
+C# har inga inbyggda funktioner för att kunna skapa PDF-dokument. Detta löstes genom att 
+implementera ett så kallat Open Source API. Efter att ha studerat flertalet möjliga valdes ett 
+som heter PDFSharp [3] eftersom det var det mest lätthanterliga och för att det var gratis.  
+ 
+ 
+40
+ 
+ 
+ 
+ 
+Att skapa PDF-dokument med PDFSharp fungerar på nästan samma sätt som när man skapar 
+printdesignen, det enda som skiljer är egentligen namnet på funktionerna som skapar bilder, 
+linjer och text med, se kodexemplet nedan. För att PDFSharps funktioner ska kunna användas 
+måste först filen PDFSharp.dll läggas till i huvudprogrammets referenser.  
+ 
+//  Creates fonts. 
+XFont PDFFontVerdana10 = new XFont("Verdana", 10); 
+XFont PDFFontVerdana10Bold = new XFont("Verdana", 10, XFontStyle.Bold); 
+XFont PDFFontVerdana9 = new XFont("Verdana", 9); 
+XFont PDFFontVerdana9Italic = new XFont("Verdana", 9, XFontStyle.Italic); 
+ 
+//  Draws the Logotype. 
+XImage imageLogo = XImage.FromFile("pics/logotype.gif"); 
+PDF1.DrawImage(imageLogo, 130, 20); 
+ 
+//  Geometric Info. 
+PDF1.DrawString("Geometric Info", PDFFontVerdana10Bold, XBrushes.Black, 45, 
+620); 
+PDF1.DrawString("Lid length: " + lidLength.ToString() + " mm", 
+PDFFontVerdana9, XBrushes.Black, 45, 635); 
+PDF1.DrawString("Lid weight: " + weight.ToString() + " kg", 
+PDFFontVerdana9, XBrushes.Black, 45, 650); 
+... 
+ 
+ 
+ 
+ 
+2.10 Felhantering 
+För att programmet ska fungera utan att det hänger sig, om t.ex. användaren har matat in 
+felaktig data eller tryckt på OK-knappen innan tillräckligt med information är inmatat, 
+används en så kallad ”try-catch”-metod. Det finns vissa delar av programmet som är extra 
+känsliga och lättare orsakar haveri än andra. Med try-catch-metoden testar programmet först 
+funktionen i try och fångar sedan upp eventuella fel i catch, se kodavsnittet nedan. I detta 
+exempel provas om det går att förhandsgranska utskriftsdokumentet i det som står under try. 
+Skulle det uppstå ett fel så kommer det som står under catch att köras istället. 
+ 
+ 
+private void printPreview_Click(object sender, EventArgs e) 
+{ 
+    try 
+    { 
+        nPage = 0; 
+        PrintPreviewDialog dlg = new PrintPreviewDialog(); 
+        dlg.Document = printDoc; 
+        dlg.ShowDialog(); 
+    } 
+    catch 
+    { 
+        toolStripStatusLabel.Text = "Error when previewing."; 
+    } 
+} 
+ 
+ 
+Funktionen 
+try-catch 
+är 
+mycket 
+användbar 
+då 
+programmet t.ex. gör matematiska beräkningar eftersom 
+användaren i vissa fall kan ha matat in data som leder till 
+division med noll i vissa ekvationer, vilket i sin tur leder 
+till haveri av programmet.  
+Om användaren matat in felaktig geometrisk data, eller 
+lämnat fält tomma, ändras bakgrundsfärgen samt 
+textfärgen i de felaktiga inmatningsrutorna, se figur 28. 
+Detta för att göra användaren uppmärksam på vart felet 
+ligger när uträkningen inte fungerar. Samma sak inträffar 
+om användaren har valt en gasfjäder som inte får plats 
+mellan dess fästpunkter. 
+             
+ 
+Figur 28. Exempel på fel 
+inmatning av geometrisk data 
+                 
+ 
+ 
+41
+ 
+3. Avancerade inställningar 
+Programmet möjliggör för användaren att kontrollera hur gasfjädern uppför sig i olika 
+omgivningstemperaturer. Detta görs genom att visa flera kurvor för olika temperaturer i 
+kraftgrafen. Det finns också möjlighet att göra mer avancerade inställningar, t.ex. ändra 
+friktionen, progressiviteten eller temperaturberoendet hos gasfjädern. Dessa inställningar nås 
+genom att välja Options under Tools i menyraden. Då öppnas ett nytt fönster med flikar för de 
+olika inställningarna. Där kan användaren ändra progressiviteten, temperaturberoendet och 
+friktionskraften hos de olika dimensionerna av gasfjädrar. Här kan användaren även skriva in 
+sitt namn och sin kontaktinformation samt företagets adress och telefonnummer som kommer 
+att visas på de utskrivna sidorna och i PDF-dokumentet.  
+I användargränssnittet finns en text som lyder ”Default settings” (Standardinställningar). Om 
+användaren ändrat någon inställning ändras texten till ”Settings changed. See Options for 
+details” (Inställningarna ändrade. Se Inställningar för detaljer). Detta för att göra användaren 
+uppmärksam på att originalinställningarna är förändrade. 
+ 
+3.1 Temperaturkurvor 
+I kravspecifikationen, se Bilaga 1, efterfrågade Lesjöfors att programmet skulle kunna 
+simulera olika omgivningstemperaturer om tid fanns. Detta implementerades och programmet 
+visar kraftgrafer för de temperaturer användaren är intresserad av. 
+ 
+Användaren väljer Edit i menyraden och sedan Temperature. Då öppnas ett nytt fönster, se 
+figur 29, där det ges möjlighet att välja två extra temperaturer. Den ursprungliga kraftgrafen 
+visar gasfjäderns kraft vid rumstemperatur (20º C). De extra temperaturerna kan vara inom 
+intervallet -100º C till +100º C. Kraftgrafen kan bli svår att utläsa om den innehåller många 
+kurvor, därför finns möjlighet att välja vilka öppnings- och stängningskurvor som ska visas. 
+En kraftkurva med två extra temperaturer visas i figur 22.  
+Vid omstart av programmet nollställs de extra temperaturerna och vid sparande av pågående 
+projekt sparas de så att kurvorna visas igen om projektet öppnas vid ett senare tillfälle. 
+ 
+Figur 29. Illustration av temperaturinställningarna 
+ 
+42
+ 
+ 
+3.2 Användarinformation 
+När en ny användare ska köra programmet för första gången skriver han eller hon in sitt 
+namn, telefonnummer och e-postadress under fliken Designer Info i Options, se figur 30. 
+Denna information sparas i en textfil i programkatalogen och läses automatiskt in i 
+programmet varje gång det startas. Uppgifterna visas i utskrifter och PDF-dokument för att 
+kunden ska veta vem som gjort beräkningen. 
+ 
+ 
+ 
+ 
+Figur 30. Illustration av inställningarna för designer info 
+ 
+ 
+43
+ 
+ 
+3.3 Sidfot 
+Längst ned i utskrifter och PDF-dokument, se bilaga 2, visas företagets adress som sidfot, se 
+figur 31. Eftersom programmet kommer att köras vid flera olika Lesjöforskontor runt om i 
+världen är denna ändringsbar. 
+ 
+ 
+ 
+Figur 31. Illustration av sidfoten 
+ 
+ 
+Ändringar i sidfoten görs under fliken Page Footer i Options, se figur 32. Där kan användaren 
+fylla i adress och telefonnummer till företaget. Informationen sparas sedan i samma textfil 
+som användarinformationen och läses in varje gång programmet startas, för att sedan 
+användas i utskriften och i PDF-dokumentet.  
+ 
+ 
+ 
+Figur 32. Illustration av inställningarna för Page Footer  
+ 
+ 
+44
+ 
+ 
+3.4 Progressivitet 
+En gasfjäders kraft betecknas F1 och bestäms då den är 5mm från fullständigt utskjutet läge. 
+När gasfjädern komprimeras ökar kraften, detta kallas progressivitet. I programmet antas 
+denna progressivitet vara linjär. Kraften då gasfjädern är 5mm ifrån helt intryckt läge är ca  
+30 % större än F1, se figur 2. Detta värde är en approximation och kan variera mellan olika 
+typer av gasfjädrar. Därför är det möjligt för användaren att ändra denna under fliken 
+Progressive Force i Options, se figur 33. Om detta värde ändras, sparas det med det aktuella 
+projektet, men återställs till utgångsvärdet vid start av ett nytt projekt eller vid omstart av 
+programmet. 
+ 
+ 
+Figur 33. Illustration av progressivitetsprocenten 
+ 
+ 
+45
+ 
+ 
+3.5 Temperaturkonstant 
+Kraften i gasfjädern är beroende av omgivningens temperatur. Vid låga temperaturer minskar 
+gasfjäderns kraft medan den ökar vid högre temperaturer. Beräkningarna i programmet utgår 
+från att omgivande temperatur är 20º C. Undersökningar som Lesjöfors har genomfört visar 
+att kraften i gasfjädern ökar/minskar med ca 0,35 % vid en förändring av temperaturen med  
+1º C. Användaren kan ändra denna konstant under fliken Temperature i Options, se figur 34. 
+Om konstanten ändras, sparas den med det aktuella projektet, men återställs vid start av ett 
+nytt projekt eller vid omstart av programmet. 
+ 
+ 
+ 
+ 
+Figur 34. Inställning av temperaturkonstant 
+ 
+ 
+46
+ 
+ 
+3.6 Friktion 
+Vid användande av en gasfjäder uppstår en inre friktion som främst härrör från friktionen 
+mellan kolvstången och tätningarna. Värdet på denna friktion fås genom statisk uppmätning 
+vid 5mm från fullständigt utskjutet läge och 5mm från fullständigt intryckt läge, vid både 
+expansion och kompression. Programmet använder genomsnittliga värden från dessa 
+uppmätningar som bestämdes i samarbete med handledarna på Lesjöfors.  
+Beroende på vilken dimension på gasfjädern samt vilken typ av tätningar som sitter i så är 
+friktionskraften olika. Friktionskrafterna för respektive dimension på gasfjädrar visas i figur 
+35.  
+Användaren kan ändra friktionskrafterna för de olika dimensionerna under fliken Friction i 
+Options, se figur 36. Om friktionskrafterna ändras, sparas de med det aktuella projektet, men 
+återställs vid start av ett nytt projekt eller vid omstart av programmet. 
+  
+ 
+ 
+ 
+Figur 35. Illustration av friktionsinställningarna 
+ 
+ 
+47
+ 
+ 
+4. Utformning av programlayouten 
+Redan vid första mötet med handledarna på Lesjöfors presenterades ett förslag på hur de 
+önskade att programmet skulle se ut visuellt, vilket illustreras i figur 36. Lesjöfors hade 
+tidigare ett samarbete med den tyska gasfjädertillverkaren Suspa, som hade ett program för 
+gasfjäderberäkning.  Efter att deras samarbete bröts har all beräkning på gasfjädrar fått göras 
+för hand. Idén om programmets layout har sitt ursprung ur hur Suspas program såg ut, samt 
+egna idéer från Lesjöfors om vad de ville ha med. Utveckling av layouten har utgått från figur 
+36 men har sedan omarbetats ett flertal gånger efter nya idéer både från Lesjöfors och från 
+oss, samt efter vad som får plats på bildskärmen. För att se utvecklingen av 
+användargränssnittet se figur 37 och figur 38 för tidigare versioner. Den slutgiltiga designen 
+illustreras i figur 6. 
+Programmet är utformat för att fungera på datorer med skärmupplösning 1024x768 eller 
+högre. Självklart går det att köra programmet på en dator med lägre skärmupplösning, dock 
+syns inte hela programmet på skärmen samtidigt så användaren måste flytta bilden för att se 
+allt. 
+  
+ 
+Figur 36. Illustration av layoutförslag från Lesjöfors. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+48
+ 
+ 
+ 
+ 
+ 
+Figur 37. Illustration av första programlayouten 
+ 
+ 
+ 
+ 
+Figur 38. Illustration av senare programlayout 
+ 
+49
+ 
+50
+ 
+ 
+5. Slutsats 
+LGP är ett fristående datorprogram som utvecklats av Dan Anderson och Andreas Lorentzon 
+som examensarbete på Maskinkonstruktion på KTH, för Lesjöfors Stockholmsfjäder AB i 
+Vällingby under våren 2008. 
+ 
+Programmet är skrivet i dataspråket C# och utvecklat i Microsoft Visual C# 2008 Express 
+Edition. Ingen installation krävs för att programmet skall kunna köras, däremot måste 
+plattformen Microsoft .NET Framework 3.5 vara installerat för att det ska fungera. 
+ 
+Utvecklingen av programmet har skett i Vällingby i nära samarbete med handledarna på 
+Lesjöfors för att få det så likt deras mål som möjligt samt för att de ska ha en djup förståelse i 
+hur programmet fungerar och används. 
+ 
+Ett ordentligt underlag är skrivet för att folk på Lesjöfors IT-avdelning skall kunna ta över 
+utvecklingen av programmet i framtiden. Personal från IT-avdelningen har även besökt oss 
+vid slutet av examensarbetet för en genomgång av all datakod för att få mer insikt i hur 
+programmet fungerar och hur det är uppbyggt. 
+ 
+Programmet fungerar så som det var tänkt enligt Lesjöfors; Det förenklar och snabbar upp 
+arbetet för säljarna på Lesjöfors samtidigt som det förbättrar beräkningen på gasfjädrar och 
+ger ett mer exakt resultat. 
+ 
+Anställda på Lesjöfors i Vällingby har vid ett flertal tillfällen uttryckt sin belåtenhet med 
+programmet, både under utvecklingen och vid färdigställt program, och det har redan börjat 
+användas internationellt inom koncernen där det fått positiv feedback. 
+ 
+ 
+ 
+ 
+51
+ 
+52
+ 
+ 
+ 
+6. Tack 
+ 
+Vi skulle vilja tacka våra handledare, Mårten Glas och Erik Danell samt alla anställda på 
+Lesjöfors Stockholmsfjäder AB i Vällingby för att de har gjort tiden där trevlig och 
+examensarbetet roligt och utvecklande. 
+ 
+Vi skulle även vilja tacka Adam Lorentzon för support vid programmerandet samt för att han 
+har hjälp oss då vi kört fast. 
+ 
+Sist men inte minst vill vi tack vår handledare på KTH, Priidu Pukk, för att han ville ta sig an 
+detta examensarbete och för att han har bidragit med hjälp och idéer under arbetets gång. 
+ 
+53
+ 
+54
+ 
+ 
+ 
+7. Referenser 
+ 
+1. Lesjöfors gasfjäderbroschyr. Gas Springs. MediaPartner AB. 
+2. Sharp, J. Microsoft Visual C# 2005 steg för steg, Pagina Förlag AB, Sundbyberg, 2006. 
+3. PDFSharp, http://www.PDFsharp.com/PDFsharp/, 2008-04-23. 
+4. NExcel, http://nexcel.sourceforge.net/, 2008-04-23. 
+5. Bansbach, http://www.bansbach.de, 2008-02-06. 
+ 
+ 
+55
+ 
+ 
+ 
+Bilaga 1. Kravspecifikation 
+ 
+ 
+ 
+Dokumenttyp 
+ 
+Examensarbete CPG 
+ 
+ 
+ 
+Fax 
+Reg. Nr. 
+ 
+Sid 
+ 
+08 – 87 63 50 
+ 
+ 
+1 (1) 
+Utfärdare 
+Telefon 
+Datum 
+ 
+Utgåva 
+Mårten Glas 
+08 – 445 88 70 
+2008-01-28 
+ 
+1 
+ 
+Uppdrag:  
+Att skapa ett beräkningsprogram för gasfjädrar som beräknar vilken kraft som behövs för att 
+vid flera givna lägen hålla en lucka balanserad. Programmet (CPG) ska ge information om 
+vilken slaglängd och bygglängd som krävs för att luckan ska kunna öppnas och stängas helt.  
+Resultatet ska presenteras i form av ett utskrivet dokument som ger infästningspunkter för 
+gasfjädern, minimal kraft för att hålla luckan balanserad i minst 3 olika lägen, maximal 
+öppningsvinkel samt information om vald gasfjäder & ändfästens fysiska mått och 
+artikelnummer enligt Lesjöfors standardprogram (LSFG) för gasfjädrar. Det ska finnas en 
+koppling mellan CPG och LSFG så att en standardfjäder kan väljas samt även möjlighet att 
+definiera egna mått på gasfjädern. På utskriften ska det finnas med information som 
+identifierar det enskilda projektet såsom kund, kontaktperson, ritningsnummer, 
+projektnummer & kontaktinfo. 
+ 
+Underlag: 
+Draft for calculation program (2) (DFCP) 
+Lesjöfors standard program för gasfjädrar (LSFG) 
+ 
+Plats: 
+Arbetet ska/kan utföras hos oss på våra datorer 
+ 
+Avgränsning: 
+Det primära är att ta fram själva programvaran för beräkning. 
+En del faktorer kommer i första versionen att vara generella, 
+- 
+Friktion 
+- 
+Progressivitet 
+- 
+Oljemängd 
+- 
+Utskjutningshastighet 
+- 
+Temperatur 
+Programmet ska innehålla en databas med samtliga LSFG, dessa ska kunna väljas (klickbara) 
+efter det att användaren fyllt i basinformation (se DFCP)   
+Den färdiga utskriften ska bestå av en principskiss med: 
+- 
+måttsatta infästningspunkter 
+- 
+lucka i öppet läge, stängt läge samt ett givet läge 
+- 
+kraft för att hålla luckan balanserad i dessa 3 lägen 
+- 
+vald gasfjäder 
+- 
+övrig info enligt flik: Print sheet (DFCP) 
+ 
+ 
+ 
+ 
+56
+ 
+57
+ 
+ 
+ 
+ 
+Programmet ska vara konstruerat så att det är påbyggbart/utvecklingsbart för införande av 
+t.ex.: 
+- 
+Friktion 
+- 
+Progressivitet 
+- 
+Oljemängd 
+- 
+Utskjutningshastighet 
+- 
+Temperatur 
+- 
+Kraftkurva 
+Om det är möjligt ska en/flera av dessa funktioner finnas med i första versionen. 
+ 
+Användningsområde: 
+Programmet är avsett för Lesjöfors personal, utskrift ska kunna faxas/mailas till kund. 
+ 
+ 
+Mårten Glas 
+ 
+ 
+Bilaga 2. Utskrift från programmet 
+ 
+ 
+58
+ 
+ 
+ 
+ 
+59

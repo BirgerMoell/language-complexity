@@ -1,0 +1,2294 @@
+Beslutst¨odssystem f¨or investeringar och
+underh˚all i eldistributionssystem
+En modell f¨or att ta fram kostnadseﬀektiva investerings- och
+underh˚allsplaner
+JOAKIM LINDELL
+Examensarbete
+Stockholm 2009
+Beslutst¨odssystem f¨or investeringar och
+underh˚all i eldistributionssystem
+En modell f¨or att ta fram kostnadseﬀektiva investerings- och
+underh˚allsplaner
+JOAKIM LINDELL
+Examensarbete
+December 2009
+XR-EE-ETK 2009:010
+Kungliga Tekniska h¨ogskolan
+Skolan f¨or Elektro- och Systemteknik
+Avdelningen f¨or Elektroteknisk Teori & Konstruktion
+Sammanfattning
+I detta examensarbete har en tillf¨orlitlighetsmetod tagits fram som v¨ager
+samman kostnadsp˚averkande faktorer f¨or investeringar och underh˚all i el-
+distributionssystem med kostnader f¨orknippade med avbrott. Syftet med
+metoden ¨ar att m¨ojligg¨ora f¨or n¨atplanerare och projekt¨orer att j¨amf¨ora oli-
+ka investeringsalternativ f¨or att kunna kostnadseﬀektivisera investeringar-
+na i eldistributionssystem. Med tillf¨orlitlighetsanalys kan den f¨orv¨antade
+avbrottstiden i systemets uttagspunkter ber¨aknas. Kopplas en kostnad till
+den f¨orv¨antade avbrottstiden i uttagspunkterna kan den f¨orv¨antade avbrotts-
+kostnaden f¨or distributionssystemet ber¨aknas.
+Syftet med simuleringarna har varit att unders¨oka om det g˚ar att minimera
+den totala kostnaden, investeringskostnader samt f¨orv¨antade avbrottskost-
+nad, genom slumpvisa investeringar i systemets ledningssektioner. Simuler-
+ingarna har genomf¨orts p˚a ett ﬁktivt mindre system. Systemet m¨ojligg¨or
+analys av resultaten, men ¨ar ¨and˚a tillr¨ackligt komplext f¨or att p˚avisa prob-
+lematik som kan uppst˚a. Simuleringarna visar att den framtagna metoden ¨ar
+robust och fungerar p˚a ¨onskat vis. Det visade sig ocks˚a att simuleringstiden,
+¨aven med ett stort antal slumpvisa investeringstillf¨allen, ¨ar kort vilket g¨or
+att modellen ¨aven kan anv¨andas f¨or mer komplexa n¨at.
+Nyckelord: [Optimering, Elektriska distributionssystem, Avbrottskostnad,
+Tillf¨orlitlighetsanalys]
+iii
+Abstract
+This MSc project develops a method that combines factors that aﬀect the
+investment and maintenance costs in electrical power systems with costs asso-
+ciated with outage. This gives the system planner an opportunity to compare
+diﬀerent alternatives for investments to receive a low total cost. Using system
+reliability analysis the outage time for the load points in the system can be
+decided. If the expected outage time is associated with a cost, it is possible
+to calculate the expected outage cost for the system.
+The purpose of the simulations has been to examine if it is possible to mi-
+nimize the total cost by doing randomized investments on power lines in the
+system. The simulations is carried out on a ﬁctional, small system. Because
+of the speciﬁc design, it is easy to analyze results but also complex enough to
+show problems that can occur in the system. The simulations show that the
+model is robust and the expected results were accomplished. The simulations
+also showed that, even for a large amount of events, the time for the simula-
+tion is short. This shows that the model is suitable also for larger systems.
+Keywords: [Optimization, Electrical Power Systems, Outage costs, System
+Reliability Analysis]
+v
+F¨orord
+Att ta fram en modell f¨or kostnadseﬀektiva investerings- och underh˚allsplaner
+i eldistributionssystem ¨ar id´e som kommer ifr˚an Stefan Svensson och P¨ar
+Lyd´en p˚a Sweco Energuide. Id´en utmynnade i ett f¨orslag p˚a examensarbete
+och kontakt togs med RCAM-gruppen p˚a KTH som anammade f¨orslaget och
+ans˚ag det l¨ampligt att bedriva arbetet p˚a institutionen.
+F¨orst och fr¨amst vill jag framf¨ora ett stort tack till P¨ar Lyd´en och Ste-
+fan Svensson p˚a Sweco Energuide f¨or ov¨arderlig hj¨alp, givande diskussioner
+och uppmuntran. Jag vill ocks˚a framf¨ora ett stort tack till min examinator,
+Patrik Hilber, och mina handledare, Carl Johan Wallnerstr¨om och Johan
+Setr´eus, p˚a KTH f¨or inspiration och hj¨alp med att genomf¨ora detta arbete.
+vii
+Deﬁnitioner och terminologi
+I detta avsnitt presenteras deﬁnitioner och centrala begrepp som anv¨ands i
+arbetet.
+Deﬁnitioner
+Tillf¨orlitlighet (eng. Reliability) Deﬁnieras enligt standarden ISO 8402
+som [1]:
+The ability of an item to perform a required function, under given
+environmental and operational conditions and for a stated period
+of time.
+Investeringskostnad ¨ar den kostnad som uppst˚ar f¨or n¨at¨agaren d˚a un-
+derh˚all eller nyinvestering g¨ors p˚a en ledningssektion i systemet.
+F¨orv¨antad avbrottskostnad ¨ar den kostnad som uppst˚ar f¨or n¨at¨agaren
+om ett f¨orv¨antat avbrott i systemet uppst˚ar.
+Total kostnad ¨ar summan av f¨orv¨antade avbrottskostnaden och invester-
+ingskostnaden f¨or systemet
+Terminologi
+ Felintensitet: λ [1/h]
+ Reparationsintensitet: µ [1/h]
+ Medeltid till fel: MTTF [h]
+ Medeltid f¨or reparation: MTTR [h]
+ Otillg¨anglighet: Us
+ix
+x
+Definitioner och terminologi
+ Ledningssektion: Li
+ Uttagspunkt: Ni
+Inneh˚all
+1
+Introduktion
+1
+2
+Teori
+5
+2.1
+Tillf¨orlitlighetsanalys av komponenter . . . . . . . . . . . . . .
+5
+2.2
+Tillf¨orlitlighetsanalys av system . . . . . . . . . . . . . . . . .
+10
+2.3
+Diﬀerentialekvationer . . . . . . . . . . . . . . . . . . . . . . .
+19
+3
+Metod
+21
+3.1
+Generell metod . . . . . . . . . . . . . . . . . . . . . . . . . .
+21
+3.2
+Algoritm . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+24
+3.3
+Testn¨at
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+25
+3.4
+Val av startv¨arden
+. . . . . . . . . . . . . . . . . . . . . . . .
+26
+4
+Resultat
+27
+4.1
+Simulering 1 - Statiskt antal investeringstillf¨allen
+. . . . . . .
+28
+4.2
+Simulering 2 - Dynamiskt antal investeringstillf¨allen . . . . . .
+34
+5
+Analys
+37
+5.1
+Robust verktyg . . . . . . . . . . . . . . . . . . . . . . . . . .
+37
+5.2
+Tillf¨orlitlighet . . . . . . . . . . . . . . . . . . . . . . . . . . .
+37
+5.3
+Analys av modellen . . . . . . . . . . . . . . . . . . . . . . . .
+38
+5.4
+Analys av simuleringar . . . . . . . . . . . . . . . . . . . . . .
+39
+6
+Validering av modell
+41
+6.1
+Inverkan av antalet investeringsalternativ i simuleringarna
+. .
+41
+6.2
+Avbrottskostnadens inverkan p˚a modellen
+. . . . . . . . . . .
+42
+6.3
+Reparationstidens inverkan p˚a modellen
+. . . . . . . . . . . .
+42
+7
+Slutsats
+43
+xi
+xii
+Inneh˚all
+8
+Diskussion och framtida studier
+45
+8.1
+Diskussion . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+45
+8.2
+Framtida studier
+. . . . . . . . . . . . . . . . . . . . . . . . .
+46
+Litteraturf¨orteckning
+47
+A Matlabkod
+49
+A.1 Huvudprogram f¨or simuleringar . . . . . . . . . . . . . . . . .
+49
+A.2 Funktion f¨or λ . . . . . . . . . . . . . . . . . . . . . . . . . . .
+54
+A.3 Funktion f¨or λ med investering
+. . . . . . . . . . . . . . . . .
+55
+A.4 Funktion f¨or slumpmatris
+. . . . . . . . . . . . . . . . . . . .
+56
+B Validering av modell, avbrottskostnadens inverkan
+57
+C Validering av modell, reparationstidens inverkan
+63
+Kapitel 1
+Introduktion
+Bakgrund
+Stormen Gudrun i januari 2005 visade sig vara den utl¨osande faktorn som
+p˚a allvar satte oﬀentligt fokus p˚a tillf¨orlitligheten i de svenska region- och
+lokaln¨aten [2]. Drygt ett sekel efter att Sverige b¨orjade elektriﬁeras har be-
+tydelsen av s¨akra elleveranser f¨or viktiga samh¨allsfunktioner, industrier och
+hush˚all blivit allt viktigare. I och med stormen Gudrun s˚a v¨acktes fr˚agan om
+f¨ornyelse och f¨orb¨attringar av eln¨atet har f¨oljt med samh¨allets ¨okade krav p˚a
+tillf¨orlitliga elleveranser.
+Kritiken mot n¨at¨agarna efter stormen Gudrun var omfattande. Hade avre-
+gleringen n¨astan tio ˚ar tidigare varit felaktig eller hade n¨at¨agarna eftersatt
+underh˚allet f¨or ekonomisk vinnings skull eller berodde det p˚a inkompetens.
+Politikerna agerade genom att inf¨ora h˚ardare krav f¨or n¨at¨agarna genom
+ny lagstiftning - nu skulle det kosta n¨at¨agarna pengar om deras n¨at hade
+avbrott l¨angre ¨an 12 timmar [3]. N¨at¨agarna agerade och satte ig˚ang en av de
+st¨orsta n¨atupprustningarna sedan Sverige elektriﬁerades [4]. Beﬁntliga blan-
+kledningsn¨at skulle bytas ut mot jordkabel eller ˚atminstonde belagd luftled-
+ning. ¨Aven n¨at utan alternativ matning skulle i allt v¨asentligt kompletteras
+med reservmatning.
+Men hur mycket f˚ar ett modernt eln¨at kosta och vad ¨ar det v¨art? Ett ﬂertal
+utredningar har d¨arf¨or fokuserat p˚a att ta reda p˚a vad ett avbrott kostar [5].
+I vissa fall ¨ar det l¨att att ta reda p˚a vad ett avbrott kostar, som till exempel
+vad ett avbrott kostar en industri. F¨or andra kundgrupper s˚a som vanliga
+hush˚all har det visat sig sv˚arare att ta reda p˚a dessa kostnader. I och med
+sv˚arigheterna att best¨amma dessa avbrottskostnader har lagstiftarna skapat
+en lagstadgad avbrottsers¨attning som˚al¨aggs n¨at¨agare som drabbas av l¨angre
+1
+2
+Kapitel 1. Introduktion
+avbrott [6]. Men avbrottskostnaden best˚ar b˚ade av lagstadgad ers¨attning till
+abonnenter och av felavhj¨alpningskostnad. Uppgiften att st¨alla samman al-
+la kostnadsfaktorer och st¨alla dessa mot nyttoeﬀekterna kom att hamna p˚a
+n¨at¨agarnas planerare och projekt¨orers bord.
+Syfte
+Upprinnelsen och den f¨orsta id´en till det h¨ar examensarbetet var att fokusera
+p˚a de fr˚agest¨allningar som en n¨atplanerare eller projekt¨or st¨alls inf¨or. Finna
+en metod att v¨aga samman faktorer som p˚averkar kostnaden f¨or en eln¨ats-
+investering och st¨alla dessa mot kostnader f¨orknippade med avbrott. Tanken
+har fr˚an b¨orjan varit att fokusera p˚a kostnadsp˚averkande faktorer under en
+livscykel och p˚a ett enkelt s¨att, uttryckt i kronor, skapa en plattform att
+j¨amf¨ora olika investeringsalternativ p˚a [7]. Skapa principer till ett robust
+verktyg. Anv¨andbart f¨or en projekt¨or att i en verklig situation j¨amf¨ora al-
+ternativ och utifr˚an objektiv fakta v¨alja en n¨atkonstruktion som b¨ast svarar
+mot de krav som ett modernt samh¨alle st¨aller.
+Genomf¨orande
+F¨orsta steget i detta arbete var att matematiskt beskriva hur felintensiteten
+p˚a de olika ledningssektionerna, i ett speciﬁcerat n¨at, f¨or¨andrades med tiden.
+N¨ar uttryck f¨or felintensiteten erh˚allits s˚a kunde uttryck som beskriver av-
+brottskostnaden f¨or ett speciﬁcerat system erh˚allas. N¨ar dessa ekvationer
+erh˚allits simulerades systemet med olika investeringsalternativ f¨or att se
+hur investeringar ska g¨oras i systemet f¨or att erh˚alla en s˚a l˚ag f¨orv¨antad
+avbrottskostnad som m¨ojligt.
+Avgr¨ansningar
+I arbetet har f¨oljande avgr¨ansningar satts:
+ Systemkonﬁgurationen ¨ar konstant under hela livscykeln.
+ Arbetet begr¨ansar sig till att studera investeringsalternativ inom en
+och samma systemkonﬁguration i taget.
+ I det h¨ar arbetet antas kalkylr¨antan f¨or samtliga investeringar och kost-
+nader till 0%.
+ Arbetet inriktas p˚a sj¨alva modellen f¨or beslutst¨odssystemet och be-
+handlar inte felintensiteter, investeringskostnader och avbrottskostnad-
+er.
+3
+Huvuddrag i rapporten
+Rapporten kan delas in i tre olika delar, den f¨orsta delen behandlar teori
+och hur simuleringar genomf¨ordes. Den andra delen presenterar resultat och
+analys av dessa samt validering av modellen. I det tredje avsnittet presenteras
+slutsatser, en diskussion kring resultaten och framtida studier. Rapportens
+kapitelindelning presenteras kortfattat nedan.
+Kapitel 2 beskriver teorin bakom modellen, dels tillf¨orlitlighetsanalys och
+dels hur system och komponenter kan beskrivas p˚a tillst˚andsform.
+Kapitel 3 beskriver hur simuleringarna av systemet genomf¨ordes samt hur
+algoritmen som ber¨aknar avbrottskostnaderna i systemet fungerar.
+Kapitel 4 redovisar resultaten av simuleringarna.
+Kapitel 5 analyserar resultaten som erh˚allits i f¨oreg˚aende kapitel.
+Kapitel 6 validerar den framtagna modellen i detta arbete.
+Kapitel 7 redovisar slutsatser om detta arbete.
+Kapitel 8 presenterar framtida studier som kan g¨oras med detta arbete
+som utg˚angspunkt samt diskuterar kring resultaten.
+Kapitel 2
+Teori
+I detta arbete ska en l¨amplig matematisk metod f¨or ber¨akningar av den
+f¨orv¨antade avbrottskostnaden under en given tidsperiod f¨or elektriska distri-
+butionssystem studeras. Metoden beskriver den totala avbrottskostnaden f¨or
+systemet beroende p˚a tiden. Eftersom avbrottskostnaden beror p˚a l¨angden
+p˚a avbrotten i distributionssystemet ¨ar det viktigt att ﬁnna s¨att att beskriva
+sannolikheten att elektricitet inte levereras till en speciﬁk uttagspunkt. Med
+andra ord, sannolikheten att fel uppst˚ar i en eller ﬂera komponenter som ¨ar
+kopplade p˚a s˚a s¨att att elektricitet inte levereras till uttagspunkten.
+2.1
+Tillf¨orlitlighetsanalys av komponenter
+Tillf¨orlitlighetsanalys ¨ar ett verktyg som kan anv¨andas n¨ar system ska kon-
+strueras och studeras [1]. Med hj¨alp av tillf¨orlitlighetsanalys kan approxima-
+tioner g¨oras p˚a sannolikheter att fel intr¨aﬀar i systemet. Beroende p˚a om sys-
+temet ¨ar ett reparerbart system eller inte kan ocks˚a den sannolika tiden som
+ett system kommer att vara otillg¨angligt, f¨orv¨antade avbrottstiden, ocks˚a
+approximeras.
+2.1.1
+Tid till fel
+Tid till fel f¨or en komponent eller ett system ¨ar tiden fr˚an att komponenten
+eller systemet startas, tidpunkten t = 0, och tiden fram till att f¨orsta felet
+intr¨aﬀar, tidpunkten t = T. T ¨ar en stokastisk variabel och komponenten
+eller systemet betecknas som X(t) och ¨ar bin¨ar
+x(t) =
+{ 1
+om enheten fungerar vid tidpunkten t
+0
+om enheten inte fungerar vid tidpunkten t
+(2.1)
+5
+6
+Kapitel 2. Teori
+Tiden till fel, T, ¨ar kontinuerligt f¨ordelad med t¨athetsfunktionen f(t) och
+f¨ordelningsfunktionen F(t) d¨ar
+F(t) = P(T ≤t) =
+∫t
+0 f(u)du
+f¨or t > 0
+(2.2)
+Sannolikheten att systemet eller komponenten fallerar i tidsintervallet (0, t]
+beskrivs av F(t) och t¨athetsfunktionen f(t) deﬁnieras enligt f¨oljande
+f(t) = d
+dtF(t) = lim
+∆t→0
+F(t + ∆t) −F(t)
+∆t
+= lim
+∆t→0
+P(t < T ≤t + ∆t)
+∆t
+(2.3)
+vilket leder till att n¨ar ∆t ¨ar litet
+P(t < T ≤t + ∆t) ≈f(t) · ∆t
+(2.4)
+2.1.2
+¨Overlevnadsfunktionen
+¨Overlevnadsfunktionen (tillf¨orlitlighetsfunktionen) R(t) beskriver sannolik-
+heten att systemet eller komponenten inte fallerar inom tidsintervallet (0, t]
+och deﬁnieras som
+R(t) = 1 −F(t) = P(T > 1)
+f¨or t > 0
+(2.5)
+2.1.3
+Felintensitet
+Felintensiteten, z(t), talar om hur m˚anga sannolika fel som kommer att up-
+pst˚a fr˚an tidpunkten t till tidpunkten t+∆t. Sannolikheten att ett fel kommer
+att uppst˚a i ett vid tidpunkten t fungerande system eller komponent i tidsin-
+tervallet (t, t + ∆t] ¨ar
+P(t < T ≤t + ∆t | T > t) = P(t < T ≤t + ∆t)
+P(T > t)
+= F(t + ∆t) −F(t)
+R(t)
+(2.6)
+Felintensiteten z(t) erh˚alles genom att dividera ekvation (2.6) med l¨angden
+2.1. Tillf¨orlitlighetsanalys av komponenter
+7
+av tidsintervallet ∆t och l˚ata tiden ∆t →0
+z(t) = lim
+∆t→0
+P(t < T ≤t + ∆t | T > t)
+∆t
+=
+= lim
+∆t→0
+F(t + ∆t) −F(t)
+∆t
+1
+R(t) = f(t)
+R(t)
+(2.7)
+Ett vanligt s¨att att beskriva hur felintensiteten f¨or¨andras ¨over tiden f¨or
+distributionssystem och dess komponenter ¨ar att beskriva felintensiteten i
+form av en badkarskurva, se ﬁgur (2.1). Badkarskurvan har precis som det
+Figur 2.1: Felintensiteten f¨or en komponent eller system under dess livstid
+l˚ater utseende som ett badkar, i b¨orjan av ett systems eller komponents liv,
+ink¨orningsperioden, uppst˚ar fel ofta f¨or att sedan avta f¨or att n¨astan plana ut
+helt en viss period, anv¨andningsperioden, f¨or att sedan ˚aterigen f˚a en ¨okande
+felintensitet, utn¨otningsperioden. Eftersom det under anv¨andningsperioden
+intr¨aﬀar relativt f˚a fel i systemet eller komponenten kan z(t) under denna
+period ans¨attas som en konstant [1]. I detta arbete antas det att felinten-
+siteten i komponenterna har samma beteende som z(t) i ﬁgur 2.1 men med
+tv˚a undantag. Komponenterna saknar ink¨orningsperiod och felintensiteten
+under anv¨andningsperioden ¨ar ej konstant.
+8
+Kapitel 2. Teori
+Felintensiteten kan ocks˚a ber¨aknas p˚a f¨oljande s¨att. Om tiden till fel, T, f¨or
+en enhet eller komponent ¨ar exponentialf¨ordelad, med parametern λ s˚a ¨ar
+dess f¨ordelningsfunktion [8]:
+x(t) =
+{ λe−λt
+f¨or t > 0, λ > 0
+0
+annars
+(2.8)
+¨Overlevnadsfunktionen blir d˚a
+R(t) = P(T > t) =
+∫∞
+t
+f(u)du = e−λt
+f¨or t > 0
+(2.9)
+¨Overlevnadsfunktionen R(t) ger medeltiden till fel genom integration med
+avseende p˚a tiden
+MTTF =
+∫∞
+0
+R(t)dt =
+∫∞
+0
+e−λtdt = 1
+λ
+(2.10)
+Felintensiteten z(t) ges av f¨oljande samband
+z(t) = f(t)
+R(t) = λe−λt
+e−λt = λ
+(2.11)
+2.1.4
+Medeltid till fel
+Medeltid till fel, (MTTF), anger hur l˚ang tid det ¨ar i genomsnitt till ett fel, ¨ar
+reparationstiden f¨or systemet eller komponenten mycket kort s˚a kan MTTF
+ocks˚a ange hur l˚ang tid det ¨ar mellan fel men i detta arbete s˚a anv¨ands inte
+detta. Deﬁnitionen av MTTF ges av f¨oljande formel:
+MTTF = E(T) =
+∫∞
+0
+tf(t)dt
+(2.12)
+2.1. Tillf¨orlitlighetsanalys av komponenter
+9
+Eftersom f(t) = −R′(t) s˚a kan MTTF uttryckas p˚a f¨oljande s¨att:
+MTTF = −
+∫∞
+0
+tR′(t)dt
+(2.13)
+genom partiell integration f˚as f¨oljande uttryck
+MTTF = −[tR(t)]∞
+0 +
+∫∞
+0
+R(t)dt
+(2.14)
+Om MTTF < ∞s˚a g¨aller att
+MTTF =
+∫∞
+0
+R(t)dt
+(2.15)
+MTTF kan ocks˚a ber¨aknas genom att Laplacetransformera ¨overlevnadsfunktionen
+R(t)
+R∗(s) =
+∫∞
+0
+R(t)e−stdt
+(2.16)
+Genom att s¨atta s = 0 erh˚alles
+R∗(0) =
+∫∞
+0
+R(t)dt = MTTF
+(2.17)
+Ekvation 2.17 visar att MTTF relativt enkelt kan erh˚allas om ¨overlevnads-
+funktionen f¨or systemet eller komponenten ﬁnns tillg¨anglig. Vilket s¨allan ¨ar
+fallet i verkligheten.
+10
+Kapitel 2. Teori
+2.2
+Tillf¨orlitlighetsanalys av system
+2.2.1
+Tillf¨orlitlighetsdiagram
+F¨or att kunna ber¨akna systems tillf¨orlitlighet r¨acker det inte bara att titta
+p˚a komponenterna i systemet var f¨or sig utan en god vetskap om hur sys-
+temets komponenter ¨ar kopplade och beroende av varandra beh¨ovs ocks˚a. Ett
+hj¨alpmedel f¨or att studera systems tillf¨orlitlighet ¨ar tillf¨orlitlighetsdiagram.
+Eftersom ett system kan ha ﬂera ¨an en funktion kan det beh¨ova konstrueras
+tillf¨orlitlighetsdiagram f¨or varje funktion som systemet har. Varje komponent
+i systemet illustreras som ett block enligt ﬁgur 2.2. N¨ar det ﬁnns koppling
+Xi
+a
+b
+Figur 2.2: Komponent i system
+mellan punkt a och b fungerar en speciﬁcerad funktion i komponenten, det
+kan dock vara andra funktioner i komponenten som inte fungerar. Hur olika
+komponenter fungerar ihop illustreras i ett blockdiagram; systemet har olika
+utseende beroende p˚a strukturen i systemet. Om systemet endast fungerar
+om alla separata komponenter fungerar samtidigt s¨ags systemet ha en seriell
+struktur och komponenterna seriekopplas enligt ﬁgur 2.3. Fungerar systemet
+X1
+a
+b
+X2
+Xn
+Figur 2.3: System av seriell struktur med n st komponentblock
+trots att en eller ﬂera komponenter inte fungerar s¨ags systemet ha parallell
+struktur, och har utseende enligt ﬁgur 2.4. Systemen kan givetvis vara av b˚ade
+seriell och parallell struktur samtidigt och vara mer eller mindre komplicer-
+ade beroende p˚a vad f¨or sorts system som ska beskrivas. Varje komponent,
+i, i systemet kan beskrivas med en bin¨ar variabel xi d¨ar
+xi =
+{ 1
+om komponent i fungerar
+0
+om komponent i inte fungerar
+(2.18)
+2.2. Tillf¨orlitlighetsanalys av system
+11
+De olika komponenterna lagras i en vektor x = (x1, . . . , xn) eftersom tillst˚andet
+f¨or alla komponenter i systemet ¨ar k¨ant s˚a ¨ar det ocks˚a k¨ant om systemet
+fungerar eller inte. Systemets tillst˚and kan ocks˚a beskrivas av en bin¨ar funk-
+tion
+ϕ(x) = ϕ(x1, . . . , xn)
+(2.19)
+d¨ar
+ϕ(x) =
+{ 1
+om systemet fungerar
+0
+om systemet inte fungerar
+(2.20)
+och ϕ(x) kallas f¨or systemets strukturfunktion. Strukturfunktionen beskrivs
+p˚a samma s¨att som strukturen f¨or olika system.
+a
+b
+X1
+X2
+Xn
+Figur 2.4: System av parallell struktur med n st komponentblock
+12
+Kapitel 2. Teori
+Ett system som fungerar endast om alla komponenter i systemet fungerar
+kallas f¨or en seriell struktur och har f¨oljande funktion
+ϕ(x) = x1 · x2 · . . . · xn =
+n
+∏
+i=1
+xi
+(2.21)
+Parallella strukturer har system som fungerar om minst en av dess kom-
+ponenter fungerar, en parallell strukturfunktion ser ut p˚a f¨oljande s¨att
+ϕ(x) = 1 −(1 −x1)(1 −x2) . . . (1 −xn) = 1 −
+n
+∏
+i=1
+(1 −xi) =
+n
+⨿
+i=1
+xi
+(2.22)
+Systemets strukturfunktion kan ocks˚a beskrivas med hj¨alp av v¨agar och brott
+och deﬁnieras enligt f¨oljande [9]:
+V¨ag (stig,path) ¨ar en upps¨attning komponenter s˚adana att deras funk-
+tion garanterar systemets funktion.
+Minimal v¨ag ¨ar en v¨ag som inte kan reduceras och f¨orbli en v¨ag.
+Brott (avbrott, snitt, cut) ¨ar en upps¨attning komponenter vars icke-
+funktion s¨akert medf¨or systemets icke-funktion.
+Minimalt brott ¨ar ett brott som inte kan reduceras och f¨orbli ett brott.
+I ﬁgur 2.5 visas ett exempel p˚a ett system och i tabell dess v¨agar och mini-
+mala v¨agar samt brott och minimala brott.
+X1
+X2
+X3
+a
+b
+Figur 2.5: System med seriell och parallell struktur
+2.2. Tillf¨orlitlighetsanalys av system
+13
+2.2.2
+Systemets tillf¨orlitlighet
+I detta avsnitt visas hur systemets tillf¨orlitlighet erh˚alles med hj¨alp av teorin
+som tidigare visats. I avsnittet 2.2.1 beskrivs hur sambanden mellan de olika
+komponenterna i ett system tas fram. Vad som inte erh˚alles ¨ar sannolikheten
+att systemet kommer att vara trasigt efter ett visst antal tidsenheter, t.
+Tillst˚andet f¨or en komponent ¨ar givet enligt tillst˚andsvariabeln
+X(t) =
+{ 1
+om komponenten fungerar
+0
+om komponenten inte fungerar
+(2.23)
+och komponent i beskrivs i en tillst˚andsvektor
+X(t) = (X1(t), . . . , Xn(t))
+(2.24)
+Det antas att komponenterna (elledningarna) ¨ar oberoende 1 av varandra
+och fel i de olika komponenterna sker stokastiskt oberoende av varandra.
+Strukturfunktionen kan skrivas som ϕ(X(t)) och sannolikheten att kompo-
+nent i fungerar kan skrivas som
+P(Xi(t) = 1) = pi(t)
+f¨or i = 1, 2, . . . , n
+(2.25)
+1I verkligheten ¨ar inte fallet s˚a d˚a t.ex fel i elledningar ofta uppst˚ar p˚a grund av
+v¨aderf¨orh˚allanden. Ofta intr¨aﬀar d˚a fel p˚a ﬂera sektioner samtidigt
+Tabell 2.1: V¨agar, brott och komponentdelm¨angd f¨or systemet i ﬁgur 2.5
+V¨agar
+Minimala
+Brott
+Minimala
+Komponent-
+v¨agar
+brott
+delm¨angd
+{X1, X2}
+{X1, X2}
+{X1}
+{X1}
+C = {X1, X2, X3}
+{X1, X3}
+{X1, X3}
+{X2, X3}
+{X2, X3}
+{X1, X2, X3}
+{X1, X2}
+{X1, X3}
+{X1, X2, X3}
+14
+Kapitel 2. Teori
+och sannolikheten att systemet fungerar har f¨oljande utseende
+P(ϕ(X(t)) = 1) = ps(t)
+(2.26)
+Eftersom tillst˚andsvariabeln Xi(t) ¨ar bin¨ar s˚a ¨ar komponenten i’s, i = 1, . . . , n,
+tillf¨orlitlighet enligt f¨oljande
+E[Xi(t)] = 0 · P(Xi(t) = 0) + 1 · P(Xi(t) = 1) = pi(t)
+(2.27)
+och systemets tillf¨orlitlighet ges analogt p˚a samma s¨att av
+ps(t) = E(ϕ(X(t)))
+(2.28)
+Om systemets komponenter ¨ar oberoende s˚a kan tillf¨orlitligheten ps(t) ut-
+tryckas med hj¨alp av tillf¨orlitligheten p˚a komponenterna
+ps(t) = h(p1(t), p2(t), . . . , pn(t)) = h(p(t))
+(2.29)
+P˚a liknande s¨att som strukturfunktionen 2.21 beskrevs f¨or seriella strukturer
+s˚a kan tillf¨orlitligheten f¨or seriella strukturer beskrivas p˚a liknande s¨att och
+ges av f¨oljande ekvationer.
+h(p(t)) = E(ϕ(X(t))) = E(
+n
+∏
+i=1
+Xi(t)) =
+n
+∏
+i=1
+E(Xi(t)) =
+n
+∏
+i=1
+pi(t)
+(2.30)
+Strukturfunktionen f¨or parallellkopplade system 2.22 anv¨ands p˚a liknande
+s¨att f¨or att best¨amma seriekopplade systems tillf¨orlitlighet och ges av f¨oljande
+2.2. Tillf¨orlitlighetsanalys av system
+15
+ekvation
+h(p(t)) = E(ϕ(X(t)))1 −
+n
+∏
+i=1
+(1 −E(Xi(t))) = 1 −
+n
+∏
+i=1
+(1 −pi(t)) =
+n
+⨿
+i=1
+pi(t)
+(2.31)
+2.2.3
+Ickereparerbara system
+Ickereparerbara system ¨ar system som efter att en eller ﬂera komponenter
+slutat fungera inte g˚ar att reparera. Detta inneb¨ar dock inte att systemet
+inte g˚ar att reparera utan att systemet endast ¨ar intressant fram tills ett fel
+intr¨aﬀat. Som tidigare visats s˚a ¨ar komponenternas tillf¨orlitlighet och dess
+¨overlevnadsfunktion lika med varandra, allts˚a ¨ar
+pi(t) = Ri(t)
+f¨or i = 1, 2, . . . , n
+(2.32)
+och system med seriell struktur har en ¨overlevnadsfunktion enligt f¨oljande
+Rs(t) =
+n
+∏
+i=1
+Ri(t)
+(2.33)
+Genom integration kan MTTF f¨or det ickereparerbara seriella systemet erh˚allas
+MTTF =
+∫∞
+0
+Rs(t)dt
+(2.34)
+F¨or parallellkopplade system erh˚alles dess ¨overlevnadsfunktion enligt f¨oljande
+Rs(t) = 1 −
+n
+∏
+i=1
+(1 −Ri(t))
+(2.35)
+16
+Kapitel 2. Teori
+och MTTF f¨or det parallellkopplade systemet erh˚alles p˚a samma s¨att som i
+ekvation 2.34. I det h¨ar examensarbetet studeras reparerbara system.
+2.2.4
+Reparerbara system
+Eftersom systemen i verkligheten oftast ¨ar m¨ojliga att anv¨anda igen efter att
+fel uppst˚att genom att ers¨atta eller reparera en eller ﬂera komponenter s˚a
+ﬁnns det verktyg f¨or att anv¨anda sig av tillf¨orlitlighetsanalys f¨or reparerbara
+system. N¨ar dessa systems komponenter repareras eller ers¨atts s˚a antas dessa
+komponenter fungera likv¨ardigt med nya komponenter. Detta g¨or att f¨or re-
+parerbara system s˚a kommer systemets komponenter att ha en sekvens med
+olika ”tid till fel” v¨arden, T1, T2, . . . , Tn. Tiderna kan antas vara oberoende av
+varandra. N¨ar systemet g˚ar s¨onder p˚a grund av att en eller ﬂera komponenter
+g˚ar s¨onder s˚a kommer systemet att vara otillg¨angligt under en viss tid, h¨ar
+kallad reparationstiden, n¨ar dessa repareras. Tillst˚andet f¨or en komponent
+ges av tillst˚andsvariabeln (2.23). Tillg¨angligheten A(t) vid tidpunkten t f¨or
+en reparerbar komponent ¨ar likv¨ardig med sannolikheten att komponenten
+fungerar vid tidpunkten t
+A(t) = P(X(t) = 1)
+(2.36)
+Komponentens otillg¨anglighet U(t) vid tidpunkten t f¨or en reparerbar kom-
+ponent ¨ar likv¨ardig med sannolikheten att komponenten inte fungerar vid
+tidpunkten t
+U(t) = 1 −A(t) = P(X(t) = 0)
+(2.37)
+Medeltiden det tar f¨or att reparera en komponent ges av f¨oljande formel
+MTTR =
+∫∞
+0
+t · fD(t)dt =
+∫∞
+0
+(1 −FD(t))dt
+(2.38)
+D¨ar D anger reparationstiden. Tiden komponenten ¨ar otillg¨anglig ¨ar oberoende
+och antas vara exponentialf¨ordelad. P˚a samma s¨att som i avsnitt 2.1.3 d¨ar
+2.2. Tillf¨orlitlighetsanalys av system
+17
+MTTF ges av ekvation (2.10) s˚a kan MTTR uttryckas som
+MTTR = 1
+µ
+(2.39)
+d¨ar µ anger reparationsintensiteten. Tillg¨angligheten A(t) f¨or en komponent
+¨ar f¨oljande
+A(t) =
+µ
+λ + µ +
+λ
+λ + µe−(λ+µ)t
+(2.40)
+G˚ar tiden mot o¨andligheten s˚a kommer tillg¨angligheten f¨or en komponent
+att bli en konstant
+lim
+t→∞A(t) =
+µ
+λ + µ =
+1
+λ
+1
+λ + 1
+µ
+=
+MTTF
+MTTF + MTTR
+(2.41)
+Eftersom MTTR << MTTF oftast s˚a kan otillg¨angligheten f¨or en komponent
+approximeras. Approximationen ger att otillg¨angligheten f¨or komponenten
+kan uttryckas p˚a f¨oljande s¨att
+U =
+MTTR
+MTTF + MTTR =
+λ · MTTR
+1 + λ · MTTR ≈λ · MTTR
+(2.42)
+2.2.5
+Systemets tillg¨anglighet
+Systemets tillg¨anglighet f¨or ett reparerbart system ber¨aknas p˚a samma s¨att
+som tillf¨orlitligheten, avsnitt 2.2.2, i ett system. Ett system med n stycken
+komponenter med strukturfunktionen ϕ(X(t)) och med oberoende slump-
+m¨assiga tillst˚andsvariabler X1(t), X2(t), . . . , Xn(t). Tillg¨angligheten f¨or ett
+system, As(t) ber¨aknas p˚a f¨oljande s¨att
+As(t) = E(ϕ(X(t))
+(2.43)
+18
+Kapitel 2. Teori
+Systemets otillg¨anglighet Us ber¨aknas p˚a f¨oljande s¨att
+Us = 1 −As
+(2.44)
+2.2.6
+Approximationer av systemet
+Ett bra s¨att som f¨orenklar framtagandet av systemets otillg¨anglighet ¨ar
+att anv¨anda sig av approximationer d˚a uttryck som beskriver systemets
+otillg¨anglighet kan bli v¨aldigt komplicerade om systemen best˚ar av m˚anga oli-
+ka parallella strukturer. Genom att studera systemets minimala snitt kan san-
+nolikheten att alla komponenter i den parallella strukturen fallerar ber¨aknas.
+Tillst˚andet beskrivs h¨ar som ˇQj(t) d¨ar j ¨ar en parallell struktur (j = 1, 2, . . . , k).
+Om ˇQj(t) ¨ar litet kan Us(t) (systemets otillg¨anglighet) approximeras enligt :
+Us(t) ≈
+k
+∑
+j=1
+ˇQj(t)
+(2.45)
+d¨ar ˇQj(t) ges av f¨oljande ekvation;
+ˇQj ≈
+∏
+i∈Kj
+λi · MTTRi
+(2.46)
+d¨ar Kj (j = 1, 2, . . . , k) ¨ar minimala snitt med parallell struktur [1]. Med
+approximationen som gjorts i ekvation (2.46) s˚a kan systemets otillg¨anglighet
+approximeras enligt f¨oljande formel:
+Us ≈
+k
+∑
+j=1
+∏
+i∈Kj
+λi · MTTRi
+(2.47)
+Ekvation (2.47) bygger p˚a att systemet ses som ett system av parallelkop-
+plade minimala snitt som ¨ar seriekopplade, med denna approximation un-
+derl¨attas framtagandet av otillg¨angligheten av systemet d˚a redan mycket
+sm˚a system kan f˚a mycket stora uttryck om inte approximationer g¨ors. Skulle
+otillg¨anglighetstalet Us ber¨aknas f¨or systemet i ﬁgur 2.5 skulle f¨oljande ut-
+seende p˚a ekvationen erh˚allas:
+Us = MTTR1 · λ1 + MTTR2 · MTTR3 · λ2 · λ3
+(2.48)
+2.3. Differentialekvationer
+19
+2.3
+Diﬀerentialekvationer
+2.3.1
+Ordin¨ar diﬀerentialekvation (ODE)
+Diﬀerentialekvationer kan beskrivas som f¨orh˚allandet mellan en ok¨and funk-
+tion och dess derivator. I detta arbete anv¨ands f¨orsta ordningens diﬀeren-
+tialekvationer f¨or att beskriva felintensiteten λ. En f¨orsta ordningens diﬀer-
+entialekvation ¨ar en funktion som endast har f¨orst ordningens derivator. Det
+kanske vanligaste s¨attet att beskriva en f¨orsta ordningens diﬀerentialekvation
+¨ar exemplet med bakterietillv¨axt i en l¨osning. D˚a bakterierna delar sig med
+en viss hastighet ¨ar tillv¨axten proportionell med antalet bakterier i l¨osningen.
+Om x ¨ar antalet bakterier vid tidpunkten t kan f¨or¨andringen av antalet bak-
+terier uttryckas p˚a f¨oljande s¨att:
+x′(t) = k · x(t)
+(2.49)
+L¨osningen p˚a denna funktion ¨ar en exponentialfunktion eftersom funktio-
+nens derivata ¨ar proportionell mot funktionen.
+2.3.2
+Tillst˚andsform
+Ett s¨att att beskriva ett system eller komponent och dess f¨or¨andring ¨over
+tiden ¨ar att beskriva komponenten p˚a tillst˚andsform. Tillst˚andsekvationerna
+[10] erh˚alles genom att f¨orst v¨alja ett antal tillst˚andsvariabler, till dessa v¨aljs
+ofta variabler som p˚a n˚agot s¨att har ett ”minne”. Ofta ¨ar det exempelvis
+hastighet eller laddning hos en kondensator som v¨aljs som tillst˚andsvariabel,
+x(t). D¨arefter uttrycks tidsderivatan f¨or varje tillst˚andsvariabel, ˙x(t), med
+hj¨alp av tillst˚andsvariabler och insignaler, u(t). Utsignalerna, y(t), uttrycks
+som en funktion utav tillst˚andsvariabler och insignaler. Komponenten kan
+allts˚a beskrivas p˚a tillst˚andsformen
+˙x = Ax + Bu
+y = Cx + Du
+Kapitel 3
+Metod
+I detta avsnitt presenteras metoden som anv¨ants vid simuleringarna. Avsnit-
+tet behandlar ¨aven hur Matlabprogramet fungerar samt beskriver testn¨atet
+och hur startv¨arden valts.
+3.1
+Generell metod
+F¨or att f˚a fram efters¨okta resultat genomf¨ors f¨oljande steg. Felintensiteten,
+avsnitt 2.1.3, tas fram f¨or sektionerna i systemet. Felintensiteten p˚a en sektion
+beskrivs som f¨orsta ordningens diﬀerentialekvation:
+˙λ = A · λ
+(3.1)
+Denna ekvation kan sedan skrivas om p˚a tillst˚andsform;
+˙λ = Aλ
+y = λ
+Anledningen till att ekvation 3.1 skrivs om p˚a tillst˚andsform ¨ar att inbyggda
+funktioner i Matlab kan anv¨andas f¨or att studera hur λ f¨or¨andrats med tiden.
+I ﬁgur 3.1 visas hur en sektions felintensitet f¨or¨andras med tiden. Eftersom
+investeringar i ledningssektioner p˚averkar λ kr¨avs det simuleringar som vis-
+ar hur felintensiteten p˚averkas n¨ar investeringar g¨ors. I detta arbete antas
+det att en gjord investering i en ledningssektion g¨or att felintensiteten f¨or
+ledningssektionen ˚aterg˚ar till ursprungsv¨ardet vid tiden t0. Exempel p˚a hur
+felintensiteten varierar med tiden vid tv˚a slumpm¨assiga investeringar illustr-
+eras i ﬁgur 3.2. Investeringstillf¨allena f¨or de olika ledningssektionerna slumpas
+fram. Anledningen till att investeringstillf¨allena ¨ar helt slumpm¨assiga ¨ar f¨or
+att modellen ska fungera bra oavsett systemets utseende. En bra gissning
+n¨ar investeringar ska ske i ett system beh¨over inte vara en bra gissning f¨or
+21
+22
+Kapitel 3. Metod
+0
+20
+40
+60
+80
+100
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+x 10
+−5
+Felintensiteten för ledingssektion 1
+Felintensiteten [1/MTTF]
+År
+Figur 3.1: Felintensitet ¨over tiden
+0
+20
+40
+60
+80
+100
+1
+1.5
+2
+2.5
+3
+3.5
+4
+4.5
+5
+5.5
+6
+x 10
+−5
+Felintensiteten för ledingssektion 1
+Felintensiteten [1/MTTF]
+År
+Figur 3.2: Felintensitet ¨over tiden med investeringar
+3.1. Generell metod
+23
+ett annat system. Vid genereringen av investeringstillf¨allena har tv˚a villkor
+satts, det f¨orsta ¨ar att ingen investering kan ske ˚ar 0 och det andra ¨ar att
+investeringar ej kan ske ﬂera g˚anger vid samma tidpunkt. Anledningen till
+att dessa villkor satts ¨ar p˚a grund av att investeringar vid tidpunkten 0 eller
+vid samma tillf¨alle ej ger n˚agon minskning av felintensiteten i den aktuella
+ledningssektionen. F¨or simuleringarna tas det fram 1 000 000 olika invester-
+ingskombinationer f¨or de olika ledningssektionerna. Otillg¨anglighetstalen f¨or
+de olika uttagspunkterna ber¨aknas f¨or de olika investeringskombinationerna.
+N¨ar s˚a otillg¨anglighetstalen ¨ar ber¨aknade s˚a kan den f¨orv¨antade avbrottskost-
+naden f¨or hela systemet tas fram samt den totala kostnaden f¨or systemet. I
+den f¨orsta simuleringen studeras hur den f¨orv¨antade avbrottskostnaden vari-
+erar n¨ar ledningssektionerna har ett f¨orutbest¨amt antal investeringstillf¨allen
+och vid vilket antal investeringstillf¨allen den l¨agsta totala kostnaden erh˚alls.
+I simulering 2 studeras om det g˚ar att f˚a en l¨agre total kostnad genom att
+ha olika antal investeringar i de olika ledningssektionerna.
+24
+Kapitel 3. Metod
+3.2
+Algoritm
+I detta avsnitt presenteras en algoritm som beskriver hur Matlabprogramet
+som anv¨ands vid simuleringarna arbetar. F¨or den l¨asare som ¨ar intresserad
+presenteras Matlabkoden i dess helhet i appendix A.
+Beräkning av λ för
+de olika
+ledningssektionerna
+Funktion som tar fram λ för 
+de olika ledningssektionerna
+Slumpar fram antalet 
+investeringar i varje 
+ledningssektion
+Investeringstillfällen för 
+varje ledningssektion 
+slumpas fram
+Funktion som slumpar fram 
+investeringstillfällena
+λ för 
+ledningssektionerna 
+när investeringar gjorts
+Icketillgängligheten för 
+uttagspunkter i 
+systemet beräknas
+Beräknar total kostnad 
+i systemet
+Är kostnaden lägre än 
+den hitintills lägsta 
+totala kostnaden ?
+Ersätter den före detta 
+lägsta avbrottskostnaden 
+med den nya, samt sparar 
+investeringstillfällena
+Iterationer kvar?
+Sparar den totala 
+kostnaden
+Den minimerade totala 
+kostnaden samt 
+investeringstillfällen 
+erhålls
+Ja
+Nej
+Nej
+Ja
+Figur 3.3: Algoritm som beskriver hur Matlabprogramet arbetar
+3.3. Testn¨at
+25
+3.3
+Testn¨at
+Distributionssystemet som anv¨ands i simuleringarna ¨ar ett ﬁktivt system, se
+ﬁgur 3.4. Systemet matas fr˚an ett h˚all och best˚ar av fyra ledningssektioner
+samt tre uttagspunkter. Uttagspunkt N1 och N2 ¨ar uttagspunkter med re-
+dundans medan uttagspunkt N3 saknar redundans om ett fel skulle uppst˚a
+i ledningssektion L4. I praktiken inneb¨ar detta att exempelvis uttagspunkt
+N1 kan matas antingen via L1 eller via L2 och L3. I detta arbete studeras
+endast ledningssektionerna, alla andra komponenter antas vara ideala. Led-
+ningssektionerna kan best˚a av olika ledningstyper eller av samma ledningstyp.
+Uttagspunkterna i systemet kan antingen vara ett mindre samh¨alle eller en
+industri.
+L1
+L2
+L3
+L4
+N1
+N2
+N3
+Figur 3.4: System som anv¨ands vid simuleringar
+26
+Kapitel 3. Metod
+3.4
+Val av startv¨arden
+Valet av startv¨arden f¨or ledningssektionernas felintensitet samt uttagspunk-
+ternas avbrottskostnad har gjorts s˚a att genomf¨orda simuleringar p˚a ett ty-
+dligt vis illustrerar/p˚avisar modellens beteende. Med utg˚angspunkt i detta
+har ¨aven startv¨arden ansatts f¨or att kunna efterlikna vad som skulle kunna
+upptr¨ada i en verklig driftssituation. Tiden f¨or att reparera en ledningssektion
+har i grundutf¨orandet antagits ta 24 timmar f¨or samtliga ledningssektioner.
+Anledningen att tiden 24 timmar har valts ¨ar de nya funktionskraven och
+som s¨ager att Inga elavbrott f˚ar ¨overstiga 24 timmar (inom kontrollansvaret).
+Dessa funktionskrav kommer att g¨alla fr˚an och med f¨orsta januari 2011 [6].
+I begreppet avbrottskostnad ¨ar kostnaden f¨or reparation av ledningssek-
+tionen inkluderad. I avbrottskostnaden ing˚ar inte reparationskostnader f¨or
+brott som intr¨aﬀar i ledningssektioner som inte p˚averkar tillg¨angligheten i
+uttagspunkterna. Investeringskostnaden i samtliga ledningssektioner ¨ar satt
+till 500 kSEK f¨or varje ledningssektion. Tidsspannet har satts till 100 ˚ar f¨or
+att en hel livscykel f¨or varje ledningskomponent ska kunna studeras.
+Kapitel 4
+Resultat
+I detta kapitel presenteras resultaten av simuleringarna. Eftersom detta ar-
+bete har g˚att ut p˚a att unders¨oka om det g˚ar att ﬁnna ett verktyg som kan
+anv¨andas f¨or att ﬁnna optimala investeringstillf¨allen f¨or ett speciﬁcerat eln¨at
+(se ﬁg. 3.3) har simuleringarna gjorts med detta syfte. Simuleringarna har
+gjorts dels med ett lika stort antal investeringar i alla ledningssektioner och
+dels med varierande antal i de olika ledningssektionerna. Vid studier av plot-
+tarna b¨or l¨asaren ha i ˚atanke att de kostnader som visas f¨or investeringarna
+i plottarna inte ¨ar det verkliga v¨ardet p˚a dessa. Kostnaden f¨or en investering
+¨ar alltid 500 000 kr.
+27
+28
+Kapitel 4. Resultat
+4.1
+Simulering 1 - Statiskt antal investeringstillf¨allen
+I simulering 1 unders¨oks hur antalet investeringstillf¨allen, n, p˚averkar sys-
+temets totala kostnad och hur n¨atets utseende p˚averkar denna kostnad. I
+simuleringen ¨okas n s˚a l¨ange den totala kostnaden sjunker.
+Tabell 4.1: Startv¨arden f¨or ledningssektionerna, simulering 1
+Ledningssektion Li
+λi [1/h]
+MTTRi [h]
+L1
+1
+70 080
+24
+L2
+1
+43 800
+24
+L3
+1
+113 880
+24
+L4
+1
+87 600
+24
+Tabell 4.2: Avbrottskostnad f¨or uttagspunkterna, simulering 1
+Uttagspunkt Ni
+kSEK
+N1
+4 400
+N2
+11 000
+N3
+44
+4.1. Simulering 1 - Statiskt antal investeringstillf¨allen
+29
+4.1.1
+Tv˚a investeringstillf¨allen
+0
+20
+40
+60
+80
+100
+0
+0.5
+1
+1.5
+2
+2.5
+3
+3.5
+4
+x 10
+5
+Kr
+År
+ 
+ 
+L1
+L2
+L3
+L4
+Figur 4.1: F¨orv¨antade avbrottskostnaden f¨or systemet i ﬁg 3.4, simulering
+4.1.1. Observera att investering sker b˚ade i L2 och L4 vid ˚ar 36.
+Tabell 4.3: Resultat, simulering 1, n = 2
+kSEK
+F¨orv¨antad avbrottskostnad
+23 408
+Investeringskostnad
+4 000
+Total kostnad
+27 408
+Simuleringen gav en total kostnad p˚a 27 408 kSEK. Ett resultat som ensamt
+¨ar ganska intets¨agande, dock visar det sig att investeringar i ledningssek-
+tion L4, som ¨ar en radiell ledningssektion, gjorde en stor inverkan p˚a den
+f¨orv¨antade avbrottskostnaden. Detta syns tydligast p˚a investeringen i L4
+efter 66 ˚ar som ger en stor p˚averkan p˚a den f¨orv¨antade avbrottskostnaden.
+Investeringar i ledningssektionerna med redundans, L1 L2 L3, p˚averkar ocks˚a
+den f¨orv¨antade avbrottskostnaden men i mindre grad.
+30
+Kapitel 4. Resultat
+4.1.2
+Tre investeringstillf¨allen
+0
+20
+40
+60
+80
+100
+0
+0.5
+1
+1.5
+2
+2.5
+3
+3.5
+x 10
+5
+Kr
+År
+ 
+ 
+L1
+L2
+L3
+L4
+Figur 4.2: F¨orv¨antade avbrottskostnaden f¨or systemet i ﬁg 3.4, simulering
+4.1.2
+Tabell 4.4: Resultat, simulering 1, n = 3
+kSEK
+F¨orv¨antad avbrottskostnad
+20 992
+Investeringskostnad
+6 000
+Total kostnad
+26 992
+Simulering med ytterligare ett investeringstillf¨alle gav en l¨agre total kost-
+nad (26 876 kSEK) ¨an i simulering 4.1.1. Det visar sig ocks˚a att antalet
+investeringar inte f¨or¨andrar hur investeringar i de olika ledningssektionerna
+inverkar p˚a den f¨orv¨antade avbrottskostnaden. Investeringar i L4 ger fort-
+farande st¨orst p˚averkan p˚a den f¨orv¨antade avbrottskostnaden.
+4.1. Simulering 1 - Statiskt antal investeringstillf¨allen
+31
+4.1.3
+Fyra investeringstillf¨allen
+0
+20
+40
+60
+80
+100
+0
+0.5
+1
+1.5
+2
+2.5
+3
+x 10
+5
+Kr
+År
+ 
+ 
+L1
+L2
+L3
+L4
+Figur 4.3: F¨orv¨antade avbrottskostnaden f¨or systemet i ﬁg 3.4, simulering
+4.1.3
+Tabell 4.5: Resultat, simulering 1, n = 4
+kSEK
+F¨orv¨antad avbrottskostnad
+19 764
+Investeringskostnad
+8 000
+Total kostnad
+27 764
+¨Aven med fyra investeringstillf¨allen erh˚alles en l¨agre f¨orv¨antad avbrottskost-
+nad ¨an i simulering 4.1.1 och 4.1.2. Det visar sig dock att med fyra invester-
+ingstillf¨allen ¨okar investeringskostnaden mer ¨an den f¨orv¨antade avbrottskost-
+naden vilket ger en h¨ogre total kostnad. F¨or att veriﬁera att den totala kost-
+naden ¨okar genomf¨ors ocks˚a en simulering med fem investeringstillf¨allen f¨or
+varje ledningssektion.
+32
+Kapitel 4. Resultat
+4.1.4
+Fem investeringstillf¨allen
+0
+20
+40
+60
+80
+100
+0
+0.5
+1
+1.5
+2
+2.5
+3
+x 10
+5
+Kr
+År
+ 
+ 
+L1
+L2
+L3
+L4
+Figur 4.4: F¨orv¨antade avbrottskostnaden f¨or systemet i ﬁg 3.4, simulering
+4.1.4
+Tabell 4.6: Resultat, simulering 1, n = 5
+kSEK
+F¨orv¨antad avbrottskostnad
+18 704
+Investeringskostnad
+10 000
+Total kostnad
+28 704
+Som f¨orv¨antat gav ¨aven fem investeringstillf¨allen en ¨okad total kostnad. Det
+var heller ingen skillnad p˚a de olika ledningssektionernas inverkan p˚a den
+f¨orv¨antade avbrottskostnaden.
+4.1. Simulering 1 - Statiskt antal investeringstillf¨allen
+33
+4.1.5
+Kommentarer simulering 1
+En sammanfattning av resultaten i simulering 1 presenteras dels i tabell-
+form i tabell 4.7 och dels i graﬁsk form i ﬁgur 4.5. Simulering 1 visade att
+optimalt antal investeringar i varje ledningssektion ¨ar tre g˚anger.
+F¨or att
+Tabell 4.7: Sammanst¨allning av resultat, simulering 1
+Antal investeringar (n)
+2
+3
+4
+5
+F¨orv¨antad avbrottskostnad (kSEK)
+23 408
+20 992
+19 764
+18 704
+Investeringskostnad (kSEK)
+4 000
+6 000
+8 000
+10 000
+Total kostnad (kSEK)
+27 408
+26 992
+27 764
+28 704
+1
+2
+3
+4
+5
+6
+2.5
+2.55
+2.6
+2.65
+2.7
+2.75
+2.8
+2.85
+2.9
+2.95
+3
+x 10
+7
+Total sannolik avbrottskostnad (kr)
+Antal investeringstillfällen (n)
+Figur 4.5: F¨orv¨antade avbrottskostnaden f¨or systemet i ﬁg 3.4 med n in-
+vesteringar i varje ledningssektion
+minimera den totala kostnaden b¨or man ha i ˚atanke att det optimala antalet
+investeringstillf¨allen inte beh¨over vara lika m˚anga i varje ledningssektion.
+De ledningssektioner med redundans kr¨aver f¨ormodligen ett f¨arre antal in-
+vesteringstillf¨allen d˚a sannolikheten att en uttagspunkt kopplad till dessa blir
+otillg¨anglig ¨ar mycket l˚ag.
+34
+Kapitel 4. Resultat
+4.2
+Simulering 2 - Dynamiskt antal invester-
+ingstillf¨allen
+I simulering 2 ¨ar antalet investeringstillf¨allen i de olika ledningssektionerna
+inte statiskt utan kan variera emellan varandra. Antalet investeringar i de oli-
+ka ledningssektionerna kan variera mellan ett och fem och v¨aljs slumpm¨assigt.
+Startv¨ardena f¨or ledningssektionerna presenteras i tabell 4.8 och avbrottskost-
+naderna f¨or uttagspunkterna i tabell 4.9. I simulering 2 unders¨oks ocks˚a hur
+robust modellen ¨ar genom att studera de 100 l¨agsta totala kostnaderna som
+simulerats fram.
+Tabell 4.8: Startv¨arden f¨or ledningssektionerna, simulering 2
+Ledningssektion Li
+λi [1/h]
+MTTRi [h]
+L1
+1
+70 080
+24
+L2
+1
+43 800
+24
+L3
+1
+113 880
+24
+L4
+1
+87 600
+24
+Tabell 4.9: Avbrottskostnad f¨or uttagspunkterna, simulering 2
+Uttagspunkt Ni
+kSEK
+N1
+4 400
+N2
+11 000
+N3
+44
+Simulering 2 visade att det det g˚ar att ﬁnna en l¨agre total sannolik avbrotts-
+kostnad ¨an den som erh¨olls i 4.1.2 genom att variera antalet investerings-
+tillf¨allen i de olika ledningssektionerna, se tabell 4.11. Antalet investeringar
+som g¨ors i de olika ledningssektionerna presenteras i tabell 4.10 och invester-
+ingstillf¨allen och f¨orv¨antad avbrottskostnad i ﬁgur 4.6. Som v¨antat s˚a kr¨avs
+det f¨arre investeringar i de ledningssektioner som ¨ar anslutna till uttagspunk-
+ter med redundans. Tiden det tog f¨or att genomf¨ora denna simulering, med
+1 000 000 investeringskombinationer, var cirka 18 minuter (1087 sekunder).
+4.2. Simulering 2 - Dynamiskt antal investeringstillf¨allen
+35
+Tabell 4.10: Antalet investeringstillf¨allen i ledningssektionerna samt invester-
+ingskostnaden f¨or dessa.
+Ledningssektion
+L1
+L2
+L3
+L4
+Antal investeringar (st)
+3
+2
+2
+4
+Investeringskostnad (kSEK)
+1 500
+1 000
+1 000
+2 000
+0
+20
+40
+60
+80
+100
+0
+0.5
+1
+1.5
+2
+2.5
+3
+x 10
+5
+År
+Kr
+ 
+ 
+L1
+L2
+L3
+L4
+Figur 4.6: F¨orv¨antade avbrottskostnaden f¨or systemet i ﬁg 3.4 med n in-
+vesteringar i varje ledningssektion. Observera att investering sker b˚ade i L2
+och L4 vid ˚ar 37.
+Tabell 4.11: Resultat, simulering 2
+kSEK
+F¨orv¨antad avbrottskostnad
+20 769
+Investeringskostnad
+5 500
+Total kostnad
+26 269
+36
+Kapitel 4. Resultat
+Figur 4.7 visar de 100 l¨agsta totala kostnaderna av 1 000 000 st. Plottning
+av de 100 l¨agsta totala kostnaderna visar att modellen ¨ar robust. Skillnaden
+mellan den l¨agsta och h¨ogsta totala kostnaden av de 100 b¨asta erh˚allna re-
+sultaten ¨ar 2.4%.
+0
+10
+20
+30
+40
+50
+60
+70
+80
+90
+100
+0
+0.5
+1
+1.5
+2
+2.5
+3
+x 10
+7
+Kr
+Figur 4.7: De 100 l¨agsta totala kostnaderna i simulering 2.
+Kapitel 5
+Analys
+I detta avsnitt presenteras analyser av modellen samt analyser av simuler-
+ingsresultaten.
+5.1
+Robust verktyg
+F¨or att verktyget ska vara praktiskt anv¨andbart kr¨avs att verktyget ¨ar robust.
+Ett robust verktyg inneb¨ar att det inte ¨ar k¨ansligt f¨or faktorer som ¨ar sv˚ara
+att best¨amma eller k¨ansligt f¨or sm˚a f¨or¨andringar i indatan. Modellen som
+tagits fram i detta arbete uppfyllde kraven, vilket visas i ﬁgur 4.7.
+5.2
+Tillf¨orlitlighet
+Tillf¨orlitliga resultat vid anv¨andning av verktyget ¨ar ett problem d˚a tillf¨orlitlig
+data f¨or ledningssektioners felintensitet (λ), f¨or¨andring av felintensiteten
+samt MTTR f¨or ledningssektionen i m˚anga fall saknas. ¨Aven information
+om avbrottskostnaderna f¨or uttagspunkter i n¨atet ¨ar ofta bristf¨allig vilket
+ocks˚a p˚averkar hur verklighetsanknutet resultatet ¨ar.
+Anv¨ands verktyget f¨or att j¨amf¨ora olika alternativ s˚a blir det mindre k¨ansligt
+f¨or tillf¨orlitligheten p˚a parameterv¨ardena s˚a l¨ange f¨orh˚allandet mellan de oli-
+ka komponenttyperna ¨ar korrekt. ¨Ar f¨orh˚allandet mellan de olika kompo-
+nenttyperna korrekt erh˚alles ett mer tillf¨orlitligt resultat och kan d¨armed
+anv¨andas som ett st¨od i beslutsprocessen.
+37
+38
+Kapitel 5. Analys
+5.3
+Analys av modellen
+I detta avsnitt kommer en analys av modellen, dess f¨ordelar och nackdelar,
+att presenteras.
+Investeringsekonomiskt perspektiv
+Modellen ¨ar konstruerad utifr˚an ett investeringsekonomiskt perspektiv. Genom
+att unders¨oka de faktorer som p˚averkar avbrottskostnaden i ett system under
+en f¨orutbest¨amd tidsperiod kan systemets livscykelkostnad erh˚allas. F¨or att
+g¨ora detta har en investeringsdriven modell tagits fram. Modellen tar h¨ansyn
+till de stora kostnadsfaktorerna f¨or ett distributionsn¨at. En av m˚als¨attningarna
+var att kunna unders¨oka vid vilka tillf¨allen och hur m˚anga g˚anger investeringar
+ska g¨oras i systemet f¨or att minimera den totala kostnaden i detsamma.
+I avsnitt 4.1 och 4.2 s˚a presenteras resultatet av optimering av invester-
+ingstillf¨allen.
+K¨anslighetsanalys
+Modellen ¨ar anv¨andbar n¨ar det g¨aller analyser av till exempelvis n¨atstruktur
+kontra tillf¨orlitlighet. Faktorer som kan studeras ¨ar hur felintensiteten och
+reparationstiden p˚a de olika ledningssektionerna p˚averkar den totala kost-
+naden. ¨Aven inverkan av de olika uttagspunkternas avbrottskostnader p˚a
+den totala kostnaden kan studeras. K¨anslighetsanalys av systemet genomf¨ors
+i kapitel 6.
+F¨ordelar och begr¨ansningar
+En begr¨ansning i den framtagna modellen ¨ar att det ¨ar sv˚art f¨or¨andra sys-
+temets utseende, det vill s¨aga l¨agga till eller ta bort ledningssektioner och
+uttagspunkter, under simuleringen. Detta medf¨or att endast en konﬁgura-
+tion kan anv¨andas under hela livscykeln. I dagsl¨aget kr¨aver modellen en del
+handp˚al¨aggning f¨or att unders¨oka olika n¨atstrukturer. F¨or att underl¨atta
+unders¨okning av olika n¨atstrukturer kr¨avs en del arbete vilket inte kunnat
+genomf¨oras inom tidsramen f¨or detta examensarbetet. Samtidigt ¨ar mod-
+ellen v¨aldigt ﬂexibel d˚a olika konﬁgurationer av distributionssystemet kan un-
+ders¨okas och j¨amf¨oras. Simuleringar i modellen riskerar att bli ber¨akningstunga
+om systemet ¨ar mycket stort eller mycket komplext. Ytterligare en begr¨ansning
+med modellen ¨ar att alla fel som intr¨aﬀar i systemet antas vara oberoende
+utav varandra. Vilket det i m˚anga fall inte ¨ar, exempelvis vid stormar in-
+tr¨aﬀar fel ofta p˚a ﬂera ledningssektioner samtidigt.
+5.4. Analys av simuleringar
+39
+5.4
+Analys av simuleringar
+Trots modellens begr¨ansningar s˚a erh˚alles de efterfr˚agade resultaten. Parame-
+trarna, som anv¨andes i simuleringarna, till de olika ledningssektionerna och
+uttagspunkterna valdes s˚a verklighetstroget som m¨ojligt, men f¨or att f¨orb¨attra
+resultaten beh¨ovs ytterligare studier med fokus p˚a parameterv¨ardena g¨oras.
+Simuleringarna i avsnitt 4.1 och 4.2 visar att det g˚ar att optimera antalet in-
+vesteringstillf¨allen f¨or ett deﬁnierat distributionsn¨at. Simuleringarna visade
+ocks˚a att den l¨agsta kostnaden erh¨olls n¨ar antalet investeringstillf¨allen i de
+olika ledningssektionerna varierade. Som f¨orv¨antat visade det sig att det
+kr¨avs f¨arre investeringar i de redundanta ledningssektionerna ¨an i den radiella
+ledningssektionen.
+Kapitel 6
+Validering av modell
+6.1
+Inverkan av antalet investeringsalterna-
+tiv i simuleringarna
+En praktiskt anv¨andbar modell kr¨aver att simuleringarna inte ¨ar f¨or tid-
+skr¨avande. Tiden det tar att ber¨akna den totala kostnaden f¨or 1 000 000
+olika investeringsalternativ f¨or systemet i ﬁgur 3.4 ¨ar rimligt l˚ang, ca 18 min-
+uter. Simuleringstiden kan d¨aremot bli ett problem om n¨aten som studeras
+best˚ar av ett par hundra olika komponenter. Det kan d¨arf¨or vara intressant
+att studera hur resultaten varierar, j¨amf¨ort med resultatet i simulering 4.2,
+vid olika antal investeringsalternativ. Den totala kostnaden i simulering 2
+uppgick till 26 269 kSEK. Resultatet av j¨amf¨orelsen presenteras i tabell: 6.1
+Resultaten visar att redan med 100 investeringsalternativ erh˚alls ett resultat
+Tabell 6.1: Systemets totala kostnad i validering 6.1 j¨amf¨ort med resultatet
+i simulering 4.2
+Antal investerings-
+Total kostnad (kSEK)
+Avikelse i %
+Simulerings-
+alternativ (st)
+tid (s)
+100
+29 183
++11%
+2.10
+1 000
+27 744
++6%
+3.07
+10 000
+27 032
++3%
+12.92
+100 000
+26 923
++2.5%
+115.16
+1 000 000
+26 317
++0.2%
+1123.78
+som procentuellt inte skiljer sig mycket j¨amf¨ort med 1 000 000 invester-
+ingsalternativ.
+41
+42
+Kapitel 6. Validering av modell
+6.2
+Avbrottskostnadens inverkan p˚a modellen
+Hur p˚averkar avbrottskostnaden i de olika uttagspunkterna den totala kost-
+naden? Vad h¨ander om avbrottskostnaden i uttagspunkter, som matas av det
+redundanta n¨atet, ¨okar? Kommer investeringar i de redundanta ledningssek-
+tionerna p˚averka den f¨orv¨antade avbrottskostnaden i h¨ogre grad. Om mod-
+ellen st¨ammer kommer en h¨ojning av avbrottskostnaden i uttagspunkt K1
+eller K2 att medf¨ora att den f¨orv¨antade avbrottskostnaden i systemet ¨okar.
+Investeringar i de redundanta ledningssektionerna b¨or ocks˚a p˚averka den to-
+tala kostnaden i h¨ogre grad .
+Valideringarna i appendix B visar att den radiella delen av n¨atet har en
+stor inverkan p˚a den f¨orv¨antade avbrottskostnaden d˚a avbrottskostnaden ¨ar
+lika stor i samtliga uttagspunkter. Genom att h¨oja avbrottskostnaderna i i
+uttagspunkterna som matas av det redundanta n¨atet unders¨oks hur dessa
+punkter p˚averkar den f¨orv¨antade avbrottskostnaden. Det visade sig att ¨aven
+stora f¨or¨andringar av avbrottskostnaden ger relativt sm˚a f¨or¨andringar av den
+f¨orv¨antade avbrottskostnaden f¨or systemet.
+6.3
+Reparationstidens inverkan p˚a modellen
+Hur p˚averkas den totala kostnaden om en f¨or¨andring av reparationstiden
+(MTTR) i en ledningssektion sker? Vad sker med den totala kostnaden vid
+en liten eller stor f¨or¨andring av MTTR i en ledningssektion i den redundanta
+delen?
+Valideringen i appendix C visar att en liten f¨or¨andring av MTTR i en led-
+ningssektion i den redundanta delen av n¨atet inte p˚averkar den f¨orv¨antade
+avbrottskostnaden m¨arkbart. Den radiella ledningssektionens p˚averkan p˚a
+den f¨orv¨antade avbrottskostnaden ¨ar stor. En st¨orre f¨or¨andring av MTTR
+i en ledningssektion i den redundanta n¨atdelen p˚averkar den f¨orv¨antade
+avbrottskostnaden mer m¨arkbart.
+Kapitel 7
+Slutsats
+I detta arbete har en metod tagits fram f¨or att studera hur investeringar i dis-
+tributionssystem ska eﬀektiviseras. Metoden bygger p˚a tillf¨orlitlighetsanalys
+och ber¨aknar distributionssystemets f¨orv¨antade avbrottskostnad samt in-
+vesteringskostnad. Ber¨aknas den f¨orv¨antade avbrottstiden f¨or uttagspunk-
+ter i distributionssystemet kan kostnaden f¨or avbrott i distributionssystemet
+uppskattas p˚a ˚arsbasis. Genom att slumpm¨assigt ta fram ett stort antal in-
+vesteringsscenarion kan kostnadseﬀektiva investeringsplaner f¨or distribution-
+ssystemet tas fram. Simuleringarna visade att det g˚ar att minimera den totala
+kostnaden f¨or systemet. Resultaten av simuleringarna visar ocks˚a att mod-
+ellen ¨ar robust, mellan det b¨asta resultatet och det hundrade b¨asta resultatet
+skilde det endast 2.4%. Valideringar med olika antal investeringskombination-
+er visade att vid 100 olika investeringskombinationer erh¨olls en total kostnad
+som var 11% h¨ogre ¨an den totala kostnaden som erh¨olls efter 1 000 000 simu-
+leringar. Detta visar att modellen skulle kunna anv¨andas p˚a mer komplexa
+distributionssystem d˚a dessa inte riskerar bli ber¨akningstunga p˚a grund utav
+att m˚anga investeringskombinationer kr¨avs f¨or att erh˚alla ett anv¨andbart
+resultat.
+43
+Kapitel 8
+Diskussion och framtida studier
+8.1
+Diskussion
+Ett problem n¨ar investeringsplaner f¨or elektriska distributionsn¨at tas fram, ¨ar
+att det idag ﬁnns f˚a ber¨akningsverktyg som ber¨aknar den totala livscykelkost-
+naden. Med avsaknad av livscykelkostnad kan det vara sv˚art att motivera
+vilka ˚atg¨arder som ¨ar ekonomiskt l¨onsamma. Ska enklare underh˚alls˚atg¨arder
+d¨ar vissa komponenter eller ledningssektioner byts ut genomf¨oras, eller ska
+n¨atet designas om fr˚an grunden, reinvesteras, eller saknas ˚atg¨arder som ¨ar
+ekonomiskt motiverade att genomf¨ora i systemet.
+Eftersom antalet˚atg¨arder i ett n¨atavsnitt begr¨ansas av yttre faktorer, fr¨amst
+geograﬁska, s˚a ¨ar antalet alternativ f¨or n¨atdragningen begr¨ansat. Modellen
+som tagits fram ¨ar ett verktyg som ber¨aknar ett beﬁntligt eller t¨ankbart sys-
+tems f¨orv¨antade livscykelkostnad. Erh˚allna resultat tillsammans med planer-
+arens/projekt¨orens kompetens och erfarenhet kan underl¨atta f¨or beslutsfattare
+hur investeringarna ska g¨oras. Beslutet fattas inte enbart utifr˚an projekt¨orens
+erfarenhet utan det ﬁnns ett ekonomiskt underlag till beslutet. Modellen ger
+inte en best¨amd l¨osning p˚a hur det ska investeras men en ﬁngervisning till hur
+investeringarna ska g¨oras. En f¨ordel med det framtagna verktyget ¨ar att det
+tar h¨ansyn till planerarens/projekt¨orens erfarenhet och l˚ater denna p˚averka
+hur simuleringarna ska genomf¨oras.
+45
+46
+Kapitel 8. Diskussion och framtida studier
+8.2
+Framtida studier
+Allteftersom examensarbetet fortskrider s˚a v¨acks en m¨angd nya fr˚agest¨all-
+ningar. Alla fr˚agor kan inte besvaras inom ramen f¨or examensarbetet, men
+kan leda till intressanta framtida studier. Nedan presenteras n˚agra f¨orslag p˚a
+framtida studier.
+ F¨or att f¨orb¨attra resultaten b¨or studier g¨oras p˚a hur optimeringen av in-
+vesteringar kan f¨orb¨attras. Exempelvis skulle genetiska algoritmer eller
+n˚agon form av particle swarm optimization teknik studeras.
+ Modellen i detta arbete behandlar endast avbrottskostnader f¨or avbrott
+som g¨or att el inte levereras till uttagspunkterna. F¨or att utveckla mod-
+ellen b¨or det studeras om det g˚ar att ¨aven inkludera avbrott som inte
+¨ar minimala snitt i den f¨orv¨antade avbrottskostnaden.
+ F¨or att resultaten ska bli mer tillf¨orlitliga kr¨avs ocks˚a att studier g¨ors
+p˚a att f˚a fram tillf¨orlitlig data p˚a felintensiteten f¨or olika ledningssek-
+tioner och hur dessa f¨or¨andras med tiden.
+ F¨or att underl¨atta f¨or projekt¨oren och n¨atplaneraren b¨or programmet
+f¨orb¨attras s˚a att det automatiskt kan ber¨akna exempelvis strukturfunk-
+tionen f¨or systemet vilket underl¨attar vid studier av st¨orre system.
+ F¨or att ytterligare unders¨oka om modellen ¨ar praktiskt anv¨andbar b¨or
+studier p˚a st¨orre system genomf¨oras.
+ Modellen b¨or ocks˚a studeras ytterligare i ett investeringsekonomiskt
+perspektiv f¨or att b¨attre kunna anv¨andas som beslutsunderlag vid in-
+vesteringar.
+Litteraturf¨orteckning
+[1] Marvin Rausand Arnljot Hoyland. System Reliability Theory, Models
+and Statistical Methods. John Wiley and Sons Inc, 1994. ISBN 0-471-
+59397-4.
+[2] Carl Johan Wallnerstr¨om. On Risk Management of Electrical Distribu-
+tion Systems and the Impact of Regulations. Licentiatavhandling, Kung-
+liga Tekniska H¨ogskolan, Stockholm, 2008. ISBN 978-91-7178-954-9.
+[3] Johan Setr´eus et al. A Comparative Study of Regulation Policies for
+Interruption of Supply of Electrical Distribution Systems in Sweden and
+UK. Uppsats, KTH Institutionen f¨or elektrotekniska system, Maj 2007.
+19th International Conference on Electricity Distribution.
+[4] Utv¨ardering av stormen Per. Teknisk rapport, Statens energimyndighet,
+Eskilstuna, 2007. ER 2007:37.
+[5] Peter Martinsson Fredrik Carlson. Kostnader av elavbrott, en studie
+av svenska elkunder. Utredning, Elforsk AB, Stockholm, 2006. Elforsk
+rapport 06:15.
+[6] Funktionskrav inom elf¨ors¨orjningen.
+Teknisk rapport, Statens en-
+ergimyndighet, Eskilstuna, 2009. ISSN 1403-1892.
+[7] Patrik Hilber. Maintenance Optimization for Power Distribution Sys-
+tems.
+Doktorsavhandling, Kungliga Tekniska H¨ogskolan, Stockholm,
+2008. ISBN 978-91-628-7464-3.
+[8] Gunnar Blom. Sannolikhetsteori och statistikteori med till¨ampningar.
+Studentlitteratur, 1989. ISBN 91-44-03594-2.
+[9] Lina Bertling. Tillf¨orlitlighetsanalys av elkraftsystem 2C4030. Kursma-
+terial, KTH Institutionen f¨or elektrotekniska system, Stockholm, 2005.
+A-ETS/EEK-0501.
+47
+48
+Litteraturf¨orteckning
+[10] Torkel Glad Lennart Ljung. Modellbygge och simulering. Studentlitter-
+atur, 1991. ISBN 91-44-31871-5.
+Bilaga A
+Matlabkod
+I detta avsnitt presenteras programkoden f¨or simuleringen samt funktioner
+som anv¨ands av huvudprogrammet.
+A.1
+Huvudprogram f¨or simuleringar
+% Program f¨or ber¨akning av avbrottskostnader i eln¨at
+close all;
+clear all;
+clc;
+rand('state',sum(100*clock))
+tic; %Startar tidtagning
+%Antalet simuleringar
+x = 1000000;
+zz = 1;
+%Antal ˚ar som simuleringen ska ske ¨over
+endyear = 101;
+%Antalet komponenter i systemet
+comp = 4;
+%Investeringar i kronor f¨or komponent i ˚ar n
+investment K1 = 500000;
+investment K2 = 500000;
+investment K3 = 500000;
+49
+50
+Bilaga A. Matlabkod
+investment K4 = 500000;
+investment K = [investment K1 investment K2 investment K3 investment K4];
+% Modellering av Lambda utan investeringar f¨or komponent K1, K2, K3 & K4
+% Ledningssektion 1 har fel vart ˚attonde ˚ar
+MTTF1 = 365*8*24;
+lambda0 1 = 1/MTTF1;
+% Ledningssektion 2 har fel vart femte ˚ar
+MTTF2 = 365*5*24;
+lambda0 2 = 1/MTTF2;
+% Ledningssektion 3 har fel vart trettonde ˚ar
+MTTF3 = 365*13*24;
+lambda0 3 = 1/MTTF3;
+% Ledningssektion 4 har fel vart tionde ˚ar
+MTTF4 = 365*10*24;
+lambda0 4 = 1/MTTF4;
+%Reparationstiden f¨or komponenterna
+MTTR 1 = 24;
+MTTR 2 = 24;
+MTTR 3 = 24;
+MTTR 4 = 24;
+%Livstiden p˚a komponenterna
+L 1 = 50;
+L 2 = 50;
+L 3 = 50;
+L 4 = 50;
+%Konstanter som funktionen Lambdanoinv beh¨over
+g 1 = 0;
+g 2 = 0;
+g 3 = 0;
+g 4 = 0;
+K 1 = 1;
+K 2 = 1;
+A.1. Huvudprogram f¨or simuleringar
+51
+K 3 = 1;
+K 4 = 1;
+% Felintensiteten f¨or de olika komponenterna utan investeringar
+% anropar funktionen lambdanoinv
+[Y1,T,X 1] = lambdanoinv(lambda0 1,L 1,MTTR 1,g 1,K 1);
+[Y2,T,X 2] = lambdanoinv(lambda0 2,L 2,MTTR 2,g 2,K 2);
+[Y3,T,X 3] = lambdanoinv(lambda0 3,L 3,MTTR 3,g 3,K 3);
+[Y4,T,X 4] = lambdanoinv(lambda0 4,L 4,MTTR 4,g 4,K 4);
+YY = [Y1, Y2, Y3, Y4];
+Ytot test = [x,zz];
+%Preallokering av celler och matriser
+repairyear K = cell(x,comp);
+lambda K = zeros(comp,endyear);
+u K = zeros(comp,endyear);
+u save K = zeros(comp,endyear);
+Ytot save = zeros(x,1);
+for mc=1:1:x
+%Slumpar fram antalet investeringstillf¨allen
+nr inv K1 = round(rand(1)*5);
+nr inv K2 = round(rand(1)*5);
+nr inv K3 = round(rand(1)*5);
+nr inv K4 = round(rand(1)*5);
+nr inv K = [nr inv K1, nr inv K2, nr inv K3, nr inv K4];
+%Slumpar fram investeringstillf¨allena
+for com=1:1:comp
+n = nr inv K(1,com);
+com;
+if n̸=0
+repairyear K{mc,com} = {slumpmatris(zz,n)};
+repairyear = cell2mat(repairyear K{mc,com}(1,:));
+repairyear = repairyear+1;
+lambda K(com,:) = lambdamatris v2(1,n,endyear,YY(:,com),...
+repairyear,1); %Felintensiteten med investeringar
+else
+repairyear K{mc,com} = {0};
+52
+Bilaga A. Matlabkod
+lambda K(com,:) = YY(:,com)';
+end
+end
+% Icketillg¨anglighet f¨or varje uttagspunkt
+Q01 = MTTR 1*MTTR 2*lambda K(1,:).*lambda K(2,:)+MTTR 1*MTTR 3*...
+lambda K(1,:).*lambda K(3,:);
+Q02 = MTTR 1*MTTR 2*lambda K(1,:).*lambda K(2,:)+MTTR 2*MTTR 3*...
+lambda K(2,:).*lambda K(3,:);
+Q03 = MTTR 4*lambda K(4,:)+MTTR 1*MTTR 2*lambda K(1,:).*...
+lambda K(2,:)+MTTR 2*MTTR 3*lambda K(2,:).*lambda K(3,:);
+% Avbrottskostnad f¨or uttagspunkterna
+K1 = (2200)*2000;
+K2 = (2200)*5000;
+K3 = (2200)*20;
+%Skapar matris med investeringar
+u K(:,:) = zeros;
+for com=1:1:comp
+number = nr inv K(com);
+repairyear = cell2mat(repairyear K{mc,com}(1,:));
+if nr inv K(com)̸=0
+for b=1:1:number
+invpos K = repairyear+1;
+u K(com,invpos K) = investment K(com);
+end
+else
+u K(com,:) = zeros;
+end
+end
+% Totala kostnaden f¨or systemet
+Cx new = 8760*(K1*Q01+K2*Q02+K3*Q03);
+Du new = sum(u K);
+Ytot new = sum(Cx new+Du new);
+%Skapar en vektor med totala kostnaden f¨or systemet
+Ytot save(mc,1) = Ytot new;
+A.1. Huvudprogram f¨or simuleringar
+53
+%Unders¨oker om den totala kostnaden ¨ar l¨agre ¨an f¨oreg˚aende g˚ang
+if mc == 1
+u save K(:,:) = u K(:,:);
+Ytot = Ytot new;
+Cx = Cx new;
+end
+if Ytot new < Ytot
+u save K(:,:) = u K(:,:);
+Ytot = Ytot new;
+Cx = Cx new;
+end
+end
+[Ymin,dd] = sort(Ytot save);
+%Normerar investeringsmatrisen
+u save K norm = u save K(:,:).*(1.5/5);
+% Plottar avbrottskostnaden samt investeringstillf¨allen
+plot(T,Cx,'.'),hold on
+stem(T,u save K norm(1,:),'k','s'),hold on
+%Ledningssektion 1
+stem(T,u save K norm(2,:),'r','x'),hold on
+%Ledningssektion 2
+stem(T,u save K norm(3,:),'g','−−'),hold on %Ledningssektion 3
+stem(T,u save K norm(4,:),'m','.')
+%Ledningssektion 4
+% Plottar de 100 l¨agsta avbrottskostnaderna
+figure;
+plot(1:100,Ymin(1:100),'.'), hold on
+toc
+54
+Bilaga A. Matlabkod
+A.2
+Funktion f¨or λ
+% Simulerar felintensiteteten komponentvis utan investeringar
+function [Y,T,X] = lambdanoinv(lambda0,L,MTTR,g,K)
+D=1;
+C = MTTR*K;
+gs = ss(1/L,g,C/C,D*0); %Beskriver lambda p˚a tillst˚andsform
+x0 = [lambda0];
+t = 0:1:100;
+u = zeros(1,101);
+lsim(gs,u,t,x0);
+[Y,T,X] = lsim(gs,u*0,t,x0);
+A.3. Funktion f¨or λ med investering
+55
+A.3
+Funktion f¨or λ med investering
+%Komponentens felintensitet med investeringar
+function [lambda] = lambdamatris v2(x,n,endyear,YY,repairyear,com)
+%Felintensiteten p˚a komponenten d˚a reparationer sker
+lambdarow = []; %Vektor som sparar felintensiteten
+lambda =[]; %Matris som sparar felintensiteten
+c = 1;
+if n == 1
+year = repairyear(1,1);
+lambdarow(1,:) = YY(1:1:repairyear(1,1),com);
+tend = endyear−year;
+ytend = [YY(1:1:(tend),com)]';
+lambdarow = [lambdarow,ytend];
+lambda(1,:)=lambdarow;
+else
+lambdarow=[];
+if repairyear(c,1) == 0
+lambdarow = YY(1);
+else
+%Felintensiteten fram tom f¨orsta reparationen
+lambdarow(1,:) = YY(1:1:repairyear(c,1),com);
+end
+for b=2:1:n %Felintensitet from f¨orsta till sista investeringen
+year = repairyear(c,b);
+yo = b−1;
+t = YY(1:1:(repairyear(c,b)−repairyear(c,yo)),com)';
+lambdarow = [lambdarow,t];
+end
+%Felintensitet from sista investeringen
+tend = endyear−year;
+ytend = [YY(1:1:(tend),com)]';
+lambdarow = [lambdarow,ytend];
+lambda(c,:)=lambdarow;
+lambdarow = [];
+end
+56
+Bilaga A. Matlabkod
+A.4
+Funktion f¨or slumpmatris
+% Funktion som skapar en n−x−m matris med slumpm¨assiga tal
+function [repairyear v3] = slumpmatris(zz,n)
+positiontest = 1;
+if n == 1
+repairyear v3 t = round(rand(1)*100);
+else
+while (positiontest
+̸= n)
+repairyear v3 t = zeros(zz,n);
+r =rand(n,1);
+rsort = sortrows(r);
+rtrans = rsort';
+repairyear v3 t = rtrans;
+repairyear v3 t = round(repairyear v3 t*100); %Retunerande vektorn
+for d=1:1:n−1
+if repairyear v3 t(1,d) == repairyear v3 t(1,d+1)
+| |
+...
+repairyear v3 t(1,d) == 0
+positiontest = 0;
+else
+positiontest = positiontest+1;
+end
+end
+end
+end
+repairyear v3 = repairyear v3 t;
+Bilaga B
+Validering av modell,
+avbrottskostnadens inverkan
+Startv¨ardena f¨or validering B.0.1 och B.0.2 presenteras i tabell B.1, B.2 och
+B.3.
+Tabell B.1: Ledningarnas felintensitet i validering 1 och 2
+Felintensitet λi (1/h)
+Validering 1 och 2
+λ1
+1
+70 080
+λ2
+1
+43 800
+λ3
+1
+113 880
+λ4
+1
+87 600
+Tabell B.2: Uttagspunkternas avbrottskostnad validering 1
+Avbrottskostnad Kj (kSEK)
+Valid. 1.1
+Valid. 1.2
+Valid. 1.3
+Valid. 1.4
+K1
+44
+88
+440
+4 400
+K2
+44
+88
+440
+4 400
+K3
+44
+44
+44
+44
+57
+58Bilaga B. Validering av modell, avbrottskostnadens inverkan
+B.0.1
+Validering 1.1
+I validering 1.1 unders¨oks hur den f¨orv¨antade avbrottskostnaden p˚averkas av
+investeringar n¨ar avbrottskostnaden i de olika uttagspunkterna ¨ar lika stor.
+Enligt teorin b¨or investeringar i den radiella ledningssektion, L4, ha st¨orst
+inverkan p˚a den f¨orv¨antade avbrottskostnaden. Resultatet av valideringen
+presenteras i ﬁgur B.1.
+0
+20
+40
+60
+80
+100
+0
+0.5
+1
+1.5
+2
+2.5
+x 10
+5
+Kr
+År
+ 
+ 
+L1
+L2
+L3
+L4
+Figur B.1: F¨orv¨antade avbrottskostnaden f¨or systemet i ﬁg 3.4, validering
+1.1
+Tabell B.3: MTTR (h) f¨or de olika ledningssektionerna i validering 1
+MTTRi (h)
+=
+24
+Tabell B.4: Resultat, validering 1.1
+kSEK
+F¨orv¨antad avbrottskostnad
+13 995
+Investeringskostnad
+6 000
+Total kostnad
+19 995
+59
+B.0.2
+Validering 1.2
+Tabell B.5: Resultat, validering 1.2
+kSEK
+F¨orv¨antad avbrottskostnad
+14 034
+Investeringskostnad
+6 000
+Total kostnad
+20 034
+B.0.3
+Validering 1.3
+Tabell B.6: Resultat, validering 1.3
+kSEK
+F¨orv¨antad avbrottskostnad
+14 345
+Investeringskostnad
+6 000
+Total kostnad
+20 345
+60Bilaga B. Validering av modell, avbrottskostnadens inverkan
+B.0.4
+Validering 1.4
+Genom att h¨oja avbrottskostnaden f¨or de uttagspunkter som ¨ar kopplade
+till den redundanta delen av systemet borde dessa enligt teorin ha en st¨orre
+inverkan p˚a systemets avbrottskostnad.
+0
+20
+40
+60
+80
+100
+0
+0.5
+1
+1.5
+2
+2.5
+3
+x 10
+5
+Kr
+År
+ 
+ 
+L1
+L2
+L3
+L4
+Figur B.2: F¨orv¨antade avbrottskostnaden f¨or systemet i ﬁg 3.4, validering
+1.4
+Tabell B.7: Resultat, validering 1.4
+kSEK
+F¨orv¨antad avbrottskostnad
+17 840
+Investeringskostnad
+6 000
+Total kostnad
+23 840
+61
+B.0.5
+Sammanst¨allning resultat
+En sammanst¨allning av resultaten visas i tabell B.8.
+Tabell B.8: Sammanfattning, validering 1
+Valid. 1
+Valid. 2
+Valid. 3
+Valid. 4
+¨Okn. avbrottskostnad i K1 K2
+−
+100%
+1 000%
+10 000%
+¨Okn. f¨orv¨antad avbrottskostnad
+−
+0.28%
+2.5%
+27.47%
+Bilaga C
+Validering av modell,
+reparationstidens inverkan
+Startv¨arden presenteras i tabell C.1, C.2 och C.3.
+Tabell C.1: Ledningarnas felintensitet i validering 3
+Felintensitet λi (1/h)
+Validering 3
+λ1
+1
+70 080
+λ2
+1
+43 800
+λ3
+1
+113 880
+λ4
+1
+87 600
+Tabell C.2: Uttagspunkternas avbrottskostnad i validering 3
+Avbrottskostnad Kj (kSEK)
+Validering 3
+K1
+4 400
+K2
+11 000
+K3
+44
+63
+64 Bilaga C. Validering av modell, reparationstidens inverkan
+Tabell C.3: MTTR (h) f¨or de olika ledningssektionerna i validering 3
+MTTRi (h)
+Sim. 4.1
+Sim.4.2
+Sim.4.3
+MTTR1
+24
+48
+240
+MTTR2
+24
+24
+24
+MTTR3
+24
+24
+24
+MTTR4
+24
+24
+24
+C.0.6
+Validering 2.1
+0
+20
+40
+60
+80
+100
+0
+0.5
+1
+1.5
+2
+2.5
+3
+3.5
+x 10
+5
+Kr
+År
+ 
+ 
+L1
+L2
+L3
+L4
+Figur C.1: F¨orv¨antade avbrottskostnaden f¨or systemet i ﬁg 3.4, validering
+3.1
+Tabell C.4: Resultat, validering 3.1
+kSEK
+F¨orv¨antad avbrottskostnad
+20 992
+Investeringskostnad
+6 000
+Total kostnad
+26 992
+65
+C.0.7
+Validering 2.2
+0
+20
+40
+60
+80
+100
+0
+0.5
+1
+1.5
+2
+2.5
+3
+3.5
+4
+4.5
+x 10
+5
+Kr
+År
+ 
+ 
+L1
+L2
+L3
+L4
+Figur C.2: F¨orv¨antade avbrottskostnaden f¨or systemet i ﬁg 3.4, validering
+3.2
+Tabell C.5: Resultat, validering 3.2
+kSEK
+F¨orv¨antad avbrottskostnad
+26 028
+Investeringskostnad
+6 000
+Total kostnad
+32 028
+66 Bilaga C. Validering av modell, reparationstidens inverkan
+C.0.8
+Validering 2.3
+0
+20
+40
+60
+80
+100
+0
+2
+4
+6
+8
+10
+12
+14
+x 10
+5
+Kr
+År
+ 
+ 
+L1
+L2
+L3
+L4
+Figur C.3: F¨orv¨antade avbrottskostnaden f¨or systemet i ﬁg 3.4, validering
+3.2
+Tabell C.6: Resultat, validering 3.3
+kSEK
+F¨orv¨antad avbrottskostnad
+66 313
+Investeringskostnad
+6 000
+Total kostnad
+72 313
+67
+C.0.9
+Sammanst¨allning resultat
+Tabell C.7: Sammanfattning, validering 3
+% f¨or¨andring
+MTTR1
+%
+f¨or¨andring
+f¨orv¨antad
+avbrottskostnad
+Valid. 1
+−
+−
+Valid. 2
+100%
+23.99%
+Valid. 3
+1000%
+315.9%

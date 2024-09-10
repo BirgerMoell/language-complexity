@@ -1,0 +1,1443 @@
+Analys av användning av Intelligent 
+Power Modules för motorstyrning
+P E R-O V E   E D V I N S S O N
+Master's Degree Project
+Stockholm, Sweden 2005
+IR-RT-EX-0504
+2
+3
+Sammanfattning 
+Det här arbetet utfördes på ABB Corporate Research, och innefattar en studie av 
+motorstyrning i allmänhet, och hur man med hjälp av en Intelligent Power Module 
+kan effektivisera motorstyrning genom att ersätta separata kraft- och styrmoduler 
+med en kombinerad modul. En IPM från International Rectifier har modifierats och 
+testats genom att under en längre tid låta den styra en permanentmagnetmotor 
+under normala förhållanden. Resultatet från testkörningen visar att en IPM är ett 
+bra alternativ i framtiden, såväl i fråga om effektivitet, som kostnad och utrymme. 
+Efter en undersökning av marknaden visar det sig att det är långt ifrån säkert att 
+modulen från International Rectifier är den bästa som finns att tillgå, och det skulle 
+förmodligen löna sig att testköra IPM:er av andra tillverkare i mån av tid och 
+pengar. 
+4
+5
+Abstract 
+This work was performed at the ABB Corporate Research and contains a 
+preliminary study of motor control, and how it is possible to combine a power 
+module with a control module into an Intelligent Power Module, in order to make 
+the motor control more efficient. An IPM from International Rectifier has been 
+modified and tested by letting the IPM drive a permanent magnet motor under 
+typical load conditions for a long time. The test showed that an IPM is a good 
+alternative for the future, when it comes to the matter of efficiency, cost and space. 
+After an investigation of the market, it is not clear that the International Rectifier 
+IPM for sure is the best IPM out there, and it would probably be worth the trouble 
+of running some tests on IPM:s from other manufacturers, in the degree of time and 
+money. 
+6
+7
+Förord
+Det här är ett examensarbete utfört under hösten 2004 och våren 2005 på ABB 
+Corporate Research i Västerås.  
+Först av allt vill jag tacka min handledare på ABB, Hector Zelaya de la Parra, som 
+varit till stor hjälp med sina tekniska kunskaper och glada humör. 
+Jag vill även speciellt tacka Agneta Sjöstrand på ABB Corporate Research som på 
+ett ypperligt sätt hjälpt till med alla administrativa detaljer.  
+Ett tack även till min examinator professor Bo Wahlberg vid institutionen för 
+Signaler, Sensorer och System på KTH.  
+Ett allmänt tack bör också utfärdas till samtliga på ABB Corporate Research som 
+har tagit hand om mig på bästa sätt, såväl under som utanför arbetet, och bidragit 
+till en trevlig och lärorik tid under arbetet med detta examensarbete. 
+8
+9
+Innehållsförteckning 
+1. Bakgrund .................................................................................................11 
+2. Uppgift ....................................................................................................12 
+3. Teori ........................................................................................................12 
+3.1 Motor..................................................................................................12 
+3.1.1 Konstruktion och Funktion...........................................................12 
+3.1.2 dq-transformation.........................................................................15 
+3.1.3 Resolver .......................................................................................16 
+3.2 Intelligent Power Module (IPM).........................................................18 
+3.2.1 Konstruktion.................................................................................18 
+3.2.2 Funktion.......................................................................................20 
+3.2.3 Integrerade säkerhetsdetaljer ........................................................20 
+3.2.4 Kommunikation............................................................................20 
+3.3 Pulsbreddsmodulering, PWM.............................................................22 
+3.4 Space Vector Modulation, SVM.........................................................24 
+3.5 Reglersystem......................................................................................26 
+3.5.1 Hastighetsreglering.......................................................................26 
+3.5.2 Positionsreglering.........................................................................27 
+3.5.3 Strömreglering .............................................................................28 
+4. Praktik .....................................................................................................28 
+4.1 Kondensatorbank................................................................................29 
+4.3 Förstärkning av resolversignal............................................................30 
+4.4 Reglerparametrar................................................................................32
+4.5 PT100.................................................................................................34 
+4.6 Värmeprov..........................................................................................34 
+4.7 Jämförelse med andra IPM:er .............................................................39 
+5. Resultat och slutsatser..............................................................................43 
+6. Källhänvisningar......................................................................................45 
+Appendix I – Datablad International Rectifier PIIPM15P12D007................46 
+Appendix II – Datablad International Rectifier PIIPM25P12B008 ..............47 
+Appendix III – Datablad Mitsubishi PM25RLB120.....................................48 
+Appendix IV – Datablad Fuji Electric 7MBP25RJ120.................................49 
+Appendix V – Uppgift från ABB .................................................................50 
+10
+11
+1. Bakgrund 
+Konstruktion samt utveckling av maskiner till industrin är en stor del av ABB:s 
+verksamhet. För att få maskiner av olika slag att utföra ett arbete krävs det en eller 
+flera motorer som sätter får maskinen i rörelse. För att effektivisera dessa rörelser, 
+läggs mycket energi på utveckling av motorer. Då efterfrågan av drivsteg till 
+växelströmsmotorer är stor är det många utvecklare runt om i världen som lägger 
+ner mycket energi och pengar på just detta. Ett framsteg som gjorts inom detta 
+område är en så kallad Intelligent Power Module, IPM, där såväl styrlogiken för 
+reglersystem som kraftelektroniken har inkluderats. Framför allt avses här enheter 
+för mätning av ström samt gatestyrda kretsar. På IPM:en finns även en Digital 
+signalprocessor, DSP, vilken är modulens hjärna, och kan programmeras efter 
+behov. Tidigare har man använt sig av momentreglering, men med den nya 
+modulen hoppas man kunna styra motorer med såväl hastighetsreglering som 
+positionsreglering. Förhoppningsvis visar det sig att denna nya modul kan bidra till 
+ökad prestanda, lägre kostnad, och framför allt till en mer effektiv verksamhet i 
+framtiden. 
+12
+2. Uppgift 
+  
+På ABB Corporate Research är man intresserad av ett undersöka huruvida en 
+Intelligent Power Module är lämplig att använda vid styrning av robotar, 
+servomotorer, eller liknande maskiner i allmänhet. En IPM har beställts från 
+leverantören International Rectifier, vilken först måste modifieras för att kunna 
+användas tillsammans med ABB:s utrustning. Exakt vad som måste modifieras går 
+inte att fastställa på förhand, men det rör sig om dels en modifikation 
+hårdvarumässigt, där ytmonterade komponenter kan behöva bytas ut mot andra för 
+att rätt switchfrekvens skall uppnås. Den mjukvara, i form av C- och assemblykod, 
+som finns tillänglig från tidigare applikationer måste även den modifieras. För att 
+kunna koppla samman IPM:en med en motor måste även kringdetaljer såsom en 
+kondensatorbank och diverse kablage tillverkas. När detta väl är utfört skall 
+modulen testköras och utvärderas, framför allt med avseende på användarvänlighet 
+och verkningsgrad. Detta sker genom ett så kallat värmeprov, då man under en 
+längre tid kör en motor styrd av IPM:en, och med jämna mellanrum noterar 
+temperaturer, spänningar, strömmar med mera. Utöver detta skall en undersökning 
+av marknaden göras, för att se om det finns IPM:er av andra tillverkare som vore 
+att föredra framför modulen från International Rectifier. Uppgiftsbeskrivningen 
+från ABB finns i Appendix V. 
+3. Teori 
+3.1 Motor 
+3.1.1 Konstruktion och Funktion 
+För att kunna förstå hur en motors rörelser kan regleras, krävs en grundläggande 
+förståelse för hur en motor är uppbyggd och fungerar. Den motor som har använts 
+vid testkörningen är en permanentmagnetiserad synkronmotor, PMSM, eller BLAC 
+(Brushless Alternating Current) även kallad. 
+BLAC-motorn består, liksom andra motorer, av en rotor och en stator. Då rotorn 
+placeras inuti statorn, uppstår av naturliga skäl ett luftgap däremellan. 
+Det som specifikt kännetecknar en permanentmagnetiserad synkronmotor (PM), är 
+att rotorn är försedd med just permanentmagneter. Fast vare sig rotorn 
+magnetiseras på nyss nämnda sätt, eller med hjälp av en lindning, kan den 
+representeras av en magnet som driver ett magnetiskt flöde i luftgapet mellan rotor 
+och stator. Flödet sluter sig i statorn, och en magnetisk krets har bildats, se Figur 1. 
+13
+Figur 1 - Principskiss av en synkronmaskin [4] 
+På statorns insida är en koncentrerad lindning fastsatt. Då en ström flyter genom 
+lindningen, uppstår ett magnetfält. Detta innebär även att en kraft uppstår, som 
+enligt högerhandsregeln är ortogonal mot lindningen såväl som magnetfältet. I 
+Figur 1 åskådliggörs hur krafterna skapar ett moment på statorn riktat moturs. Då 
+statorn är en fast punkt, påverkas istället rotorn av en motkraft, vilken sätter rotorn 
+i rörelse medurs av det moment som uppstår. För att få en tydligare bild av vad 
+som händer i luftgapet, visas synkronmotorn i utbredd form i Figur 2. Antalet 
+faslindningar kan variera, men tre är vanligast, då detta är en bra avvägning mellan 
+komplexitet och funktion. Om man använde flera faser skulle motorn förvisso 
+utveckla ett jämnare moment, men då till priset av en mer avancerad styrlogik och 
+mekanisk konstruktion, vilket inte är önskvärt. 
+Figur 2 - Synkronmotorn i utbredd form [4] 
+14
+Anta att statorns lindning består av en koncentrerad spole utanpå statorns inneryta. 
+Då rotorn snurrar kommer det sammanlänkade flödet mellan rotorn och den tänkta 
+spolen variera mellan ett positivt och ett negativt värde. Sett från statorn kan man 
+uppfatta detta som ett med rotorns hastighet växlande flöde som varierar 
+sinusformigt i tiden. Vidare i texten antas även lindningens ledare vara 
+sinusformigt 
+fördelade 
+längs 
+statorns 
+insida. 
+Detta 
+medför 
+även 
+att 
+strömbeläggningen och antalet ampereledare per meter antar en sinusformad 
+fördelning.  
+I Figur 1 visas en rotor med endast ett polpar (två poler), men i själva verket är det 
+en mycket ovanlig konfiguration. Med ett polpar rör sig motorn ett helt varv för en 
+växelspänningsperiod. I Figur 3 åskådliggörs en motor med två polpar. I detta fall 
+kommer motorn bara att snurra ett halvt varv under varje växelspänningsperiod. 
+Genom detta iakttagande fastställs sambandet 
+elektriska grader = p · mekaniska grader 
+Detta ger i sin tur sambandet mellan frekvensen f, antal polpar p och rotationer per 
+sekund n 
+f = p  · n 
+Ofta anges dock n i antal varv per minut, vilket medför omskrivningen 
+60
+n
+p
+f
+⋅
+=
+För permanentmagnetiserade synkronmotorer i servotillämpningar används ofta två 
+till fyra polpar. 
+Figur 3 - Trefas med två polpar [4] 
+15
+Med en trefas synkronmaskin alstras en symmetrisk trefas-emk. Detta framställs 
+genom att införa tre olika faslindningar, med sinsemellan samma effektivvärde och 
+frekvens, fasförskjutna i tiden med 120 elektriska grader. De tre faslindningarna är 
+symmetriskt utplacerade längs statorn, och brukar betecknas a, b, c. Fasernas 
+respektive emk varierar då i tiden så som anges i visar- och vågdiagramen i Figur 
+4. 
+Figur 4 - Visar- och vågdiagram för 3-fas [4] 
+3.1.2 dq-transformation 
+För att underlätta beräkningar i trefassammanhang, väljer man att transformera 
+abc-koordinaterna till dq-planet. Som visas i Figur 5, varierar spänningarna på 
+vardera axeln endast i amplitud, i samma hastighet som strömmen varierar i de 
+olika faserna. Dessa tre spänningsvektorer, Va, Vb och Vc, kan uttryckas med en 
+resulterande vektor, Vr, med konstans amplitud, som roterar med konstant 
+hastighet. 
+Vektorn Vr delas upp i två komposanter, en i α-led och en i β-led. Där låter man 
+dessa vektorer variera i amplitud, precis som i abc-planet, fast nu bara längs två 
+axlar mot tidigare tre, se Figur 6. 
+dq-transformationen görs genom att man låter αβ-systemet rotera. Dessa nya 
+roterande axlar benämns d och q. Koordinatsystemet roterar med vinkelhastighet 
+ωm, och den elektriska vinkel som uppstår mellan d-axeln och α-axeln benämns θ. 
+16
+Figur 5 - αβ- samt abc-planet 
+Figur 6 - dq-planet 
+Matematiskt kan denna transformation [2] av strömmar beskrivas 
+⎥
+⎦
+⎤
+⎢
+⎣
+⎡
+⎥⎦
+⎤
+⎢⎣
+⎡
+−
+=
+⎥
+⎦
+⎤
+⎢
+⎣
+⎡
+⎥
+⎥
+⎥
+⎦
+⎤
+⎢
+⎢
+⎢
+⎣
+⎡
+⎥⎦
+⎤
+⎢⎣
+⎡
+−
+−
+−
+=
+⎥
+⎦
+⎤
+⎢
+⎣
+⎡
+β
+α
+β
+α
+θ
+θ
+θ
+θ
+i
+i
+i
+i
+i
+i
+i
+i
+i
+q
+d
+c
+b
+a
+cos
+sin
+sin
+cos
+2
+/
+3
+2
+/
+3
+0
+2
+/
+1
+2
+/
+1
+1
+3
+2
+3.1.3 Resolver 
+För att hålla reda på hur motorns rotor förhåller sig till dess stator används en 
+resolver. En resolver består av en stator med lindningar i tre faser och en lindad 
+rotor. Dess funktion påminner i viss mån om en transformator, men ändrar sin 
+karakteristik när den roterar. Över en av statorns lindningar läggs en bärfrekvens på 
+17
+1-20 kHz. Denna frekvens skapar i de båda andra faserna en sinus- resp. en 
+cosinussignal. Med hjälp av signalbehandling som sker i processorn kan fasvinkeln 
+mellan sin- och cosinussignalerna mätas och rotorns vinkelläge kan beräknas, se 
+Figur 7. Signalerna anges även vid stillastående, vilket gör resolvern till 
+absolutgivare inom ett varv. 
+Resolvern har funnit kommersiell användning främst i växelströmsmatade 
+servosystem. Dess fördelar är att den inte påverkas nämnvärt av temperaturen i 
+dess omgivning, att den är väldigt robust samt att den är absolut. Servoförstärkaren 
+behöver därför ingen ytterligare sensor när resolvern svarar för såväl hastighets- 
+och positionsåterkoppling som för den elektroniska kommuteringen. När man 
+använder sig av en resolver som sensor, är det av stor betydelse att man vet vilken 
+typ av resolver som används, då olika resolvrar har olika egenskaper i fråga om 
+impedans och fasförskjutning. De problem som detta kan orsaka belyses ytterligare 
+i kapitel 4.3. 
+Figur 7 - Resolversignaler och elschema [3]
+18
+3.2 Intelligent Power Module (IPM) 
+Det fullständiga och korrekta namnet för en IPM är Intelligent Power Module. I 
+denna rapport kommer den endast att benämnas IPM, eller bara ”modulen”. 
+Konceptet IPM är relativt nytt, och började produceras i mitten av 1990-talet. 
+Väldigt förenklat kan sägas att det är en sammanslagning av en kraftmodul och en 
+reglermodul till en kombinerad modul, som dessutom har försetts med diverse 
+skyddsanordningar. För systemingenjörer idag är består en stor del av arbetet att ta 
+fram ett bra drivsystem, att optimera den mjukvara som ligger till grund för den 
+mekaniska rörelsen, samt att konstruera en skyddsutrustning som ser till att den 
+elektroniska utrustningen inte tar skada [13]. Med en IPM levereras allt detta redan 
+sammansatt, vilket har effektiviserat motorstyrningen. Den modul som används 
+under detta arbete är en PIIPM15P12D007 tillverkad och utformad av International 
+Rectifier. 
+3.2.1 Konstruktion 
+Modulen från International Rectifier är monterad i två våningsplan. Den övre 
+våningen är uppenbart lättåtkomlig, och här har kontakter och dylikt blivit 
+placerade. På den undre våningen finner man processorn, och en del övrig 
+elektronik. 
+För inbyggd gate-drive och intern övervakning finns sex IGBT:er (Insulate Gate 
+Bipolar Transistor). Det finns även IPM:er med MOSFET:s, vilket är att föredra då 
+man eftersträvar en högre switchfrekvens. Detta är dock inte nödvändigt i den 
+aktuella tillämpningen. Modulens hjärna är en digital signalprocessor (DSP), 
+TMS320LF2406A, tillverkad av Texas Instruments. Denna fungerar som en 
+dirigent för den kringutrustning som är till för att hantera den analoga 
+återkopplingen samt de kontrollsignaler som behövs för att manövrera 
+kraftsektionen av IPM:en. Det finns även ett 64kbits EEPROM tillgängligt för 
+lagring av kalibreringsdata. Modulen är skräddarsydd för att internt kunna 
+implementera alla funktioner som behövs för att skapa s.k. closed loops för såväl 
+ström som hastighet och position i en servomotor. För att kunna förse processorn 
+med data används ett JTAG-gränssnitt, vilket är en seriell port för kommunikation 
+mellan en processor och en dator. Ett blockschema för den aktuella modulen 
+återfinns i Figur 8. Kraftdelen i modulen är särskilt intressant. En närmare inblick i 
+hur den ser ut fås i Figur 9. Längst till vänster i figuren, markerat med grönt, hittar 
+vi en likriktare, bestående av sex dioder. I mitten, markerat med blått, finns en 
+IGBT och en diod, vilka är till för att styra motorns broms. Till höger, i det röda 
+området, finns trefasväxelriktaren, vilken består av sex IGBT:er med varsin 
+tillhörande diod. Det är dessa sex IGBT:er som genom att öppnas och stängas 
+förser motorn med önskad kraft. På varje utgång sitter det dessutom en resistor som 
+fungerar som strömsensor. 
+19
+För att inte modulen skall bli överhettad, är den monterad på ett kylelement med 
+måtten 112 x 67,5 x 220 mm. Detta medför en termisk resistans på ca 0,5°C/W, se 
+Figur 10. 
+Figur 8 - Blockschema för IPM:en [8] 
+Figur 9 - Likriktare, broms och trefasväxelriktare [8] 
+Figur 10 – Kylelement som modulen sitter monterad på. Diagrammet visar den 
+termiska resistansen mellan elementet och luften [1] 
+20
+3.2.2 Funktion 
+En IPM används i första hand till att styra och reglera motorer av olika slag. Syftet 
+är att man ska kunna integrera såväl kraftelektroniken som styrsystemet i samma 
+modul, för att på så sätt kunna optimera utrymmet och kostnaden för elektroniken. 
+Vid tillverkningen av maskiner som används inom industrin vill man i synnerhet 
+begränsa den mängd moduler som används för att styra de motorer som används, 
+då dessa i vissa sammanhang hela tiden måste följa med maskinen runt om den rör 
+på sig. Många, tunga och utrymmeskrävande moduler påverkar då maskinens 
+prestanda negativt. 
+IPM:en som levererades från International Rectifier var konstruerad med en 
+switchfrekevens på 4 kHz. Detta ansågs dock vara för långsamt, då en frekvens på 
+8 kHz var önskvärd. Till följd av detta fick kretskortet inledningsvis modifieras. En 
+ökning av switchfrekvensen innebär ingen direkt synlig förbättring, däremot 
+förflyttas en del av effektförlusterna från motorn till modulen. Detta grundar sig i 
+att de övertoner som når motorn i sin tur får en högre frekvens, vilket innebär en 
+minskad effektförlust. Skulle motorn till exempel sitta instängd i en robotarm, där 
+det är svårt att leda bort värme, är en högre switchfrekvens att föredra av 
+effektförlustskäl. 
+3.2.3 Integrerade säkerhetsdetaljer 
+IPM:er är utrustade med flertalet funktioner som ska skydda konstruktionen. Dessa 
+skydd ska verka vid de tillfällen då man avviker från Safe Operating Area. Detta 
+innebär de tillfällen då till exempel strömmar, spänningar och tidsintervall avviker 
+från det normala. Bland annat förkommer hög- och lågspänningsskydd, 
+överhettningsskydd och kortslutningsskydd. Vilka inbyggda säkerhetsdetaljer som 
+finns varierar mellan olika modeller av IPM:er. 
+3.2.4 Kommunikation 
+För att förse processorn med data, användes två metoder. Den första och 
+huvudsakliga, innebär att man via Code Composer Studio "flashar" programkod till 
+processorn via ett JTAG-gränssnitt. När koden väl ligger på processorn, kan man 
+med hjälp av ett Java-interface, Figur 11, samt ett excelark, Figur 12, föra över 
+reglerparametrar, motorparametrar och en del andra konstanter via en serieport. 
+Detta är mycket praktiskt då man slipper ändra direkt i programkoden vid byte av 
+motor, eller vid intrimning av reglerparametrar. Det går också betydligt mycket 
+snabbare att kommunicera med modulen via Java-interfacet jämfört med att 
+använda processorns flashminne. I Java-interfacet kan man välja hur stort moment 
+man vill lägga på motorn, och man ser man även i realtid hur fort den roterar, samt 
+momentanvärdet på Udc och Isq. Strävan är att belasta processorn med maximalt 70 
+21
+% av dess kapacitet, då detta visar sig ge en optimal kapacitet, och även denna 
+momentana belastning kan åskådliggöras med Java-interfacet. Man kan även spara 
+dataloggar med de data man vill undersöka, samt använda den inbyggda 
+debuggingfunktionen. 
+Excelarket är till för att på ett enkelt sätt uppdatera parametervärden på olika 
+variabler som tidigare flashats till processorn via JTAG-gränssnittet. Här går det att 
+ändra reglerparametrar, motorkonstanter, resolverparametrar, det vill säga alla 
+konstanta termer som krävs. 
+Maskiner som används inom industrin har i allmänhet flera axlar, vilket innebär 
+fler motorer och fler IPM:er. Med hjälp av CAN-kommunikation kan man få flera 
+IPM:er att samarbeta, och på detta sätt kommunicera med fler motorer samtidigt. 
+Figur 11 - Java-interface för kommunikation med IPM:en 
+22
+Figur 12 - Excelarket med ett urval av parametrar
+3.3 Pulsbreddsmodulering, PWM 
+När man snabbt och med stor noggrannhet vill kunna reglera en likspänning, är det 
+lämpligt att använda sig av pulsbreddsmodulering, eller PWM, som det vanligen 
+förkortas. Grundidén med PWM är att generera en spänning, som är ett medelvärde 
+av ett antal fyrkantspulser. Under en viss tidsperiod TS varieras spänningen mellan 
+två diskreta nivåer, Ud och 0, vilket ger en resulterande spänning U0 som är 
+beroende på hur stor del av tiden som spänningen är Ud respektive 0 volt. För att 
+exempelvis erhålla en spänning på Ud/2, låter man fyrkantspulserna vara på och av, 
+det vill säga Ud och 0, under lika lång tid, det vill säga Ton = Toff. Se Figur 13. 
+23
+Figur 13 – PWM [4]
+Medelvärdet av utspänningen U0 ges av 
+d
+off
+on
+on
+U
+t
+t
+t
+U
++
+=
+0
+En vanlig metod att variera ton med, är att med en komparator jämföra ett 
+referensvärde med en triangelspänning med konstant frekvens och amplitud. I 
+Figur 14 framgår hur komparatorn aktiverar fyrkantspulsen när triangelvågens 
+värde är mindre än referensvärdet. Ett högre referensvärde medför att 
+fyrkantspulserna blir bredare, och utspänningens medelvärde ökar.  
+24
+Figur 14 - Variation av PWM-frekvens [4] 
+En mycket vanlig PWM-metod är Space Vector Modulation, SVM. Den används 
+främst i samband med trefasiga växelströmsmotorer. [4] 
+  
+3.4 Space Vector Modulation, SVM 
+Betrakta trefasväxelriktaren i Figur 15. 
+Figur 15 – Trefasväxelriktare [2] 
+Dessa 6 transistorer kan slås av och på i åtta olika kombinationer. Två transistorer, 
+t.ex. T1 och T2, i serie är aldrig på respektive av samtidigt, utan de har alltid olika 
+25
+läge. En tredimensionell vektor skapas, baserad på hur transistorerna förhåller sig 
+till varandra. Om T1 är på och T2 är av, blir första siffran i vektorn 1, annars 0. I 
+fallet då T1, T3 samt T5 är på, blir således vektorn 111. De åtta olika tillstånden, 
+numrerade 0-7 redovisas i Tabell 1. 
+Tillstånd 
+Påslagna transistorer 
+Van 
+Vbn 
+Vcn 
+Vektor 
+0 
+T2, T4, T6 
+0 
+0 
+0 
+V0(000) 
+1 
+T1, T4, T6 
+2Vdc/3 
+-Vdc/3 
+-Vdc/3 
+V1(100) 
+2 
+T1, T3, T6 
+Vdc/3 
+Vdc/3 
+-2Vdc/3 
+V2(110) 
+3 
+T2, T3, T6 
+-Vdc/3 
+2Vdc/3 
+-Vdc/3 
+V3(010) 
+4 
+T2, T3, T5 
+-2Vdc/3 
+Vdc/3 
+Vdc/3 
+V4(011) 
+5 
+T2, T4, T5 
+-Vdc/3 
+-Vdc/3 
+2Vdc/3 
+V5(001) 
+6 
+T1, T4, T5 
+Vdc/3 
+-2Vdc/3 
+Vdc/3 
+V6(101)
+7 
+T1, T3, T5 
+0 
+0 
+0 
+V7(111) 
+Tabell 1 
+Det finns alltså sex tillstånd där det faktiskt ligger en spänning över motorn, och 
+två (0 och 7) där ingen potentialskillnad förekommer. Spänningarna Van, Vbn och 
+Vcn är fasvridna 120° i förhållande till varandra, och representeras av varsin 
+rumsvektor i planet. Dessa sex nollskilda vektorer, samt de två 0-volt-vektorerna 
+uttrycks geometriskt som i Figur 16. 
+Figur 16 - Geometrisk tolkning av SVM-sektorer [5] 
+I vart och ett av de åtta ovan nämnda tillstånden befinner sig transistorerna i stabila 
+tillstånd. Det är som bekant önskvärt att skapa en sinusvåg till motorn, vilket 
+innebär att dessa diskreta tillstånd inte är tillräckliga. För att uppnå detta krävs att 
+26
+det skapas ett switch-mönster med en viss switchfrekvens, vilket producerar en 
+spänning även i sektorerna mellan de 6 vektorerna. En resulterande vektor Vx, som 
+roterar från vektor till vektor, skapas. För att finna detta switch-mönster, eller de 
+PWM-signaler som behövs för att skapa ett lämpligt tidsintervall för respektive 
+sektor, krävs en viss matematisk härledning. Denna anses inte relevant i fråga om 
+att förstå grunderna i SVM. [5] 
+3.5 Reglersystem 
+För att reglera en motors rörelser kan man använda sig av olika typer av reglering. 
+Hastighetsreglering, vilket i själva verket innebär att man försöker få motorn att 
+rotera med ett visst moment, positionsreglering, eller strömreglering. Dessa kan 
+antingen användas var och ett för sig, eller tillsammans. I detta kapitel redogörs för 
+dessa olika typer. 
+3.5.1 Hastighetsreglering 
+Hastighetsregulatorn som används för att hålla rotorns mekaniska vinkelhastighet 
+till den önskade (ctWDes) är av PI-modell, det vill säga den innehåller en 
+proportionell del, och en integrerande del. Som utsignal finner vi ett moment 
+(ctMWctrl). Överföringsfunktionerna i s- och z-1-planet ser ut som följer. 
+För att inte utsignalen ska blir för hög eller för låg, har regulatorn försetts med en 
+begränsande del, en saturation. Med en sådan kan man dock få problem när 
+signalen når någon av begränsningarna. Ett reglerfel, vilket beror på att den 
+verkliga styrsignalen avviker från den av regulatorn beräknade styrsignalen, 
+summeras 
+då 
+i 
+integraldelen. 
+Detta 
+fenomen 
+brukar 
+allmänt 
+kallas 
+integratoruppvridning, och kan förhindras genom införandet av en så kallad anti-
+Kp = Förstärkning för den proportionella delen 
+Ts = Samplingstid 
+Ti = Integrationstid 
+⎥
+⎦
+⎤
+⎢
+⎣
+⎡
+−
+⋅
++
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+⋅
++
+=
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+⋅
++
+=
+−
+−
+−
+1
+1
+1
+1
+2
+1
+)
+(
+1
+1
+)
+(
+z
+z
+T
+T
+T
+T
+K
+z
+H
+T
+s
+K
+s
+H
+i
+s
+i
+s
+p
+i
+p
+27
+windup-funktion. Den jämför signalens värde före och efter saturation-funktionen, 
+och anpassar regleringen efter huruvida signalen var mättad eller ej. En grafisk 
+översikt av hastighetsregulatorn visas i Figur 17. 
+Figur 17 - Hastighetsregulator 
+6
+)
+(
+6
+)
+(
+2
+2
+2
+1
+2
+2
+⋅
+⋅
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛+
+=
+⋅
+⋅
+=
+−
+−
+BN
+BN
+BN
+BN
+WM
+M
+B
+B
+i
+s
+p
+WM
+M
+B
+B
+p
+M
+W
+T
+T
+K
+B
+M
+W
+K
+K
+             
+8
+16
+2
+2
+⋅
+=
+⋅
+=
+p
+i
+s
+K
+C
+T
+T
+A
+Anledningen 
+till 
+den 
+till 
+synes 
+något 
+komplicerade 
+skalningsfaktorn 
+)
+(2
+BN
+BN WM
+M
+B
+B
+M
+W
+−
+⋅
+ för K och B är att en förstärkning av Kp på 1 Nm/(rad/s) måste 
+motsvara 1 Nm/(rad/s) även i ”per enhet”-systemet som råder i DSP:n. 
+3.5.2 Positionsreglering 
+Positionsregulatorn är av PD-modell. Det innebär att den innehåller en ren 
+förstärkning, och en deriverande förstärkning. Regulatorn strävar efter att anpassa 
+motorns mekaniska vinkelposition till ett referensvärde, genom att reglera det 
+mekaniska moment som läggs på motorn. Liksom hastighetsregulatorn har denna 
+en saturation-funktion på utgången för att begränsa utsignalen. Någon anti-windup 
+behövs dock inte, eftersom denna regulator inte har någon integrerande del. En 
+grafisk översikt av positionsregulatorn visas i Figur 18. 
+Figur 18 - Positionsregulator 
+28
+3.5.3 Strömreglering 
+Strömregleringen sker med en PI-regulator med feedforward. Syftet är att få d- och 
+q-strömmen att inte avvika från sina önskade värden. Under testningen av IPM:en 
+används regulatorn-delen förhållandevis lite, då motorn ska rotera med konstant 
+vinkelhastighet hela tiden. Större delen av informationen flödar då genom 
+feedforward-kopplingen. Illa valda reglerparametrar här orsakar dock ett större 
+momentrippel, vilket i sin tur medför ökade effektförluster. En grafisk översikt av 
+strömregulatorerna visas i Figur 19. 
+Figur 19 - Strömregulatorer 
+4. Praktik 
+Under arbetet med att testa modulen från International Rectifier förekom en hel del 
+praktiskt arbete. Det har rört sig om såväl modifiering av kretsar, som uppkoppling 
+av testutrustning, och själva testkörningen. Detta arbete redovisas i detta kapitel.  
+29
+Figur 20 - IPM:en uppkopplad under testkörning. Till vänster den tillverkade 
+kondensatorbanken 
+4.1 Kondensatorbank 
+För att hålla spänningen på en stabil nivå, och kompensera för den reaktiva effekt 
+som tas ut, krävs en kapacitans på DC-ingången. 
+För att hitta en lämplig storlek på kapacitansen C krävs att hänsyn tas till vilka 
+omständigheter modulen kommer att användas under. Som mest antas ligga en 
+spänning, VRMS, på 500 V över den, med en strömstyrka I på 7 A. Den maximala 
+effekt som då utvecklas blir  
+P = U·I = 500·7 = 3500 Watt. 
+Umax = VRMS·
+2 = 500·
+2 =707 V. 
+Här förekommer ett visst maximalt tillåtet spänningsrippel på 20 Volt, med 
+rippelfrekvens fr = 300 Hz, vilket innebär att  
+Umin = 707-20 = 687 V. 
+Med  
+C
+C
+U
+U
+Cf
+f
+CV
+P
+r
+r
+⋅
+=
+−
+⋅
+⋅
+=
+−
+=
+=
+4182000
+)
+687
+707
+(
+300
+2
+1
+)
+(
+2
+1
+1
+2
+1
+2
+2
+2
+min
+2
+max
+2
+    [6] 
+ges 
+C = 3500/4182000 = 0,83 mF ≈ 1 mF. 
+30
+De kondensatorer som finns tillgängliga tillåter en spänning på 450 Volt. En 
+kondensator 1mF/450V är alltså inte tillräckligt i detta fall, då en spänning på drygt 
+500 V kan tänkas förekomma. För att komma till rätta med detta används 4 stycken 
+sådana kondensatorer, se Figur 21, vilket enligt regler för serie- respektive 
+parallellkoppling av kondensatorer, ger samma totala kapacitans, men tillåter en 
+spänning på 900 V. 
+Figur 21 – Principskiss över kondensatorbanken 
+4.3 Förstärkning av resolversignal 
+Under försöken att köra motorn uppstod ofta ett fel, vilket i mjukvaran 
+presenterades som Resolver error. Detta medförde att motorn upphörde att rotera 
+och testet fick avbrytas. En anledning troddes vara att resolversignalen till kortet i 
+modulen var lite för svag, och påverkas för mycket av störningar. I Figur 22 visas 
+sinus-signalen från resolvern då den antar maximal amplitud. Modulen levererades 
+med 75k-resistorer för förstärkning av resolversignalen, och för att förstärka denna 
+ytterligare krävdes att de på modulen ytmonterade resistorerna byttes ut. Signalen 
+får dock inte förstärkas för mycket. Toppvärdet, inklusive DC-nivån, får inte 
+överstiga 3,3 V, och signalen får aldrig bli negativ, enligt uppgifter från 
+tillverkaren. DC-nivån förväntades inte påverkas av den utökade förstärkningen. 
+Innan modifieringen var topp-till-topp-värdet 1,4 V, se Figur 22.  
+31
+Figur 22 - Resolversignal innan modifiering 
+För att inte överskrida gränserna, och för att hålla lite marginal, önskas 
+motsvarande värde vara ca 2,0 V efter modifieringen. Förstärkningen är omvänt 
+proportionell mot motståndens värde, vilket innebär följande samband. 
+efter
+före
+R
+R
+⋅
+= γ
+=
+=
+43
+,1
+4,1
+0,2
+γ
+Ω
+=
+k
+R före
+75
+Ω
+=
+=
+k
+k
+Refter
+45
+,
+52
+43
+,1
+75
+Resistorer med denna resistans fanns dock inte att tillgå, varpå Refter valdes till 47 
+kΩ. Detta förväntades ge en förstärkningsfaktor γ  på 1,6, och till följd av detta ett 
+topp-till-topp-värde på 1,4·1,6 = 2,24 V. Efter 
+modifieringen 
+mättes 
+resolversignalen på nytt, se Figur 23. Modifieringen lyckades, och resultatet blev 
+som förväntat. Observera att det är olika tidsskalning i de båda figurerna. 
+Frekvensen är således fortfarande densamma, ca 8 kHz. 
+32
+Figur 23 - Resolversignal efter modifiering 
+I praktiken skedde en märkbar förbättring då motorn kunde köras under längre 
+intervall än innan, men problemet hade inte eliminerats helt.  
+Vad som nu noterades var att det finns olika typer av resolvrar, med olika 
+konfiguration gällande impedans och fasförskjutning mellan signalerna, och 
+således även olika typer av kablar. Motorn som användes var försedd med en 
+resolver av modell BRX, och kabeln som användes var anpassad för en resolver av 
+modell BRT. Efter att kabeln konfigurerats till att passa rätt resolvermodell 
+upphörde problemen helt.  
+4.4 Reglerparametrar 
+Under intrimningen av mjukvaran var det i synnerhet reglerparametrarna till 
+strömregleringen som fick ändras för att få motorn att rotera tillfredställande. Då 
+beräkningen av dessa var komplicerad, konstaterades att det snabbaste sättet att 
+komma fram till en optimal lösning var att ändra värden på parametrarna för att 
+sedan testköra, och iterera dessa två steg tills motorn uppträdde på önskat sätt. Vid 
+en illa vald uppsättning av reglerparametrar kan motorn oscillera eller kanske inte 
+sättas i rörelse över huvud taget. När motorn till synes uppträder som den ska, är 
+det viktigt att de valda parametrarna optimeras, då dessa påverkar effektförlusterna 
+i motorn. Då den visuella och ljudmässiga kontrollen gav ett godkänt resultat, 
+användes Java-interfacet till att ta fram grafiska diagram över hur strömmar och 
+spänningar 
+uppträdde. 
+Efter 
+genomförd 
+iteration 
+konstaterades 
+att 
+de 
+reglerparametrar som var bäst lämpade var 
+33
+KIsd = 0,5 
+Ti_Isd = 0,001 s 
+KIsq = 0,5 
+Ti_Isq = 0,001 s 
+Ingen skillnad görs alltså på regleringen av Isd och Isq. Ovan nämnda parametrar 
+resulterade i följande väl anpassade kurvor: 
+Figur 24 - Den övre grafen visar hur Isd konvergerar mot noll. Den nedre visar hur 
+Isq (röd) anpassar sig till ett referensvärde (grön). 
+För att ytterligare kontrollera att dessa parametervärden är ett bra val, görs en 
+tolkning av det slutna systemets bodediagram, se Figur 25.  
+Figur 25 - Bodediagram över det slutna reglersystemet för strömmar 
+34
+Förstärkningen avtar vid frekvenser högre än 50 Hz, vilket är den frekvens som 
+strömmen oscillerar med. Vid höga frekvenser är förstärkningen låg, vilket ger ett 
+robust och bra system. Noterbart är att fasen aldrig passerar -180°, och systemet är 
+stabilt.
+4.5 PT100 
+För mätning av temperaturen på modulen och på motorn används en PT100.  Detta 
+är en resistansgivare, som placeras i direkt anslutning till den yta man vill mäta 
+temperaturen på, se Figur 26. En typisk givare är uppbyggd av en metalltråd lindad 
+på en isolerad kropp av glas eller keramik. Metallen är ofta Platina eller Nickel.  
+Den resistansgivare som använts består av Platina (Pt) och har en resistans på 100 
+Ω vid 0°C, och har på grund av detta fått namnet PT100. Sambandet mellan 
+resistans och temperatur är känt, och då givarens temperatur ändras då resistansen 
+ändras, kan temperaturen enkelt beräknas.  
+Figur 26 - PT100 monterad på modulen 
+4.6 Värmeprov 
+Ett värmeprov utförs genom att man driver en motor så länge att temperaturen på 
+motorn inte längre ökar, det vill säga tills motortemperaturen når steady state. Med 
+hjälp av Java-interfacet, se 3.2.4, läggs ett referensmoment på 4 Nm på motorn, 
+samtidigt med en referenshastighet på 1590 varv per minut. Motorn drivs nu av 
+IPMen, och snurrar med konstant hastighet. Steady state för motorns temperatur 
+uppnåddes efter 2 timmar och 45 minuter. Under tiden noterades mätdata en gång 
+var 15:e minut, och redovisas i Tabell 2. Resultaten redovisas grafiskt i Figur 27 
+35
+och Figur 28. Den uppmätta effekten varierade väldigt mycket sekund för sekund, 
+vilket resulterade i att det uppmätta värdet får anses som en stokastiskt utvald 
+notering inom effektrippelintervallet. Det är på grund av detta fenomen som det 
+andra respektive sista noterade värdet avviker från de övriga i Figur 27. 
+Tid 
+00:15 
+00:30 
+00:45 
+01:00 
+01:15 
+01:30 
+01:45 
+02:00 
+02:15 
+02:30 
+02:45 
+Moment (Nm) 
+3,803 
+3,72 
+3,68 
+3,6 
+3,62 
+3,6 
+3,59 
+3,59 
+3,58 
+3,52 
+3,56 
+Hastighet (rpm) 
+1587 
+1561 
+1606 
+1598 
+1598 
+1598 
+1591 
+1602 
+1602 
+1602 
+1602 
+Effekt in (W) 
+725,72 
+716,72 
+734,79 
+729,7 
+726,36 
+728,3 
+726,01 
+728,33 
+729,5 
+728,46 
+728,99 
+Effekt ut (W) 
+653,13 
+645,1 
+660,01 
+654,55 
+650,87 
+652 
+650,22 
+652,03 
+652,1 
+650,79 
+649,05 
+Effektförlust (W) 
+72,59 
+71,62 
+74,78 
+75,15 
+75,49 
+76,31 
+75,79 
+76,3 
+77,38 
+77,67 
+79,94 
+U1in (V) 
+80,19 
+80,31 
+80,14 
+80,25 
+80,29 
+80,19 
+80,43 
+80,47 
+80,54 
+80,67 
+80,67 
+I1in (A) 
+3,643 
+3,64 
+3,901 
+3,816 
+3,805 
+3,805 
+3,846 
+3,868 
+3,884 
+3,867 
+3,864 
+U4ut (V) 
+86,65 
+86,72 
+86,64 
+86,67 
+86,77 
+86,43 
+86,86 
+86,91 
+87,02 
+86,94 
+86,99 
+I4ut(A) 
+6,63 
+6,77 
+6,899 
+6,842 
+6,834 
+6,825 
+6,876 
+6,912 
+6,967 
+6,996 
+7,041 
+Temperatur omgivning (°C) 
+19,9 
+19,9 
+20 
+20,1 
+20,1 
+20,1 
+20,3 
+20,4 
+20,5 
+20,4 
+20,6 
+Temperatur Modul (°C) 
+ 
+53,579 
+59,716 
+63,312 
+65,746 
+67,09 
+67,44 
+68,01 
+68,57 
+68,585 
+68,461 
+Temperatur på motor (°C) 
+ 
+40,019 
+43,407 
+45,635 
+47,445 
+48,43 
+49,114 
+49,94 
+50,18 
+50,393 
+50,506 
+Tabell 2 
+Effektförlust i IPM
+70
+72
+74
+76
+78
+80
+82
+00:00
+01:12
+02:24
+03:36
+Tid (h)
+Effekt (W)
+Loss in Module
+Figur 27 - Effektförlust i modulen 
+ 
+ 
+36
+Temperatur
+0
+10
+20
+30
+40
+50
+60
+70
+80
+0
+2000
+4000
+6000
+8000
+10000
+12000
+Tid (s)
+Temperatur (°C)
+Module
+Motor
+Figur 28 - Temperatur i modul och motor 
+Figur 29 – Effektförlust i modulen enligt datablad 
+Effektförlust i %
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+00:15
+00:30
+00:45
+01:00
+01:15
+01:30
+01:45
+02:00
+02:15
+02:30
+02:45
+Ti d ( h)
+Ef f ekt f örlust
+Figur 30 - Effektförlust (%) i modulen 
+Effekt (%) 
+37
+Vilka slutsatser kan då dras av detta? Effektförlusten i modulen ligger enligt 
+mätningarna på ungefär 78 Watt, vilket motsvarar ca 11 %, se Figur 30. Figur 29 är 
+hämtad ur ett datablad från International Rectifier, vilket ger vid handen att 
+effektförlusten ligger mellan 65-70 Watt vid en switchfrekvens på 8 kHz, en ström 
+på 7A och en modultemperatur på 25°C. Temperaturen på modulen i den mätning 
+som utfördes var dock högre, vilket ger en större effektförlust. Temperaturen i 
+modulen uppgick till 70°C då temperaturen i motorn nått steady state. Detta 
+innebär indirekt att temperaturen i modulen även den nått steady state. Noterbart 
+här är att motorn inte belastades fullt, vilket har en inverkan på temperaturen, men 
+inte på den procentuella effektförlusten. En fullt belastad motor skulle ha resulterat 
+i högre temperatur på såväl motor som modul. 
+Intressant här kan vara en reflektion över hur effektförlusten fördelar sig i 
+modulen. Effektförluster uppstår av fem anledningar. Steady-state-förluster i 
+IGBT:erna, vilket är där större delen, ca 50 %, av den effekt som försvinner. De 
+övriga fyra är turn-on-förluster, turn-off-förluster, vilka syftar till när IGBT:erna 
+växlar läge, steady-state-förluster för dioderna, samt Reverse recovery-förluster, 
+vilka uppstår i dioderna då respektive transistor öppnas och stängs. De gråa 
+områdena i Figur 31 representerar de effektförluster som uppstår när IGBT:erna 
+växlar mellan av och på. Dessa områden strävar man därför efter att minimera. 
+Växelriktaren har som tidigare nämnts en switchfrekvens på 8 kHz. Enligt datablad 
+i Appendix I är den totala förlusten för en switchning 2087 µJ. Den effekt som 
+försvinner 
+när 
+växelriktaren 
+växlar 
+läge 
+uppgår 
+alltså 
+till 
+7,
+16
+10
+8
+10
+2087
+3
+6
+=
+⋅
+⋅
+⋅
+−
+Watt. International Rectifier tillverkar även en separat 
+växelriktare, det röda området i Figur 9, och kanske vore det fördelaktigt att ha 
+växelriktaren separat, och inte inkluderat som i en IPM. 
+Figur 31 - Turn-on- resp. turn-off-förluster [7] 
+38
+Det är av största vikt att temperaturen inne i modulen inte blir för hög, och den 
+temperaturen kan inte mätas direkt. För att inte modulen ska ta skada får 
+temperaturen på IGBT respektive dioderna inte överstiga 150°C. Med hjälp av den 
+uppmätta modultemperaturen, som alltså anger temperaturen på utsidan, den 
+uppmätta effektförlusten samt uppgifter om komponenternas termiska resistans kan 
+en uppskattning av modulens inre temperatur beräknas. Figur 32 föreställer en 
+modell av modulen. Det som är intressant här är temperaturen på IGBT:erna och 
+dioderna. Det som är känt är temperaturen på mätpunkten, den termiska resistansen 
+mellan kylelementet och kopparplattan, den termiska resistansen mellan 
+kopparplattan och IGBT:n respektive dioden. Dessutom är den totala 
+effektförlusten bekant. Värden är hämtade antingen ur Tabell 2 eller Appendix I. 
+Figur 32 - Modell av modulen 
+RthIGBT-Koppar = 0,9°C/W 
+RthDIOD-Koppar = 1,54°C/W 
+RthKoppar-Kyl = 0,03°C/W 
+Tkyl = 69°C
+PLoss Total = 78 W 
+PLoss per IGBT/Diod-par = 78/6 = 13 W 
+TDiff Koppar-Kyl = 78 W · 0,03 °C/W = 2,34°C
+TIGBT = 69°C + 2,34°C + 0,9°C/W · 13 W = 83,04°C
+TDIOD = 69°C + 2,34°C + 1,54°C/W · 13 W = 90,56 °C
+Temperaturen på IGBT:n har alltså uppskattats till ca 83°C, och på dioden till ca 
+91°C,  vilket är en bra bit under de maximalt tillåtna 150°C. Här bör noteras att 
+modulen inte belastades fullt, och alltså inte uppnådde maximal temperatur. Med 
+maximal belastning skulle temperaturerna komma närare den maximala gränsen, 
+men knappast över den maximala gränsen utan onormalt stor belastning. 
+  
+39
+4.7 Jämförelse med andra IPM:er 
+När man undersöker andra tillverkares IPM:er märker man att de skiljer sig en del 
+från varandra. IPM:er från olika tillverkare har studerats, mest med avseende på 
+dess effektförluster, då detta är av stor betydelse för ABB. Här har förlusterna 
+delats in i två kategorier, statiska förluster, vilket är steady state-förlusterna för 
+IGBT:erna samt dioderna, och switching losses, vilket är de övriga tre som nämns i 
+4.6. Samtliga jämförda moduler är 25A/1200V IGBT-moduler. 
+Tillverkare 
+International 
+Rectifier 
+Fuji Electric 
+Mitsubishi 
+Electric 
+Modell 
+PIIPM25P12B008 
+7MBP25RJ120 
+PM25RLB120 
+Statiska förluster 
+32,3 W 
+30,8 W 
+30,8 W 
+Switchförluster, 
+inkl. reverse 
+recovery 
+40,1 W 
+24,8 W 
+31,2 W 
+Total 
+effektförlust 
+72,4 W 
+55,6 W 
+62,0 W 
+Övrigt 
+Ingen likriktare 
+Ingen likriktare. 
+Ingen inbyggd 
+gate-drive. 
+Ingen likriktare 
+Tabell 3 
+Förlusterna har beräknats enligt följande exempel för modulen från International 
+Rectifier. De andra två beräknas på analogt sätt. Datablad finns att beskåda i 
+Appendix II-IV. 
+VCE(SAT) = 2,74 V 
+ 
+(Mättnadsspänning) 
+VFM = 1,87 V  
+ 
+(Diodens framspänning)  
+IC = 7 A 
+ 
+ 
+(Kollektorström) 
+EON = 1900 µJ/cykel  
+(Energi då IGBT:n slås på) 
+EOFF = 1300 µJ/cykel 
+(Energi då IGBT:n slås av) 
+Err = 1820 µJ/cykel  
+(Reverse Recovery) 
+Pstatiska förluster = U·I = (2,74+1,87) · 7 = 32,27 W  
+Pswitchförluster = Etot · fsw =  (EON + EOFF + Err) · fsw =   
+= (1900+1300+1820) ·10-6 · 8·103 = 40,16 W 
+Ptotal = Pstatiska förluster + Pswitchförluster = 32,27 + 40,16 = 72,43 W 
+Låt oss för en stund anta en vanlig strömstyrka i sammanhanget, Ic = 20 A, och 
+studera diagrammen i Figur 33, hämtade ur datablad från de olika leverantörerna. 
+40
+Figur 33 - Switchförluster hämtade ur datablad [9,10,11] 
+De totala switchförlusterna, exklusive reverse recoveryförluster i modulerna är 
+International Rectifier: 1,6 + 2,0 = 3,6 mJ/cykel 
+Fuji Electric: 4,5 + 2,5 = 7,0 mJ/cykel 
+Mitsubishi Electric: 2,4 + 2,6 = 5,0 mJ/cykel 
+Här bör noteras att det endast är International Rectifier som anger resistansen på 
+gaten, Rg, och vad motsvarande är för de två övriga är okänt. En fördubblad 
+gateresistans kan dock innebära att Etot ökar med 20%. 
+Här kan man dock inte dra slutsatsen att den modul som har de lägsta förlusterna är 
+den bästa, men så är det tyvärr inte. Dessa tre moduler är nämligen försedda med 
+41
+något olika funktioner. Här måste då hänsyn tas till vilka funktioner som anses vara 
+nödvändiga, och väga det mot en något högre effektförlust. Modulen från 
+International Rectifier har, liksom de övriga två, ingen likriktare, utan den måste 
+adderas separat, vilket gör att den energin som försvinner i själva modulen blir 
+något mindre. I modulen från Fuji Electric finns ingen inbyggd gate-drive, vilket 
+även det innebär en minskad energiförlust i förhållande till den modul som har 
+inbyggd gate-drive. Modulen från Mitsubishi Electric, som har inbyggd gate-drive, 
+ser intressant ut, då den har en mindre energiförlust än Fuji-modulen. Detta är en 
+nyproducerad produkt, en så kallad femte generationens IPM, och den har studerats 
+lite närmare. 
+Mitsubishi Electric har konstruerat en modul som är fysiskt mindre än de tidigare 
+modellerna. Storleken i sig är inte livsviktig, men en mindre modul är naturligtvis 
+att föredra framför en större med samma egenskaper i övrigt. Att den inte 
+innehåller en likriktare är inte enbart negativt, utan kan till och med vara en positiv 
+egenskap ur effektförlustsammanhang. Hur detta påverkar denna modell går inte att 
+säga, då inga praktiska tester utförts med den. Vid montering av en IPM kan det 
+ibland vara bökigt om modulen har en fastsättningsanordning som inte är anpassad 
+till den miljö där den ska verka. Här har Mitsubishi Electric konstruerat två olika 
+modeller, med pins och med skruvar, se Figur 34, för att underlätta för beställaren 
+att anpassa modulen efter rådande behov. 
+Figur 34 – Mitsubishi Electrics IPM med skruv- resp. pinfästning [12] 
+I avsnittet om värmeprov nämns reverse recovery, och även i detta avseende har 
+Mitsubishi Electric förbättrat sin modul. Då IGBT:n växlar läge blir strömkurvan 
+mjukare, vilket innebär minskade effektförluster. Detta visas grafiskt i Figur 35.  
+42
+Figur 35 –Reverse Recovery förluster [12] 
+För att skydda modulen har den försetts med diverse skyddsanordningar. Ett 
+temperaturskydd finns monterat i form av en diod direkt i anslutning till IGBT, till 
+skillnad från den konventionella termistorn utanpå, se Figur 36. Detta ger ett 
+mycket effektivt överhettningsskydd, och modulen kan skyddas om temperaturen 
+vid något tillfälle skulle bli för hög. Modulen är även utrustad med ett 
+kostslutningsskydd samt ett underspänningsskydd.  
+Figur 36 – T.v. en konventionell termistor. T.h. en integrerad diod. [12] 
+En stor nackdel med Mitsubishis modul är de strömsensorer, som visserligen finns, 
+men är placerade på respektive minuspol på de nedre IGBT:erna i växelriktaren. 
+Sensorerna är i själva verket strömspeglar, vilket närmast uppskattar strömmen på 
+den negativa polen på respektive IGBT, och det är tveksamt om dessa är tillräckligt 
+bra för att direkt kunna användas vid reglering. Intrycket av Mitsubishi Electrics 
+modul är att den skulle kunna vara ett alternativ för ABB, men de tveksamt 
+utformade strömsensorerna gör att helhetsintrycket försämras något. Det är dock 
+vanskligt att dra allt för stora slutsatser när produkten i fråga inte har testkörts, då 
+det är under realistiska sammanhang det märks hur användarvänlig modulen är, och 
+hur väl den fungerar.  
+43
+5. Resultat och slutsatser 
+Att ersätta ett gammal hederligt drivsystem med en Intelligent Power Module 
+medför vissa fördelar. Det första man lägger märke till är det utrymme man kan 
+spara när man inkluderar styrenheten och kraftenheten i en gemensam modul vilket 
+naturligtvis enbart är positivt. Erfarenheterna av den modul från International 
+Rectifier som har utvärderats, är att den är bra, men något otympligt konstruerad. 
+Vid byte av switchfrekvens tvingades hela överdelen av modulen monteras bort, 
+för att på egen hand byta ut de befintliga ytmonterade motstånden mot nya. När 
+överdelen monteras bort är risken stor att några ytmonterade komponenter rycks 
+bort, vilket innebär mycket merarbete. En smart lösning på detta problem vore en 
+lösning med en potentiometer, där den resistans som ger önskad switchfrekvens 
+enkelt kan ställas in. Det är dock osäkert om denna lösning skulle fungera i 
+verkligheten, då potentiometrar är något instabila.  
+Efter diverse modifieringar i mjukvaran kunde testkörningen och värmeprovet 
+genomföras. Syftet med detta var dels att verifiera de uppgifter som framgår av 
+modulens datablad, och dels se att modulen fungerar tillfredsställande tillsammans 
+med ABB:s utrustning. Resultatet av värmeprovet överensstämde i stort med det 
+resultat man kunde förvänta sig. Den effektförlust som uppmättes var ca 78 Watt, 
+vilket noterades när temperaturen i modul och motor uppnått steady state, vilket i 
+detta fall var 68,5°C i modulen och 50,5°C i motorn. Databladet gav vid handen att 
+effektförlusten i modulen var 65-70 Watt. Detta var dock vid en modultemperatur 
+på 55°C, alltså 13,5°C lägre än vid värmeprovet, vilket får anses ligga till grund för 
+att den i databladet angivna effektförlusten var mindre än den uppmätta, då en 
+bättre kyld modul inte resulterar i en lika stor effektförlust genom värme som en 
+varmare modul. De IGBT- respektive diodtemperaturer som approximerades var 
+tillräckligt långt ifrån den maximalt tillåtna, vilket gör att modulen utan risk kan 
+användas om man inte belastar den betydligt mer än vad som gjordes under 
+värmeprovet. 
+Något som är mycket bra är de interna strömsensorer som är placerade på utgången 
+från kraftmodulen. Dessa ger en mycket pålitlig strömmätning, vilket är bra. 
+Helhetsintrycket är att det är en bra IPM som International Rectifier har tillverkat, 
+och den innehåller de funktioner och komponenter som önskas. Konceptet med att 
+använda en IPM ser jag odelat positivt på. Jag är helt övertygad om att detta är en 
+metod för ABB att satsa på i framtiden. Även här finns dock några olika tänkbara 
+alternativ på lösningar. Eventuellt kan man tänka sig en lösning där man placerar 
+växelriktaren utanför modulen, eller har en separat likriktardel. Huruvida detta 
+skulle öka eller minska effektförlusterna är osäkert, och det är säkerligen beroende 
+på vilka typer av lik- respektive växelriktare man väljer att använda. Även en 
+lösning där gränssnitten till DSP:n placeras utanför modulen vore ett alternativ, då 
+detta skulle underlätta uppdateringar av mjukvaran i framtiden. 
+Intelligent Power Modules finns i flera olika utföranden, och produceras av flera 
+olika tillverkare. Efter en liten marknadsundersökning konstaterades snabbt att 
+utvecklingen snabbt går framåt inom detta område. En jämförelse gjordes mellan 
+tre likvärdiga moduler tillverkade av International Rectifier, Fuji Electric och 
+Mitsubishi Electric. Den modul som enligt datablad hade minst effektförluster var 
+44
+den som Fuji Electric tillverkat. Den modulen innehåller dock ingen gate-drive, 
+vilket gör att den inte är att föredra. Ser man till helheten anser jag att modulen från 
+Mitsubishi Electric är den som ser mest intressant ut, under förutsättning att 
+strömsensorerna är tillräckligt bra. Det är en nytillverkad modul som tillhör den 5:e 
+generationens IPM:er, och har en rad nya funktioner, såsom bättre sensorer och 
+minskade reverse recoveryförluster. Dessutom är den till volymen mindre, vilket är 
+bra när man vill att IPM:en ska vara placerad i trånga utrymmen. Det här är en 
+modul som jag tycker att ABB ska testköra om möjlighet finns. 
+45
+6. Källhänvisningar 
+[1] http://www.fischerelektronik.de/fischer/upload/Fischer/A023.pdf 2005-02-15 
+[2] Elektriska maskiner, Fredrik Gustavsson, 1996. 
+[3] http://www.ostergrens.se/teknik/8-7-301a.htm 2005-02-15 
+[4] Kompendium i Eleffektsystem, KTH, 2002.  
+[5] An Introduction to Space Vector Modulation using NEC’s 8-bit Motor Control 
+Microcontrollers, NEC Corporation, 2003. 
+[6] Designing LC Filters for AC-motor Drives @IEEE 
+  
+[7] http://www.mitsubishichips.com/webfiles/pdf/powermos3_0.pdf 2005-02-15 
+[8] Datablad International Rectifier PIIPM15P12D007
+[9] Datablad International Rectifier PIIPM15P12D008
+[10] Datablad Fuji Electric 7MBP25RJ120 
+[11] Datablad Mitsubishi Electric PM25RLB120 
+[12] http://www.mitsubishichips.com 2005-02-15 
+[13] Intelligent Power Modules for Driving Systems, K. Reinmuth, H.Stut, L.Lorenz,  
+S. Konrad, proc of the 6th Internat. Symposiumon Power Semiconductor Devices  
+IC’s, Davos, Switzerland May 31 – June 2, 1994 
+46
+Appendix I – Datablad International Rectifier 
+PIIPM15P12D007 
+47
+Appendix II – Datablad International Rectifier 
+PIIPM25P12B008 
+48
+Appendix III – Datablad Mitsubishi PM25RLB120 
+49
+Appendix IV – Datablad Fuji Electric 7MBP25RJ120 
+50
+Appendix V – Uppgift från ABB 

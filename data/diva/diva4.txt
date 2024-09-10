@@ -1,0 +1,1473 @@
+ 
+ 
+ 
+ 
+REAL-TIME 3D-VISUALIZATION OF 
+INSPECTION MANIPULATORS IN 
+NUCLEAR REACTORS 
+ 
+ 
+ 
+ 
+ 
+KARL-GUSTAV JOHANSSON 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis 
+Stockholm, Sweden 2010 
+ 
+ 
+ 
+ 
+ 
+ 
+Real-time 3D-visualization of inspection 
+manipulators in nuclear reactors  
+ 
+ 
+Karl-Gustav Johansson 
+ 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2010:53 MDA 367 
+KTH Industrial Engineering and Management 
+Machine Design 
+SE-100 44  STOCKHOLM 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Examensarbete  MMK 2010:53 MDA 367 
+ 
+3D-visualisering i realtid med manipulatorer för 
+inspektion av reaktortankar i kärnkraftverk 
+ 
+ 
+ 
+ 
+ 
+Karl-Gustav Johansson 
+Godkänt 
+2010-06-04 
+Examinator 
+Mats Hanson 
+Handledare 
+Bengt Eriksson 
+ 
+Uppdragsgivare 
+WesDyne TRC 
+Kontaktperson 
+David Seery 
+ 
+ 
+ 
+Sammanfattning 
+ 
+3D-visualisering är ett snabbt växande område, som med hjälp av den snabba utvecklingen av 
+datorprestanda möjliggör allt mer komplexa och detaljerade visualiseringar.  
+ 
+På företaget WesDyne TRC i Täby konstrueras och används manipulatorer för att inspektera 
+reaktortankar i kärnkraftverk över hela världen. Manipulatorerna bär och manipulerar 
+detektionsutrustning för att fjärrstyrt kunna utföra oförstörande provning. Provtagningarna är till 
+för att upptäcka och karakterisera sprickor och andra defekter som kan förekomma i 
+kärnreaktorer.  
+ 
+En av företagets senaste och mest avancerade manipulatorfamiljer är T-Crawlern, som är 
+designad för att arbeta i mycket begränsade utrymmen. T-Crawlerns arbetsområden är mellan 
+den inre väggen av reaktortryckkärlet och bränslekärnan, samt även runt andra strukturer och 
+hinder inom reaktortryckkärlet. Positionering och rörelser för fjärrstyrda fordon har alltid varit en 
+utmaning, men de trånga utrymmena och bristen på visuella stödlinjer eller andra referenser där 
+T-Crawlern verkar gör att svårigheterna är ovanligt stora. Det är denna kombination av problem 
+som har lett fram till detta examensarbete. 
+ 
+Ett 3D-visualiseringsprogram som exakt visar positionen och förflyttningarna av T-Crawlern i en 
+detaljerad valfri reaktortank skapades i detta examensarbete genom att använda SolidWorks 
+2010 och Microsoft Visual Basic 2008. Det finns flera inställningar och funktioner som är 
+implementerade i insticksprogrammet för att öka användbarheten av programmet. Olika 
+kameravinklar finns tillgängliga, inklusive en automatisk kamera som alltid följer manipulatorn 
+och är riktad mot dess framsida. Prestanda har varit av stor betydelse och 
+visualiseringsprogrammet flyter på mjukt på en stationär medeldator från 2010. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2010:53 MDA 367
+ 
+Real-time 3D-visualization of inspection 
+manipulators in nuclear reactors 
+ 
+ 
+ 
+ 
+ 
+Karl-Gustav Johansson 
+Approved 
+2010-06-04 
+Examiner 
+Mats Hanson 
+Supervisor 
+Bengt Eriksson 
+ 
+Commissioner 
+WesDyne TRC 
+Contact person 
+David Seery 
+ 
+ 
+ 
+Abstract 
+ 
+3D visualization is a rapidly growing area, which with help of the rapid development of 
+computer performance enables more complex and detailed visualizations. 
+ 
+At the company WesDyne TRC in Täby, manipulators are developed and used for inspecting 
+reactor tanks in nuclear power plants all over the world. The manipulators carry and manipulate 
+detection equipment for remotely performing non-destructive testing (NDT). The testing is for 
+detecting and characterizing cracks and other defects that may occur in nuclear reactors.  
+ 
+One of WesDyne TRC’s most advanced recent manipulator types is the T-Crawler, which is a 
+family of manipulators. The T-Crawlers are designed to operate within the very restricted spaces 
+between the inner wall of the reactor pressure vessel (RPV) and the fuel core and other structures 
+and obstacles within the RPV. Position monitoring and movement of remote vehicles is always a 
+challenge, however the tight spaces and lack of visual sight lines or other references where the T-
+Crawler operates presents unusually large difficulties. It is this combination of problems that has 
+led to this master thesis project. 
+ 
+A 3D-visualization program that accurately displays the position and movements of the T-
+Crawler within a detailed model of a desired reactor tank was created in this master thesis, using 
+SolidWorks 2010 and Microsoft Visual Basic 2008. There are several settings and functions that 
+are implemented in the add-in for increasing the usability of the program. Different camera 
+views are available, including an automatic camera that always follows the manipulator and 
+shows a front view of it. Performance has been of great importance and the visualization 
+program runs smoothly on an average desktop computer from 2010. 
+ 
+ 
+Foreword 
+ 
+This report represents the implementation and results of my master thesis project for the 
+Mechanical Engineering Master of Science program with Mechatronics as specialization at the 
+Royal Institute of Technology (Kungliga Tekniska Högskolan, KTH) in Stockholm 
+(Valhallavägen). The work covers 30 ECTS points and has been performed at the company 
+WesDyne TRC, located in Täby, Stockholm. The work has been performed during the period 
+10th of November 2009 till the 30th of April 2010. 
+ 
+I would like to give a big thanks to my supervisor David Seery for the great support and positive 
+feedback that he gave during the whole project. I also feel gratitude to all the following persons 
+who have contributed with help for my master thesis: David Stenman, Anna Tałach, Sonja 
+Johansson, Roger Johansson, Martin Sandberg, Johan Danielsson, David Ålind, Klas 
+Schjelderup, Niklas Mild, Henrik Hangård, Mats Hanson and Bengt Eriksson.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+TABLE OF CONTENTS 
+ 
+1 INTRODUCTION 
+1 
+1.1 Background 
+1 
+1.2 Problem description 
+2 
+1.3 Aim of this work 
+3 
+1.3.1 Requirements list 
+3 
+2 PREVIOUS SYSTEM SETUP 
+4 
+2.1 Overview 
+4 
+2.2 The manipulator (T-Crawler) 
+4 
+2.3 Motor control panel (MCP) 
+5 
+2.4 Data acquisition tools 
+6 
+2.5 WILMA 
+6 
+2.6 T-Control 
+6 
+2.6.1 Positioning 
+7 
+2.7 Air supply 
+8 
+2.8 Water pump 
+8 
+3 IMPLEMENTATION 
+9 
+3.1 Selection of software development tools 
+9 
+3.1.1 MS Visual C++ 2008 Express Edition with OpenGL 
+10 
+3.1.2 MS Visual Studio 2008 Express Edition with SolidWorks 2010 
+10 
+3.1.3 Software development tools 
+11 
+3.2 Method 
+12 
+3.2.1 Project method 
+12 
+3.2.2 Hardware development tools 
+12 
+4 RESULTS 
+13 
+4.1 Overview 
+13 
+4.2 SolidWorks add-in 
+13 
+4.2.1 Functions and settings list 
+14 
+4.2.2 Optimizations 
+16 
+4.3 SolidWorks model configurations 
+17 
+4.3.1 The manipulator model 
+17 
+4.3.2 The reactor model 
+18 
+4.3.3 The camera model 
+19 
+4.4 T-Control modifications 
+20 
+4.4.1 Communication 
+20 
+4.5 User guides 
+20 
+4.5.1 Program user guide 
+20 
+ 
+ 
+4.5.2 Programming user guide 
+20 
+5 CONCLUSIONS 
+21 
+6 FUTURE WORK 
+22 
+6.1 Implementation of new manipulators 
+22 
+6.1.1 S.V.I.P. 
+22 
+6.1.2 Gold fish 
+23 
+6.2 Increased functionality 
+24 
+6.2.1 Collision detection 
+24 
+6.2.2 Automatic positioning 
+24 
+7 REFERENCES 
+25 
+APPENDIX 
+26 
+1 T-Visualizer user guide 
+26 
+1.1 How to setup the models in SolidWorks 
+26 
+1.2 How to use the T-Visualizer 
+27 
+2 Visualization program, programmer’s guide 
+28 
+2.1 Program code structure 
+28 
+2.2 SW Add-in 
+28 
+2.3 TCP Client 
+29 
+2.4 SW Robot 
+29 
+2.5 Win Form 
+30 
+ 
+ 
+ 
+ 
+ 
+1 
+ 
+1 INTRODUCTION 
+ 
+ 
+ 
+1.1 Background 
+ 
+Westinghouse Electric Company provides fuel, services, technology, nuclear power plant design 
+and equipment to customers throughout the world's commercial nuclear power industry.  
+With roughly one year intervals the nuclear reactor at a nuclear power plant needs to be shut 
+down in order to satisfy the demand for new fuel, service and maintenance.  
+ 
+WesDyne, a fully owned subsidiary of the nuclear technology company Westinghouse, is a 
+leading supplier of services and products in the field of qualified mechanized non-destructive 
+testing for the international nuclear industry. Operations include development, design, project 
+management, manufacture, sales and marketing of inspection equipment for a number of non-
+destructive testing methods.  
+ 
+The testing is done by the company at over 60 different nuclear power plants around the world. 
+Although the reactor is shut down during revisions, and sometimes the nuclear fuel is even 
+removed, the radiation level in the reactor is too high for humans to be able to safely work there. 
+As a result, various types of manipulators are used to manage the tasks that must be performed in 
+the reactor. What inspections look for in the reactor are different types of defects in the material 
+such as cracking, delamination and corrosion damage that may endanger the safety of the nuclear 
+reactor.  
+ 
+This is done using a variety of non-destructive testing techniques which might be composed of 
+ultrasound technology, eddy current technology, imaging technology, and also various visual 
+inspection techniques.  
+ 
+Because the majority of the inspection missions are in areas of elevated radioactivity, the 
+demands are great on the electronics and mechanics in the manipulator. A new family of 
+manipulators that WesDyne has developed to inspect the walls of the reactor is called the T-
+Crawler. It is a compact and highly mobile unit that replaces the previous massive test systems 
+that covered the entire reactor vessel which made it impossible to perform parallel jobs. But the 
+manipulators desired mobility also makes it difficult to keep track of its position with sufficient 
+accuracy.  
+ 
+This thesis will address a new positioning and visualization tool, with the T-Crawler manipulator 
+family as its first target system. The new tool will also be shown to be easily adaptable to other 
+types of robots currently in use at the company. 
+ 
+ 
+2 
+ 
+1.2 Problem description 
+ 
+When carrying out inspections in the reactor, it is today a difficult and time consuming job to 
+keep track of where the manipulators are in the tank with a sufficiently high accuracy. 
+ 
+To facilitate this problem for the T-Crawler, the company today primarily uses a custom made 
+program called "T-control", which is specially adapted for the special way these manipulators 
+move. This gives the operator some help, but keeping accurate track of position on the test object 
+still requires a cumbersome manual effort. The manual positioning consists of using a kind of 
+dead reckoning which is based on paper copies of the reactor vessel drawings. First the operator 
+moves to and confirms a reliable reference point in the reactor so that they know where the robot 
+is located with good certainty. When they move the robot in any direction, they can then refer to 
+the drawings of the reactor and repeatedly calculate the robot's new positions as each of the 
+manipulator’s step lengths is known. The T-Control program helps by applying some situation 
+dependant rules that take into account the particular motion sequences used for movement. 
+However the operator still has to continuously translate the numerical coordinates obtained to a 
+physical position along the tank wall, as well as taking various error sources into account. 
+ 
+The operator also gets some help from a separate video camera that follows the manipulator 
+down in the reactor. This solution facilitates the work but it is still very difficult and time 
+consuming to orientate the manipulator in the tank. This is partly because the tank is cylindrical 
+and it can be difficult to find good reference points. Another problem is that there are many tight 
+spaces that the manipulator needs to get into and where it is very difficult for the camera to 
+follow up and provide good images. 
+ 
+ 
+Figure 1. This picture is an example of how camera images of the T-crawler from inside a nuclear reactor 
+can look in tough environments during inspection work. This is a close shot of a couple of the eight 
+separate NDT probes mounted on the probe-pan. 
+ 
+Being able to visualize the T-crawler position and motion in an accurately rendered real time 3D 
+environment would result in much more reliable, faster and more efficient inspections of the 
+nuclear reactors. It would also be possible to mark inspected areas in the reactor model which 
+would result in a reduced risk of missing an area or having to repeat a search because one is 
+unsure if the manipulator has been at the correct position. 
+ 
+Once again the need for a visualization tool does not only apply for the T-Crawler but also for a 
+number of other machines in the company. However the visualization of the T-Crawler is most 
+acute and is therefore focused on in this master thesis. 
+ 
+3 
+ 
+1.3 Aim of this work 
+ 
+The aim of this master thesis is to create a 3D-visualization tool that can show, in real-time, 
+where and how the T-Crawler is working in a reactor tank. This shall be presented as high 
+detailed renderings, of both the reactor tank and the manipulator. For example, the weld seams as 
+well as eventual hinders or reference points should be visible in the reactor tank and the 
+manipulator should be able to be rendered in detail with any desired test equipment mounted. 
+ 
+An important part of the project is that the 3D-visualization tool has to be modular; it should be 
+easy to use the tool in different reactor tanks and in the future also have the ability to easily 
+continue the development of the program for other manipulators using widely different operating 
+principles and motions. 
+ 
+ 
+1.3.1 Requirements list 
+ 
+ The 3D-visualization tool shall show, in real-time, where and how the T-Crawler is 
+working in a reactor tank. 
+ The program shall have sufficient frame rate so that the operator experiences fluid 
+motion. 
+ The 3D-visualization tool has to be modular; it should be easy to use the tool in different 
+reactor tanks, and it shall also be easy to continue development for other manipulators 
+using widely different operating principles and motions. 
+ The manipulator rendering shall be highly detailed with any desired test equipment 
+mounted. Weld seams as well as eventual hinders or reference points shall be visible in 
+the reactor tank. 
+ Presented models shall have a high geometrical accuracy. 
+ The final field product shall be able to run on a PC with Windows XP. 
+ 
+ 
+4 
+ 
+2 PREVIOUS SYSTEM SETUP 
+This chapter describes the required hardware and software for running the T-Crawler 
+manipulator as well as the connections between them prior to this work. 
+ 
+ 
+2.1 Overview 
+ 
+The T-crawler is designed as a xy-table able to move using suction cups working in unison with 
+the movements in latitude and horizontals (x and y) of the separate parts. The control of the 
+movement pattern is facilitated by on-board and remote control gear, schematically described in 
+figure 2. 
+ 
+ 
+Figure 2.  The picture shows the system flow chart prior to this work, the description over the 
+subsystem is found in the next coming chapters. The required hardware and software are shown 
+together with the signals used for the communication between them.  
+ 
+ 
+2.2 The manipulator (T-Crawler) 
+ 
+The T-Crawler is a family of manipulators designed to operate within the very restricted spaces 
+between the inner wall of the reactor pressure vessel (RPV) and the fuel core and other structures 
+and obstacles within the RPV. Because of these specific working areas and the needed scan area 
+size, the design of the manipulator is very slim. 
+ 
+The basic T-Crawler consists of three structural moving parts, driven in relation to each other 
+along a linear or a slightly curved linear motion. Four suction cups are used for attaching the 
+manipulator to the inner wall of the reactor tank. Two suction cups are always activated while 
+moving along the surface. The active suction cups are fixed to the wall while the released suction 
+cups moves along a defined motion together with the part it’s mounted on. In this way the 
+manipulator can crawl its way to the desired position in the reactor tank. 
+ 
+5 
+ 
+Water jets are used to “swim” up against the tank wall so the suction cups can attach to the wall. 
+They also make it possible to rotate and tilt the manipulator while it is free swimming to help in 
+entering the often narrow slots between the RPV and the core shroud and its supporting 
+structures. 
+ 
+Multiple ultrasound and eddy current (UT & ET) probes, used for analyzing defects in the 
+reactor wall, are positioned on the probe pan. The probe pan, which holds the eight ET and UT 
+probes (shown as 8 yellow boxes in Figure 2) on this T-Crawler configuration, is located to the 
+left of the part with two vertically aligned suction cups in the figure. Once the manipulator has 
+crawled to the desired position, a scan sequence for acquiring data from the tank wall is activated 
+through the manipulators microcontroller. The scan sequence proceeds through a movement 
+pattern covering the whole inspection target with sufficient, pre-defined overlap between 
+measurement areas. 
+ 
+There are different models of the T-Crawler, each of them are designed to work in specific types 
+of reactor tanks. The most obvious difference is that the reactor tanks have different radiuses so 
+the curve of the top part of the T-Crawlers has to be adjusted to be fairly close to the curve of the 
+desired reactor tank. Small differences can however be accommodated by an adjustment that 
+moves the suction cups closer or farther away from the manipulator and thus create the needed 
+clearance.  
+ 
+Each T-Crawler model can also be configured differently depending on the reactor tank, what is 
+to be tested and where it lies. The probe pan can for instance be located either on the left side or 
+on right side of the manipulator. It could also be hanging down or as shown in Figure 2, be 
+positioned in the middle of the part with the vertical suction cups. The probe pan can also be 
+flipped for more complex inspection needs. This could for instance be for inspecting the core 
+shroud1 which exists in many reactors.  
+ 
+ 
+2.3 Motor control panel (MCP) 
+ 
+The motor control panel (MCP) works as a bridge between the manipulator hardware and the 
+user interface running on the connected computers. The MCP contains real time control 
+hardware and firmware that sends and receives the low level native signals from and to the 
+control components on the manipulator. The received low level signals consist of, encoder or 
+resolver signals for position feedback, end stop signals, pressure and temperature signals and 
+suction cup status etc. The low level signals that are sent to the manipulator consist of motor 
+drive voltages and currents, solenoid and valve control signals and power supply for components 
+in the manipulator etc. [1] 
+ 
+Each signal has, in its native form, its own electrical and logical characteristics, all of which are 
+handled by the MCP. Low level electrical interfacing and protocols are translated and presented 
+to the connected control programs in a more user-friendly form. A high performance motion 
+controller from Galil is used for the advanced real-time motion control tasks, under supervisory 
+control from the WILMA and T-Control programs (described in chapter 2.5 and 2.6).  This 
+controller family can handle a number of digital and analog I/O needs, such as temperature and 
+precision inclinometer signals. 
+ 
+                                                 
+1 The core shroud lies inside the reactor tank and its main function is to separate upward coolant flow from the 
+downward feed water flow. Apart from this, the core shroud also provides structural support to the core and provides 
+lateral support for fuel bundles to maintain control rod insertion geometry. [2] 
+6 
+ 
+In the control industry there are several different types of feedback sensor technologies and 
+platforms available. Each type has its merits and drawbacks, and the choice of technology thus 
+depends on the application and environment. For example, optical encoders, have merits with 
+regards to resolution but are susceptible to ionizing radiation, meaning that they are not suitable 
+in certain areas of an offline nuclear reactor [1]. For the T-crawler, the submersed and radiation 
+intense environment have led to the choice of resolvers, also proven through years of experience 
+in the field. They are not so sensitive to radiation, but they do not provide the expected encoder 
+signals to the motion controller. Therefore the MCP also contains a signal converter which 
+converts the resolver signals to encoder signals.  
+ 
+ 
+2.4 Data acquisition tools 
+ 
+The data acquisition tool acquire and analyze the signals to and from the eddy current and 
+ultrasound testing components, which are located in the probe pan.  
+ 
+The position of the probe pan also has to be known. Therefore right before the testing begins the 
+probe pan position in the data acquisition tool is manually set equal to the global probe pan 
+position (PPP) displayed in T-Control. During data acquisition, when the probe pan is in motion, 
+its position gets updated continuously by letting the data acquisition tool read the encoder signals 
+from the MCP and translating them into new positions.  
+ 
+ 
+2.5 WILMA 
+ 
+Wilma is a flexible, general purpose manipulator control program, developed at the WesDyne 
+TRC. The program controls the motions for most of the manipulators at the company, including 
+the scan sequences for the T-Crawler. The scan sequence is sent to the Galil card inside the 
+MCP, which realizes the scan sequence by controlling the water flow, air flow and currents to 
+the manipulator. Several separate “Scan Generator” programs are available for generating 
+different types of scan sequences for the T-Crawler and other manipulators. 
+ 
+For most manipulators, the monitoring and command facilities of WILMA, together with the 
+various scan pattern generators, are sufficient for all operations. However, the T-crawlers 
+unusual motions and positioning challenges involve requirements that a general purpose program 
+like WILMA cannot satisfy alone.  Therefore the T-Control program was developed. 
+ 
+ 
+2.6 T-Control 
+ 
+T-Control is a manipulator control program specially designed for controlling the T-Crawler. 
+The program keeps track of the position coordinates of the manipulator in the tank, taking 
+account of the special way the T-Crawler operates. It also has a graphical view of the 
+manipulator that makes it easier to see which direction the manipulator is moving. Other data 
+that is also shown in the program are: Inclinometer value, suction cup status and water pressure 
+and water temperature.  
+ 
+7 
+ 
+From T-Control you can move the manipulator by manually commanding sequences of actions 
+and monitoring their results. The commands for moving the manipulator consist of for instance 
+activating/deactivating the suction cups combined with horizontal or vertical movements.  
+The program also has other functions, for example calibration tools for the inclinometer and for 
+the encoders. 
+ 
+Scanning is still done in normal fashion using the WILMA program once the desired scanning 
+area has been reached. 
+ 
+ 
+2.6.1 Positioning 
+ 
+T-Control performs the calculations of the T-Crawler’s position in the reactor tank. 
+First, a known reference point in the reactor is found with help of for instance a video camera or 
+short, sparse scans looking for known objects. When the manipulator is positioned at the 
+reference point its present position is then known. For the movement of the manipulator in 
+relation to this reference point certain logic rules are used, primarily based on which suction cups 
+that are active and the movement pattern of the manipulator parts in relation to itself and other 
+parts. Each step involves errors that lower the accuracy of the known position in relation to the 
+reference point. Accurate models and tools enable the operators to more easily estimate current 
+accuracy. 
+ 
+Example 1. Positioning 
+If the origin of the manipulator is defined in the middle of the probe pan (which it is in T-
+Control) the correct logic works like this: If the top two suction cups are activated and a 
+horizontal movement is chosen in T-Control, then the origin will move horizontally. If the two 
+vertically aligned suction cups on the lower section of the manipulator are activated and the 
+same motion is chosen, then the origin will be fixed and instead the upper assembly will move 
+relative to the fixed part. 
+ 
+ 
+ 
+8 
+ 
+2.7 Air supply 
+ 
+Compressed air is used to actuate a number of functions: pilot valves for the suction cups, 
+extending and retracting probe arms, buoyancy control, etc. This is accomplished in an air 
+distribution panel that contains a number of both manual and electrically controlled valves and 
+regulators. The electrically controlled air supply components receive control signals from the 
+MCP under T-Control, which thereby controls the compressed air “signals” to the manipulator.  
+ 
+ 
+2.8 Water pump 
+ 
+The water pump provides high pressure water at a high flow rate for two critical system 
+functionalities: 
+- as feed for the water jets, which are used to help the suction cups get close enough to the tank 
+wall for attaching. 
+- for the production of vacuum for the suction cups using the venturi2 effect.  
+ 
+                                                 
+2 The Venturi effect is the reduction in fluid pressure that results when a fluid flows through a constricted section of 
+pipe. The Venturi effect is named after Giovanni Battista Venturi (1746–1822), an Italian physicist. The fluid 
+velocity must increase through the constriction to satisfy the equation of continuity, while its pressure must decrease 
+due to conservation of energy: the gain in kinetic energy is balanced by a drop in pressure or a pressure gradient 
+force. An equation for the drop in pressure due to the Venturi effect may be derived from a combination of 
+Bernoulli's principle and the equation of continuity. The limiting case of the Venturi effect is when a fluid reaches 
+the state of choked flow, where the fluid velocity approaches the local speed of sound. In choked flow the mass flow 
+rate will not increase with a further decrease in the downstream pressure environment. However, mass flow rate for 
+a compressible fluid can increase with increased upstream pressure, which will increase the density of the fluid 
+through the constriction (though the velocity will remain constant). This is the principle of operation of a de Laval 
+nozzle. [6] 
+9 
+ 
+3 IMPLEMENTATION 
+ 
+ 
+3.1 Selection of software development tools 
+ 
+The purpose of this chapter is to present the evaluated software development tools that were 
+found to be the most interesting for this project and motivate the final tool selection. One of the 
+requirements of this project was that the final result would be able to run on a PC with Windows 
+XP as operating system. For the choice of development tools the price for licenses and available 
+knowledge inside the company was deemed as important. The learning curve to be able to handle 
+the tools within the boundaries of this project was also taken into consideration. Many different 
+approaches were identified as possible paths towards solving the visualization task. Some 
+examples of tools that could have been used for this purpose is listed here:   
+ 
+CAD 
+ 
+Rhinoceros 3D 
+ 
+Pro Engineer 
+ 
+SolidWorks 
+ 
+Simulation 
+ 
+Microsoft Robotics Developer Studio 
+ 
+3D API programming 
+ 
+C++ with DirectX 
+ 
+C++ with OpenGL 
+ 
+ 
+ 
+Game engines 
+ 
+Source (Used in Half-Life 2) 
+ 
+id Tech 3 (A modified version is used in Call Of Duty 2) 
+ 
+CryEngine 3 (Used in Crysis 2) 
+ 
+3D graphics application 
+ 
+Blender 3D (A freeware 3D graphics application which could be programmed in Python with its 
+built-in API to complete the task)   
+ 
+The table presents the estimated evaluation score for possible software development tools  
+(The properties are weighted 1-5) 
+Tool 
+Functionality 
+Ease of use / Existing 
+knowledge in the 
+company 
+Performance 
+Price 
+Score 
+ 
+5 
+3 
+4 
+2 
+ 
+Rhinoceros 
+5 
+2/1 
+4 
+4 
+58 
+SolidWorks 
+5 
+3/4 
+4 
+5 
+72 
+Pro Engineer 
+4 
+2/2 
+4 
+1 
+50 
+MS Robotics 
+5 
+2/1 
+5 
+5 
+64 
+C++ w DirectX 
+5 
+1/1 
+5 
+5 
+61 
+C++ w OpenGL 
+5 
+1/4 
+5 
+5 
+70 
+Source 
+4 
+2/1 
+5 
+5 
+59 
+Id Tech 3 
+4 
+2/1 
+5 
+5 
+59 
+CryEngine 3 
+5 
+2/1 
+5 
+3 
+60 
+Blender 3D 
+4 
+2/1 
+4 
+5 
+55 
+ 
+Of the above-mentioned software solutions, two were identified as the most interesting for this 
+project due to the different constraints. The analysis of the two approaches, and the final choice 
+and solution, are described in the next coming chapters. 
+10 
+ 
+3.1.1 MS Visual C++ 2008 Express Edition with OpenGL 
+ 
+MSVC++ Express Edition is a free programming development environment both for home users 
+and for commercial purposes. 
+ 
+Prior this project, the author of this report had experience with working with both OpenGL and 
+C++. However, at the onset of the project there was no one else at the company familiar with this 
+development environment which may have posed some challenges. In favour of the OpenGL 
+C++ development environment there is a lot of easily accessible free information on the internet 
+regarding this matter.  
+ 
+An easy way of presenting the models within OpenGL would be using a free model loader. One 
+approach would be to convert the SolidWorks models to the OBJ file format, which is a file 
+format that not loses any graphical quality. The conversion can be done with a free conversion 
+program or a plug-in to SolidWorks which enables it to save models in this file format. Here is a 
+picture of a reactor tank which is rendered in OpenGL with help from an OBJ-loader library 
+which is called GLM. [3] 
+ 
+ 
+ 
+Figure 3. A picture of a reactor tank rendered in OpenGL with help the OBJ-loader library GLM.  
+ 
+Completing the project with this method would have been fun and instructive, but would 
+probably not have been the fastest option. 
+ 
+ 
+3.1.2 MS Visual Studio 2008 Express Edition with SolidWorks 2010 
+ 
+SolidWorks has been used for many years within the company for designing manipulators and 
+other models. Hence, extensive knowledge exists within the organization about this program. 
+SolidWorks has an API which can be programmed for completing the goals of this thesis, albeit 
+that one try to accomplish this had already been done in the company a couple of years ago, but 
+fell through due to timing and lack of focus. 
+ 
+There are several ways of controlling SolidWorks, commonly the built in macro environment is 
+used, programmed in Visual Basic for Applications (VBA) with access to all important 
+functionalities in the program.  
+11 
+ 
+The main disadvantage is that by programming in VBA the functionalities are somewhat limited, 
+not using the full strengths of more advanced programming environments, for example Visual 
+Studio. 
+ 
+Another method of controlling SolidWorks is to build a standalone application in VB, C# or 
+C++. In this way you get full access to SolidWorks without being limited to the functionality in 
+VBA. Unfortunately the performance is very slow when controlling SolidWorks from a 
+standalone application.  
+ 
+The best way of controlling SolidWorks for this project was by making a so called “add-in” for 
+it, which is possible to do in VB, C# and C++. By making an add-in you will be able to work 
+closest possible to SolidWorks with the same functionality as in a standalone application. This 
+results in much faster function calls than using any of the other two mentioned methods.  
+ 
+It is possible to control SolidWorks with all three mentioned programming languages VB, C# 
+and C++ but almost all examples and help for the built-in API are for VB plus a few for C#. In 
+the company, the knowledge about VB is also more widespread than it is for C# and C++. 
+ 
+The company possesses so-called floating licenses for SolidWorks which means that the 
+visualization program can be used in field missions without being forced to buy additional 
+licenses. A license is simply checked out from the license server to a computer while it is 
+connected to the corporate network (possibly via a VPN connection) and can then be used on a 
+computer out on the field. The license will be disabled on the computer and becomes available to 
+the network automatically after a preset time.  
+ 
+Another positive feature in SolidWorks is that it is very easy to add notes and graphics directly 
+into the model. This can be used during inspections to show where in the model defects 
+indications are and also to be able to add a brief description of the defect type or specify a 
+reference to a longer description of the area. By using the same tools, such field discoveries will 
+come back to the company's defect database without any extra steps and this will be a valuable 
+asset in itself.  
+ 
+ 
+3.1.3 Software development tools 
+ 
+Taking the above factors into consideration the software development tools that were chosen for 
+this thesis were SolidWorks 2010 and Microsoft Visual Basic 2008 Express Edition.  
+Visual Basic have been used to program an add-in for SolidWorks which makes it possible to 
+access all wanted features in SolidWorks in a fast way while still having all the functionality 
+from a standalone application available. 
+12 
+ 
+3.2 Method 
+ 
+ 
+3.2.1 Project method 
+ 
+The source for detailed information about the present challenges and techniques that are used in 
+the company has almost exclusively been gathered from conversations with my supervisor David 
+Seery.  
+ 
+Information about SolidWorks and its API has mostly been gathered from the built-in help in the 
+program. Another good source of information was from the SolidWorks online forum [4]. The 
+built-in macro environment (VBA) has also been diligently used for quickly evaluating different 
+SolidWorks commands, especially in the beginning of the development. When more knowledge 
+emerged about how the API worked then the existing working macro code gradually was 
+translated to code that could be used in an add-in instead. Because earlier knowledge of C++ the 
+use of Visual Basic was quite straightforward with some help from the built in help and 
+examples found on the internet. [5]  
+ 
+ 
+3.2.2 Hardware development tools 
+ 
+During the first period of development the manipulator (T-Crawler) was not available and 
+therefore a way of simulating the manipulators movement was necessary. Two encoders were 
+connected to a development card which contained the same processor and architecture as in the 
+controller card inside the manipulator. This enabled the positioning and status monitoring 
+functionality in existing manipulator control software without having the need for a real 
+manipulator to be connected. The first encoder simulated the vertical motor movement while the 
+second encoder simulated horizontal movement.  
+ 
+In T-Control you can also simulate which of the suction cups that should be enabled and with 
+help of that it can also calculate which part of the manipulator that should be moving while 
+rotating one of the encoders. Later as the project went on a real manipulator became available 
+and the development continued with help of this instead of the simulated approach.  
+ 
+13 
+ 
+4 RESULTS 
+ 
+ 
+4.1 Overview 
+ 
+The boxes with green color represent a new component which has been added as a result 
+of this master thesis. The yellow box is a component that has been modified as a result of 
+this master thesis. 
+ 
+ 
+ 
+Figure 4. The picture shows the system flow chart after this master thesis. 
+ 
+ 
+4.2 SolidWorks add-in 
+ 
+The add-in for SolidWorks is the core in this master thesis. When the controller program (T-
+Control) is connected to the manipulator controller card and the desired tank- and manipulator 
+model is loaded into SolidWorks, the add-in is easily started by simply pressing “Start T-
+Visualizer” under the add-in menu in SolidWorks. When the add-in is started the manipulator 
+model automatically jumps to the current position according to T-Control and the relative 
+locations of the model’s inner parts are also adjusted. The manipulator’s angles relative to the 
+reactor tank are also calculated and updated in the display.  
+ 
+There are several settings and functions that are implemented in the add-in for increasing the 
+usability of the program. Different camera views are available, including an automatic camera 
+that always follows the manipulator and shows a front view of it. These functions and settings, as 
+well as a graphical views of the programs, are summarized in section 4.2.1 Functions and 
+settings list. 
+14 
+ 
+ 
+ 
+Figure 5. The picture shows the main window for the visualization add-in program that was made during 
+this master thesis project.  
+ 
+4.2.1 Functions and settings list 
+ 
+The functions and settings that were implemented into the program are described in the 
+following list: 
+ 
+ Record probe path: The ability to show the path that the probe has moved during an 
+inspection was a desired function within the company. It is simply activated by pressing 
+the “Record probe path” button and when the “Stop recording” button is pressed the path 
+that the probe has moved is shown and saved in SolidWorks. There is also an option to 
+choose the desired step size for the recording. The function is presented in figure 6. 
+ Always DragMode: This function puts SolidWorks into a special mode meant for 
+dragging/moving models around, which increases the performance. Some other functions 
+in SolidWorks are not accessible during this mode, so an option to deactivate the mode is 
+important.  
+15 
+ 
+ Inclinometer: This is an option to activate or deactivate use of the inclinometer value 
+from the manipulator. While deactivated the inclinometer value is simply set to zero.  
+ Positive axis up: Defines what coordinate sense is up in the reactor. 
+ Vertical offset: The offset for the vertical distance mate in the manipulator. 
+ Horizontal offset: The offset for the horizontal distance mate in the manipulator. 
+ Tank Radius: Defines the radius of the tank. 
+ FPS (Frames per second): Shows the current FPS, which is good for testing different 
+models and configurations in SolidWorks for increasing the performance. 
+ Check static FPS: Because of the optimizations made in the add-in no graphics is updated 
+while the manipulator is stationary, this makes it hard to do benchmarking. The “Check 
+static FPS” button runs the add-in without any optimizations and therefore makes it easier 
+to compare the performance difference for different models and settings in SolidWorks. 
+ 
+ 
+ 
+Figure 6. This picture shows the path from the probe after a recorded scan sequence. 
+ 
+ 
+16 
+ 
+4.2.2 Optimizations 
+ 
+A great challenge in developing the add-in for SolidWorks was to find the most effective 
+methods for achieving high performance, primarily defined as the achieved FPS, during the 
+visualization. There are many different methods that result in similar behaviors but yield great 
+differences in performance.  
+ 
+To quantify frame rate improvement the FPS function was implemented for comparing the 
+results of different programming techniques and adjustments to SolidWorks settings and models.  
+ 
+ 
+ 
+Example 2. Rendering mode 
+An example of the resulting methods that were used in this add-in was for instance to use the 
+drag function to move the manipulator model together with the function “Always DragMode”. 
+This puts SolidWorks is in the same mode as when the user is dragging models around with 
+the mouse which is an optimized and fast method meant for just this task.  
+ 
+Other optimizations consist of for example deactivating several graphical updates in SolidWorks 
+during the calculations and turning them back on when the rendering is needed. Also speedups 
+where obtained by only updating necessary parts of the manipulator model using the fact that it 
+is not possible for all the parts in the manipulator to move at the same time. Additionally the 
+models were also simplified by taking away visually unimportant parts for instance like screws 
+and mutters and only saving the exterior faces of the manipulator. When the adjustments to the 
+manipulator model were finished it had decreased from 74 MB down to 9.6 MB with a minimal 
+loss of appearance.  
+ 
+Another method that was used was to save the position and angles as variables in memory 
+instead of reading them from the manipulator model in SolidWorks after each movement or 
+rotation. The position of the model has to be known before a movement because each movement 
+is done by incremental translation and rotation, where only the distance and direction change are 
+specified. Reading this data from SolidWorks could sound like something that would not affect 
+performance but saving the data in the memory instead increased the performance with 
+approximately 20%.  
+ 
+17 
+ 
+4.3 SolidWorks model configurations  
+ 
+ 
+4.3.1 The manipulator model 
+ 
+For the add-in to be able to calculate the translations, rotations and part movements for the 
+manipulator model the add-in requires the model to have some reference points and certain 
+mates in it. Three reference points is required: the first one is for defining the origin. Second and 
+third point is for defining the models angular orientation in space. For the T-Crawler manipulator 
+the points are chosen in the probe holder (also called the “pan”) with the origin in the middle as 
+shown below in the picture. 
+ 
+ 
+ 
+Figure 7. The picture shows where to put the three points in the manipulator model. This is necessary for 
+the visualization program to be able to receive the position and angles from the model.  
+ 
+The T-Crawler manipulator consists of three parts which can be moved according to chapter 2.2. 
+The two distances that defines the location of its parts has to be present in the manipulator model 
+as well. This is done by adding two distance mates in SolidWorks in the manipulator model as 
+showed in picture below.  
+ 
+18 
+ 
+ 
+ 
+ 
+ 
+Figure 8. The picture shows where the vertical distance mate was placed in the manipulator model in 
+SolidWorks (Visible as the two edge-highlighted orange faces). The same principle was used for the 
+horizontal distance mate, which is positioned higher up in the manipulator. 
+ 
+These model configurations are what the add-in needs for visualizing the positioning of the 
+manipulator in the reactor. Additional definitions (mates) about the manipulator model are 
+required for SolidWorks to be able to correctly handle the relationship between all the parts. 
+When these definitions are set and the add-in is running the manipulator model moves correctly 
+after the real manipulator. 
+ 
+ 
+4.3.2 The reactor model 
+ 
+To be able to render the manipulator inside the reactor model, this model also has to be loaded 
+into SolidWorks and positioned in the right place. No additional settings are required for the 
+reactor model other then positioning it in the right place. As currently defined, the reactor model 
+is correctly positioned when the Z-axis is going up through the middle of the reactor and its 
+highest center point is equal to the origin point (0, 0, 0). 
+ 
+Within this work, the graphical appearance of the reactor model was also modified so that the 
+visualization gets a more pleasant view. The objects in the reactor were defined as different 
+materials in SolidWorks which has given them different visual characteristics. Also the light 
+sources have been modified in SolidWorks to increase the aesthetics of the visualization. 
+19 
+ 
+ 
+ 
+ 
+Figure 9. Shown is a picture of the final result, a visualization of the T-Crawler working inside a nuclear 
+reactor tank. 
+ 
+4.3.3 The camera model 
+ 
+There are several options of how to view the manipulator but the probably most usable views are 
+the automatic camera view and the free camera view. The free camera is easily implemented into 
+the visualization by adding a camera in SolidWorks and defining it to be a free camera with a 
+desired perspective.  
+ 
+An automatic camera which always gives a view of the manipulator from the front at a set 
+distance was also implemented. This was achieved by adding a small box shaped part that is 
+mated to the manipulator in such a way it is always positioned in front of it with a set distance. A 
+free camera is then fixed at the front face of the box and with the aim set on the manipulator. 
+Because the box shaped model should not be visible during the free camera view this model is 
+therefore hidden. This concept is visualized in Figure 10. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 10. The picture shows how an automatic camera can be set up. 
+20 
+ 
+4.4 T-Control modifications  
+ 
+ 
+4.4.1 Communication 
+ 
+Since T-Control holds the position of the manipulator a way of sending this data to the add-in is 
+necessary. This was achieved by implementing a TCP/IP server that runs in the background in T-
+Control. The server automatically starts when T-Control starts and begins with waiting for a 
+connection. When the add-in connects, T-Control will send back data packages of the position 
+data with a fixed interval. If the add-in disconnects for some reason the TCP/IP server in T-
+Control will automatically shut down the data transfer and go back to the state where it waits for 
+a new connection. All this is done in the background in a separate thread without affecting the 
+usability in T-Control in anyway. 
+ 
+ 
+4.5 User guides 
+ 
+ 
+4.5.1 Program user guide 
+ 
+A user guide for setting up the models in SolidWorks and for how to use the program has been 
+written. The user guide for setting up the models in SolidWorks explains from scratch and step 
+by step how to configure a desired T-Crawler model and reactor tank model so that they become 
+compatible with the visualization program. For making the setup guide as user friendly as 
+possible it has been tested and adjusted with the help of a mechanical designer working with 
+SowlidWorks in the company. 
+ 
+The “How to use the T-Visualizer” user guide is meant for the T-Crawler operator and it 
+explains how to use the program and its functionality.  
+ 
+ 
+4.5.2 Programming user guide 
+ 
+This guide is written for the programmers that will continue the development of this program. 
+Each of the three classes is explained and their most important functionality. 
+21 
+ 
+5 Conclusions 
+ 
+ 
+The visualization program that resulted from this master thesis reaches all the set goals found in 
+chapter 1.3 and also includes some additional features. The result was therefore very successful 
+and has already been used during a technical discussion with a customer. Future work for the 
+visualization program is planed and more information is found in the following chapter. 
+ 
+My conclusions regarding the chosen software development tools are that they where a good 
+choice. Some parts in SolidWorks were unexpectedly complicated while others were 
+unexpectedly easy. For instance moving or rotating an object in OpenGL is done by one simple 
+command while in SolidWorks there are a number of quite complex methods that all result in the 
+same behavior but with great differences in performance. A great part of the visualization 
+program development consisted of optimizing the SolidWorks add-in. Many methods were 
+tested and evaluated to archive a smooth rendering during the visualization.  
+ 
+ 
+Example 3. Evaluation of translation and rotation methods in SolidWorks 
+When SolidWorks performs a rebuild of a model it builds up the model from scratch, which 
+has a very negative effect on performance. It is therefore crucial that the methods used for 
+moving the model will not result in SolidWorks doing rebuilds after each movement. In the 
+beginning of the development, the three moving parts of the manipulator were kept inside a 
+sub-assembly in SolidWorks. This worked well together with moving or rotating the whole 
+model, but when the parts of the model inside the sub-assembly needed to be changed a 
+rebuild were necessary for almost all functions that were able to do this. A few function 
+worked but they were quite slow and each time something inside the sub-assembly had to 
+change, SolidWorks also needed to go into a special edit-mode which decreased the 
+performance further. If on the other hand the three moving parts of the manipulator were put in 
+the top-assembly, then the functions that worked well in the sub-assembly now required 
+SolidWorks to rebuild after each movement. This is just one example of the challenges that 
+occurred during the optimizations, but fortunately they were all solved and the final program is 
+able to smoothly render the movements of the manipulator. In the final program, the three 
+moving parts of the manipulator were kept in the top-assembly and fast functions for 
+movements were found that didn’t require any rebuilds. 
+ 
+SolidWorks is mainly used for 3D-CAD modeling, but because of its built in API it can also be 
+used for building applications like this. Unfortunately, this not so common way of using the 
+program leads to difficulty in finding documentation about the subject on the internet and in 
+literature. The built-in help was however very useful and additionally help could be found on the 
+discussion forum found on SolidWorks homepage. Despite the difficulties, as understanding of 
+the API was gained the advantages of using SolidWorks also became more apparent. For 
+instance making the visualization visually appealing, controlling models with multiple parts and 
+being able to add notes wherever you want in the reactor are all features that you get almost for 
+free using SolidWorks. These types of features would require a much greater effort if for 
+instance C++ with OpenGL would have been used as development tools instead. 
+22 
+ 
+6 Future work 
+ 
+ 
+6.1 Implementation of new manipulators 
+ 
+Because of the successful implementation of the T-Crawler manipulator, there is a big interest in 
+adding more manipulators to the visualization program. Two of the manipulators that are closest 
+at hand to implement are the SWIP and the Gold fish. In the two following chapters these 
+manipulators will be described and also how they could be implemented in the visualization 
+program. 
+ 
+ 
+6.1.1 S.V.I.P. 
+ 
+The S.V.I.P. is a Submersible Visual Inspection Platform using mechanized motions for 
+performing visual inspections of internal components in nuclear power plants. Components that 
+usually are inspected by the S.W.I.P. are steam dryers and shroud heads. The S.V.I.P. is placed 
+in position either on top of the object or beneath it, depending on the type of object to be 
+inspected.  
+ 
+The S.V.I.P. is a capable of three motions; rotation around a central axis, linear movement along 
+a radial axis and vertical movement (either upwards or downwards depending on configuration). 
+An existing inspection camera is attached to the vertical unit and can thus be moved upwards or 
+downwards. Most of the time the camera picture is sufficient but in some areas in the reactor 
+tank the same problem occurs that the T-Crawler had before the visualization program, with dark 
+and unclear pictures. 
+ 
+ 
+ 
+Figure 11. Shown is a picture of the S.V.I.P. manipulator rendered with the program PhotoView 360.  
+ 
+ 
+23 
+ 
+Because of the basic motions the S.V.I.P. performs the implementation of the manipulator to the 
+visualization program would be an easy task. It could be done by first defining the origin at a 
+fixed point which the manipulator can rotate around, the other two motions could be defined by 
+distance mates in SolidWorks.  
+ 
+The control program that is used for the positioning of the S.V.I.P. is WILMA. In the present the 
+visualization program only communicates with T-Control but this could be changed to WILMA 
+by implementing the necessary code from T-Control into WILMA which would enable the 
+visualization program to receive the position data from there instead. 
+ 
+ 
+6.1.2 Gold fish 
+ 
+The Goldfish nozzle manipulator is a R.O.V. (Remotely operated underwater vehicle) combined 
+with a scanner unit. The manipulator is designed for nozzle inspections in reactor pressure 
+vessels. To position the Goldfish nozzle inside a pressure vessel a joystick is used for controlling 
+the manipulator while a camera is showing where it is. There is today no other positioning than 
+from the camera, but other methods are looked over. Using an accelerometer and a gyroscope for 
+the positioning of the manipulator would enable the use of the visualization program for 
+orientation instead of the camera used today. The big project would be the implementation of the 
+accelerometer and the gyroscope, but when that is fixed the next step to implement the 
+manipulator into the visualization program would be a small effort. 
+ 
+ 
+Figure 12. Shown is a picture of the Gold fish manipulator. 
+24 
+ 
+6.2 Increased functionality 
+ 
+ 
+6.2.1 Collision detection 
+ 
+A very useful function that could be implemented into the visualization program is collision 
+detection. SolidWorks has a built in function for collision detections and it can be used by the 
+API. With help of this the visualization program could be programmed to send a stop signal to T-
+Control when a defined maximum distance between the manipulator and the tank is reached. The 
+stop signal would automatically disable any motors that would lead to a movement that would 
+further decrease the distance to the tank. 
+ 
+ 
+6.2.2 Automatic positioning 
+ 
+Another helpful function that could be implemented with help of the collision detection function 
+is automatic positioning. If the visualization program could detect collisions it could also be 
+possible to automate the movement of the T-Crawler. The optimal solution to this would be a 
+fully automatic positioning function that would only require the new coordinates as input. It 
+would find the fastest way to the new position and do all the climbing automatically. 
+ 
+25 
+ 
+ 
+7 References 
+ 
+ 
+1. Discussions with David Seery, Lead Design Engineer, WesDyne TRC AB, Täby, 
+Sweden, 2009/2010 
+ 
+2. P. G. Kulkarni - IN-SERVICE INSPECTION OF BWR CORE SHROUD AT TAPS,  
+1999-01-03, http://www.barc.ernet.in/publications/nl/1999/199901-03.pdf, 
+Retrieved: 2010-04-30 
+ 
+3. http://glm.g-truc.net/ 
+Retrieved: 2010-04-30 
+ 
+4. https://forum.solidworks.com 
+Retrieved: 2010-04-30 
+ 
+5. Peter A. Bromberg - VB.NET TCP Client - Server Socket Communications,  
+http://www.eggheadcafe.com/articles/20020323.asp 
+Retrieved: 2010-04-30 
+ 
+6. http://en.wikipedia.org/wiki/Venturi_effect 
+Retrieved: 2010-04-30 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+26 
+ 
+Appendix 
+ 
+ 
+1 T-Visualizer user guide 
+ 
+ 
+1.1 How to setup the models in SolidWorks 
+ 
+ Start a new assembly in SolidWorks and name it: visualisering.SLDASM 
+ Import desired reactor tank model and position it so the global Z-axis goes up through the 
+middle of the tank.  
+ Position the tank so that the center point at the top of the model is in the global origin (0, 
+0, 0) 
+ Fix the tank and make it leightweight for best performance. 
+ Import the three parts for the T-Crawler model (The part with the probe pan where the 
+origin will be set should be named part1.SLDPRT). 
+ Add the correct mates to the parts until the model is fully defined and it sticks together 
+while moving it. One example of a setup with working mates is shown in the picture 
+below to the right. 
+ There will be two distance mates that will define the parts distance to each other, name 
+them changePartDistance1 for the horizontal mate and changePartDistance2 for the 
+vertical mate. 
+ The final step is to set three points in the probe pan as shown in the picture below to the 
+left. Point3 defines the origin while point1 and point2 is for calculating the angels of the 
+model. 
+ 
+ 
+ 
+Figure 1. The picture to the left shows where to put the three points in the manipulator model in 
+SolidWorks. This is necessary for the visualization program to be able to receive the position and angles 
+from the model. The picture to the right shows an example of mates that fully defines the T-Crawler 
+model in SolidWorks. 
+27 
+ 
+1.2 How to use the T-Visualizer  
+ 
+Starting the program 
+ 
+ Start T-Control 
+ Start SolidWorks and load the assembly file (visualisering.SLDASM) that holds the 
+desired reactor tank- and manipulator -model. 
+ Press “Start T-Visualizer” under the “VB Addin” tab in SolidWorks, the program is now 
+fully functional and visualizing the position and movements of the manipulator. 
+ 
+Using the program 
+ 
+ Record probe path: The ability to 
+show the path that the probe has 
+moved during an inspection was 
+a desired function in the 
+company and where also 
+implemented in the program. It is 
+simply activated by pressing the 
+“Record probe path” button and 
+when the “Stop recording” 
+button is pressed the path that the 
+probe has moved is shown and 
+saved in SolidWorks. There is 
+also an option to choose the 
+desired step size for the 
+recording.  
+ Always DragMode: This 
+function puts SolidWorks into a 
+special mode meant for 
+dragging/moving models around, 
+which increases the performance. Some other functions in SolidWorks are not accessible 
+during this mode so an option to deactivate it is important.  
+ Inclinometer: This is an option to activate or deactivate the inclinometer value from the 
+manipulator. While deactivated the inclinometer value is simply set to zero. 
+ Positive axis up: Defines what’s up in the reactor. 
+ Vertical offset: The offset for the vertical distance mate in the manipulator. 
+ Horizontal offset: The offset for the horizontal distance mate in the manipulator. 
+ Tank Radius: Defines the radius of the tank. 
+ FPS: Shows the current FPS, which is good for testing different models and 
+configurations in SolidWorks for increasing the performance. 
+ Check static FPS: Because of the optimizations made in the add-in no graphics is updated 
+while the manipulator is still, this makes it hard for benchmarking. The “Check static 
+FPS” button runs the add-in without any optimizations and therefore makes it easier to 
+compare the performance difference for different models and settings in SolidWorks. 
+ 
+ 
+ 
+ 
+ 
+ 
+28 
+ 
+ 
+2 Visualization program, programmer’s guide 
+ 
+ 
+2.1 Program code structure 
+ 
+The add-in program code is object 
+oriented with four classes. The four 
+classes consist of the “TCP Client”, 
+“SW Robot”, “Win Form” and the SW 
+Add-in class. The TCP-client class is 
+used for communicating with the TCP-
+server in T-Control. The SW Robot 
+class is the biggest and holds all the 
+functions of controlling the 
+manipulator model in SolidWorks. The 
+third class is the Win Form, which 
+holds all the configuration settings for 
+the program. Last one is the main class which is called SW Add-in. This class holds all the 
+functions of registering the add-in into SolidWorks and it also controls how the classes should be 
+used as well as the communication between them. 
+ 
+ 
+2.2 SW Add-in 
+ 
+The main loop is found in the SwAddin.vb file in the function “startProgram” and it will run as 
+long as the variable runProgram = true. This variable will only change to false when the button 
+“Stop T-Visualizer” is pressed in SolidWorks. Before the main loop some initial definitions, 
+settings and objects needs to be set. Objects that are created are a TCP/IP client called client and 
+an object called robot which holds all functions that controls the robot model in SolidWorks. 
+ 
+A big part of the code in the startProgram function is optimization code. Before the main loop 
+starts all the robot models angles is first reset by calling the function robot.resetAngles(). Some 
+angles won’t change in the model because the T-Crawler always works against a wall. Therefore 
+these angels are never checked or changed in the loop.  
+ 
+One of the first functions that is called in the main loop is client.readData(), this updates the 
+position values from T-Control. These values are then compared to old values and if there is a 
+change in any of these values the graphics has to be updated.  
+ 
+A function called robot.increasePerformace() is then called and is consists of several commands 
+that will disable unwanted functionality in SolidWorks while updating the graphics and 
+calculations.  
+ 
+The position values are then analyzed and only those values that are changed will be updated in 
+the model. If for example the only change consists of a horizontal movement of the top part on 
+the T-Crawler, this is the only part that will get updated. The graphical update process works by 
+first defining the translation and rotation matrices of affected parts and when the function 
+robot.updateGraphics() is called then the actual graphics on the screen gets updated. The settings 
+that were changed when the function robot.increasePerformace() were called is also changed 
+back to normal.  
+ 
+29 
+ 
+2.3 TCP Client 
+ 
+The TCP/IP class is easily used by first connecting to the server by calling the function 
+connectToServer(). To update the data from the server the readData() function is called and then 
+the variables containing the position data is automatically updated from the latest buffer stream. 
+To disconnect use the disconnectFromServer() function. 
+ 
+ 
+2.4 SW Robot 
+ 
+This class takes care of all the communication between SolidWorks and the visualization 
+program except for the registration of the add-in to SolidWorks. Most of the functions are quite 
+self explanatory of how to use them but there are some that need some extra explanation.  
+ 
+The function disableGraphicalUpdates shuts of the graphical updates (both the 3D-rendering and 
+the feature tree). This results in that when for example a translation and a rotation function is 
+called the rendering will only occur after both of those commands has finished. Without the 
+increasePerformance function SW would update the graphics after both the translation and 
+rotation which would result in lack of performance. 
+ 
+Before any translation or rotation of the manipulator SolidWorks needs to go into the mode 
+called “drag mode”, this is done by calling the function enableDragMode. 
+ 
+The resetRobotAngles function is called to reset the manipulator model on all its axes so it is 
+straight and parallel with the tank. This function does not have to be called each time in the loop 
+because most of the angles won’t change just because the manipulator moves. The function 
+compares the positioning of the three points in the manipulator model called point1, point2 and 
+point3. The positions of the points are compared with each to get the manipulator models present 
+angles relative to the global x-, y- and z-axis. The function then rotates the manipulator model so 
+that the model is straight relative to the tank and against the tank wall. 
+  
+The function moveRobot moves the manipulator to the defined position. The coordinate system 
+can either be Cartesian or cylindrical. It is the point called point3 in the model that will be moved 
+to the defined position. This point is defined in the origin of the test equipment in the probe pan 
+for the T-Crawler. The function first calculates the difference between its present position and 
+the new desired position. The manipulator is then positioned to the new position by translating it 
+the same distance as the position difference between the new and old position.   
+ 
+The function moveRobot2 replaces moveRobot and is used in the exactly same way. What 
+differs is that moveRobot2 doesn’t get the manipulators position from the model but instead 
+reads the position from a variable stored in the memory which results in 16-20% higher 
+performance.  
+ 
+When the manipulator has moved to a new position it has to be rotated to still be against the tank 
+wall. The only rotation that is needed for this adjustment is a rotation around the z-axis. This is 
+accomplished by calling the function correctModelZAxis. This function will automatically adjust 
+the model so it will lie against the tank wall again. 
+ 
+The function changeDistanceMate changes the distance in the named distance mate. This is done 
+by simply changing the number in an existing distance mate available in the model. 
+ 
+30 
+ 
+When the function updateGraphics is called then the graphics will be updated and the settings 
+that were disabled in the function disableGraphicalUpdates will be activated again. 
+ 
+If the record button is pressed in T-Visualizer the positions will be saved in a string. A position 
+will only be saved in the string if the distance to the previous position is bigger than the defined 
+minimum distance value. When the stop button is pressed the program will convert the saved 
+positions in the string to lines in a sketch in SolidWorks. 
+ 
+ 
+2.5 Win Form 
+ 
+This class holds all the data that represent the settings in the program graphical user interface. 
+Settings like for instance tank radius, manipulator model offsets and if the probe path should be 
+recorded or not etc are saved as data in this class. 
+ 
+ 

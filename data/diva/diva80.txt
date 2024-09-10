@@ -1,0 +1,2983 @@
+Detektion av temperaturförändringar
+med hjälp av trådlösa sensornät
+ V I C T O R   N I E T O   P E R O Y 
+Master's Degree Project
+Stockholm, Sweden 2005
+IR-RT-EX-0526
+iii
+Sammanfattning
+Målet med detta examensarbete var att erhålla kunskap om teknik och möjligheter hos
+trådlösa sensornät. Speciellt undersöktes hur temperaturförändringar kan detekteras med
+hjälp av ett trådlöst sensornät. Ett sådant nät sattes upp inomhus med enheter som kallas
+Tmote Sky och som tillverkas av Moteiv Corporation från USA. Enheterna har ﬂera givare
+och kan kommunicera med varandra via radio. Härefter kommer de trådlösa sensorerna
+att kallas ”smolk” efter direktöversättning från engelskans ”mote”. Först undersöktes tre
+algoritmer som kunde lämpa sig för att upptäcka temperaturförändringar med hjälp av
+ett smolk utan att kommunicera med andra smolk: CUSUM-test, modellbaserad detektion
+och diﬀerensbildning. Diﬀerensbildningen föreföll lämpa sig bäst eftersom den visade minst
+fördröjning för att upptäcka temperaturförändringar. Därpå undersöktes tre utvidgningar
+till ﬂera samverkande smolk: gemensamt medelvärde, gemensam median och omröstning.
+Omröstningen föreföll lämpa sig bäst då denna visade minst fördröjning för att upptäcka
+temperaturförändringar och för att den erfordrade mindre kommunikation mellan smolken.
+För att utvärdera algoritmerna i praktiken implementerades omröstningsalgoritmen på ett
+sensornätverk bestående av Tmote Sky smolk under operativsystemet TinyOS. Sensornätet
+kunde inte detektera temperaturförändringarna med de krav som ställdes. Orsaken till det-
+ta antas vara att smolken tvingades att samarbeta utan att veta storleken på de faktiska
+temperaturförändringarna. Slutsatsen är att trådlösa sensornät kan användas för tempera-
+turövervakning, men detaljerad kännedom om det fysikaliska förloppet som ska detekteras
+är nödvändig.
+v
+Detecció de canvis de temperatura mitjançant xarxes de sensors sense ﬁls
+— resum en català
+(på katalanska)
+Avui en dia es poden trobar dispositius de la mida d’una moneda que poden percebre
+el seu entorn per mitjà de sensors incorporats i comunicar-se entre ells sense ﬁls. Tot això
+de forma independent gràcies a la utilització de piles elèctriques. Aquests dispositius quan
+treballen conjuntament formen el que s’anomena una xarxa de sensors sense ﬁls. El terme
+emprat usualment en anglès per a referir-se a aquests dispositius és “mote”, que signiﬁca
+“volva” en català. Es farà servir d’ara endavant en aquest resum la traducció catalana a
+“volva”.
+L’objectiu d’aquest projecte ﬁde carrera és conèixer la tecnologia que fa funcionar les
+xarxes de sensors sense ﬁls a l’hora que es pretén resoldre un problema amb una xarxa
+d’aquestes característiques. El problema establert consisteix a detectar canvis de tempera-
+tura que poden ocórrer dins d’una habitació en un ediﬁci, per exemple, en obrir o tancar
+portes o ﬁnestres. Per a fer aquest estudi es van disposar diverses volves a ambdós costats
+d’una porta corredissa que separa dues habitacions. Aquestes dues habitacions acostumen a
+estar a temperatures suﬁcientment diferents com per a poder simular canvis de temperatura
+en obrir o tancar la porta. Els canvis que es volen detectar en aquest cas són l’obertura i
+el tancament de la porta. Les variacions a la temperatura es van mesurar amb el sensor de
+temperatura i humitat que les volves utilitzades porten incorporat.
+El procediment plantejat per a resoldre el problema es composa de tres parts. Primer
+s’intenta resoldre el problema de detecció amb tan sols una volva, és a dir, s’estudien diversos
+algorismes que es basen en la mesura de la temperatura a un únic lloc. Aquests algorismes
+es comparen basant-se en el retard a detectar les transicions entre porta oberta i porta
+tancada. Un dels algorismes estudiats s’escull com el millor i es proposen extensions d’aquest
+algorisme que poden funcionar a diverses volves, aportant alguna millora a l’algorisme
+per a una volva. La segona part per a resoldre el problema consisteix a estudiar de la
+mateixa manera aquestes extensions, per a ﬁnalment quedar-se amb un algorisme per a
+múltiples volves. A la última part del projecte s’implementa, al tipus de volves disponibles
+al departament per a la realització del projecte, l’algorisme que es considera més idoni entre
+els estudiats. Finalment es posa a prova la solució completa funcionant a les volves i s’avalua
+el seu rendiment.
+Les volves utilitzades al projecte s’anomenen Tmote Sky i són produïdes per Moteiv
+Corporation als Estats Units d’Amèrica. El disseny del dispositiu es fonamenta en un altre
+anomenat Telos Revision B i que es va desenvolupar originalment a la Universitat de Ca-
+lifòrnia a Berkeley als EUA. El preu d’una d’aquestes volves va ser d’uns 125 euros. Porten
+incorporats tres circuits sensors: un per a llum visible, un altre per a llum útil a la fotosíntesi,
+i un tercer circuit que pot mesurar tant temperatura com humitat relativa. La mida d’una
+volva és d’uns 8 × 3 × 2 cm3. A més a més es poden connectar a un ordinador a través d’un
+contacte d’USB per a la seva programació o altres utilitats, com ara fer servir una volva
+de pont entre una xarxa de volves i l’ordinador. El sistema operatiu que es fa servir per
+a fer funcionar les volves és el TinyOS i el llenguatge de programació s’anomena nesC. El
+circuit sensor de temperatura és el SHT11 que és produït per Sensiron AG a Suïssa. Aquest
+mateix circuit pot mesurar també humitat relativa. La màxima resolució és de 0,01 ◦C, a la
+qual el temps mínim de mesura és de 210 ms. La precisió del sensor és de ±0,5 ◦C a 25 ◦C,
+temperatura a la qual la precisió és màxima.
+Els tres algorismes que primer es consideren per a funcionar a una sola volva són:
+un test CUSUM, l’estimació de paràmetres d’un model físic preestablert, i la diferència
+de temperatures entre dos instants de temps diferents. Aquests algorismes es comparen
+vi
+amb el programa de càlcul Matlab a un ordinador basant-se en les dades obtingudes d’un
+experiment. L’experiment consisteix a colocar una volva a tocar d’una porta corredissa
+que separa dues habitacions i es mesura durant 45 minuts la temperatura un cop cada dos
+segons. Durant el temps que dura l’experiment s’obre i es tanca la porta diverses vegades, el
+que provoca canvis de temperatura de ﬁns al voltant d’un ◦C. Els tres algorismes considerats
+requereixen tenir ajustats certs paràmetres que són bàsicament els llindars als quals s’ha
+de detectar el canvi de temperatura. Aquests paràmetres s’escolleixen de tal forma que no
+es detecti cap canvi de temperatura en fals, és a dir, es forcen els algorismes a detectar
+només l’obertura o el tancament de la porta. Per a aquesta tasca es fa servir les mesures de
+temperatura obtingudes a l’experiment. Finalment es calcula el temps que cada algorisme
+triga a detectar els canvis de temperatura. El temps mínim fou assolit per la diferència de
+temperatures entre dos instants de temps diferents, que va ser de nou segons. Per això es
+pren aquest algorisme com el més idoni per a extendre a diverses volves.
+L’extensió a diverses volves que s’estudia per a millorar l’algorisme per a una volva con-
+sisteix a mesurar la temperatura a diferents llocs d’un mateix costat de la porta corredissa
+en l’espai en què aquesta es pot obrir. D’aquesta manera s’espera que les pertorbacions a la
+temperatura mesurada a diferents llocs siguin diferents, i així les volves mesurant a diferents
+llocs poden comunicar-se i reduir l’efecte d’aquestes pertorbacions locals. L’experiment en
+aquest cas per a obtenir mesures de temperatura consisteix en cinc volves a tocar de la
+porta corredissa, i a més a més d’obrir i tancar la porta, ara es generen pertorbacions a
+alguna de les volves. Aquestes pertorbacions es creen ventant o tapant una de les volves per
+a mirar de simular que ha succeït un canvi que es volia detectar, quan en realitat és només
+una pertorbació deguda al canvi de ventilació de la volva en qüestió. S’estudien igualment
+tres algorismes per a aquest cas. Els dos primers consisteixen a formar un senyal comú entre
+totes les volves de diferències de temperatura per a després aplicar els llindars corresponents
+que determinen si hi ha o no canvi: un algorisme calcula la mitjana i l’altre la mediana.
+El tercer algorisme deixa, al contrari, decidir a cada volva si hi ha hagut algun canvi al
+seu entorn, i després comunica aquest event en succeir a les altres volves. Totes elles tenen
+coneixença en tot moment de en quin estat es troben les altres. Aquest algorisme consisteix
+en què la majoria d’estats individuals és la que decideix l’estat conjunt de tota la xarxa.
+D’aquesta manera les volves que no tenen el mateix estat que la majoria es consideren
+afectades per alguna pertorbació no signiﬁcativa. Per a tots aquests algorismes es tornen a
+ajustar els diferents paràmetres per a detectar només l’obertura o el tancament de la porta,
+i ﬁnalment es calcula el retard que mostren per a detectar els canvis. Tots tres algorismes
+tenen retards similars, al voltant de trenta segons. Tot i això, l’algorisme de majoria és
+el que consumeix menys energia atès que només genera comunicació entre les volves quan
+alguna d’elles canvia d’estat. Als altres dos algorismes hi ha comunicació cada cop que es
+mesura la temperatura. Per tant, s’escull l’algorisme de majoria, després d’aplicar a cada
+volva la diferència de temperatures entre dos instants de temps diferents, com el més adient
+com a solució ﬁnal al problema de detecció.
+Per a acabar d’estudiar aquesta solució ﬁnal es comproba si l’algorisme funciona igu-
+alment amb tres volves en comptes de cinc, i resulta ser que sí. També es comproba si els
+paràmetres trobats en primer lloc són generals per a qualsevol altre moment en què es torni
+a fer l’experiment, i el resultat després de repetir l’experiment és que no. Els paràmetres
+vells no són vàlids per al nou experiment, els llindars han de ser diferents. La xarxa de
+volves s’ha entrenat a les mesures d’un experiment en concret sense saber en tot moment
+quins canvis de temperatura poden ocórrer, que varien d’experiment a experiment. Aquest
+problema es podria solucionar amb l’ajut d’una altra volva a l’altre costat de la porta per a
+saber constantment quina temperatura correspon a què la porta s’obri. Tanmateix, aquesta
+vii
+opció no es considera en aquest projecte i es troben uns nous paràmetres que funcionen per
+a ambdós experiments, encara que no siguin òptims. Aquesta solució deﬁnitiva es programa
+amb el llenguatge nesC per a executar-se sota el sistema operatiu TinyOS a les volves Tmote
+Sky. Com a comprobació ﬁnal es torna a repetir l’experiment però ara amb les tres volves
+funcionant amb el programa escrit i els paràmetres calculats anteriorment. El resultat és
+que les volves no van poder diferenciar entre les pertorbacions que es van generar i obrir i
+tancar la porta, es creu que com a conseqüència de què no es conegui en tot moment les
+condicions que deﬁneixen els canvis que s’han de detectar, i que varien amb el temps.
+Com a conclusió del projecte s’ha pogut veure que les xarxes de sensors sense ﬁls es
+poden utilitzar per a detectar canvis en la temperatura dins d’una habitació en un ediﬁci,
+tot i que la solució ﬁnal posada en pràctica no hagi estat del tot satisfactòria. A l’hora de
+treballar amb xarxes de sensors sense ﬁls s’ha de tenir molt present el consum d’energia i
+és per això que tota la xarxa ha d’estar pensada per a minimitzar aquest consum, és a dir,
+en el cas del projecte, l’algorisme que cada volva executi ha de tenir un bon coneixement
+del procés físic que es vol mesurar i no calcular o comunicar-se amb altres volves més del
+que sigui necessari. L’algorisme de majoria s’ha vist com adequat per a xarxes de sensors
+sense ﬁls ja que deixa a cada volva decidir sobre el seu entorn per a després posar-se d’acord
+amb les altres. Sobre el procés físic de canvis de temperatura es pot observar que el corrent
+d’aire afecta notablement la mesura de temperatura perquè les pròpies volves generen calor
+i és aquest calor el que se’n va o es concentra en una volva, afectant així la mesura de
+temperatura depenent de la quantitat de corrent d’aire. Amb tot, s’ha après com funciona
+un tipus concret de volva per a poder construir tota una xarxa de sensors sense ﬁls.
+ix
+Detección de cambios de temperatura mediante redes inalámbricas de sensores
+— resumen en castellano
+(på kastilianska)
+Hoy en día se pueden encontrar dispositivos del tamaño de una moneda que pueden
+percibir su entorno por medio de sensores incorporados y comunicarse entre ellos inalám-
+bricamente. Todo esto de forma independiente gracias a la utilización de pilas eléctricas.
+Estos dispositivos cuando trabajan conjuntamente forman lo que se denomina una red in-
+alámbrica de sensores. El término que se usa habitualmente en inglés para referirse a estos
+dispositivos es “mote”, que signiﬁca “mota” en castellano. Se utilizará a partir de aquí en
+este resumen la traducción castellana a “mota”.
+El objetivo de este proyecto ﬁnal de carrera es conocer la tecnología que hace funcio-
+nar las redes inalámbricas de sensores a la vez que se pretende resolver un problema con
+una red de estas características. El problema establecido consiste en detectar cambios de
+temperatura que pueden ocurrir dentro de una habitación en un ediﬁcio, por ejemplo, al
+abrir o cerrar puertas o ventanas. Para hacer este estudio se dispusieron varias motas a
+ambos lados de una puerta corredera que separa dos habitaciones. Estas dos habitaciones
+suelen estar a temperaturas suﬁcientemente distintas como para poder simular cambios de
+temperatura al abrir o cerrar la puerta. Los cambios que se quieren detectar en este caso
+son la abertura y el cierre de la puerta. Las variaciones en la temperatura se midieron con
+el sensor de temperatura y humedad que las motas utilizadas llevan incorporado.
+El procedimiento planteado para resolver el problema se compone de tres partes. Prime-
+ro se intenta resolver el problema de detección con tan sólo una mota, es decir, se estudian
+varios algoritmos que se basan en la medida de la temperatura en un único lugar. Estos
+algoritmos se comparan basándose en el retardo en detectar las transiciones entre puerta
+abierta y puerta cerrada. Uno de los algoritmos estudiados se escoge como el mejor y se
+proponen extensiones de este algoritmo que pueden funcionar en varias motas, aportando
+alguna mejora al algoritmo para una mota. La segunda parte para resolver el problema
+consiste en estudiar de la misma manera estas extensiones, para ﬁnalmente quedarse con
+un algoritmo para múltiples motas. En la última parte del proyecto se implementa, al tipo
+de motas disponibles en el departamento para la realización del proyecto, el algoritmo que
+se considera más oportuno entre los estudiados. Finalmente se pone a prueba la solución
+completa funcionando en las motas y se evalúa su rendimiento.
+Las motas utilizadas en el proyecto se denominan Tmote Sky y son producidas por
+Moteiv Corporation en los Estados Unidos de América. El diseño del dispositivo se basa
+en otro llamado Telos Revision B y que se desarrolló originalmente en la Universidad de
+California en Berkeley en los EUA. El precio de una de estas motas fue de unos 125 euros.
+Llevan incorporados tres circuitos sensores: uno para luz visible, otro para luz útil en la
+fotosíntesis, y un tercer circuito que puede medir tanto temperatura como humedad relativa.
+El tamaño de una mota es de unos 8×3×2 cm3. Se pueden conectar además a un ordenador a
+través de un contacto de USB para su programación u otras utilidades, como hacer servir una
+mota de puente entre una red de motas y el ordenador. El sistema operativo que se utiliza
+para hacer funcionar las motas es el TinyOS y el lenguaje de programación se denomina
+nesC. El circuito sensor de temperatura es el SHT11 que se produce por Sensirion AG en
+Suiza. Este mismo circuito puede medir también humedad relativa. La máxima resolución
+es de 0,01 ◦C, a la cual el tiempo mínimo de medida es de 210 ms. La precisión del sensor
+es de ±0,5 ◦C a 25 ◦C, temperatura a la cual la precisión es máxima.
+Los tres algoritmos que primero se consideran para funcionar en una única mota son: un
+test CUSUM, la estimación de parámetros de un modelo físico preestablecido, y la diferencia
+de temperaturas entre dos instantes de tiempo distintos. Estos algoritmos se comparan con
+x
+el programa de cálculo Matlab en un ordenador basándose en los datos obtenidos de un
+experimento. El experimento consiste en colocar una mota al borde de una puerta corredera
+que separa dos habitaciones y se mide durante 45 minutos la temperatura una vez cada dos
+segundos. Durante el tiempo que dura el experimento se abre y se cierra la puerta varias
+veces, lo que provoca cambios de temperatura de hasta entorno un ◦C. Los tres algoritmos
+considerados requieren tener ajustados ciertos parámetros que son básicamente los umbrales
+a los que se debe detectar el cambio de temperatura. Estos parámetros se escogen de tal
+forma que no se detecte ningún cambio de temperatura en falso, o sea, se fuerzan los
+algoritmos a detectar solamente la abertura o el cierre de la puerta. Para este cometido
+se usan las medidas de temperatura obtenidas en el experimento. Finalmente se calcula el
+tiempo que cada algoritmo tarda en detectar los cambios de temperatura. El tiempo mínimo
+fue conseguido por la diferencia de temperaturas entre dos instantes de tiempo distintos, que
+fue de nueve segundos. Por ello se toma este algoritmo como el más propicio para extender
+a varias motas.
+La extensión a varias motas que se estudia para mejorar el algoritmo para una mota
+consiste en medir la temperatura en distintos sitios a un mismo lado de la puerta corredera
+en el espacio en que ésta se puede abrir. De esta manera se espera que las perturbaciones
+en la temperatura medida en distintos sitios sean diferentes, y así las motas midiendo en
+distintos sitios pueden comunicarse y reducir el efecto de estas perturbaciones locales. El
+experimento en este caso para obtener medidas de temperatura consiste en cinco motas
+al borde de la puerta corredera, y además de abrir y cerrar la puerta, ahora se generan
+perturbaciones a alguna de las motas. Estas perturbaciones se crean abanicando o tapando
+una de las motas con el ﬁn de simular que ha sucedido un cambio que se quería detectar,
+cuando en realidad es tan sólo una perturbación debida al cambio de ventilación de la
+mota en cuestión. Se estudian igualmente tres algoritmos para este caso. Los dos primeros
+consisten en formar una señal común entre todas las motas de diferencias de temperatura
+para más tarde aplicar los umbrales correspondientes que determinan si hay o no cambio:
+un algoritmo calcula la media y el otro la mediana. El tercer algoritmo deja, al contrario,
+decidir a cada mota si ha habido algún cambio en su entorno, y después comunica este
+evento al ocurrir a las otras motas. Todas ellas tienen conocimiento en todo momento
+de en qué estado se encuentran las demás. Este algoritmo consiste en que la mayoría de
+estados individuales es la que decide el estado conjunto de toda la red. De esta manera las
+motas que no tienen el mismo estado que la mayoría se consideran afectadas por alguna
+perturbación no signiﬁcativa. Para todos estos algoritmos se vuelven a ajustar los distintos
+parámetros para detectar únicamente la abertura o el cierre de la puerta, y ﬁnalmente
+se calcula el retardo que muestran para detectar los cambios. Los tres algoritmos tienen
+retardos similares, entorno a treinta segundos. Aun así, el algoritmo de mayoría es el que
+consume menos energía dado que sólo genera comunicación entre las motas cuando alguna
+de ellas cambia de estado. En los otros dos algoritmos hay comunicación siempre que se
+mide la temperatura. Por tanto, se escoge el algoritmo de mayoría, después de aplicar a
+cada mota la diferencia de temperaturas entre dos instantes de tiempo distintos, como el
+más adecuado como solución ﬁnal al problema de detección.
+Para terminar de estudiar esta solución ﬁnal se comprueba si el algoritmo funciona
+igualmente con tres motas en vez de cinco, y resulta ser que sí. También se comprueba si los
+parámetros encontrados en primer lugar son generales para cualquier otro momento en el
+que se repita el experimento, y el resultado después de volver a hacer el experimento es que
+no. Los parámetros viejos no siguen valiendo para el nuevo experimento, los umbrales deben
+ser distintos. La red de motas se ha entrenado a las medidas de un experimento en concreto
+sin saber en todo momento qué cambios de temperatura pueden ocurrir, que varían de
+xi
+experimento a experimento. Este problema se podría solucionar con la ayuda de otra mota
+al otro lado de la puerta para saber constantemente qué temperatura correspondre a que la
+puerta se abra. No obstante, esta opción no se considera en este proyecto y se encuentran
+unos parámetros nuevos que funcionan para ambos experimentos, aunque no sean óptimos.
+Esta solución deﬁnitiva se programa con el lenguaje nesC para ejecutarse bajo el sistema
+operativo TinyOS en las motas Tmote Sky. Como comprobación ﬁnal se vuelve a repetir
+el experimento pero ahora con las tres motas funcionando con el programa escrito y los
+parámetros calculados anteriormente. El resultado es que las motas no pudieron diferenciar
+entre las perturbaciones que se generaron y el abrir y cerrar la puerta, se cree que como
+consecuencia de que no se conozca en todo momento las condiciones que deﬁnen los cambios
+que se deben detectar, y que varían con el tiempo.
+Como conclusión del proyecto se ha podido ver que las redes inalámbricas de sensores
+se pueden utilizar para detectar cambios en la temperatura dentro de una habitación en un
+ediﬁcio, a pesar de que la solución ﬁnal puesta en práctica no haya sido del todo satisfactoria.
+A la hora de trabajar con redes inalámbricas de sensores se debe tener muy en cuenta el
+consumo de energía y es por ello que toda la red debe estar pensada para minimizar este
+consumo, es decir, en el caso del proyecto, el algoritmo que cada mota ejecute debe tener un
+buen conocimiento del proceso físico que se quiere medir y no calcular o comunicarse con
+otras motas más de lo que sea necesario. El algoritmo de mayoría se ha visto como adecuado
+para redes inalámbricas de sensores ya que deja a cada mota decidir sobre su entorno para
+después ponerse de acuerdo con las demás. Sobre el proceso físico de cambios de temperatura
+se puede observar que la corriente de aire afecta notablemente la medida de temperatura
+porque las mismas motas generan calor y es este calor el que se va o se concentra en una
+mota, afectando así la medida de temperatura dependiendo de la cantidad de corriente
+de aire. Con todo, se ha aprendido como funciona un tipo concreto de mota para poder
+construir toda una red inalámbrica de sensores.
+xiii
+Detection of temperature changes by means of wireless sensor networks
+— summary in English
+(på engelska)
+There are nowadays devices about the size of a coin that can sense their environment
+with embodied sensors and communicate without wires with each other. All that in an
+independent way thanks to using electrical batteries. These devices when working together
+form what is called a wireless sensor network. The term usually used in English to refer to
+these devices is “mote”, that will be used in the rest of this summary.
+The goal of this master thesis project is to learn about the technology that makes
+wireless sensor networks work, at the same time as a problem is solved with such a network.
+The problem consists of detecting temperature changes that can happen in a room of a
+building, for instance, by opening or closing doors or windows. To do this study several
+motes were placed at both sides of a sliding door that separates two rooms. These two rooms
+use to be at suﬃciently diﬀerent temperatures as to be able to create detectable changes in
+temperature by opening or closing the door. The changes that we desire to detect in this
+case are the opening and the closing of the door. The variations in the temperature were
+measured with the temperature and humidity sensors that come with the used motes.
+The proposed procedure to solve the problem consists of three parts. First it is attempted
+to solve the detection problem with only one mote, that is, several algorithms based on the
+measurement of temperature in one place are studied. These algorithms are compared by
+looking at the delay to detect the transitions between open and closed door. One of the
+studied algorithms is chosen as the best and extensions of this algorithm are proposed to
+work in several motes, improving the algorithm for one mote. The second part of solving
+the problem consists of studying in the same way these extensions, to ﬁnd and keep ﬁnally
+an algorithm for several motes. In the last part of the project the most suitable algorithm of
+those that were studied is implemented on the kind of motes available at the department to
+perform the project. Finally the whole solution is tested with the motes and its performance
+is evaluated.
+The motes that were used in the project are called Tmote Sky and are produced by
+Moteiv Corporation in the United States of America. The design of the device is based on
+another called Telos Revision B that was originally developed at the University of California
+at Berkeley in the USA. One mote costed about 150 US dollars. They have three embodied
+sensor circuits: one for visible light, another for useful light in photosynthesis, and a third
+circuit that can measure both temperature and relative humidity. The size of a mote is
+about 8 × 3 × 2 cm3. Furthermore they can be connected to a computer by a USB contact
+to be programmed or other utilities, such as using one mote as a bridge between a network
+of motes and the computer. The operating system working in the motes is TinyOS and the
+programming language is called nesC. The temperature sensor circuit is the SHT11 produced
+by Sensirion AG in Switzerland. This same circuit can also measure relative humidity. The
+highest resolution is 0,01 ◦C, at which the shortest time to measure is 210 ms. The sensor’s
+precision is ±0,5 ◦C at 25 ◦C, at which temperature the precision is highest.
+The ﬁrst three algorithms considered to work in only one mote are: a cumulative sum
+test, the estimation of parameters from an already chosen physical model, and the tempera-
+ture diﬀerence between two time instants. These algorithms are compared with the calculus
+program Matlab in a computer using experimental data. The experiment consists of placing
+one mote beside the sliding door that separates two rooms and measuring the temperature
+once every two seconds during 45 minutes. In this time the door is opened and closed some
+times, and it brings about temperature changes up to around one ◦C. The three algorithms
+in mind need to have their parameters adjusted, which are essentially the thresholds at
+xiv
+which the temperature change should be detected. These parameters are chosen so that no
+false change is detected, that is, the algorithms are forced to detect only the opening and
+closing of the door. For this purpose the temperature measurement from the experiment is
+used. Finally, the time that it takes for every algorithm to detect the temperature changes is
+computed. The shortest time was achieved by the temperature diﬀerence between two time
+instants, which was nine seconds. This algorithm is therefore taken as the most suitable to
+extend to several motes.
+The extension to several motes that is studied to improve the algorithm for one mote
+consists of measuring the temperature at diﬀerent places along one side of the sliding door, in
+the length that the door can open. This way, it is hoped that the disturbances in temperature
+measured at diﬀerent places will be diﬀerent, and thus the motes measuring at diﬀerent
+places can communicate and reduce the eﬀect of these local disturbances. The experiment
+in this case to get a temperature measurement consists of ﬁve motes adjacent to the sliding
+door, and besides opening and closing the door, some disturbances are created now to some
+of the motes. These disturbances are created by fanning or covering one of the motes to
+simulate that a change that was wanted to detect happened, while in fact it is only a
+disturbance caused by the change in ventilation at the mote in question. Three algorithms
+are likewise studied for this case. The two ﬁrst ones consist of forming a common signal for
+all motes of temperature diﬀerences, to apply later the needed thresholds that determine
+whether there is a change or not: one algorithm computes the mean and the other the
+median. The third algorithm lets, on the contrary, every mote decide whether there was a
+change in its neighborhood, and communicates later this event when happening to all other
+motes. All of them always know in which state the others are. This algorithm consists of
+that the majority of same individual states decides the common state for the whole network.
+Thus, the motes that have a diﬀerent state than the majority are considered aﬀected by
+a disturbance to be erased. For all these algorithms the parameters are adjusted again to
+detect only the opening or closing of the door, and ﬁnally the delay that they show to detect
+the changes is computed. All three algorithms have similar delays, around thirty seconds.
+The majority algorithm is though the one that consumes less energy because it causes
+communication between the motes whenever one of them changes its state. In the other two
+algorithms there is communication every time the temperature is measured. Therefore, the
+majority algorithm, after applying to each mote the temperature diﬀerence between two
+time instants, is chosen as the most suitable algorithm as ﬁnal solution to the detection
+problem.
+To conclude studying this ﬁnal solution it is veriﬁed whether the algorithm works in
+the same way with three motes instead of ﬁve, and that was the case. It is also veriﬁed
+whether the parameters ﬁrst found were general enough to be applied to any other time the
+experiment was repeated, and that was not the case after repeating the experiment. The
+old parameters do not work for the new experiment, the thresholds should be diﬀerent. The
+network of motes was trained to one speciﬁc experiment’s measurement without knowing
+every time which temperature changes can happen, which vary from experiment to expe-
+riment. This problem could be solved using another mote at the other side of the door to
+know steadily which temperature corresponds to that the door opens. However, this option
+is not taken into account in this project and new parameters are found that work for both
+experiments, although they were not optimal. This deﬁnitive solution is programmed with
+the nesC language to be executed under the TinyOS operating system in the Tmote Sky
+motes. As a ﬁnal check, the experiment is repeated but with the three motes now working
+with the written program and the previously computed parameters. The result is that the
+motes could not distinguish between the created disturbances and the opening and closing
+xv
+of the door. The reason could be that the conditions that deﬁne the changes to be detected
+are not known all the time, and these change with time.
+As a conclusion to the project it was seen that wireless sensor networks can be used to
+detect temperature changes that can happen in a room of a building, although the imple-
+mented ﬁnal solution was not fully satisfying. When dealing with wireless sensor networks
+one have to look carefully at the energy consumption and that is why the whole network
+should be designed to minimize this consumption, that is to say, in the case of the pro-
+ject, the algorithm that every mote executes has to know the underlying physical process
+accurately, and not to compute or communicate with other motes more than needed. The
+majority algorithm was seen as appropriate to wireless sensor networks because it lets each
+mote decide about its nearest environment to come later to an agreement with the others.
+Considering the physical process of temperature changes, it can be observed that draft af-
+fects the temperature measure notably because the motes themselves create heat and this
+heat can go away or concentrate in a mote, thus aﬀecting the temperature measure depen-
+ding on the amount of draft. With all this, we have learned how a speciﬁc type of mote
+works, to be able to build a complete wireless sensor network.
+Förord
+Denna rapport utgör den skriftliga redovisningen för mitt examensarbete till ci-
+vilingenjör i elektroteknik. Examensarbetet pågick från mars till december 2005 i
+avdelningen för reglerteknik vid Institutionen för signaler, sensorer och system på
+KTH. Examinatorn var Mikael Johansson, Björn Johansson handledare och Oscar
+Blomkvist uppträdde som opponent. Den muntliga redovisningen hölls den andra
+december 2005 i Osquldas väg 10 under öppet seminarium.
+Med detta examensarbete avslutar jag mitt dubbeldiplomsutbyte ifrån ”Univer-
+sitat Politècnica de Catalunya” (UPC) i Barcelona, Spanien, vilket började läsåret
+2003–2004, ledande till examen i ”Enginyeria de telecomunicació” vid UPC och i
+Elektroteknik vid KTH.
+Tack till Valentin Foltescu, forskare vid Sveriges meteorologiska och hydrologiska
+institut (SMHI) i Norrköping, för sina synpunkter och uppslag om elektrisk hysteres
+för att förklara en oväntad företeelse som iakttogs i temperaturmätningar (sida 7).
+Tack till Anders Nyqvist, produktchef på DJ Stork Automation AB (ombuds-
+företag i Sverige för Sensirion AG) i Bromma, för sina synpunkter och arbete att
+reda ut samma oväntade företeelse i temperaturmätningar.
+Tack till handledaren, Björn Johansson, och examinatorn, Mikael Johansson, för
+deras råd och kunskaper för examensarbetet och för deras tid utöver deras tjänster
+på KTH.
+xvii
+Innehåll
+1
+Inledning
+1
+1.1
+Motivering . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1
+1.2
+Mål och förfarande . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1
+1.3
+Smolk . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2
+1.3.1
+Hårdvara
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2
+1.3.2
+Mjukvara . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4
+1.4
+Givare . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+5
+2
+Algoritm för ett smolk
+11
+2.1
+Problemformulering
+. . . . . . . . . . . . . . . . . . . . . . . . . . .
+11
+2.2
+Försöksuppställning
+. . . . . . . . . . . . . . . . . . . . . . . . . . .
+11
+2.3
+Filter
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+12
+2.4
+Algoritmer
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+13
+2.4.1
+CUSUM över medelvärde
+. . . . . . . . . . . . . . . . . . . .
+13
+2.4.2
+Modell . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+15
+2.4.3
+Diﬀerensbildning . . . . . . . . . . . . . . . . . . . . . . . . .
+18
+2.5
+Utvärdering . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+20
+2.6
+Slutsatser . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+21
+2.7
+Utvidgningar till ﬂera smolk . . . . . . . . . . . . . . . . . . . . . . .
+21
+3
+Algoritm för ﬂera smolk
+23
+3.1
+Problemförmulering
+. . . . . . . . . . . . . . . . . . . . . . . . . . .
+23
+3.2
+Försöksuppställning
+. . . . . . . . . . . . . . . . . . . . . . . . . . .
+23
+3.3
+Algoritmer
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+25
+3.3.1
+Medelvärde . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+26
+3.3.2
+Median
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+26
+3.3.3
+Omröstning . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+27
+3.3.4
+Utvärdering . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+29
+3.4
+Simulering . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+30
+3.5
+Förverkligande
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+33
+3.6
+Utvärdering . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+35
+4
+Slutsatser och förslag på framtida arbete
+37
+xix
+xx
+INNEHÅLL
+A Omroestning3
+39
+A.1 Omroestning3.h . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+39
+A.2 Omroestning3.nc . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+39
+A.3 Omroestning3M.nc . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+40
+A.4 Makeﬁle . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+47
+Litteraturförteckning
+49
+Kapitel 1
+Inledning
+1.1
+Motivering
+Nu för tiden ﬁnns det små enheter, stora som ett mynt, som kan känna av sin
+omgivning tack vare givare, eller sensorer, och kommunicera sina mätvärden trådlöst
+till andra enheter. På detta vis kan de tillsammans forma ett nät som kan vidga
+de beﬁntliga kommunikationsnäten för att nå den fysikaliska världen. Samverkan
+med andra enheter öppnar nya möjligheter för tekniken trots att förmågan hos en
+enskild enhet är liten.
+Man kan sätta upp ett sådant nät utan att koppla samman givarna med led-
+ningar, vilket underlättar installationsarbetet, men nätet lämnas samtidigt öppet
+för andra att nå trådlöst, vilket kan vara en säkerhetsrisk. Tillämpningar som denna
+teknik tänkes kunna möjliggöra är större förmåga för övervakning och att sprida
+tillgång till beräkningsförmåga eller till beﬁntliga kommunikationsnät. [1] [2]
+Det nuvarande läget inom trådlösa sensornät enligt min mening är att det redan
+ﬁnns tillverkade enheter och mjukvara för ﬂera tillämpningar utanför forskningen
+men de har inte nått ännu industrin. Det har dock genomförts försök i fält i samar-
+bete med industrin med goda erfarenheter [3] [4] [5]. Den förväntade utvecklingen
+är att enheterna kommer att bli mindre i framtiden.
+1.2
+Mål och förfarande
+Målet med detta arbete är att undersöka hur sensornät kan användas för att över-
+vaka temperatur och upptäcka värmeläckor i en byggnad som ger upphov till tem-
+peraturförändringar i ett rum. Denna förlust kan uppfattas som läckor av värme
+eller kyla ur eller till ett rum. Man hoppas också med denna målsättningen att den
+blivande lösningen kan vidgas till andra slags läckor, som är svårare att undersöka
+med tillgängliga medel, som till exempel kemiska läckor från rör eller behållare.
+På samma gång vill man bygga ett sådant nät och bekräfta slutsatserna på det
+fungerande nätet att tillgå. Från detta nät vill man dessutom erhålla kännedom
+om det fysikaliska förloppet att undersöka, nämligen överföringen av värme i luft,
+1
+2
+KAPITEL 1. INLEDNING
+och inte förmoda hur det skulle bete sig genom att användas av en färdig modell.
+Man ämnar också att lära känna de möjligheter och begränsningar som ett verkligt
+sådant nät besitter, för att kunna tillämpa kunskaperna i andra fall.
+Nätet kommer att bestå av en uppsättning av givare spridda kring en känd
+möjlig läcka, särskilt intill och på ömse sidor av den misstänkta ytan, såsom en
+dörr eller ett fönster. Varje sådan enhet har begränsad beräkningsförmåga och minne
+samt kan samverka med andra med hjälp av trådlös kommunikation. Denna utökade
+givare kommer att benämnas smolk i fortsättningen, efter önskan att de i framtiden
+blir så små som dammkorn. Smolken skall samarbeta för att bestämma huruvida
+den samma möjliga läckan, som de övervakar, är stängd eller öppen och då utfärda
+en varning. För detta ändamål kommer smolken att endast mäta temperaturen i sin
+omnejd, men de skulle kunna mäta andra av luftens egenskaper med samma syfte
+såsom fuktighet, hastighet eller kolsyrehalt.
+Flera algoritmer kommer att undersökas och jämföras för att lösa detta problem
+på det bästa sättet. Algoritmerna skall ta i beaktande både de egenskaper som tråd-
+lösa nät uppvisar och det fysikaliska förloppet som pågår i detta fall. Jämförelsen
+mellan algoritmerna kommer att grundas på fördröjningen att upptäcka förekomst
+och upphörande av läcka, på antalet varningar som sänds utan att läckan förekom-
+mer eller upphör och på antalet varningar som inte sänds trots att en förändring
+har skett i läckan.
+De första algoritmerna att undersöka kommer att fatta beslut med ett enda
+smolk och man hoppas att det kommer att ge upphov till förslag om hur ﬂera
+spridda smolk kan samarbeta för att förbättra detektionen. Slutligen kommer man
+att överväga förslagen och försöka ﬁnna en algoritm som kan upptäcka kommande
+förändringar i temperaturen med hjälp av ett trådlöst sensornät. Man förväntar sig
+att lösningen kommer att vara bättre än för ett smolk men det är osäkert huruvida
+det lönar sig att bygga ett sådant nät.
+1.3
+Smolk
+1.3.1
+Hårdvara
+De smolk som används i detta arbete har över huvud taget samma utformning
+som Telos Revision B. Telos Revision B utvecklades av University of California,
+Berkeley i USA och tillverkas av Moteiv Corporation också från Berkeley och kallas
+Tmote Sky. Det visas i ﬁgur 1.1 (sida 3). Det ﬁnns andra slags smolk att köpa
+tillämpade för forskning såsom ESB som utvecklades av Freie Universität Berlin i
+Tyskland och tillverkas av ScatterWeb GmbH också från Berlin. Det ﬁnns tio Tmote
+Sky smolk tillgängliga på avdelningen och de viktigaste egenskaperna för arbetet
+beskrivs nedan och sammanfattas i tabell 1.1 (sida 4). För ytterligare upplysningar
+hänvisas till smolkets datablad [6].
+Detta smolk behöver två AA batterier för att fungera självständigt men det kan
+dra ström ur USB kontakten då det är kopplat, i stället för ur batterierna. Det
+behövs mellan 2,1 och 3,6 V spänning för att smolket ska fungera och inte skadas
+1.3. SMOLK
+3
+Figur 1.1. Moteivs Tmote Sky efter Telos Revision B
+om det är redan programmerat. Det förbrukar kring 60 mW (20 mA × 3 V) då det
+sänder med det största uteﬀekten, 0 dBmW, eller lyssnar genom radion, och kring
+6 mW (2 mA × 3 V) då radion är avstängd men kan ändå utföra beräkningar.
+Processorn tillverkas av Texas Instruments Incorporated från Dallas i USA och
+benämnas MSP430 F1611, beräknar med 16 bitar och kan arbeta från 32×1024 Hz
+till 8 MHz. Den har också inbyggt SRAM minne på 10 × 1024 byte och Flash minne
+(slags EEPROM) på 48×1024 byte för program. Det ﬁnns dessutom ett yttre Flash
+minne på 1×10242 byte för annat som tillverkas av STMicroelectronics från Genève
+i Schweiz och heter M25P80. Man kan skrivskydda delar av minnet. En sådan del
+kommer redan skyddad från smolkets tillverkare och den innehåller ”den gyllene
+bilden”, ett program, för att kunna programmera om smolket genom det trådlösa
+nätet i fall det arbetar med ett felaktigt program.
+Trådlös kommunikation åstadkoms genom att använda en mottagare och sän-
+dare, CC2420, tillverkad av Chipcon AS från Oslo i Norge. Den arbetar enligt stan-
+darden IEEE 802.15.4 som använder det ISM (Industrial, Scientiﬁc and Medical)
+bandet kring 2,4 GHz och tillämpas för trådlösa nät kring en enskild människa med
+låg överföring av data. För CC2420 är överföringen fast vid 250 kbit/s. Man kan väl-
+ja med kretsen bland olika eﬀekter för strålningen mellan 0 och −24 dBmW (mellan
+1 mW och 4 µW). Smolket har en rundstrålande omvänt F antenn på kortet med 50
+meters räckvidd inomhus och 125 m utomhus, men om det behövs kan man koppla
+en annan antenn med hjälp av en SMA (SubMiniature version A) kontaktdon som
+inte ﬁnns på smolkets kort.
+4
+KAPITEL 1. INLEDNING
+Tabell 1.1. Tabell med de viktigaste uppgifterna för Moteivs Tmote Sky
+egenskap
+värde
+pris
+1200 kronor
+storlek
+81 mm × 32 mm × 22 mm = 57,024 cm3
+spänning
+2,1–3,6 V (vanligen 3 V)
+förbrukning
+6–60 mW (radio av/på)
+beräkningshastighet
+32 × 1024 Hz–8 MHz
+processorns läsminne (ROM)
+48 × 1024 byte
+processorns ﬂyktigt minne (RAM)
+10 × 1024 byte
+yttre Flash minne
+1 × 10242 byte
+radiofrekvensområde
+2400–2483,5 MHz (ISM)
+överföringshastighet
+250 kbit/s
+eﬀekt
+−24–0 dBmW
+räckvidd (omvänt F antenn)
+50–125 m (inom-/utomhus)
+Smolken har två givare för ljus (fotodioder) tillverkade av Hamamatsu Photo-
+nics K.K. från Hamamatsu i Japan, en för synligt ljus och nära infraröd strålning,
+S1087-01 (320–1100 nm), och en annan för verksamt ljus i fotosyntesen, S1087 (320–
+730 nm). Det ﬁnns också två andra givare som kommer på samma krets för att mäta
+temperatur och luftfuktighet och som beskrivs utförligare i denna redogörelse strax
+efter smolket. Det ﬁnns dessutom två utvidgningskontaktdon för att sätta andra
+enheter såsom givare, en 10-pins IDC (Insulation Displacement Connector) kontakt
+och en 6-pins.
+Beträﬀande hårdvaran och övergången till mjukvaran laddar man program till
+smolken i vanliga fall genom deras USB kontakt, men man kan göra det även trådlöst
+genom luften om man använder vissa tillämpningar, såsom Deluge. Till sist bör man
+lägga märke till att smolken är känsliga mot elektrostatiska urladdningar och bör
+behandlas varsamt, det vill säga urladda sig före beröring och företrädesvis ta tag
+i smolket på USB kontakten.
+1.3.2
+Mjukvara
+Ett operativsystem som kallas TinyOS används för att smolken skall kunna pro-
+grammeras och hanteras enligt de begränsningar som dessa kännande och kommuni-
+cerande enheter besitter eller förväntas att ha i framtiden. Detta operativsystem är
+det som verkar på varje smolk och ser till att det görs vad man önskar med minsta
+möjliga fördröjningar, minnesåtgång och strömförbrukningen. Man kan kort säga
+att det är avsett för inbyggda givare i ett nät och bygger på att behandla händelser
+och vänta annars. Förutom kod för att behandla händelser ﬁnns det också sysslor,
+eller tasks. Händelser ifrån hårdvaran får behandlas när som helst medan sysslor
+utförs helt tills slutet och ett efter ett. TinyOSs kärna ryms inom 1024 byte. För
+1.4. GIVARE
+5
+en utförligare beskrivning av mål och en utvärdering av TinyOS hänvisas till Ja-
+son Hills med ﬂera System architecture directions for networked sensors [7], och för
+allmänna upplysningar till TinyOS Community Forum [8].
+nesC är det språk som man använder för att skriva program som körs under
+TinyOS. Nuförtiden är även TinyOS självt skrivet i detta språk. Det är en utökning
+på C språket för att lätt ta hänsyn till det vis som TinyOS har att fungera, nämligen
+händelser, sysslor (eller tasks) med ﬂera. Sammanfattningsvis får man säga att pro-
+gram byggs av moduler med olika gränssnitt som binds ihop med andra moduler.
+Det kan dessutom kännas arbetsamt att anropa viss handling utan att veta efter
+det att den är gjord. Man vet det genom att en ny händelse sker då handlingen
+är gjord. Detta samspel mellan olika delar av kod med händelser påstås vara nöd-
+vändigt för att nå de mål som TinyOS sätter sig. För ﬂera upplysningar om nesC
+hänvisas till nesCs handbok [9] och till David Gays med ﬂera The nesC language:
+A holistic approach to networked embedded systems [10], och för en handledning om
+TinyOS och nesC till TinyOS Tutorial [11].
+Det ﬁnns åtskilliga verktyg för att arbeta med den mjukvara som kommer att
+fungera på smolken eller på en dator som kan samverka med det trådlösa nätet. De
+grundläggande verktygen är kompilatorn för nesC och programmet för överföring av
+program via USB-kontakten, laddaren. De ﬁnns samlade tillsammans med TinyOSs
+kod som ﬁnns att ladda ner från TinyOS Community Forum [8] och för detta arbete
+har använts TinyOS 1.1.11 (februari 2005), under Microsoft Windows XP med hjälp
+av Cygwin som POSIX omgivning. Ett verktyg som kan vara lämpligt att använda
+för att förstå koden av beﬁntliga program eller för att skriva underlag för egna
+program heter nesdoc. Det skapar underlag om koden och även ritar hur olika
+moduler binds ihop. För att installera TinyOSs utvecklingsverktyg och kod i en
+dator anbefalles att följa anvisningarna i Tmote Sky Quick Start Guide [12], och
+företrädesvis det senaste TinyOS.
+Det program som har använts för att samla in mätningar vid olika försök heter
+Aegis och utvecklades på avdelningen (Reglerteknik) i början av 2005. Det består
+av ett program som laddas på varje smolk och ett Java program på en dator som
+visar mätningarna från de tillgängliga givarna som skickas till grundsmolket, vilket
+är kopplat till datorn. Smolken hittar vägen till grundsmolket tack vare en dirigering
+som kan använda ﬂera smolk för att nå det. Aegis liknar två andra program, UCBs
+SurgeTelos och Moteivs Oscilloscope, men tillför nya möjligheter som att kunna
+spara alla meddelanden som grundsmolket får till en ﬁl. Det program som följs i
+smolken tar 19510 byte ROM för koden och behöver 780 byte RAM. Handboken för
+Aegis ﬁnns i Inés Cabreras Telos and Aegis Quick Start Guide [13].
+1.4
+Givare
+Den använda temperaturgivare som kommer med Moteivs Tmote Sky smolk tillver-
+kas av Sensirion AG från Stäfa i Schweiz och heter SHT11, som visas på ett smolk i
+ﬁgur 1.2 (sida 6). Den är i själva verket en krets som kan mäta både temperatur och
+6
+KAPITEL 1. INLEDNING
+Figur 1.2. Sensirions SHT11 på ett smolk, tillverkningsdag 244: vecka 24, 2004
+fukt på nära håll (inom mindre än 100 mm3), och därför är lämplig för att räkna
+daggpunkten [14], eller andra mått beroende på temperatur och fukt samtidigt i
+samma ställe. Temperaturen mäts tack vare halvledarnas energisprång till lednings-
+bandet och fukten med hjälp av en polymer som suger upp fukt och uppträder som
+en kapacitans beroende på den. Givarens viktigaste egenskaper för arbetet beskrivs
+strax nedan och de sammanfattas i tabell 1.2 (sida 9). För ytterligare upplysningar
+hänvisas till kretsens datablad [15].
+Givaren kommer redan kalibrerad och mätvärdena hanteras digitalt, med fjorton
+eller tolv bitar för temperaturen. I detta arbete används fjorton bitar som innebär
+en upplösning av 0,01 ◦C. Varje sådant mätvärde tar minst 210 ms att genomföra,
+det vill säga, man skulle kunna mäta högst mellan fyra och fem gånger i sekunden.
+Man bör lägga märke att detta gäller om man mäter bara temperaturen, om man
+mäter också fukten krävs det mera tid, nämligen 55 ms om det görs med tolv bitar,
+liksom Aegis programmet gör, och då krävs det sammanlagt 265 ms. Man kan därför
+mäta högst mellan tre och fyra gånger i sekunder med Aegis.
+Vid behov innehar givaren en värmare för att höja temperaturen i fall det är för
+kallt, för att öka noggranheten, som är störst kring 25 ◦C, nämligen ±0,5 ◦C. Vid
+lägre eller högre temperaturer än 25 ◦C minskar noggranheten.
+Gränssnittet till givaren består av fyra ledningar: två för införsel av ström (VDD
+och GND), en för klockan (SCK) och en för data (DATA). Hela kommunikationen
+genom gränssnittet säkras med hjälp av en CRC (Cyclic Redundancy Check) av åtta
+bitar för att undvika fel som kunde uppstå.
+Angående tiden som givaren behöver för att känna en ny temperatur, bör man
+lägga märke till både att givaren och smolket värmer sig själva och att de har en
+1.4. GIVARE
+7
+viss tröghet att behålla sina temperaturer på grund av lagrad värme i massan. Att
+svarstiden ligger mellan 5 och 30 sekunder anges i givarens uppgifter, men utan hän-
+syn till hur smolket (där givaren sitter) påverkar den. Denna påverkan anges inte av
+smolkets tillverkare, Moteiv, och man bör inte försumma den eftersom det rekom-
+menderas av givarens tillverkare, Sensirion, att skydda givaren från moderkortets
+värme genom skåror kring den, som är inte fallet i de använda smolken.
+Det ﬁnns också självuppvärmning beroende på hur stor del av tiden som tempe-
+raturgivaren används. Om givaren används under en tiondedel av tiden blir självupp-
+värmningen mindre än 0,1 ◦C. I arbetets fall används givaren ännu oftare, 13,25 %
+av tiden, för att mäta temperatur (14 bitar, 210 ms) och för att mäta fukten (12
+bitar, 55 ms) varannan sekund. Det kommer dessutom varm luft från andra delar
+av smolket, särskilt från processorn, och hur smolket ställs orsakar att givaren får
+mera eller mindre varm luft. I alla dessa fall är luftdraget som slutligen bestämmer
+hur snabbt kommer givaren att förnimma förändringar i temperaturen.
+Man bör notera att givaren behöver minst 2,4 V för att kunna mäta. Denna
+spänning är högre än de 2,1 V som övriga komponenter i smolket behöver. Det
+innebär att smolket kan fungera utan givaren om spänningen ligger mellan 2,1 och
+2,4 V, och om det sker under en mätning kan man iaktta att måtten ökar snabbt
+till ett felaktigt slutvärde, som visas i ﬁgur 1.3 (sida 8). För att undvika det kan
+man mäta spänningen från processorn, Texas Instruments MSP430, eller titta på
+givarens tillstånd som efter varje mått uppger huruvida spänningen ligger under
+2,47 V (End of Battery tillstånd [15]), och på så vis kunna byta batterierna innan
+felen uppstår.
+Slutligen har man iakttagit under några mätningar att temperaturgivaren upp-
+visar ett oväntat beteende. Det handlar om att den mätta temperaturen stannar i
+viss tid i en bestämd temperatur omkring 26 ◦C när temperaturen ökar eller mins-
+kar i andra fall (omkring en annan temperatur) utan uppehåll. Detta har setts i alla
+smolk och alltid när temperaturen ökade eller minskade omkring denna speciﬁka
+temperatur. De mätvärde som erhålls från givarna var lika, värdet 6553 för 14 bitar,
+som motsvarar en temperatur på 25,93 ◦C enligt databladet [15]. Företeelsen visas
+i ﬁgur 1.4 (sida 8). Ett fel på mjukvara har setts som svårt att vara orsaken till
+beteendet. Det uteslöts också att beteendet verkligen var något som skedde i tem-
+peraturen. Det stod kvar därför att temperaturgivaren vare orsaken till företeelsen
+och det föreslås att det kan vara på grund av elektrisk hysteres som inträﬀar i giva-
+ren. Detta förslag har dock inte kunnat styrkas. Tack till Valentin Foltescu, forskare
+vid Sveriges meteorologiska och hydrologiska institut (SMHI) i Norrköping, för sitt
+uppslag om den elektriska hysteresen.
+8
+KAPITEL 1. INLEDNING
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+0
+20
+40
+60
+80
+100
+120
+140
+DAGENS TID  (timma)
+TEMPERATUR  (°C)
+EXJOBBSRUM / 2005−09−06
+MÅTT VAR TIONDE SEKUND
+Figur 1.3. Låga batterier för givaren men tillräckliga för smolket från och med
+klockan 14
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+25.5
+26
+26.5
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+24.5
+25
+25.5
+SMOLK 5
+VANLIG MÄTNING  (°C)
+(RANDIG)
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+25.5
+26
+26.5
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+24
+24.5
+25
+SMOLK 3
+VANLIG MÄTNING  (°C)
+(RANDIG)
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+25
+26
+27
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+24
+24.5
+25
+SMOLK 1
+VANLIG MÄTNING  (°C)
+(RANDIG)
+SAMPEL  (VARANNAN SEKUND)
+OVÄNTAD MÄTNING  (°C)
+(KONTINUERLIG)
+OVÄNTAD MÄTNING  (°C)
+(KONTINUERLIG)
+OVÄNTAD MÄTNING  (°C)
+(KONTINUERLIG)
+Figur 1.4. Tre mätningar där det oväntade beteendet hos SHT11 temperaturgivaren
+visas. Det visas samtidigt en motsvarande mätning som gjordes en annan gång, med
+lägre temperaturer. För att förstå förändringarna i de vanliga mätningarna hänvisas
+till 3.2 (sida 23).
+1.4. GIVARE
+9
+Tabell 1.2. Tabell med de viktigaste uppgifterna för Sensirions SHT11 beträﬀande
+temperaturgivaren
+egenskap
+värde
+storlek
+7,42 mm × 4,88 mm × 2,5 mm = 90,524 mm3
+vikt
+100 mg
+upplösning
+0,01 ◦C för 14 bitar
+väntetid för ett mått
+210 ms för 14 bitar
+repeterbarhet
+±0,1 ◦C
+noggranhet
+±0,5 ◦C vid 25 ◦C
+svarstid
+5–30 s
+självuppvärmning
+< 0,1 ◦C för mätning under < 10 % av tiden
+spänning
+2,4–5,5 V (vanligen 5 V)
+Kapitel 2
+Algoritm för ett smolk
+2.1
+Problemformulering
+I detta kapitel kommer tre algoritmer för ett smolk att jämföras, för att avgöra
+hur algoritmerna kan vidgas med ﬂera smolk för att förbättra dem. Algoritmerna
+är CUSUM-test, att uppskatta parametrar från en modell och diﬀerensbildning.
+De två första valdes därför att de brukar användas för att upptäcka förändringar.
+Diﬀerensbildningen valdes som en enkel lösning att jämföra med.
+2.2
+Försöksuppställning
+Man använde sig av en skjutdörr som skiljer biblioteket och exjobbsrummet, för
+att genomföra ett försök som kommer att användas för att jämföra olika förslag
+på algoritmer. Temperaturskillnaden mellan biblioteket och exjobbsrummet brukar
+vara omkring en grad. Biblioteket brukar vara varmare än exjobbsrummet. Denna
+skillnad kan vara för lite för att kunna upptäcka temperaturförändringar trots att
+skjutdörren öppnas eller stängs. Med denna skillnad kan man ändå iaktta företeelser
+som annars skulle försummas, och därför kan man förstå bättre vilka är gränserna
+för att upptäcka temperaturförändringar.
+Försöket består av två smolk på golvet som tar ett mått på temperaturen varan-
+nan sekund, en i biblioteket intill dörren och en i exjobbsrummet intill dörren. De
+lades och tändes femton minuter innan mätningen påbörjades, med skjutdörren till
+biblioteket stängd. Figuren 2.1 (sida 12) visar uppställningen.
+Dörren fortsatte stängd under mätningens första femton minuter. Efter detta,
+var dörren öppen i en minut, stängd i två, öppen i tre, stängd i fyra, öppen i fem,
+och till sist stängd i ytterligare femton minuter. Försökets förfarande sammanfattas
+i tabell 2.1 (sida 12). Mätningarna visas i ﬁgur 2.2 (sida 13).
+Det smolk som valdes för jämförelsen är den som ligger i biblioteket, eftersom den
+är känsligare för ändringar i temperaturen. Exjobbsrummet är större än biblioteket,
+och därför påverkas mindre av biblioteket, på samma vis som att jämföra den inre
+temperaturen i en byggnad (stängt utrymme) med den yttre (under bar himmel).
+11
+12
+KAPITEL 2. ALGORITM FÖR ETT SMOLK
+EXJOBBSRUM
+BIBLIOTEK
+Figur 2.1. Försöksuppställning, sett från taket till golvet, för att undersöka algorit-
+mer för ett smolk
+Tabell 2.1. Framkallade läckor i försöket
+läge
+minuter från midnatt
+stängd
+680–695
+öppen
+695–696
+stängd
+696–698
+öppen
+698–701
+stängd
+701–705
+öppen
+705–710
+stängd
+710–725
+De algoritmer som kommer att jämföras är CUSUM över medelvärde, skattning av
+modell och skillnader mellan sampel.
+Från detta smolk erhölls 1279 temperaturmått av 1350 möjliga under 45 minuter.
+Det motsvarar en förlust på mindre en 6 % som anses vara tillräckligt låg för att
+godkänna försöket. De mått som förlorades ersattes med det sista mått som erhölls
+före förlusten.
+2.3
+Filter
+I både CUSUM och skillnaden, men inte i modellen, har varningar sållats bort som
+är omöjliga på grund av försökets omständigheter. Det är omöjligt att en läcka
+förekommer ﬂera gånger i rad (att öppna dörren upprepade gånger) eller en läcka
+2.4. ALGORITMER
+13
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+21.4
+21.6
+21.8
+22
+22.2
+22.4
+22.6
+22.8
+23
+23.2
+23.4
+DAGENS TID  (min)
+TEMPERATUR  (°C)
+BIBLIOTEK
+EXJOBBSRUM
+Figur 2.2. Försökets mätning: temperaturen i biblioteket och i exjobbsrummet, den
+andra augusti 2005 mellan 11.20 och 12.05
+upphör ﬂera gånger i rad (att stänga dörren upprepade gånger). På detta vis kan
+man öka hastigheten att upptäcka förekomst eller upphörande av läcka genom att
+förminska trösklarna, och godta falska varningar som ändå kommer att sållas efteråt.
+Detta ﬁlter raderar luftdragets inverkan över temperaturen när läckan ﬁnns,
+eftersom draget påskyndar att temperaturen når dess slutvärde och skulle kunna
+vålla en varning då draget förekommer, medan ﬁltret tar bort den eftersom en
+varning av samma slag har sänts i samband med läckans förekomst, som orsakar
+att luft kan ﬂyta genom den. Filtret undviker också att ﬂera varningar av samma
+slag sänds på grund av att tröskeln överstigs upprepade gånger av samma förekomst
+eller upphörande.
+Däremot, om en förändring förloras, på grund av till exempel att algoritmen
+inte är känslig nog, nästa förändring kommer att tas bort eftersom ﬁltret har inte
+fått förändringen, och väntar på en av det andra slaget.
+Man kan inte tillämpa detta ﬁlter på modellen eftersom den bestämmer inte
+vilken slags varning det är.
+2.4
+Algoritmer
+2.4.1
+CUSUM över medelvärde
+Beskrivning
+CUSUM (cumulative sum) bygger på att räkna ihop sampel tills räkningen översti-
+ger ett visst värde. Man förväntar sig att det kommer att minska verkan av bruset
+14
+KAPITEL 2. ALGORITM FÖR ETT SMOLK
+i signalen på att bestämma när en förändring uppkommer, genom att förlora på
+hastigheten att upptäcka den.
+I det här fallet, skattas signalens medelvärde för att ta bort det och för att
+endast behålla ändringarna kring det, det vill säga, för att upptäcka en förändring
+i signalens medelvärde.
+En närmare beskrivning av algoritmen ﬁnns i följande MATLAB-kod:
+t0 = 1; g_upp(1) = 0; g_ner(1) = 0; medelvaerde(1) = signal(1);
+for t = 2:length(signal)
+g_upp(t) = g_upp(t-1) + signal(t) - medelvaerde(t-1);
+g_ner(t) = g_ner(t-1) + signal(t) - medelvaerde(t-1);
+medelvaerde(t) = sum(signal(t0:t)) / (t-t0+1);
+if (g_upp(t) < 0)
+g_upp(t) = 0;
+end
+if (g_ner(t) > 0)
+g_ner(t) = 0;
+end
+if (g_upp(t) > troeskel_upp)
+% Varning upp!
+g_upp(t) = 0;
+g_ner(t) = 0;
+medelvaerde = signal(t);
+t0 = t;
+end
+if (g_ner(t) < troeskel_ner)
+% Varning ner!
+g_upp(t) = 0;
+g_ner(t) = 0;
+medelvaerde = signal(t);
+t0 = t;
+end
+end
+För ﬂera upplysningar om CUSUM föreslås att slå upp i Fredrik Gustafssons
+Adaptive Filtering and Change Detection [16].
+Resultat
+Algoritmens resultat på den ovan nämnda mätningen ﬁnns i ﬁgur 2.3 (sida 15).
+Trösklarna har valts genom att minska dem tills ingen falsk varning detekteras
+av algoritmen. De motsvarar temperaturens skiftning utan läcka. I det här fallet, kan
+man sätta trösklarna för att framkalla ﬂera onödiga varningar av samma slag i rad,
+eftersom sådana varningar sållas bort av ﬁltret, och på så sätt kan förändringarna
+upptäckas snabbare än utan ﬁlter.
+2.4. ALGORITMER
+15
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+22
+22.5
+23
+23.5
+TEMPERATUR  (°C)
+MÄTNING
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+0
+0.2
+0.4
+0.6
+0.8
+G UPP
+VARNINGAR UPP  (TRÖSKEL  > 0,76 °C)
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+−0.8
+−0.6
+−0.4
+−0.2
+0
+DAGENS TID  (min)
+G NER
+VARNINGAR NER  (TRÖSKEL  < −0,72 °C)
+FÖRDRÖJNINGAR  (min):
+FÖRDRÖJNINGAR  (min):
+0,6284
+0,3620
+0,3630
+0,3614
+0,4284
+0,4289
+Figur 2.3. Resultat från CUSUM över temperaturens medelvärde
+2.4.2
+Modell
+Beskrivning
+Denna algoritm bygger på att skatta parametrar från en modell som antas efterlikna
+verkligheten. Den valda modellen här är
+T(t) = aT(t −1) + b
+där man skattar a och b genom att känna till temperaturens förlopp längs tiden,
+T(t), och där man får välja längden för det tidsfönster som skall användas i algo-
+ritmen.
+Parametrarna räknas genom att ﬁnna de som gör att
+
+t
+(T(t) −(aT(t −1) + b))2
+blir minst, det vill säga, hitta felets minsta kvadrater.
+Varningar sänds om a eller b överstiger en viss tröskel som kan vara olik för
+bägge, särskilt om a > 1 eller b < 0, som innebär att den skattade modellen blir
+instabil. Från denna algoritm kan man inte veta efter en varning huruvida en läcka
+uppkom eller upphörde, bara att en förändring skedde. Detta innebär att ﬁltret som
+används i alla andra algoritmer kommer inte att kunna användas här och att man
+inte kan dra nytta av kunskapen man har av tillämpningen.
+En närmare beskrivning av algoritmen ﬁnns i följande MATLAB-kod:
+for t = laengd:length(signal)
+16
+KAPITEL 2. ALGORITM FÖR ETT SMOLK
+A = [signal(t-laengd+1:t-1), ones(laengd-1,1)];
+B = signal(t-laengd+2:t);
+X = A \ B;
+a(t-laengd+1) = X(1);
+b(t-laengd+1) = X(2);
+end
+Resultat
+Algoritmens resultat på den ovan nämnda mätningen ﬁnns i ﬁgurer 2.4 (sida 17),
+2.5 (sida 17) och 2.6 (sida 18), där längderna har valts kring den minsta läckan (en
+minut) för att se vilket samband som ﬁnns mellan längden, läckan och algoritmens
+resultat.
+Trösklarna har valts genom att minska dem tills ingen falsk varning upptäcks av
+algoritmen. De motsvarar temperaturens skiftning när läckan är stängd. För trettio
+sekunder, ﬁgur 2.6 (sida 18), uppstår dock en varning som inte går att radera och
+att behålla någon sann varning samtidigt. Därför har trösklarna minskat för trettio
+sekunder tills ingen falsk varning upptäcks förutom den oundvikliga falska varningen
+i minuten 724.
+Det händer nästan samtidigt att a > 1 och att b < 0, och eftersom fördröjning-
+arna är nästan samma för båda parametrar, båda verkar ha samma förmåga att
+upptäcka förändringar. Ett problem som kan uppstå med den här algoritmen är att
+parametrarnas skattning är känslig för numerisk noggranhet, särskilt om man inte
+har tillgång till ﬂyttalsberäkningar.
+Det förväntades att skattningen skulle ge två olika modeller, en för stängd läcka
+och en annan för öppen läcka. Det visade sig dock vara att så inte sker. Man kan
+dra slutsatsen att modellen inte gott nog beskriver hur temperaturen kan förändras
+under två olika omständigheter.
+När läckan är stängd, förekommer skiftningar främst på grund av vädret eller
+solens höjd. Temperaturen stiger i den använda mätningen från 22,6 ◦C till 23,0 ◦C
+fyrtiofem minuter senare, förmodligen på grund av att solen går upp och orsakar
+att temperaturen ökar.
+När läckan ﬁnns beror hastigheten om att förändra temperaturen på hur mycket
+luft drar igenom läckan för att jämna ut temperaturen. I läckans början minskar
+temperaturen snabbt under en eller två minuter, stadgar sig, och sedan minskar
+oregelbundet. Första minskning kan troligen tillskrivas att skjutdörren öppnas och
+luft sätts i rörelse. De nästa minskningarna kan orsakas av att något rör sig nära
+dörren, människor.
+Man kan lägga märke till att ju längre fönster desto större fördröjning om man
+undgår falska varningar, men det är omöjligt för 30 sekunders fönster, ﬁgur 2.6
+(sida 18). Det innebär också att ju kortare fönster desto större sannolikhet att ﬁnna
+oönskade varningar.
+2.4. ALGORITMER
+17
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+22
+22.5
+23
+23.5
+TEMPERATUR  (°C)
+MÄTNING
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+0
+0.5
+1
+1.5
+a  (°C/°C)
+a VARNINGAR  (TRÖSKEL  > 1,0310)
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+−5
+0
+5
+10
+15
+b  (°C)
+b VARNINGAR  (TRÖSKEL  < −0,50597 °C)
+DAGENS TID  (min)
+FÖRDRÖJNINGAR  (min):
+FÖRDRÖJNINGAR  (min):
+0,3286
+−
+−
+0,8953
+1,0625
+1,0297
+0,3286
+−
+1,0951
+0,8286
+0,6958
+0,6294
+Figur 2.4. Parametrar och varningar från minsta kvadratskattning i T(t) = aT(t −
+1) + b med 3 minuters fönster
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+22
+22.5
+23
+23.5
+TEMPERATUR  (°C)
+MÄTNING
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+−0.5
+0
+0.5
+1
+1.5
+a  (°C/°C)
+a VARNINGAR  (TRÖSKEL  > 1,1303)
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+−10
+0
+10
+20
+30
+b  (°C)
+b VARNINGAR  (TRÖSKEL  < −2,8838 °C)
+DAGENS TID  (min)
+FÖRDRÖJNINGAR  (min):
+FÖRDRÖJNINGAR  (min):
+0,1948
+−
+0,3950
+0,2620
+0,3289
+−
+0,1948
+−
+0,3950
+0,2620
+0,3289
+−
+Figur 2.5. Parametrar och varningar från minsta kvadratskattning i T(t) = aT(t −
+1) + b med 1 minuts fönster
+18
+KAPITEL 2. ALGORITM FÖR ETT SMOLK
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+22
+22.5
+23
+23.5
+TEMPERATUR  (°C)
+MÄTNING
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+−1
+0
+1
+2
+a  (°C/°C)
+a VARNINGAR  (TRÖSKEL  > 1,25)
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+−40
+−20
+0
+20
+40
+b  (°C)
+b VARNINGAR  (TRÖSKEL  < −5,6 °C)
+DAGENS TID  (min)
+FÖRDRÖJNINGAR  (min):
+FÖRDRÖJNINGAR  (min):
+0,1278
+−
+0,2950
+−
+0,2289
+−
+!
+0,1278
+−
+0,2950
+−
+0,2289
+−
+!
+Figur 2.6. Parametrar och varningar från minsta kvadratskattning i T(t) = aT(t −
+1) + b med 30 sekunders fönster
+2.4.3
+Diﬀerensbildning
+Beskrivning
+Den här algoritmen mäter skillnaden mellan två sampel som har ett bestämt tidsin-
+tervall mellan sig. Den kan ses som en förenkling av den ovanstående modellen där
+a = 0.
+Varningar sänds om skillnaden överstiger en viss tröskel eller understiger en
+annan.
+En närmare beskrivning av algoritmen ﬁnns i följande MATLAB-kod:
+for t = laengd+1:length(signal)
+skillnad(t-laengd) = signal(t) - signal(t-laengd);
+end
+Resultat
+Algoritmens resultat på den ovan nämnda mätningen ﬁnns i ﬁgurer 2.7 (sida 19),
+2.8 (sida 19) och 2.9 (sida 20), där längderna har valts kring den minsta läckan
+(en minut) för att se vilket samband ﬁnns mellan längden, läckan och algoritmens
+resultat.
+Trösklarna har valts genom att minska dem tills ingen falsk varning upptäcks
+av algoritmen. De motsvarar temperaturens skiftning när läckan är stängd.
+Den här algoritmen liknar modellen med avseende på fönstrets längd (avstånd
+mellan mått), fördröjningar och oönskade varningar.
+2.4. ALGORITMER
+19
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+22
+22.5
+23
+23.5
+MÄTNING
+TEMPERATUR  (°C)
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+−1
+−0.5
+0
+0.5
+1
+VARNINGAR NER  (TRÖSKEL  < −0,04 °C)
+SKILLNAD  (°C)
+DAGENS TID  (min)
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+−1
+−0.5
+0
+0.5
+1
+VARNINGAR UPP  (TRÖSKEL  > 0 °C)
+SKILLNAD  (°C)
+FÖRDRÖJNINGAR  (min):
+FÖRDRÖJNINGAR  (min):
+0,6286
+−
+0,2963
+0,2614
+−
+0,5289
+Figur 2.7. Resultat från skillnaden mellan nuvarande mått och mått 3 minuter före
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+22
+22.5
+23
+23.5
+MÄTNING
+TEMPERATUR  (°C)
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+−0.5
+0
+0.5
+DAGENS TID  (min)
+VARNINGAR NER  (TRÖSKEL  > −0,040 °C)
+SKILLNAD  (°C)
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+−0.5
+0
+0.5
+VARNINGAR UPP  (TRÖSKEL  > 0,021 °C)
+SKILLNAD  (°C)
+FÖRDRÖJNINGAR  (min):
+FÖRDRÖJNINGAR  (min):
+0,6284
+0,1286
+0,2630
+0,1948
+0,2950
+0,2289
+Figur 2.8. Resultat från skillnaden mellan nuvarande mått och mått 1 minut före
+20
+KAPITEL 2. ALGORITM FÖR ETT SMOLK
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+22
+22.5
+23
+23.5
+MÄTNING
+TEMPERATUR  (°C)
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+−0.05
+0
+0.05
+VARNINGAR NER  (TRÖSKEL  > −0,021 °C)
+SKILLNAD  (°C)
+DAGENS TID  (min)
+680
+685
+690
+695
+700
+705
+710
+715
+720
+725
+−0.05
+0
+0.05
+VARNINGAR UPP  (TRÖSKEL  > 0,021 °C)
+SKILLNAD  (°C)
+FÖRDRÖJNINGAR  (min):
+FÖRDRÖJNINGAR  (min):
+0,1281
+0,1620
+0,0961
+0,1278
+0,1951
+0,1622
+Figur 2.9. Resultat från skillnaden mellan nuvarande mått och mått 2 sekunder före
+2.5
+Utvärdering
+Den bästa algoritmen med avseende på fördröjning att upptäcka förändringar är
+skillnaden med två sekunders avstånd, som sammanfattas i tabell 2.2 (sida 20).
+Den här algoritmen har två egenskaper som antas vara bakom att den är bäst.
+Det första är att man kan ställa in hur många temperaturmått, eller hur mycket
+tid, har algoritmen för att bestämma huruvida den måste skicka någon varning.
+CUSUM saknar den. CUSUM räknar ihop mått och tar bort medelvärdet tills räk-
+ningen överstiger en viss tröskel, oavsett hur mycket tid det tar.
+Det andra är att man kan ﬁltrera bort varningar som är omöjliga i det här fallet,
+att öppna ﬂera gånger i rad eller att stänga ﬂera gånger i rad. I modellen kunde
+man inte tillämpa det här ﬁltret eftersom man inte kunde särskilja mellan förekomst
+och upphörande av läcka.
+Dessutom behöver diﬀerensbildningsalgoritmen minst antal beräkningar.
+Tabell 2.2. Algoritmernas fördröjning i genomsnitt för de bästa inställningarna i
+varje fall
+algoritm
+fördröjning i sekunder
+CUSUM över medelvärde
+26
+modell (1 minut)
+18
+skillnad (2 sekunder)
+9
+2.6. SLUTSATSER
+21
+2.6
+Slutsatser
+Man kan dra tre slutsatser från de visade resultaten. Algoritmerna blir bättre om
+man kan tillämpa all kunskap man har av fallet. Här vet man att det är omöjligt
+att två förekomster eller två upphöranden uppkommer i rad. Det kan hända dock
+att ett upphörande (eller förekomst) inte upptäcks mellan två förekomster (eller
+upphöranden), och då kan det vara vilseledande för algoritmen.
+Det räcker med att ta hänsyn till mått under några sekunder (två sekunder lik-
+som i skillnaden) eller mindre för att upptäcka förändringarna. Efter dessa sekunder,
+lönar sig inte att hitta ett mönster efter temperaturen eftersom temperaturens för-
+lopp är ovisst, särskilt om läckan är öppen och luft kan röra sig igenom den.
+Man behöver veta hur mycket skiftning eller brus kommer att ﬁnnas i tempe-
+raturen för att träna algoritmen till den bästa lösningen, alltså ställa in trösklar.
+Lösningen kommer förstås att bero på omständigheterna kring den undersökta läc-
+kan.
+2.7
+Utvidgningar till ﬂera smolk
+Efter att se vilka möjligheter ger ett enda smolk för att upptäcka förändringar i
+temperaturen orsakade av en luftläcka, föreslås nu tre utvidgningar till ﬂera smolk
+som tros kunna fungera bättre än för en allena. Nu behövs det således samverkan
+mellan smolken för att förbättra resultaten.
+Det första är att lägga ett annat smolk på andra sidan av läckan, den sida som är
+mindre känslig till läckan (större rum, mera luft i samma temperatur), och använda
+den som mönster för temperaturen. Det sker att det ﬁnns visst samband mellan den
+inre och den yttre temperaturen även när läckan är stängd. De kan gå upp eller
+ner samtidigt på grund av samma företeelse, eftersom de är inte helt avskilda. Man
+hoppas med det att den yttre temperaturen kan hjälpa åt att känna igen långsamma
+förändringar i temperaturen (långsammare än läckor) som inte orsakas av läckan,
+utan av samma omständigheter, och undvika då att bestämma en oönskad varning
+för en läcka som inte ﬁnns, eller att förlora en varning för en verklig läcka. Man
+kan också använda temperaturen från den andra sidan för att av sig själv ställa in
+trösklarna beroende på skillnaden mellan sidorna.
+Det andra är att använda ﬂera smolk i den inre sidan (känsligare, mindre rum),
+så att de motsvarar en ökad takt på att mäta temperaturen och förnimma förloppet,
+eller för att minska takten på varje smolk och spara på så sätt energi. Det skulle
+kunna förkorta tiden det tar att upptäcka läckorna, eller att bevara samma tid med
+mindre förbrukning, om de mäter ojämnt i tiden och ligger tillräckligt nära för att
+känna liknande temperaturer.
+Det tredje är att lägga ﬂera smolk i den inre sidan tillräckligt avlägsna för att
+känna olika små förändringar i temperaturen (oönskade att upptäcka), men kring
+samma läcka så att de kan jämföra sina mätningar och ta bort förändringar i enstaka
+smolk för att behålla endast förändringar som sker på alla, förmodligen på grund av
+22
+KAPITEL 2. ALGORITM FÖR ETT SMOLK
+läckan. Man skulle kunna då öka känsligheten i algoritmen eftersom det skulle ﬁnnas
+mindre brus så att det tar mindre tid att upptäcka förekomst eller upphörande av
+läcka.
+Kapitel 3
+Algoritm för ﬂera smolk
+3.1
+Problemförmulering
+Den valda utvidgningen var att ﬁltrera bort tillfälliga temperaturändringar i den
+känsliga sidan (biblioteket, som har mindre luft vid samma temperatur än exjobbs-
+rummet och därför ändrar temperaturen snabbare där) och sker bara i en del av
+läckan. Om sådana störningar uppstår, förmodas att läckan är oförändrad, förblir
+som tidigare.
+Dessa tillfälliga förändringar kan orsakas av minst tre företeelser. Värme eller
+kyla tillförs ett smolk, till exempel när en människa närmar sig den möjliga läckan
+och överför värme till en viss del. Luftdrag ﬂyter kring ett smolk, drar med sig
+värmen som smolket alstrar och därmed sjunker temperaturen, eller luft stockar
+kring smolket om detta täcks och temperaturen stiger. Till sist, ljusstrålning, till
+exempel från solen, når smolket och värmer det.
+I detta kapitel kommer ﬂera algoritmer att undersökas för att ta bort dessa
+oönskade skiftningar. En lösning från iakttagelserna kring algoritmerna kommer
+att väljas, förverkligas och utvärderas. Man hoppas med det att den distribuerade
+algoritmen uppvisar bättre egenskaper än för ett enda smolk, och måhända även
+nya egenskaper som inte går att efterlikna med ett smolk.
+3.2
+Försöksuppställning
+Försöket för denna undersökning består av fem smolk vid skjutdörren som skiljer
+biblioteket från exjobbsrummet, på liknande sätt som för att utforska möjligheterna
+hos ett enda smolk i förra kapitlet. De ställdes alla på ett ca. 75 centimeter högt
+bord på bibliotekets sida av skjutdörren och längs skjutdörren, med tolv centimeters
+mellanrum. De startades och lades på plats minst tio minuter innan mätningen
+påbörjades, med skjutdörren till biblioteket stängd. Under mätningen tog de ett
+mått varannan sekund. Figuren 3.1 (sida 24) visar uppställningen.
+Dörren förblev stängd under mätningens första fem minuter. Smolket långt ifrån
+dörrens öppning ﬂäktades i den mittersta minuten (den tredje) av nästa fem minuter
+23
+24
+KAPITEL 3. ALGORITM FÖR FLERA SMOLK
+BIBLIOTEK
+5
+4
+3
+1
+2
+EXJOBBSRUM
+Figur 3.1. Försöksuppställning, sett från taket till golvet, för att undersöka algorit-
+mer för ﬂera smolk
+(från minut 6 till och med minut 10) med skjutdörren stängd. Därför minskade
+temperaturen i det. Avsikten var att framkalla en skenläcka som kunde misstolkas
+som att dörren öppnades. Efter det öppnades dörren under fem minuter. Smolket
+långt ifrån dörrens öppning täcktes i den mittersta minuten (den tredje) i nästa fem
+minuter (från minut 16 till och med minut 20) med dörren öppen. Därför ökade
+temperaturen i det. Avsikten var att framkalla en skenläcka som kunde misstolkas
+som att dörren stängdes. Till sist stängdes dörren i tio minuter. Försökets förfarande
+sammanfattas i tabell 3.1 (sida 24). Mätningarna visas i ﬁgur 3.2 (sida 25).
+Tabell 3.1. Framkallade läckor och skenläckor i försöket
+läge
+minuter från midnatt
+stängd
+960–970
+smolk 1 ﬂäktas
+967–968
+öppen
+970–980
+smolk 1 täckes
+977–978
+stängd
+980–990
+Det erhölls sammanlagt 4467 temperaturmått av 4500 från de fem smolken under
+30 minuter. Det motsvarar en förlust på mindre en 1 % som anses vara tillräckligt
+låg för att godkänna försöket. De mått som förlorades ersattes med det sista mått
+som erhölls före förlusten.
+Man kan se från mätningen att den frambringade ﬂäkten över det första smolket
+når de närmaste smolken, åtminstone det andra och det tredje. Däremot sprider sig
+3.3. ALGORITMER
+25
+960
+965
+970
+975
+980
+985
+990
+24.5
+25
+25.5
+SMOLK 5
+960
+965
+970
+975
+980
+985
+990
+24
+24.5
+25
+SMOLK 4
+960
+965
+970
+975
+980
+985
+990
+24
+24.5
+25
+TEMPERATUR  (°C)
+SMOLK 3
+960
+965
+970
+975
+980
+985
+990
+24
+24.5
+25
+SMOLK 2
+960
+965
+970
+975
+980
+985
+990
+24
+24.5
+25
+DAGENS TID  (min)
+SMOLK 1
+FLÄKT
+TÄCKT
+Figur 3.2. Försökets mätning: temperaturen i fem smolk i rad i biblioteket fram-
+för skjutdörren som skiljer mellan biblioteket och exjobbsrummet, den tjugoförsta
+september 2005 mellan 16.00 och 16.30
+inte eﬀekten av att övertäcka ett smolk till de övriga. Man kan också se att det ﬁnns
+större störningar i temperaturen nära skjutdörrens öppning (det femte smolket) när
+dörren är öppen än långt ifrån den (det första smolket). Man kan förmoda att
+det beror på att luften står stilla långt ifrån öppningen och den rör sig mera nära
+öppningen. Nära öppningen ﬁnns ett skåp och det kan uppträda som en vrå och
+därför kunde luften röra sig mera. Till sist har man iakttagit i arbetet att smolken
+värmer varandra i andra fall om de ligger för nära: de som står på mitten av raden
+är varmare än de som står i ändarna. Det tycks inte inträﬀa med tolv centimeters
+mellanrum liksom i detta försök.
+3.3
+Algoritmer
+De betraktade algoritmerna kan indelas i två slag. De första bildar en gemensam
+signal av temperaturskillnader, som sedan granskas för att upptäcka stora skillna-
+der i temperaturen. Man tillämpar därför först den algoritm som ansågs vara bäst
+för ett smolk, diﬀerensbildningen, och innan smolket granskar huruvida trösklarna
+överskrids skickas signalen till alla för att bilda en gemensam signal. För att blanda
+på detta vis ﬂera skillnader i temperatur, som varje smolk skickar sin egen, föreslås
+att undersöka deras medelvärde och deras median. Det andra slaget handlar om att
+varje smolk bestämmer sig själv för att skicka varningar (eller tillståndsändringar)
+till de andra beroende på sin temperatur, och efter det bildas en gemensam följd
+av varningar. För detta slag föreslås att tillämpa en omröstning bland smolken för
+att bestämma i vilket tillstånd hela den misstänkta läckan beﬁnner sig: överföring
+26
+KAPITEL 3. ALGORITM FÖR FLERA SMOLK
+av värme, kyla eller oförändrad.
+Trots att alla smolk har samma samplingsfrekvens för att mäta temperaturen,
+varannan sekund, är de inte synkroniserade. För att kunna bilda gemensamma sig-
+naler, såsom medelvärdet och medianen, eller jämföra dem, liksom i omröstningen,
+har man bortsett från dessa skillnader (högst en sekund) och förmodat att måtten
+tas samtidigt. Det uppstår stundom (i mindre än 1 % av fallen) kommunikations-
+avbrott och meddelanden från smolken förloras. De mätningar som förlorats ersätts
+med det sista mått som erhållits före avbrottet.
+I detta skede kommer att undersökas vilka möjligheter eller egenskaper varje
+algoritm visar. Dessa algoritmer kan tänkas som centraliserade, det vill säga, de får
+alla mått från smolken och de beräknas på ett ställe, nätets mitt, grundsmolket.
+Grundsmolket är det smolk som endast tar emot alla meddelanden från nätet och
+sparar dem i en dator. Därför kommer de här algoritmerna inte att ta hänsyn till
+var smolket beﬁnner sig eller hur samverkan med de andra smolken måste gå till.
+I alla algoritmer måste ett antal parametrar ställas in för diﬀerensbildningen.
+Dessa är desamma för alla metoder: ett tröskelvärde för ändring uppåt, en annan för
+ändring neråt och en längd mellan mått att jämföra. Man skulle även kunna tänka
+sig att ha två längder för de två olika varningarna, men det har valts en gemensam
+längd för detta arbete. Parametrarna kommer att väljas så att den fördröjning
+att upptäcka förändringar blir minst. Således väljs den minsta längd som låter de
+önskade ändringarna (sanna läckor) bli större än de oönskade (skenläckor) först.
+Det innebär att det kommer att ﬁnnas vissa trösklar som kan upptäcka precis
+sanna läckor men inte skenläckor. Annars skulle det ﬁnnas inga möjliga trösklar
+för det. Sedan sätts de minsta trösklar för att upptäcka sanna läckor men inte
+falska läckor. Trösklarna kunde bli större, men här valdes de minsta för att minska
+detektionsfördröjningen.
+3.3.1
+Medelvärde
+I det här fallet handlar algoritmen om att beräkna medelvärdet av temperaturskill-
+nader (skillnaden mellan två tidpunkter) för varje ögonblick bland alla smolk. Det
+är samma sak som att först beräkna temperaturens medelvärde och sedan tillämpa
+diﬀerensbildningen. Från det gemensamma medelvärdet av temperaturskillnaderna
+kan man konstruera ett tänkt gemensamt temperaturförlopp för hela nätet, som
+visas i ﬁgur 3.3 (sida 27), och som är samma sak som temperaturens medelvärde.
+troeskel_upp = 0, 060
+troeskel_ner = −0, 070
+laengd = 8
+3.3.2
+Median
+I stället för medelvärdet tillämpas nu medianen bland temperaturskillnader, det vill
+säga, man väljer den temperaturskillnad som är varken mycket positiv eller mycket
+negativ, utan som ligger i mitten: det ﬁnns lika många temperaturskillnader som
+är större än medianen som det ﬁnns temperaturskillnader som är mindre. Från den
+3.3. ALGORITMER
+27
+960
+965
+970
+975
+980
+985
+990
+24
+24.5
+25
+TÄNKT GEMENSAM TEMPERATUR EFTER MEDELVÄRDET
+TEMPERATUR  (°C)
+960
+965
+970
+975
+980
+985
+990
+−0.1
+−0.05
+0
+0.05
+0.1
+VARNINGAR UPP  (TRÖSKEL  > 0,060 °C;  LÄNGD = 8)
+SKILLNAD  (°C)
+960
+965
+970
+975
+980
+985
+990
+−0.1
+−0.05
+0
+0.05
+0.1
+DAGENS TID  (min)
+VARNINGAR NER  (TRÖSKEL  < −0,070 °C;  LÄNGD = 8)
+SKILLNAD  (°C)
+FÖRDRÖJNING:  42 s
+FÖRDRÖJNING:  22 s
+Figur 3.3. Medelvärde över temperaturskillnader, varningar som skickas och tänkt
+gemensamt temperaturförlopp beräknat från skillnaderna
+gemensamma signalen av temperaturskillnader, efter medianen, kan man bygga
+ett tänkt gemensamt temperaturförlopp för hela nätet, som visas i ﬁgur 3.4 (sida
+28). De första värdena (så många som längden) i den tänkta temperaturen sätts
+till temperaturens medelvärde, eftersom det behövs vissa begynnelsevärden. Övriga
+värden kan beräknas från temperaturskillnader.
+troeskel_upp = 0, 075
+troeskel_ner = −0, 065
+laengd = 11
+3.3.3
+Omröstning
+I omröstningen strävar man inte efter att bygga ett gemensamt temperaturförlopp,
+lämpligt för att ﬁnna senare stora ändringar i temperaturen och utfärda varningar.
+Varje smolk kommer i stället att bestämma huruvida dess egna temperatur har
+ändrats för mycket och skickar i så fall en varning till alla andra. I omröstningen är
+det varningarna som blandas smolk emellan för att få ett slutgiltigt övergripande
+beslut om den misstänkta läckan.
+Varje smolk väljer för varje nytt mått ett av följande lägen: temperaturen har
+ökat för mycket, temperaturen har minskat för mycket, eller temperaturen förblir
+utan stora skillnader. Därefter tillämpas omröstning. Omröstningen har fyra möjliga
+resultat för varje ögonblick: temperaturen har ökat för mycket, temperaturen har
+minskat för mycket, temperaturen förblir utan stora skillnader, eller inget bestämt
+läge. Om mer än hälften alla smolk är överens om samma läge, blir detta läge
+resultatet. Om inget läge har tillräckligt stöd, blir resultatet obestämt.
+28
+KAPITEL 3. ALGORITM FÖR FLERA SMOLK
+960
+965
+970
+975
+980
+985
+990
+24
+24.5
+25
+TEMPERATUR  (°C)
+TÄNKT GEMENSAM TEMPERATUR EFTER MEDIANEN
+960
+965
+970
+975
+980
+985
+990
+−0.2
+−0.1
+0
+0.1
+0.2
+DAGENS TID  (min)
+SKILLNAD  (°C)
+VARNINGAR NER  (TRÖSKEL  < −0,065 °C;  LÄNGD = 11)
+960
+965
+970
+975
+980
+985
+990
+−0.2
+−0.1
+0
+0.1
+0.2
+SKILLNAD  (°C)
+VARNINGAR UPP  (TRÖSKEL  > 0,075 °C;  LÄNGD = 11)
+FÖRDRÖJNING: 48 s
+FÖRDRÖJNING: 18 s
+Figur 3.4. Median över temperaturskillnader, varningar som skickas och tänkt ge-
+mensamt temperaturförlopp beräknat från skillnaderna
+Trots att varje smolk kan känna samma förändringar vid smått skilda tider
+varar de för en stund, och på så vis kan de sammanfalla i viss gemensam tidpunkt.
+Trösklarna överskrids vanligen under viss tid, inte endast i ett ögonblick. För att
+möjliggöra det tillämpar man inget ﬁlter, till skillnad från när man undersökte
+algoritmer för ett smolk. Samma ﬁlter skulle ge en varning för en enda tidpunkt,
+och olika smolk skulle sällan skicka varningen i samma ögonblick.
+Man skulle kunna tänka sig att använda olika parametrar för den algoritm som
+varje smolk utför, i stället för att alla smolk har samma parametrar. I arbetet valdes
+dock att använda samma parameteruppsättning för alla enheter. Dessa parametrar
+valdes genom att automatiskt utforska resultaten för en mängd olika parametrar
+och, liksom för medelvärdet och medianen, valdes först den minsta längden (som
+möjliggör att vissa trösklar kan ﬁnnas som särskiljer sanna och falska varningar)
+och sedan de minsta trösklarna. Kravet för att godta ett val av parametrar var att
+omröstningen skulle ge: ingen varning om att temperaturen minskar mellan 965:e
+och 970:e minuten (skenläcka), någon varning om att temperaturen minskar mellan
+970:e och 975:e minuten (sann läcka), ingen varning om att temperaturen ökar
+mellan 975:e och 980:e minuten (skenläcka), och någon varning om att temperaturen
+ökar mellan 980:e och 985:e minuten (sann läcka). Det visas i ﬁgur 3.5 (sida 29)
+i vilket läge varje smolk beﬁnner sig under försöket samt omröstningen som alla
+smolk kan beräkna tack vare att de tar emot alla andras varningar.
+troeskel_upp = 0, 08
+troeskel_ner = −0, 07
+laengd = 13
+3.3. ALGORITMER
+29
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+SMOLK 5
+LÄGE
+(TRÖSKEL UPP  > 0,08 °C;  TRÖSKEL NER  < −0,07 °C;  LÄNGD = 13)
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+SMOLK 4
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+SMOLK 3
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+SMOLK 2
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+SMOLK 1
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+2
+DAGENS TID  (min)
+OMRÖSTNING
+FÖRDRÖJNING: 42 s
+FÖRDRÖJNING: 20 s
+Figur 3.5. Varningar som varje smolk skickar i försöket med fem smolk och deras
+omröstning. Läge: 2 = obestämt, 1 = ökar, 0 = oförändrat, −1 = minskar.
+3.3.4
+Utvärdering
+Det ﬁnns ingen algoritm som klart kan koras som den bästa med avseende på
+fördröjning att detektera läckor, som sammanfattas i tabell 3.2 (sida 30). Alla visar
+liknande fördröjningar trots att omröstningen är den som i genomsnitt har den
+minsta, 31 sekunder.
+Man får lägga märke i detta fall att det tar mindre tid att upptäcka att dörren
+öppnas, i början, än att dörren stängs, på slutet. Detta beror på att temperaturen
+ändras mindre när dörren är stängd än när dörren är öppen, större brus eller luft-
+drag. När dörren är öppen kan luften röra sig med större frihet och det vållar större
+förändringar i temperaturen. Det tar längre tid att temperaturen går över bruset
+då dörren är öppen än då dörren är stängd. Detta beror också på att temperaturen
+snabbare når ett slutvärde när dörren öppnas än när dörren stängs.
+Trots att alla algoritmer förefaller ge liknande fördröjningar har omröstningen
+vissa fördelar framför de andra. Den kommer att skicka varningar mindre ofta än
+de andra kommer att skicka mätvärden. Därför kommer den att spara mer energi,
+som går främst ut på grund av att skicka och ta emot meddelanden genom radio.
+Omröstningen kommer att låta smolken bestämma själva om vad som sker i sin
+omnejd och om det behövs att bli överens senare om hela den misstänkta läckan.
+Omröstningen kommer också att utföra färre beräkningar, bara när något nytt
+händer. Beräkningarna kommer dessutom att bestå av att jämföra de olika tre
+möjliga lägena från smolken. På så vis kan man skicka mindre data än om man skulle
+skicka mätvärden, och man undgår också uppgiften att bestämma hur noggranna
+30
+KAPITEL 3. ALGORITM FÖR FLERA SMOLK
+värdena borde vara.
+Det kan bli obekvämt att ändra parametrarna beroende på hur många smolk
+som för tillfället fungerar. I omröstningen behöver man i så fall ändra endast hur
+många smolk som behövs för att bestämma sig, ﬂera än hälften. Däremot behöver
+man ändra längden och trösklarna för medelvärdet och medianen därför att det
+gemensamma temperaturförloppet kommer att ändras. Det gemensamma tempera-
+turförloppet ändras därför att det beräknas på ett nytt sätt, med ett annat antal
+smolk. Det kommer att märkas framför allt i bruset: beräkning med ﬂera smolk ger
+mindre skiftningar. Trösklarna och längden beror på bruset och det kommer att
+krävas att ändra dem. Omröstningen blir således mindre beroende av hur många
+smolk är i drift.
+På grund av dessa anledningar har omröstningen valts som den mest lämpliga
+algoritmen att förverkliga på smolken. Den kommer att undersökas närmare i nästa
+avsnitt.
+Tabell 3.2. Algoritmernas fördröjning när dörren öppnas, ner, och när dörren stängs,
+upp
+algoritm
+fördröjning ner (s)
+fördröjning upp (s)
+medelvärde
+22
+42
+median
+18
+48
+omröstning
+20
+42
+3.4
+Simulering
+Efter att ha valt omröstning som den mest lämpliga algoritmen att förverkliga
+kommer man här att undersöka två frågor om algoritmen. Först vill man veta hur
+många smolk det lönar sig att ha för att omröstningen skall ge tillfredsställande
+resultat och när ﬂera smolk blir onödiga. Den andra frågan handlar om att ta reda
+på huruvida samma parametrar kan användas ﬂera gånger utan att ändras.
+För den förra utvärderingen användes fem smolk för att utvärdera medelvärdet,
+medianen och omröstningen. Om man utför omröstningen igen med bara tre smolk
+kan man se att varningarna blir väsentligen de samma, som visas i ﬁgur 3.7 (sida 32).
+De varningar med fem smolk visas igen i ﬁgur 3.8 (sida 32). Man vinner inget genom
+att använda fem smolk. De tre smolk som valdes var det mittersta (det tredje) och
+de två yttersta (det första och det femte). Ett enda smolk skulle däremot inte räcka,
+eftersom ett enda fel skulle vilseleda algoritmen. Det används i fortsättningen tre
+smolk i omröstningen, på samma sätt som visas i ﬁgur 3.6 (sida 31).
+Den andra frågan handlar om att ta reda på huruvida de parametrar som pas-
+sar den första mätningen kan användas i nya mätningar eller de kommer att vara
+lämpliga endast i detta fall. En ny mätning utfördes med samma uppställning och
+förfarande som redan beskrevs. Den nya mätningen visas i ﬁgur 3.9 (sida 33). Om
+3.4. SIMULERING
+31
+BIBLIOTEK
+EXJOBBSRUM
+Figur 3.6. Försöksuppställning, sett från taket till golvet, för att undersöka algorit-
+mer för ﬂera smolk med endast tre smolk
+man tillämpar de gamla parametrarna till den nya mätningen uppstår oönskade
+varningar i båda skenläckor, när det första smolket ﬂäktades och temperaturen
+minskade och när smolket täckades och temperaturen ökade. Andra varningar upp-
+står utan att en skenläcka fanns där. Således passar de gamla parametrarna inte för
+denna nya mätning. De bästa parametrarna för denna mätning är:
+troeskel_upp = 0, 15
+troeskel_ner = −0, 08
+laengd = 13
+Längden är densamma, medan trösklarna är större. Detta beror på att bruset är
+större nu, det vill säga, luften rör sig mera. Om man tillämpar de nya parametrarna
+på den gamla mätningen blir de då för stora; ingen varning skickas när dörren
+stängs. De minsta parametrar som passar båda mätningar är dock:
+troeskel_upp = 0, 15
+troeskel_ner = −0, 13
+laengd = 33
+Med dessa parametrar ökar fördröjningarna. Längden har ökat men det visar sig
+vara onödigt för att ﬁnna lämpliga trösklar. Det räcker med att multiplicera den
+första mätningen med två för att den bästa längden, som automatiskt sökes, ska för-
+bli oförändrad. Efter det att multiplicera kommer båda mätningar att ha skillnader
+i temperaturen av liknande storlek. De blir därför jämförbara för samma trösklar.
+Man ser då att den maximala ändringen som sker vid olika händelser måste
+vara känd för att ställa in parametrarna på bästa vis. Parametrarna borde ställas
+in jämt beroende på temperaturerna på båda sidor av den misstänkta läckan. Man
+valde dock i detta arbete att inte ta hänsyn till temperaturen på andra sidan.
+I fortsättningen kommer därför de parametrar som passade båda mätningar att
+användas, utan att multiplicera en av dem för att deras temperaturskillnader ska
+ha liknande storlek.
+32
+KAPITEL 3. ALGORITM FÖR FLERA SMOLK
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+LÄGE
+(TRÖSKEL UPP  > 0,08 °C;  TRÖSKEL NER  < −0,07 °C;  LÄNGD = 13)
+SMOLK 5
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+SMOLK 3
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+SMOLK 1
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+2
+OMRÖSTNING
+DAGENS TID  (min)
+FÖRDRÖJNING: 42 s
+FÖRDRÖJNING: 20 s
+Figur 3.7. Varningar som varje smolk skickar i försöket med tre smolk och deras
+omröstning. Läge: 2 = obestämt, 1 = ökar, 0 = oförändrat, −1 = minskar.
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+SMOLK 5
+LÄGE
+(TRÖSKEL UPP  > 0,08 °C;  TRÖSKEL NER  < −0,07 °C;  LÄNGD = 13)
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+SMOLK 4
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+SMOLK 3
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+SMOLK 2
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+SMOLK 1
+960
+965
+970
+975
+980
+985
+990
+−1
+0
+1
+2
+DAGENS TID  (min)
+OMRÖSTNING
+FÖRDRÖJNING: 42 s
+FÖRDRÖJNING: 20 s
+Figur 3.8. Varningar som varje smolk skickar i försöket med fem smolk och deras
+omröstning. Läge: 2 = obestämt, 1 = ökar, 0 = oförändrat, −1 = minskar.
+3.5. FÖRVERKLIGANDE
+33
+1130
+1135
+1140
+1145
+1150
+1155
+1160
+24
+25
+26
+SMOLK 5
+1130
+1135
+1140
+1145
+1150
+1155
+1160
+24
+25
+26
+SMOLK 4
+1130
+1135
+1140
+1145
+1150
+1155
+1160
+23
+24
+25
+26
+TEMPERATUR  (°C)
+SMOLK 3
+1130
+1135
+1140
+1145
+1150
+1155
+1160
+23
+24
+25
+26
+SMOLK 2
+1130
+1135
+1140
+1145
+1150
+1155
+1160
+23
+24
+25
+SMOLK 1
+DAGENS TID  (min)
+FLÄKT
+TÄCKT
+Figur 3.9. Försökets andra mätning: temperaturen i fem smolk i rad i biblioteket
+framför sjutdörren som skiljer mellan biblioteket och exjobbsrummet, den tredje ok-
+tober 2005 mellan 18.50 och 19.20
+3.5
+Förverkligande
+Efter det att åtskilliga lösningar undersöktes för att dra nytta av ett trådlöst sen-
+sornät i temperaturövervakning, förverkligas den valda lösningen på smolken. Ett
+program skrevs i programmeringsspråket nesC för att fungera på Tmote Sky smolk
+under operativsystemet TinyOS.
+Alla smolk har samma program och det enda som skiljer från smolk till smolk är
+adressen, som varje smolk har. Adressen sätts när programmet laddas till smolket.
+Programmet tittar då i början vilken adress det har och förbereder sig för att
+uppträda som den adressen. Programmet kommer att fungera på endast tre adresser:
+1, 2 eller 3.
+Varje smolk känner temperaturen i sin omnejd varannan sekund och bestämmer
+huruvida det värms (röd LED), kyls (blå LED) eller behålls vid liknande tempera-
+turer (grön LED, ljumt). För att fatta detta beslut jämförs det senaste mätvärde
+med ett gammalt mätvärde. Man kan välja hur gammalt mätvärdet bör vara, vilket
+motsvarar längden i algoritmen om diﬀerensbildning. Alla dessa gamla mätvärden
+sparas tills de ersätts av nya. Man kommer ihåg värdena från ett visst tidsfönster.
+Man kan även justera trösklarna, för att avgöra huruvida förändringar i tempera-
+turen är för stora.
+Varje smolk kommer att ﬁnna sig i ett av tre möjliga lägen: det värms, det kyls,
+eller det förblir utan ändring. Om det egna läget ändras skickas en varning till alla
+smolk. Varje smolk beräknar dessutom ett gemensamt tillstånd genom omröstning
+av alla smolks läge och ändrar alla LED om det inte stämmer med det egna läget
+34
+KAPITEL 3. ALGORITM FÖR FLERA SMOLK
+Figur 3.10. Diagram om hur modulerna binds i programmet Omroestning3, skapat
+av nesdoc
+(grön-blå: varmt, röd-blå: ljumt, röd-grön: kallt; och stämmer inte med de ﬂesta
+smolken, två).
+Ett diagram över hur programmet är byggt i moduler på nesC visas i ﬁgur
+3.10 (sida 34). De olika modulerna binds samman av Omroestning3M, som är den
+modul som skrevs och som styr de andra för att förverkliga uppgiften. Main star-
+tar programmet, GenericComm sköter radiokommunikationen, HumidityC motsvarar
+temperatur- och fuktgivaren, TimerC varnar om en viss tid har gått ut, och LedsC
+styr ljusdioderna på smolken.
+Programmet tar 13590 kbyte läsminne, av högst 48 × 1024 byte, och 483 byte
+ﬂyktigt minne, av högst 10 × 1024 byte. Programmets kod kan läsas i bilagan. Efter
+att sätta på de tre smolken med programmet behöver man orsaka tillståndsänd-
+ringar (värma eller kyla) på de två första smolk som sattes på. På så sätt det tredje
+smolket kan få meddelanden från de andra för första gången, och det andra smolket
+kan få ett meddelande från det första för första gången. Därefter kan de fungera
+som det har beskrivits.
+Man bör ta hänsyn i detta program till två saker, för att underlätta programme-
+ringen av nya liknande program. Det första är att man bör deklarera de variabler
+som lagrar meddelanden som kommer att skickas som globala. Annars kan det hän-
+da att när TinyOS är redo att skicka det har minnet redan använts för något annat.
+Det andra är att man bör vara försiktigt med räkningar och jämförelser med endast
+positiva tal, om de variabler som programmet använder deklareras som unsigned
+integer, positiva tal. Man bör undvika att subtrahera, vilket kan ge upphov till tal
+3.6. UTVÄRDERING
+35
+som inte längre är positiva:
+a −b < −c
+→
+a + c < b
+Man skulle kunna utvidga programmet genom att kunna välja hur många smolk
+kommer att användas eller även ta hänsyn till smolk som slutar att fungera.
+3.6
+Utvärdering
+Slutligen utvärderades programmet på fungerande smolk. Försöket upprepades med
+samma uppställning och förfarande, med tre smolk i stället för fem och med 24
+centimeters mellanrum. Varje smolk räknade diﬀerensbildningen och bestämde sig
+för att skicka varningar. Dessa varningar hördes av alla och ett gemensamt tillstånd
+erhölls för den misstänkta läckan. De parametrar som användes var:
+troeskel_upp = 0, 15
+troeskel_ner = −0, 13
+laengd = 33
+Resultatet kunde inte särskilja mellan skenläckor och att öppna och stänga skjut-
+dörren. Det kan bero på att de parametrar som räknades fram var lämpliga endast
+för den första mätningen och den andra mätserien för validering. Parametrarna är
+dessutom valda för att passa precis för att minska fördröjningen. Det kan vara så
+att en liten skiftning från de två första mätningarna kan göra att de framtrimma-
+de parametrarna fungerar dåligt. Man skulle kunna ha valt parametrar som passar
+ﬂera fall trots att förlora på fördröjningen, men denna undersökning om sambandet
+mellan fördröjning och antal felaktiga varningar behandlas inte i detta arbete.
+Man har ändå iakttagit i arbetet att vissa parametrar ställs i onödan med det
+nuvarande förfarandet. Längden ökade när parametrarna för två olika mätningar
+söktes, men det var onödigt. Det räckte med att multiplicera en mätning med visst
+tal för att temperaturskillnaderna skulle bli lika stora i båda mätserier. Det be-
+hövs därför att veta i förväg hur stora förändringar man kan förvänta sig i olika
+lägen: skenläckor och sanna läckor. För att undvika detta kan man uppskatta det
+genom att jämt mäta temperaturen på ömse sidor av den misstänkta läckan. Detta
+var ett av förslagen om utvidgningar till ﬂera smolk, men som förkastades framför
+att undersöka smolk som mäter ungefär oberoende brus och skenläckor och bildar
+tillsammans ett gemensamt läge.
+Kapitel 4
+Slutsatser och förslag på framtida
+arbete
+Från det framlagda arbetet kan man inte dra slutsatsen att trådlösa sensornät kan
+användas för temperaturövervakning med den slutgiltiga lösning som tillämpades.
+Vi har dock iakttagit att trådlösa sensornät uppvisar förmåga för det med andra
+algoritmer eller uppsättningar, men arbetet att bygga ett sådant nät kan gå till spillo
+om man inte har kännedom av det fysikaliska förloppet att övervaka. Efter att ha
+undersökt algoritmer för ett smolk ansåg vi att både CUSUM och att uppskatta
+parametrar från en modell var för komplicerade och det räckte och var bäst att
+räkna skillnaden mellan två tidpunkter. När algoritmer för ﬂera smolk undersöktes
+såg man därutöver att det räckte med tre smolk i omröstning, i stället för fem.
+Det behövs då att man känner till det fysikaliska förloppet i förväg för att forma
+nätet utan att ödsla energi, en avgörande egenskap i självständiga givare. I detta
+fall skulle det ha blivit lättare att detektera en förändring om temperaturskillnaden
+var av känd storlek, i stället för att den skiftar med tiden.
+Omröstningen har tagits som en lämplig algoritm för trådlösa sensornät. Den
+lämnar till varje smolk en del av det slutgiltiga beslutet, och på så sätt minskar
+kommunikationen mellan smolk; de samtalar om det behövs. Man kunde också se
+att det räcker med att varje smolk jämför mätvärden från två olika tider; CUSUM
+och att uppskatta parametrar från en modell var onödigt invecklade.
+Angående det fysikaliska förloppet kan man säga att luftdrag har en stor påver-
+kan på temperaturmätningen. Ett sätt att påverka temperaturen genom luftdrag är
+att den luft man ämnade mäta ersätts med en luftmassa av annan temperatur. Man
+bör dessutom lägga märke till att smolken och även givaren värmer sig och därför
+tillför värme till omgivningen. Det innebär att temperaturen som mäts är högre än
+vad den skulle varit om smolket skulle varit avstängt. Det händer därför att denna
+värme kommer att mistas om luft rör sig över givaren och den mätta temperaturen
+förändras; en förändring i temperaturen som sker på grund av att mäta med smol-
+ken, som skapar värme. Detta blir en störning inomhus. Utomhus kan ljusstrålning
+därutöver ge felaktiga temperaturnivåer.
+37
+38
+KAPITEL 4. SLUTSATSER OCH FÖRSLAG PÅ FRAMTIDA ARBETE
+Det ﬁnns sannolikt andra sätt att ﬁnna värmeläckor som lämpar sig bättre för
+byggnader, till exempel med värmekameror [17]. Däremot var målet inte att hitta
+det bästa sättet att upptäcka sådana läckor, utan att använda ett trådlöst sensornät
+för det. Vi ville framför allt att lära känna hur ett trådlöst sensornät fungerar och
+samtidigt lösa ett problem med det. Denna kunskap kan nu användas som verktyg
+för nya tekniska frågor som grundas på trådlösa sensornät, och ännu bättre om man
+försöker upptäcka läckor.
+Som förslag till utvidgning av detta arbete skulle man kunna undersöka de två
+andra förslagen till ﬂera smolk som utelämnades: att mäta på ömse sidor läckan för
+att förutsäga hur stora förändringar kommer att bli, eller att ställa in samplings-
+frekvensen på varje smolk beroende på hur många andra smolk som mäter samma
+temperatur och det blir därför överﬂödigt att mäta ofta. I båda fall skulle nätet
+självt kunna lära sig det fysikaliska förloppet för att anpassa sig till det och för
+att så minska energiförbrukningen. Man kan dessutom prova att undersöka vad
+som händer med andra av luftens egenskaper i stället för temperaturen, såsom luft-
+fuktigheten eller även kolsyrehalten som troligen beror på hur många människor
+vistas i ett rum. Det kan vara så att en annan egenskap kan lämpa sig bättre än
+temperaturen för att detektera värmeläckor.
+Slutligen har examensarbetet omfattat såväl teoretiskt som praktiskt arbete
+och simulation, kännedom om hårdvaran och att utveckla mjukvara: ett mångsidigt
+arbete som kännetecknar den nuvarande forskningen inom trådlösa sensornät.
+Bilaga A
+Omroestning3
+A.1
+Omroestning3.h
+/** Hur många mått smolket kommer att komma ihåg. **/
+#define LAENGD 33
+A.2
+Omroestning3.nc
+/**
+* Omröstning med tre smolk.
+* Varje smolk känner temperaturen i sin omnejd och bestämmer
+* huruvida det värms (röd LED), kyls (blå LED) eller behålls vid
+* liknande temperaturer (grön LED, ljumt). Om det egna läget ändras
+* skickas en varning till alla smolk. Varje smolk beräknar dessutom
+* ett gemensamt tillstånd genom omröstning av alla smolks läge, som
+* skickas vid förändring, och ändrar alla LED om det inte stämmer
+* med det egna läget (grön-blå: varmt, röd-blå: ljumt, röd-grön:
+* kallt; och stämmer inte med de flesta smolken, två).
+**/
+configuration Omroestning3 {}
+implementation
+{
+components Main, Omroestning3M, HumidityC, TimerC, GenericComm,
+LedsC;
+Main.StdControl -> Omroestning3M.StdControl;
+Main.StdControl -> GenericComm.Control;
+Omroestning3M.FuktStyr -> HumidityC.SplitControl;
+Omroestning3M.Fukt -> HumidityC.Humidity;
+Omroestning3M.Vaerme -> HumidityC.Temperature;
+39
+40
+BILAGA A. OMROESTNING3
+Omroestning3M.FuktMisstag -> HumidityC.HumidityError;
+Omroestning3M.VaermeMisstag -> HumidityC.TemperatureError;
+Omroestning3M.Varnare -> TimerC.Timer[unique("Varnare")];
+Omroestning3M.Skicka -> GenericComm.SendMsg[0];
+Omroestning3M.TaEmot -> GenericComm.ReceiveMsg[0];
+Omroestning3M.LED -> LedsC.Leds;
+}
+A.3
+Omroestning3M.nc
+#include "Omroestning3.h"
+/**
+* Omröstning med tre smolk.
+* Varje smolk känner temperaturen i sin omnejd och bestämmer
+* huruvida det värms (röd LED), kyls (blå LED) eller behålls vid
+* liknande temperaturer (grön LED, ljumt). Om det egna läget ändras
+* skickas en varning till alla smolk. Varje smolk beräknar dessutom
+* ett gemensamt tillstånd genom omröstning av alla smolks läge, som
+* skickas vid förändring, och ändrar alla LED om det inte stämmer
+* med det egna läget (grön-blå: varmt, röd-blå: ljumt, röd-grön:
+* kallt; och stämmer inte med de flesta smolken, två).
+**/
+module Omroestning3M
+{
+provides interface StdControl;
+uses {
+interface SplitControl as FuktStyr;
+interface ADC as Fukt;
+interface ADC as Vaerme;
+interface ADCError as FuktMisstag;
+interface ADCError as VaermeMisstag;
+interface Timer as Varnare;
+interface SendMsg as Skicka;
+interface ReceiveMsg as TaEmot;
+interface Leds as LED;
+}
+}
+implementation
+{
+/** Slag med de möjliga tillstånden för ett smolk eller för det
+gemensamma. **/
+A.3. OMROESTNING3M.NC
+41
+typedef enum
+{
+OBESTAEMT, UPPE, MITT, NERE
+} VaerdeTillstaand;
+/** Slag med de möjliga uppgifter som skickas och tas emot. **/
+typedef struct {
+uint16_t smolk;
+uint16_t maatt;
+uint16_t gamla_maatt;
+VaerdeTillstaand tillstaand1;
+VaerdeTillstaand tillstaand2;
+VaerdeTillstaand tillstaand3;
+VaerdeTillstaand gemensamt;
+} VarningUppgifter;
+/** Tröskel för att varna om att den nya temperaturen är för hög,
+det sätts till att motsvara en skillnad på 0,15 &deg;C. **/
+uint16_t hoeg_troeskel = 15;
+/** Tröskel för att varna om att den nya temperaturen är för låg,
+det sätts till att motsvara en skillnad på 0,13 &deg;C. **/
+uint16_t laag_troeskel = 13;
+/** Tid som dröjer mellan två mått,
+det sätts till att motsvara 2 sekunder. **/
+uint32_t mellantid = 2048;
+/** Nuvarande, eller nya, måttet. **/
+uint16_t maatt;
+/** Gamla måtten, längd = LAENGD. **/
+uint16_t gamla_maatt[LAENGD];
+/** Pekare till det äldsta måttet, för LAENGD mått sedan. **/
+uint16_t pekare_aeldsta_maatt = 0;
+/** Pekare till detta smolks tillstånd, det tilldelas i början
+enligt smolkets adress. **/
+VaerdeTillstaand *mitt_tillstaand;
+/** Tillstånd för det första smolket, adress 1. **/
+VaerdeTillstaand tillstaand1 = OBESTAEMT;
+/** Tillstånd för det andra smolket, adress 2. **/
+VaerdeTillstaand tillstaand2 = OBESTAEMT;
+/** Tillstånd för det tredje smolket, adress 3. **/
+VaerdeTillstaand tillstaand3 = OBESTAEMT;
+/** Gemensamt tillstånd beräknat enligt omröstningen av alla
+enskilda smolk. **/
+VaerdeTillstaand gemensamt = OBESTAEMT;
+/** Tillstånd som detta smolk hade förra måttet. **/
+42
+BILAGA A. OMROESTNING3
+VaerdeTillstaand mitt_foerra_tillstaand = OBESTAEMT;
+/** Utrymme för meddelandena som skickas. **/
+TOS_Msg meddelande;
+/** Uppgifter som färdas med meddelandena. **/
+VarningUppgifter *uppgifter =
+(VarningUppgifter *) meddelande.data;
+/**
+* Syssla där tillstånden bestäms efter ett nytt mått, LED ställs
+* och en varning skickas om det egna tillståndet har förändrats.
+**/
+task void bearbetaData() {
+atomic if (maatt >
+hoeg_troeskel + gamla_maatt[pekare_aeldsta_maatt])
+{
+*mitt_tillstaand = UPPE;
+call LED.set(1 << 0);
+// rött sken
+}
+else if (gamla_maatt[pekare_aeldsta_maatt] >
+laag_troeskel + maatt)
+{
+*mitt_tillstaand = NERE;
+call LED.set(1 << 2);
+// blått sken
+}
+else
+{
+*mitt_tillstaand = MITT;
+call LED.set(1 << 1);
+// grönt sken
+}
+if (tillstaand1 == tillstaand2)
+{
+gemensamt = tillstaand1;
+}
+else if (tillstaand1 == tillstaand3)
+{
+gemensamt = tillstaand1;
+}
+else if (tillstaand2 == tillstaand3)
+{
+gemensamt = tillstaand2;
+A.3. OMROESTNING3M.NC
+43
+}
+else
+{
+gemensamt = OBESTAEMT;
+}
+if (gemensamt != *mitt_tillstaand)
+{
+call LED.redToggle();
+call LED.greenToggle();
+call LED.yellowToggle();
+}
+if (mitt_foerra_tillstaand != *mitt_tillstaand)
+{
+uppgifter->smolk = TOS_LOCAL_ADDRESS;
+atomic uppgifter->maatt = maatt;
+uppgifter->gamla_maatt = gamla_maatt[pekare_aeldsta_maatt];
+uppgifter->tillstaand1 = tillstaand1;
+uppgifter->tillstaand2 = tillstaand2;
+uppgifter->tillstaand3 = tillstaand3;
+uppgifter->gemensamt = gemensamt;
+call Skicka.send(TOS_BCAST_ADDR, sizeof(VarningUppgifter),
+&meddelande);
+}
+mitt_foerra_tillstaand = *mitt_tillstaand;
+atomic gamla_maatt[pekare_aeldsta_maatt] = maatt;
+if (pekare_aeldsta_maatt == LAENGD-1)
+{
+pekare_aeldsta_maatt = 0;
+}
+else
+{
+pekare_aeldsta_maatt = pekare_aeldsta_maatt + 1;
+}
+call Varnare.start(TIMER_ONE_SHOT, mellantid);
+}
+/**
+* LED och SHT11 ställs in och ett tillstånd tilldelas till
+* "mitt_tillstaand" enligt den egna adressen.
+**/
+command result_t StdControl.init() {
+44
+BILAGA A. OMROESTNING3
+call LED.init();
+call FuktStyr.init();
+switch (TOS_LOCAL_ADDRESS)
+{
+case 1 : mitt_tillstaand = &tillstaand1;
+break;
+case 2 : mitt_tillstaand = &tillstaand2;
+break;
+case 3 : mitt_tillstaand = &tillstaand3;
+break;
+}
+return SUCCESS;
+}
+/**
+* SHT11 börjas.
+**/
+command result_t StdControl.start() {
+call FuktStyr.start();
+return SUCCESS;
+}
+/**
+* SHT11 stannas.
+**/
+command result_t StdControl.stop() {
+call FuktStyr.stop();
+return SUCCESS;
+}
+/**
+* Inget att göra, fortsätt.
+**/
+event result_t FuktStyr.initDone() {
+return SUCCESS;
+}
+/**
+* Sätta på möjligheten att veta när ett fel förekom i en mätning,
+* och begära ett mått av temperaturen.
+**/
+event result_t FuktStyr.startDone() {
+call FuktMisstag.enable();
+call VaermeMisstag.enable();
+A.3. OMROESTNING3M.NC
+45
+call Vaerme.getData();
+return SUCCESS;
+}
+/**
+* Inget att göra, fortsätt.
+**/
+event result_t FuktStyr.stopDone() {
+return SUCCESS;
+}
+/**
+* Inget att göra, fortsätt, man begär aldrig ett mått av
+* fuktigheten.
+**/
+async event result_t Fukt.dataReady(uint16_t data) {
+return SUCCESS;
+}
+/**
+* Anropa behandlingen av det nya måttet efter dess att måttet är
+* taget.
+**/
+async event result_t Vaerme.dataReady(uint16_t data) {
+atomic maatt = data;
+post bearbetaData();
+return SUCCESS;
+}
+/**
+* Inget att göra, fortsätt.
+**/
+event result_t FuktMisstag.error(uint8_t token) {
+return SUCCESS;
+}
+/**
+* Inget att göra, fortsätt.
+**/
+event result_t VaermeMisstag.error(uint8_t token) {
+return SUCCESS;
+}
+/**
+46
+BILAGA A. OMROESTNING3
+* Begära ett mått av temperaturen efter dess att en viss tid
+* dröjde från förra gången.
+**/
+event result_t Varnare.fired() {
+call Vaerme.getData();
+return SUCCESS;
+}
+/**
+* Inget att göra, fortsätt.
+**/
+event result_t Skicka.sendDone(TOS_MsgPtr msg, result_t success) {
+return SUCCESS;
+}
+/**
+* Efter ett meddelande från ett annat smolk ställs det nya
+* tillståndet, det gemensamma tillståndet beräknas och LED
+* ställs.
+**/
+event TOS_MsgPtr TaEmot.receive(TOS_MsgPtr m) {
+VarningUppgifter *uppgifter_annat =
+(VarningUppgifter *) m->data;
+switch (uppgifter_annat->smolk)
+{
+case 1 : tillstaand1 = uppgifter_annat->tillstaand1;
+break;
+case 2 : tillstaand2 = uppgifter_annat->tillstaand2;
+break;
+case 3 : tillstaand3 = uppgifter_annat->tillstaand3;
+break;
+}
+if (tillstaand1 == tillstaand2)
+{
+gemensamt = tillstaand1;
+}
+else if (tillstaand1 == tillstaand3)
+{
+gemensamt = tillstaand1;
+}
+else if (tillstaand2 == tillstaand3)
+{
+A.4. MAKEFILE
+47
+gemensamt = tillstaand2;
+}
+else
+{
+gemensamt = OBESTAEMT;
+}
+if (gemensamt != *mitt_tillstaand)
+{
+call LED.redToggle();
+call LED.greenToggle();
+call LED.yellowToggle();
+}
+return m;
+}
+}
+A.4
+Makeﬁle
+COMPONENT=Omroestning3
+include ${MAKERULES}
+Litteraturförteckning
+[a]
+LATEX och TEX på NADA.
+http://www.sgr.nada.kth.se/misc/tex/
+[b]
+E. Engström. Engelsk-Svensk Teknisk Ordbok. AB Svensk Trävaru-Tidning,
+1965.
+[c]
+Svenska datatermgruppen.
+http://www.nada.kth.se/dataterm/
+[1]
+I. F. Akyildiz, W. Su, Y. Sankarasubramaniam, och E. Cayirci. A survey on
+sensor networks. Communications Magazine, IEEE, Volume: 40, Issue: 8, ISSN:
+0163-6804, sidor 102–114. Augusti 2002.
+[2]
+C.-Y. Chong, och S. P. Kumar. Sensor networks: evolution, opportunities, and
+challenges. Proceedings of the IEEE, Volume: 91, Issue: 8, ISSN: 0018-9219,
+sidor 1247–1256. Augusti 2003.
+[3]
+J. Burrell, T. Brooke, och R. Beckwith. Vineyard computing: sensor networks
+in agricultural production. IEEE Pervasive Computing, vol. 03, no. 1, sidor 38–
+45. Januari–Mars 2004.
+http://doi.ieeecomputersociety.org/10.1109/MPRV.2004.1269130
+[4]
+Invocon Inc. Invocon on the International Space Station. 2005.
+http://www.invocon.com/IVC_on_ISS.html
+[5]
+Intel Corporation. Preventive maintenance on an oil tanker in the North Sea:
+the BP experiment. 2004.
+http://www.intel.com/research/experience/bp_experiment.htm
+[6]
+Moteiv Corporation. Tmote Sky Datasheet. Upplaga 1.0, 2005.
+http://www.moteiv.com/products/docs/tmote-sky-datasheet.pdf
+[7]
+J. Hill, R. Szewczyk, A. Woo, S. Hollar, D. E. Culler, och K. S. J. Pister.
+System architecture directions for networked sensors. ASPLOS-IX: Proceedings
+of the ninth international conference on Architectural support for programming
+languages and operating systems, ISBN: 1-58113-317-0, sidor 93–104. ACM
+Press, 2000.
+http://doi.acm.org/10.1145/378993.379006
+49
+50
+LITTERATURFÖRTECKNING
+[8]
+TinyOS Community Forum.
+http://www.tinyos.net/
+[9]
+D. Gay, P. Levis, D. Culler, och E. Brewer. nesC 1.1 Language Reference Ma-
+nual. 2003.
+http://nescc.sourceforge.net/papers/nesc-ref.pdf
+[10] D. Gay, P. Levis, R. von Behren, M. Welsh, E. Brewer, och D. Culler. The
+nesC language: A holistic approach to networked embedded systems. PLDI ’03:
+Proceedings of the ACM SIGPLAN 2003 conference on Programming language
+design and implementation, ISBN: 1-58113-662-5, sidor 1–11. ACM Press, 2003.
+http://doi.acm.org/10.1145/781131.781133
+[11] TinyOS Community Forum. TinyOS Tutorial. 2003.
+http://www.tinyos.net/tinyos-1.x/doc/tutorial/
+[12] Moteiv Corporation. Tmote Sky Quick Start Guide. Upplaga 1.0, 2005.
+http://www.moteiv.com/products/docs/tmote-sky-quickstart.pdf
+[13] I. Cabrera. Telos and Aegis Quick Start Guide. Institutionen för signaler, sen-
+sorer och system, Avdelningen för reglerteknik. Kungliga Tekniska Högskolan.
+2005.
+[14] Sveriges meteorologiska och hydrologiska institut. Luftens fuktighet – Är luften
+torr eller fuktig? 2004.
+http://www.smhi.se/sgmain/lopsedel/luftfukt.htm
+[15] Sensirion AG. Data sheet humidity sensors SHT1x/SHT7x. Upplaga 2.04, 2005.
+http://sensirion.com/images/getFile?id=25
+[16] F. Gustafsson. Adaptive Filtering and Change Detection. John Wiley & Sons,
+2000.
+[17] IR-Gruppen.
+http://www.ir-gruppen.se/

@@ -1,0 +1,5522 @@
+Diskret ickelinjär analys av geometriskt 
+föränderliga linsystem 
+ 
+Maria Karnik 
+ 
+TRITA-BKN. Examensarbete 249 Brobyggnad 2007 
+ISSN 1103-4297 
+ISRN KTH/BKN/EX--249--SE 
+ 
+ 
+ 
+iii 
+Förord 
+ 
+ 
+Detta examensarbete är utfört vid WSP Byggprojektering i Stockholm och tillsammans med 
+institutionen för Byggvetenskap, avdelningen för Brobyggnad på Kungliga Tekniska 
+Högskolan. Arbetet ingår som ett sista del i min utbildning till civilingenjör i Väg- och 
+vattenbyggnadsteknik. 
+ 
+Examinator på institutionen för Byggvetenskap är Prof. Håkan Sundquist och handledare på 
+WSP Byggprojektering är Tekn. Dr Kent Arvidsson som upprättat program och koncept för 
+arbetet. 
+ 
+Jag vill tacka Kent Arvidsson för fantastisk handledning och för hans stora intresse för 
+arbetet. Civ.ing. Johannes Åslund och Civ.ing. Emil Brink för hjälp med program och 
+verifiering av resultat, samt alla andra på WSP som fått mig att trivas otroligt bra. 
+ 
+ 
+ 
+Stockholm, januari 2007 
+ 
+Maria Karnik 
+ 
+ 
+ 
+v 
+Sammanfattning 
+ 
+ 
+I statiska system där linor ingår som del av systemet uppträder påtagliga geometriska 
+förändringar som måste beaktas med en ickelinjär analys. Sådana system är bl.a. hängbroar 
+och lintak. 
+ 
+Metoden baseras på att en modell initialt byggs i en dator som faktiskt simulerar den verkliga 
+byggnationen, vilket sker med en iterativ process. Med den injusterade modellen analyseras 
+uppträdande krafter och deformationer på grund av nyttiga laster, med beaktande av att 
+systemet är geometriskt föränderligt och analysen blir därmed en ickelinjär analys. Genom att 
+utföra diskreta ickelinjära beräkningar kan systemets alla fysiska element beaktas med sina 
+mekaniska egenskaper.  
+ 
+Hängbroar kan analyseras med ett flertal metoder mer eller mindre detaljerade. 
+Deflektionsteorin som utvecklades parallellt av Selberg och Asplund representerar en 
+detaljerad kontinuerlig analys, men har ett antal begränsningar i sin praktiska tillämpning. En 
+diskret ickelinjär beräkning leder till en väsentlig förenkling av det numeriska arbetet 
+samtidigt som de traditionella begränsningarna i den kontinuerliga teorin kan elimineras och 
+därmed uppnås i flera avseenden förbättrad noggrannhet inte minst med avseende på andra 
+ordningens effekter.  
+ 
+Metoden att initialt bygga en modell i en dator gör det också möjligt att beakta efterspänning 
+av vissa kablar. Detta är tex. användbart i lintak. Efterspänningen skapas genom att 
+temperaturlaster införs på vissa kablar. Temperaturlasterna medför att kablarna förkortas, 
+samtidigt som de uppstår en dragkraft i dem. Även detta simulerar det verkliga förloppet. 
+ 
+Metoden är tillämpbar för detaljberäkning i 2D-system. 
+ 
+I tidiga skeden när olika utföranden/gestaltningar skall utvärderas erbjuder metoden ett 
+adekvat, snabbt och nyanserat tillvägagångssätt.  
+ 
+Tillfredställande resultat erhålls både med avancerade datorprogram samt med mer 
+standardiserade program för pratiskt ingenjörsarbete.  
+ 
+Resultatet har verifierats genom jämförelser med tidigare beräkningar på två fysiska projekt, 
+och en lastställning på en hängbro. 
+ 
+vii 
+Abstract 
+ 
+ 
+In all static systems where cables are a part of the system, geometrical variations occurs that 
+has to be taken in consideration with a non-linear analyze. Examples of those systems are 
+suspension bridges and roofs carried by cables. 
+ 
+The method is based on a model that is initially built in a computer and in fact simulates the 
+real construction, which is effected by means of an iterative process. With the adjusted model, 
+an analysis is made of the forces and deformations that occur as a consequence of working 
+loads, on a geometrically variable non-linear system. While doing a discrete non-linear 
+analyze of the system, all physical elements with their mechanical properties in the system are 
+included.  
+ 
+Suspension bridges can be analyzed with a number of methods in a varying extent of detail. 
+The theory of deflection, which was developed in parallel by Selberg and Asplund, represents 
+a detailed continuous analysis, but has a number of limitations in its practical application.  
+ 
+The method results in a significant simplification of the numerical work at the same time as 
+the traditional limitations of the theory of continuity can be eliminated, which thereby serves 
+to create a level of accuracy that is improved in several respects, not least with regard to 
+secondary effects. 
+ 
+The method to build a model in a computer also gives the possibility to pretension some 
+cables. For example this is useful when building roofs where cables are a part of the 
+construction. The pretension is created with introduction of temperature load on some cables. 
+This shortens the cables, and generates a force of tension, which simulates the real behaviour. 
+ 
+The method is useful for detailed calculations in 2D-systems. 
+ 
+Especially at earlier project stages, when different layouts and designs are to be evaluated, the 
+method offers an adequate, quick and varied procedure.  
+ 
+High quality results are obtained with both advanced computer programs and with quite 
+ordinary computer programs adapted for practical engineering. 
+ 
+The results obtained have been verified by comparison with earlier calculations of two 
+physical projects, and load tests of a suspension bridge. 
+ 
+ 
+ 
+ 
+ 
+ 
+1 
+Inledning............................................................................................................................. 1 
+1.1 
+Bakgrund ..................................................................................................................... 1 
+1.2 
+Syfte.............................................................................................................................. 1 
+1.3 
+Metod ........................................................................................................................... 1 
+2 
+Använda program ............................................................................................................... 3 
+2.1 
+Beräkningsmetoder för Robot ................................................................................... 3 
+2.2 
+Andra använda program............................................................................................ 3 
+3 
+Inledande teori.................................................................................................................... 5 
+3.1 
+Allmänt......................................................................................................................... 5 
+3.1.1 
+Linjär analys.................................................................................................................................... 5 
+3.1.2 
+Ickelinjär analys små deformationer ............................................................................................... 6 
+3.1.3 
+Ickelinjär analys stora deformationer.............................................................................................. 8 
+3.1.4 
+Jämförelse mellan de olika analysmetoderna.................................................................................. 9 
+3.1.5 
+Viktlös kabel ................................................................................................................................. 10 
+4 
+Datoruppbyggnad av diskret hängbro.............................................................................. 13 
+4.1 
+Injustering Allmänt .................................................................................................. 13 
+4.1.1 
+Injustering huvudkabel.................................................................................................................. 13 
+4.1.2 
+Injustering hängare........................................................................................................................ 14 
+4.1.3 
+Tvångsmomentet........................................................................................................................... 15 
+5 
+Analys av hängbroar......................................................................................................... 17 
+5.1 
+Förutsättningar ......................................................................................................... 17 
+5.2 
+Exempel...................................................................................................................... 17 
+5.3 
+Beräkning av moment............................................................................................... 18 
+5.3.1 
+Kontinuerlig beräkning av Selberg ............................................................................................... 18 
+5.3.2 
+Diskret beräkning i Robot – för jämförelse med Selberg.............................................................. 19 
+5.3.3 
+Jämförelse av balkmomentet......................................................................................................... 19 
+5.3.4 
+Hängardelningens betydelse för balkmomentet – vid enbart en punktlast i 0.15l......................... 20 
+5.3.5 
+Kontinuerlig beräkning enligt Granholm...................................................................................... 21 
+5.3.6 
+Diskret beräkning i Robot – jämförelse med Granholm ............................................................... 21 
+5.3.7 
+Fördelar med en diskret analys...................................................................................................... 21 
+5.4 
+Beräkning av kabelkraft .......................................................................................... 22 
+5.5 
+Beräkning av deformationer.................................................................................... 23 
+5.5.1 
+Deformationsberäkningar för det kontinuerliga systemet............................................................. 23 
+5.5.2 
+Deformationsberäkningar för det diskreta systemet...................................................................... 24 
+5.5.3 
+Jämförelse av deformationerna ..................................................................................................... 25 
+5.6 
+Verifiering av resultatet ........................................................................................... 25 
+5.6.1 
+En alternativ metod för injustering................................................................................................ 25 
+6 
+Fallstudie Johanneshovs isstadion -ett efterspänt lintak................................................ 27 
+6.1 
+Montering .................................................................................................................. 27 
+6.2 
+Datoruppbyggnad av Johanneshovs isstadion ....................................................... 29 
+6.2.1 
+Efterspänning ................................................................................................................................ 29 
+6.2.2 
+Hur mycket kan kablarna utnyttjas?.............................................................................................. 30 
+6.3 
+Laster ......................................................................................................................... 30 
+ 
+6.4 
+Lastkombinering....................................................................................................... 30 
+6.5 
+Beräkning i Robot..................................................................................................... 31 
+6.5.1 
+Vind mot kortsidan som huvudlast................................................................................................ 31 
+6.5.2 
+Vind mot långsidan som huvudlast............................................................................................... 32 
+6.5.3 
+Snö som huvudlast ........................................................................................................................ 32 
+6.6 
+Resultat av beräkningarna....................................................................................... 33 
+7 
+Initial handberäkning för indata till en ny modell.......................................................... 35 
+7.1 
+Villkor ........................................................................................................................ 35 
+7.2 
+Tillvägagångssätt....................................................................................................... 35 
+8 
+Generella slutsatser .......................................................................................................... 39 
+9 
+Referenser ......................................................................................................................... 41 
+ 
+ 
+BILAGOR 
+ 
+3.1 Linjär analys 
+3.2 Ickelinjär analys små deformationer 
+3.3 Ickelinjär analys stora deformationer 
+3.4 Beräkning av C-värdet 
+3.5 Viktlös kabel 
+4.1 Injustering 
+5.1 Selbergs nomogram 
+5.2 Superpositionsprincipen 
+6.1 Hur mycket kan kablarna utnyttjas?  
+6.2 Laster 
+6.3 Lastkombinering enligt BKR 
+7.1 Handberäkningar för indata till datormodell 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+1 Inledning 
+ 
+ 
+1 
+ 
+1 Inledning 
+1.1 Bakgrund 
+Alla statiska system förändras geometriskt när de utsätts för belastning. För de flesta statiska 
+system är den geometriska formförändringen liten och dessa förändringar beaktas i  
+sådana fall endast med avseende på axialkrafter vars effekt är att ett tillskottsmoment 
+(deformationsmoment) uppkommer 
+ 
+I statiska system där linor ingår som del av systemet uppträder mer påtagliga geometriska 
+förändringar som måste beaktas. Detta kan göras med en diskret ickelinjär analys. Den 
+ickelinjära analysen beaktar att systemet är geometriskt föränderligt och analyserar 
+uppträdande krafter och deformationer utifrån det. 
+1.2 Syfte 
+Syftet med denna studie är att tillhandahålla en metod för att i ett tidigt skede kunna utföra 
+överslags- och slutgiltiga beräkningar och kontroller av befintliga konstruktioner genom att 
+tillämpa etablerade standardprogram. I metoden ingår även efterspänning av vissa linor. 
+ 
+För att åstadkomma detta genomförs beräkningar på två olika statiska linsystem i 2-D.  
+De aktuella systemen är:  
+ 
+• Hängbro med dimensioner som i Selbergs doktorsavhandling. 
+• Takkonstruktionen på Johanneshovs isstadion 
+1.3 Metod 
+De diskreta beräkningarna för de olika linsystemen är utförda i beräkningsprogrammet Robot 
+Millennium version 19.0, som anses vara ett standardprogram för beräkningar. Resultaten har 
+sedan jämförts med beräkningar gjorda med den kontinuerliga teorin publicerade främst i 
+doktorsavhandlingar. För att verifiera beräkningsresultaten ytterliggare har vissa beräkningar 
+(Selbergs hängbro) även utförts i Ansys Structural 10.0, som är ett avancerat program för mer 
+komplexa beräkningar. 
+ 
+Noggrannheten i beräkningsprogrammet Robot har utvärderats genom jämförelser med 
+analytiska beräkningar och även med Ansys. Ett hjälpmedel vid de analytiska beräkningarna 
+har varit beräkningsprogrammet Mathcad. 
+ 
+ 
+ 
+2 Använda program 
+ 
+ 
+3 
+2 Använda program 
+2.1 Beräkningsmetoder för Robot 
+Beräkningarna har utförts med beräkningsprogrammet Robot Millennium version 19.0. 
+Programmet utför linjära och ickelinjära finita element beräkningar av första och andra 
+ordningen för olika strukturer och material. Robot sammankopplar själv elementtyper med 
+varierande antal frihetsgrader. 
+ 
+Den ickelinjära analysen gör det möjligt att ta hänsyn till att systemets form är geometriskt 
+föränderligt. Detta är nödvändigt eftersom kablar ingår i konstruktionerna. Kabelelementen 
+finns fördefinierade i Robot, de saknar böjstyvhet och elimineras ur styvhetsmatrisen om de 
+blir tryckta. 
+2.2 Andra använda program 
+I examensarbetet användes till en början beräkningsprogrammet Ramanalys version 5.2. Detta 
+byttes ut mot Robot då det inte kunde genomföra ickelinjära beräkningar. Även matematik-
+programmet Mathcad har använts samt AutoCad 2006. 
+ 
+ 
+ 
+ 
+ 
+3 Inledande teori 
+ 
+  
+5 
+3 Inledande teori 
+3.1 Allmänt 
+Deformationsberäkningar kan göras både med en linjär och en ickelinjär analys. Skillnaden 
+märks tydligast vid stora deformationer. I en linjär beräkning uppfylls jämviktsvillkoren 
+baserade på det icke deformerade systemets geometri och deformationerna erhålls i ett nästa 
+steg, tex. genom en energibetraktelse. Detta innebär att jämviktsvillkoren inte uppfylls för det 
+deformerade systemet. I en ickelinjär beräkning uppfylls både jämvikts- och deformations- 
+villkor simultant. 
+3.1.1 Linjär analys 
+Systemet i Fig. 3.1 belastas med en punktlast P. Deformationen beräknas med en linjär analys 
+enligt ekvation. 3-4 
+ 
+ 
+a
+b
+d
+D
+l2
+l1
+d
+a=45°
+ 
+Fig. 3.1 
+Figur av systemet beräknat med en linjär analys 
+ 
+ 
+ 
+Stångkrafterna för den 
+initiala geometrin 
+ 
+)
+sin(
+5.0
+ 
+ 
+α
+P
+=
+S
+ 
+ 
+ 
+3-1 
+Vid 
+°
+=
+ 
+45
+α
+ blir  
+ 
+2
+ 
+ 
+P
+S =
+ 
+ 
+ 
+ 
+ 
+Och 
+2
+ 
+ 
+1
+l
+l =
+ 
+ 
+ 
+ 
+3 Inledande teori 
+ 
+  
+6 
+För att beräkna deformationen δ  tecknas uttryck för strukturens inre och yttre arbete. 
+Stängerna har axialstyvheterna EA 
+ 
+ 
+Inre arbetet 
+EA
+l
+S
+EA
+l
+S
+EA
+l
+S
+=
+A
+i
+i
+i
+2
+2
+ 
+ 
+2
+ 
+ 
+1
+2
+1
+2
+i
+2
++
+=
+∑
+ 
+ 
+ 
+3-2 
+Yttre arbetet 
+δ
+P
+=
+Ay
+5.0 
+ 
+ 
+ 
+ 
+ 
+3-3 
+Det inre och yttre arbetet 
+skall vara lika och ett uttryck 
+för deformationen δ  erhålls 
+EA
+Pl
+2
+ 
+ =
+δ
+ 
+ 
+ 
+3-4 
+ 
+Storheterna väljs så att 
+l⋅
+=
+1.0 
+ 
+δ
+ 
+ 
+Lösning med värden på storheterna presenteras i bilaga 3.1 
+3.1.2 Ickelinjär analys små deformationer 
+När deformationerna är små kan vi anta att längderna 
+2
+1  
+ l
+l =
+, samtidigt som 
+°
+90
+ 
+ =
+γ
+vilket är 
+en approximation. 
+ 
+ 
+D
+d
+l2
+b
+a
+b a
+S
+b
+l1
+ 
+Fig. 3.2 
+Figur av systemet beräknat med en ickelinjär analys 
+Stångkraften beräknas för den deformerade 
+geometrin. 
+ 
+)
+sin(
+5.0
+ 
+ 
+β
+P
+=
+S
+ 
+3-5 
+ 
+ 
+Tillhörande töjning blir  
+ 
+1l
+EA
+S
+=
+Δ
+ 
+3-6 
+ 
+ 
+ 
+ 
+ 
+3 Inledande teori 
+ 
+  
+7 
+Ekvationerna ovan tillsammans med förutsättning 
+l
+EA
+Pl
+⋅
+=
+1.0
+2
+ Dvs. samma förutsättning 
+som gäller i 3.1.1 ger efter hyfsning ett värde på Δ  
+ 
+)
+sin(
+1.0
+5.0
+2
+)
+sin(
+5.0
+1
+β
+β
+l
+EA
+l
+P
+l
+EA
+S
+⋅
+⋅
+=
+⋅
+=
+=
+Δ
+ 
+3-7 
+ 
+ 
+Ett uttryck för deformationen δ kan tecknas med hjälp av rätvinkliga trianglar ur geometrin 
+ovan. 
+ 
+Ekvation 3-7 och 3-8 ger: 
+ 
+För att kunna beräkna deformationen δ behövs ytterliggare ett samband mellan δ och β . 
+Enkel geometri ger det sista uttrycket 
+ 
+ 
+Ekvation 3-9 och 3-10 ger deformationen δ  och den nya vinkeln β  
+ 
+Lösning med värden på storheterna presenteras i bilaga 3.2 
+)
+sin(β
+δ
+Δ
+=
+ 
+3-8 
+ 
+l
+2)
+sin(
+05
+.0
+β
+δ =
+ 
+3-9 
+ 
+l
+l
+=
+δ
+β
++
+ 
+ )
+tan(
+ 
+3-10 
+ 
+3 Inledande teori 
+ 
+  
+8 
+3.1.3 Ickelinjär analys stora deformationer 
+När deformationerna är stora duger inte längre approximationen att 
+2
+1
+l
+l =
+.Utan vi måste även 
+beräkna den nya längden 2l . Ur figuren kan följande inses. 
+ 
+a
+D
+d
+l2
+b
+a
+b a
+S
+b
+l1
+ 
+Fig. 3.3 
+Figur av systemet beräknat med en ickelinjär analys 
+Cosinusteoremet utnyttjas för den markerade 
+triangeln 
+ 
+)
+-
+180
+cos(
+2
+-
+ 
+1
+2
+2
+1
+ 
+2
+2
+α
+δ
+δ
+l
+l
+=
+l
++
+ 
+ 
+Med 
+°
+= 45
+α
+ och villkoret 
+2
+1
+l
+l =
+ erhålls 
+efter förenkling: 
+ 
+δ
+δ
+l
+=l
+l
+2
+2
+2
+1
+2
+2
++
++
+ 
+3-12
+Enligt ekvation 3-7 är stångens töjning 
+)
+sin(
+1.0
+5.0
+β
+l⋅
+⋅
+=
+Δ
+. Detta tillsammans med ekvation 3-11, 
+och villkoret 
+2
+1
+l
+l =
+, ger uttrycket för 2l  
+ 
+Utveckling av cosinusteoremet ger: 
+ 
+δ
+δ
+l
+l
+=
+l
+2
+ 
+2
+2
+1
+ 
+2
+2
++
++
+ 
+ 
+(
+)
+δ
+δ
+β
+l
+l
+=
+l
+l
+2
+2
+ 
+ 
+)
+sin(
+05
+.0
+2
+2
+2
+2
++
++
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+⋅
++
+ 
+3-14 
+ 
+Som i kapitel 3.1.2 behövs ytterliggare ett samband mellan δ och β . Samma relation som i 
+kapitel 3.1.2 används, nämligen ekvation 3-10, 
+l
+l
+=
+δ
+β
++
+ 
+ )
+tan(
+ 
+Lösning med värden på storheterna presenteras i bilaga 3.3 och en jämförelse mellan de olika 
+metoderna i kapitel 3.1.4. 
+Δ
++
+=
+1
+2
+l
+l
+ 
+3-11 
+ 
+)
+sin(
+05
+.0
+2
+ 
+ 
+2
+β
+l
+l
+=
+l
+⋅
++
+ 
+3-13 
+ 
+3 Inledande teori 
+ 
+  
+9 
+3.1.4 Jämförelse mellan de olika analysmetoderna 
+Teoretiskt beräknade deformationer enligt teorin i tidigare kapitel. 
+Kraften P 
+[MN] 
+Linjär 
+[mm] 
+Ickelinjär små def. 
+[mm] 
+Ickelinjär stora def. 
+[mm] 
+1.05 
+50.02 
+49.512 
+49.63 
+10.5 
+500 
+459.675 
+468.576 
+ 
+Beräkningar från Robot 
+Kraften P 
+[MN] 
+Linjär 
+[mm] 
+Ickelinjär 
+[mm] 
+1.05 
+49.98 
+49.61 
+10.5 
+499.83 
+468.48 
+ 
+När deformationerna förväntas bli stora och stor beräkningsnoggrannhet önskas då effekten 
+av geometrisk föränderlighet skall beaktas, är det nödvändigt att genomföra en ickelinjär 
+analys. Robots ickelinjära analys stämmer mycket bra med det teoretiskt beräknade värdet 
+som är gjord vid stora deformationer. Detta är väntat då denna teori bäst tagit hänsyn till att 
+systemet förändras geometriskt. 
+ 
+Även vid en mindre kraft, och alltså en mindre deformation, stämmer värdet beräknat med 
+teorin för ickelinjära system och stora deformationer bäst överens med Robots resultat. En 
+ickelinjär analys ger alltså den riktiga deformationen. Man kan dock konstatera att alla 
+deformationer som beräknats för den mindre kraften stämmer bra överens med varandra. 
+Detta visar att det är tillfredställande att använda linjära analyser för de studerade exemplet, 
+och liknande strukturtyper när små deformationer förväntas.  
+ 
+En annan slutsats som kan dras är att Robot torde ge tillräckligt bra resultat för att 
+programmet ska kunna användas vid praktiska beräkningar. Det är intressant att konstatera att 
+vid analyser av föränderliga system, där stora deformationer väntas, krävs program 
+uppbyggda av komplicerade algoritmer så att geometrins förändring behandlas på ett relevant 
+sätt.   
+3 Inledande teori 
+ 
+  
+10 
+3.1.5 Viktlös kabel 
+Då linor inte har någon böjstyvhet måste det tillkommande momentets fördelningen upptas 
+genom en geometrisk förändring av linan. Detta gör att linor måste beräknas med en ickelinjär 
+analys. Det är viktigt att både jämvikt- och deformationsvillkor uppfylls. 
+ 
+d
+ 
+Fig. 3.4  
+Figur av systemet -viktlös kabel 
+ 
+Momentjämvikt i systemet 
+ 
+ 
+ 
+ 
+ 
+ 
+Kabellängden före och efter deformationen 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+För att kunna beräkna ett värde på deformationen behöver vi två uttryck för längd- 
+förändringen. 
+ 
+ 
+ 
+Längdändringen kan också uttryckas som töjningen i linan men ekvationen nedan: 
+ 
+ 
+ 
+ 
+Konstanten C anger ett värde som tar hänsyn till att kraften som töjer kabeln varierar längs 
+kabeln. Genom att studera kabelkraften geometriskt kan konstateras att kraften som töjer linan 
+i mitten av linan är S medan den vid upplagen för det valda exemplet töjs med ett värde som 
+8
+2
+1
+l
+q
+f
+H
+⋅
+=
+⋅
+3-15 
+(
+)
+8
+ 
+ 
+2
+2
+l
+q
+f
+H
+⋅
+=
++
+⋅
+δ
+3-16 
+⎥
+⎥
+⎦
+⎤
+⎢
+⎢
+⎣
+⎡
+⎥
+⎥
+⎦
+⎤
+⎢
+⎢
+⎣
+⎡
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
+⋅
++
++
+⋅
+⋅
+⋅
++
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
+⋅
++
+⋅
+⋅
+=
+2
+2
+4
+ln
+4
+2
+1
+l
+f
+4
+1
+l
+f
+f
+l
+l
+f
+4
+1
+l
+L1
+(
+)
+(
+)
+(
+)
+(
+)
+⎥
+⎥
+⎦
+⎤
+⎢
+⎢
+⎣
+⎡
+⎥
+⎥
+⎦
+⎤
+⎢
+⎢
+⎣
+⎡
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
++
++
++
++
+⋅
++
++
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
++
++
+⋅
+⋅
+=
+2
+2
+2
+4
+ln
+4
+2
+1
+l
+f
+4
+1
+l
+f
+f
+l
+l
+f
+4
+1
+l
+L
+δ
+δ
+δ
+δ
+3-17 
+3-18 
+1
+2
+L
+L
+L
+−
+=
+Δ
+3-19 
+(
+) EA
+L
+f
+l
+q
+C
+L
+EA
+H
+C
+L
+1
+2
+1
+2
+8
+⋅
++
+⋅
+⋅
+=
+⋅
+=
+Δ
+δ
+3-20 
+3 Inledande teori 
+ 
+  
+11 
+är 1.097 gånger större än S. För att ta hänsyn till detta införs i ekvation 3-20 en konstant C 
+som sätts till medelvärdet av horisontalkraften längs kabeln, dvs. C=1.048. Medelvärdet är 
+beräknat genom att anta att horisontalkraften varierar linjärt över kabeln. Detta kommer alltid 
+överskatta värdet på C, då horisontalkraften egentligen varierar paraboliskt, vilket syns i 
+Fig. 3.5.  
+ 
+Fig. 3.5  
+C-värdets variation över linan 
+ 
+C-värdet enligt ovan ger en god approximation av horisontalkraftens medelvärde. Genom att 
+beräkna ett medelvärde baserat på en parabelformad ekvation kan dock ett ännu noggrannare 
+värde beräknas. I det fallet blir C=1.0323, vilket har använts i beräkningarna. Beräkning av  
+C-värdet visas i bilaga 3.4.  
+ 
+Med lasten införd som nodlaster på linan och med värden på parametrarna E, A, f, q och l 
+enligt bilaga 3.5 är skillnaden mellan beräkningar gjorda i Robot och enligt teorin ovan 
+mindre än 0.1%. För kontroll av beräkningarna se bilaga 3.5 
+ 
+ 
+4 Datoruppbyggnad av diskret hängbro 
+ 
+ 
+13 
+ 
+4 Datoruppbyggnad av diskret hängbro 
+4.1 Injustering Allmänt 
+Skillnaden på att bygga en struktur i ett beräkningsprogram och i verkligheten är att man i 
+programmet bygger strukturen i sin helhet, och inte i flera steg som blir fallet i verkligheten. 
+Strukturen förutsätts initialt vara viktlös. När strukturen belastas med sin egentyngd 
+deformeras den från den geometri som strukturen givits i sin startposition. 
+ 
+En verklig hängbro uppförs genom montering i flera steg. När pyloner och ändstöd är byggda 
+utförs montage av kabel och hängare, varefter brobalkarna monteras. Brobalkarna monteras så 
+att de får den önskade geometriska formen, utan globala tvång av systemets egentyngd. För 
+att ta hänsyn till detta måste datormodellens olika delar injusteras. Detta på ett sådant sätt att 
+de efter belastning av egentyngd får den valda startgeometrin och inga inre tvång. Nedan 
+diskuteras injustering av en hängbro. Tillräcklig noggrannhet av injusteringen erhålls normalt 
+efter en justering. Ytterliggare iterationer är naturligtvis möjliga. För kontroll av injusteringen 
+se bilaga 4.1. 
+4.1.1 Injustering huvudkabel 
+Den första byggnadskomponenten är brons huvudkabel. Huvudkabeln har fått geometrin som 
+en parabel. Vid belastning med egentyngd förflyttas kabeln i både horisontal- och vertikalled. 
+Vid injustering flyttas därför kabelns nodpunkter i motsatt riktning mot förskjutningarna, så 
+att de efter en ytterligare belastning med egentyngden ska komma tillbaka till startläget. 
+Bilden visar hur huvudkabeln efter belastning med egentyngd intar det valda startläget.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Den erhållna slutgeometrin kommer att ligga något under den tänkta, dvs. 
+2
+3
+y
+y >
+. I det fall 
+ytterliggare trimning av pilhöjden önskas görs ytterliggare en överhöjning av kabeln. 
+Fig.4.1
+4 Datoruppbyggnad av diskret hängbro 
+ 
+ 
+14 
+ 
+4.1.2 Injustering hängare 
+När bron belastas med egentyngd och med initialt vertikala hängare kommer dessa att 
+snedställas vilket påverkar kabelkraften och balkmomentet. Injusteringen av hängarna utförs 
+så att hängarna blir vertikala, och med den givna delningen, när systemet belastas med sin 
+egentyngd.  
+ 
+Injusteringen görs så att nodpunkterna för hängarna på kabeln och balken justeras i både 
+horisontal- och vertikalled. Eftersom hängarnas övre nodpunkter är desamma som kabelns 
+nodpunkter har dessa redan injusterats i och med att huvudkabeln injusterats. Därför behöver 
+bara hängarnas undre nodpunkter förflyttas. Förflyttningen görs med motsvarande 
+förskjutning med ombytt tecken som ägt rum när det viktlösa systemet belastas med sin 
+egentyngd (alltså på samma sätt som vid injusteringen av huvudkabeln). Efter injusteringen 
+skall det belastade överhöjda systemet ha vertikala hängare för egentyngd, och nodpunkterna 
+för kabeln skall ge det initialt valda avståndet mellan hängarna. Bilden visar hur de förflyttade 
+hängarna återgår till startläget efter belastning med egentyngd. 
+ 
+En liknande injustering för farbanan har 
+indirekt genomförts eftersom hängarnas 
+undre nodpunkter, som är desamma som 
+farbanans nodpunkter, har förflyttats. 
+Vid egentyngdsbelastning har dock ett 
+tvångsmomnet uppträtt i farbanan. Ingen 
+ytterligare injustering görs för detta utan 
+det uppträdande tvångsmomentet av 
+globalböjningen 
+pga. 
+egentyngden 
+justeras i beräkningen av balkomentet 
+kapitel 4.1.3 
+ 
+   Fig. 4.2 
+4 Datoruppbyggnad av diskret hängbro 
+ 
+ 
+15 
+ 
+4.1.3 Tvångsmomentet 
+Med injustering enligt ovan kommer brobalken att vara överhöjd och när systemet belastas 
+med sin egentyngd intar den det önskade läget i höjdled (Fig. 4.2). Balken har då erhållit en 
+global krökning som i princip ger en parabelkrökning, vilket motsvarar ett konstant positivt 
+moment över balken. Globala momentet av egentyngd tas sålunda till viss del av balken. I 
+kapitel 5 visas en diskret beräkning av en mjuk hängbro. För att få en uppfattning om 
+tvångsmomentets betydelse redovisas nedan resultatet.  
+ 
+ 
+ tm
+15047
+m
+ 8.
+228
+ t
+522
+kabel
+kabel
+=
+⋅
+=
+⋅
+=
+f
+H
+M
+ 
+ tm
+8.1
+tvång ≈
+M
+ 
+ 
+ 
+‰
+ 
+12
+.0 
+ 
+1000
+kabel
+tvång
+=
+⋅⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+M
+M
+ 
+ 
+ 
+För mjuka hängbroar är som synes tvångsmomentet mycket litet jämfört med kabelmomentet, 
+och systemets globala styvhetsegenskaper påverkas inte. Några geometriska injusteringar av 
+denna anledning av hängarna är därför inte motiverade vid praktiska beräkningar.  
+ 
+Vid beräkning av balkmomentet kan det aktuella tvångsmomentet enkelt elimineras. Systemet 
+belastas i lastfall 1 (
+)
+1
+M
+ enbart av egentyngd och i lastfall 2 (
+)
+2
+M
+ av egentyngd och nyttiga 
+laster.  
+ 
+Det verkliga balkmomentet erhålls på följande sätt. 
+ 
+1
+2
+verkligt
+M
+M
+M
+−
+=
+ 
+4 Datoruppbyggnad av diskret hängbro 
+ 
+ 
+16 
+ 
+I de fall full injustering önskas, så att balken är momentlös i lastfall 1, får varje enskild 
+hängare förlängas motsvarande vad tillhörande punkt på balken är överhöjd i sitt startläge. 
+Hängarna utsätts därefter för en temperaturlast, specifik för varje hängare som förkortar 
+respektive hängare, motsvarande balkens nedböjning av lastfall 1. Temperaturlasterna skapar 
+ett lika stort motriktat moment i balken som sedan kommer skapas vid pålastning av 
+egentyngd. Detta ger en momentlös brobalk. Bilden visar hur de temperaturbelastade 
+hängarna återgår till startläget vid belastning med egentyngd. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   Fig. 4.3 
+ 
+ 
+5 Analys av hängbroar 
+ 
+  
+17 
+ 
+5 Analys av hängbroar 
+5.1 Förutsättningar 
+Vid beräkning av hängbroar antas följande initialt gälla(7,9): 
+ 
+• Elastiska material. 
+• Egenvikten q bärs enbart av kabeln utan uppkomst av moment i förstyvningsbalken. 
+• Hängaravstånden är så små att hängstagskrafterna kan anses kontinuerligt fördelade. 
+• Kabelns horisontalvandring, ε försummas. 
+• Hängstagens vinkeländring β försummas. 
+• Kabelkraftens horisontalkomposant antas konstant över hela spännvidden. 
+• Hängstagsförlängning och tornförkortning från trafiklast försummas. 
+• Förstyvningsbalkens tvärkrafts- och normalkraftsdeformationer försummas. 
+• Förstyvningsbalkens böjstyvhet EI antas konstant. 
+ 
+Vid beräkning med den kontinuerliga teorin. (Selberg, Asplund, Granholm, mfl) kan i ett 
+andra steg en korrigering för ε- och β-effekten göras. Vid en diskret ickelinjär beräkning 
+bortfaller de ovan angiva begränsningarna. 
+5.2 Exempel  
+Vi utgår från en faktiskt byggd hängbro i Norge. Selberg har  i sin doktorsavhandling 
+genomfört kontinuerliga beräkningar på denna.  
+ 
+ 
+Fig. 5.1 
+Geometriska förutsättningar för bron i beräkningarna. 
+ 
+Matematiska samband 
+Huvudkabelns ekvation 
+ 
+ 
+825
+.
+28
+)
+(
+825
+.
+28
+4
+)
+(
+2 +
+−
+⋅
+⋅
+−
+=
+x
+x
+x
+y
+  
+]
+m
+[
+ 
+Förstyvningsbalkens krökning 
+ 
+)
+(
+85
+,2
+4
+65
+,0
+)
+(
+2x
+x
+x
+v
+−
+⋅
+−
+−
+=
+  
+ 
+]
+m
+[
+ 
+ 
+Brobalken har rullager i båda ändarna 
+ 
+5 Analys av hängbroar 
+ 
+  
+18 
+ 
+Tvärsnitt- och materialdata 
+Brobalken 
+ 
+ 
+ 
+ 
+4
+m
+ 
+00108
+.0
+=
+I
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+GPa
+ 
+210
+=
+E
+ 
+Huvudkabeln  
+ 
+ 
+ 
+2
+cm
+  
+218
+=
+A
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+GPa
+ 
+162
+=
+E
+ 
+Backstagen 
+ 
+ 
+ 
+ 
+2
+cm
+ 
+850
+=
+A
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+GPa
+ 
+210
+=
+E
+ 
+Hängarna 
+ 
+ 
+ 
+ 
+2
+cm
+ 
+100
+=
+A
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+GPa
+ 
+210
+=
+E
+ 
+ 
+Arean på hängarna är inte angivna och ansätts i modellen till ett värde så att de fungerar som 
+oändligt styva hängare. 
+ 
+Laster  
+Storlek och placering från det vänstra stödet 
+ t)
+7.4
+(
+      
+kN
+ 1.
+46
+1 =
+P
+  
+m
+ 2.
+33
+1 =
+P
+L
+ 
+ t)
+3.2
+(
+     
+kN
+ 6.
+22
+2 =
+P
+  
+m
+ 2.
+37
+2 =
+P
+L
+ 
+ t)
+522
+(
+    
+kN
+ 
+5120
+=
+H
+  
+ 
+ 
+ 
+ 
+Egentyngden är ej explicit angiven av Selberg utan införs så att de ovan angiva värdet på 
+horisontalkraften uppnås. 
+5.3 Beräkning av moment 
+Balkmomentet för exemplet ovan är av Selberg beräknat med den kontinuerliga teorin 
+(oändligt tätt med hängare). För jämförelse med detta har en diskret beräkning gjorts i Robot. 
+I det diskreta fallet införs egentyngden som nodlaster. De har storleken så att kabelns 
+horisontalkraft ska bli 522 t. Dessutom har två olika hängardelningar studerats. I det ena fallet 
+är hängardelningen 11.44 m och i det andra fallet 5.72 m. 
+5.3.1 Kontinuerlig beräkning av Selberg 
+Selberg har beräknat momentet i punkten 0.15l med lastställningen enligt ovan. Följande 
+balkmoment erhölls: 
+ 
+ tm)
+(17.13
+      
+kNm
+ 0.
+168
+0.15 =
+l
+M
+  
+ 
+För att kunna jämföra det kontinuerliga resultatet med resultaten från Robot måste momentet 
+korrigeras med hänsyn till lokala effekter av böjning. Korrigeringen är utförd enligt en av 
+Asplund beskriven metod. Momentet i hängarpunkten korrigeras med det negativa 
+stödmoment som uppkommer vid lastställningen enligt ovan på en kontinuerlig balk med 
+spann lika som avståndet mellan hängarpunkterna. 
+ 
+Stödmomentet beräknas för de båda delningsavstånden. 
+kNm
+ 6.
+41
+ 
+ 
+stöd_enkel =
+M
+ 
+kNm
+ 1.
+28
+l
+stöd_dubbe =
+M
+ 
+5 Analys av hängbroar 
+ 
+  
+19 
+ 
+Vi kan nu beräkna Selbergs korrigerade moment. 
+ 
+kNm
+ 
+126.4
+=
+=
+kNm
+ 
+41.6
+-
+kNm
+ 0.
+168
+_Selberg
+0.15l
+M
+ 
+kNm
+ 
+139.9
+=
+=
+kNm
+ 
+28.1
+-
+kNm
+ 0.
+168
+_Selberg
+0.15l
+M
+ 
+ 
+5.3.2 Diskret beräkning i Robot – för jämförelse med Selberg 
+För att kunna jämföra det kontinuerliga systemet med det diskreta beräknas momentet i 
+Robot. Brobalken kan betraktas som upplagd på två rullager, vilket åstadkoms genom att de 
+införs som fjädrar med mycket liten (0.1 N/m) fjäderkonstant. Detta upplagsfall är det som 
+används som fall 1 i 5.4 och 5.5.2. Korrigeringen av momentet görs för att få bort 
+tvångsmomentet i balken. En noggrannare förklaring till detta finns i kapitel 4.1.3. 
+ 
+För jämförelse med Selbergs moment genomförs beräkningen i punkten 0.15l. Beräkningen 
+genomförs för de båda hängardelningarna. 
+ 
+kNm
+ 
+129.8
+=
+=
+kNm
+ 
+17.6
+-
+kNm
+ 
+147.4
+0.15_enkla
+M
+ 
+kNm
+ 
+148
+=
+=
+kNm
+ 
+16.5
+-
+kNm
+ 5.
+64
+1
+a
+0.15_dubbl
+M
+ 
+5.3.3  Jämförelse av balkmomentet 
+Nedan visas en sammanställning samt jämförelse av momentet beräknat med den 
+kontinuerliga (kapitel 5.3.1) och diskreta (kapitel 5.3.2) teorin i punkten 0.15l.  
+ 
+ 
+Diskret 
+Kontinuerlig 
+Selberg 
+Enkelt hängarantal 
+kNm
+ 
+129.8
+ 
+kNm
+ 
+126.4
+ 
+Dubbelt hängarantal 
+kNm
+ 
+48
+1
+ 
+kNm
+ 
+139.9
+ 
+ 
+Resultatet ovan visar på skillnader mellan den diskreta och den kontinuerliga metoden. 
+Skillnaderna kan inte anses försumbara vid praktiskt beräkningsarbete. 
+ 
+5 Analys av hängbroar 
+ 
+  
+20 
+ 
+5.3.4 Hängardelningens betydelse för balkmomentet – vid 
+enbart en punktlast i 0.15l 
+En ytterligare jämförelse har utförts för att belysa skillnaden mellan en diskret och en 
+kontinuerlig beräkning. Jämförelsen har gjorts för en punktlast P i hängarpunkten 0.15l, där 
+inga lokala böjmoment uppträder. Den diskreta beräkningen ger för 
+2
+1
+P
+P
+P
++
+=
+ vid de två 
+olika hängardelningarna följande resultat: 
+ 
+kNm
+ 3.
+180
+0.15_enkla =
+M
+ 
+kNm
+ 9.
+197
+a
+0.15_dubbl =
+M
+ 
+ 
+Det kan sålunda konstateras att hängardelningen har betydelse på balkmomentet eftersom 
+olika storlek på momentet erhålls, nämligen en avvikelse på ungefär 9 %.  
+ 
+Vid kontinuerliga beräkningar har effekten av P beräknats med hjälp av Selbergs nomogram. 
+Då Selberg inte har ett nomogram för beräkning av momentet i 0.15l har ett medelvärde av 
+momentet i 0.1l och 0.2l beräknats. Momentet har beräknats för två olika lastställningar. I det 
+första fallet som ovan genom att välja 
+2
+1
+P
+P
+P
++
+=
+och placera lasten i hängarpunkten. I det 
+andra fallet har lasterna placerats som i Fig. 5.1 men istället runt hängarna i 0.1l och 0.2l. De 
+olika momenten visas nedan. För mer detaljerade beräkningar se bilaga 5.1. 
+ 
+kNm
+ 1.
+219
+=
+P
+M
+ 
+kNm
+ 5.
+207
+2
+1
+=
+ochP
+P
+M
+ 
+ 
+För att kunna jämföra den kontinuerliga teorin med den diskreta görs en proportionering med 
+Selbergs moment i 0.15l-punkten (momentet som redovisats i kapitel 5.3.1). Detta moment är 
+beräknat när 
+1P  och 
+2P  placeras på var sin sida om 0.15l varvid sekundära effekter beaktas, 
+bl.a. snedställning av hängare och brobalkens krökning. Effekten av att ersätta de två 
+punktlasterna på sidan med en punktlast i mitten kan antas förhålla sig som de i 
+nomogrammen beräknade momenten. Varför effekten av en punktlast i mitten blir som nedan:  
+ 
+kNm
+ 
+177.4
+kNm
+ 0.
+168
+kNm
+ 5.
+207
+kNm
+ 1.
+219
+=
+⋅
+ 
+ 
+I detta fall behöver ingen korrigering göras för globala effekter, eftersom dessa inte uppstår då 
+lasten placeras i en hängarpunkt. Värdet 177.4 kNm stämmer mycket bra överens med det i 
+Robot beräknade värdet för moment med enkla hängare (180.3 kNm).   
+ 
+Anledningen till att värdena i nomogrammen endast används som proportioneringsvärden är 
+för att de inte beaktar sekundära effekter. Det har vidare konstaterats att balkmomentet ytterst 
+marginellt påverkas av brobalkens upplagsförhållanden. 
+ 
+5 Analys av hängbroar 
+ 
+  
+21 
+ 
+5.3.5 Kontinuerlig beräkning enligt Granholm 
+Balkmomentet i 0.25l kan beräknas med en enligt Granholm framtagen och förenklad formel. 
+υ -värdet tar endast hänsyn till brons styvhet, geometri och kabelkraft. Detta får därför 
+betraktas som en rent överslagsmässig metod.  
+ 
+Beräkningen har genomförts på samma bro som beskrivits i kapitel 5.2, men med en annan 
+lastställning, en punktlast P i 0.25l med storleken 50 kN. 
+2
+0
+2
+l
+H
+EI
+⋅
+⋅
+= π
+υ
+ 
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
+⋅
+⋅
+−
+⋅
+⋅
+⋅
+=
+υ
+π
+υ
+π
+4
+9
+2
+_Granholm
+0.25
+I
+P
+M
+l
+ 
+kNm
+ 
+156
+_Granholm
+0.25
+=
+l
+M
+ 
+5.3.6 Diskret beräkning i Robot – jämförelse med Granholm 
+För jämförelse med Granholm beräknas, i Robot, momentet i 0.25l för punktlasten enligt 
+ovan.  
+ 
+kNm
+132.9 
+kNm
+ 7.
+20
+kNm
+ 6.
+153
+0.25_enkla
+=
+−
+=
+M
+ 
+kNm
+145.5 
+kNm
+ 3.
+19
+kNm
+ 8.
+164
+a
+0.25_dubbl
+=
+−
+=
+M
+ 
+ 
+Även i detta fall är skillnaderna små mellan de olika metoderna. Detta trots att Granholms 
+formel får ses som rent överslagsmässig.  
+5.3.7 Fördelar med en diskret analys 
+Jämförelser mellan en kontinuerlig och en diskret analys visar att i den diskreta analysen blir 
+det mycket enklare att beräkna och hitta punkter för maximalt moment. Genom att flytta 
+krafterna över bron ges möjligheten att enkelt konstruera influenslinjer för moment. Dock kan 
+konstateras att influenslinjer inte behövs för den numeriska analysen vid diskreta beräkningar. 
+Farlig lastställning vid utbredda nyttiga laster och punktlaster hanteras vid diskret beräkning 
+genom att initialt utnyttja influensytor angivna av tex. Selberg. I steg två justeras 
+lastställningen så att maximalt moment erhålls för balken med hänsyn till hängarnas faktiska 
+läge. 
+ 
+Eftersom influenslinjer inte behöver användas vid en diskret beräkning är vi inte beroende av 
+att tillämpa superpositionsprincipen, som bekant inte gäller för ickelinjära system. Det 
+aktuella lastfallet beräknas istället i sin helhet.  
+ 
+För att visa att superpositionsprincipen inte gäller införs två stycken punklaster på bron, en i 
+0.15l och den andra i 0.5l vardera av storleken 100 kN. Deformationerna på bron beräknas på 
+två olika sätt. I det första fallet beräknas deformationerna när de båda krafterna angriper 
+samtidigt på bron. I det andra fallet beräknas deformationerna för varje punktlast var och en 
+för sig och adderas sedan ihop. Den största avvikelsen mellan de båda beräkningsmodellerna 
+uppgår till 3 %. Se bilaga 5.2. 
+5 Analys av hängbroar 
+ 
+  
+22 
+ 
+5.4 Beräkning av kabelkraft 
+De pålagda punktlasterna gör att horisontalkraften i systemet ökar. Ökningen av 
+horisontalkraften beräknas för fyra olika fall. I det första fallet kan upplagen betraktas som två 
+rullager enligt beskrivning i 5.3.2. I det andra fallet är förstyvningsbalken upplagd på en fast 
+led och ett rullager och i det tredje fallet byter upplagen plats.  
+I det fjärde fallet har två fasta leder försökt skapas. Detta genom att använda en fast led och 
+ett rullager. Efter belastning med egentyngd kontrolleras förskjutningen i rullagret och en 
+horisontell kraft av sådan storlek att stödet skjuts tillbaka till sitt ursprungsläge införs. 
+Anledningen till att två fasta leder inte kan användas är att farbanan i det fallet kommer att 
+verka som en båge och knäcka ut.   
+ 
+kN
+ 
+50.5
+ 
+  
+Fall1=
+ΔH
+ 
+kN
+ 
+48.9
+Fall2 =
+ΔH
+ 
+kN
+ 0.2
+5
+Fall3 =
+ΔH
+ 
+kN
+ 6.
+53
+Fall4 =
+ΔH
+ 
+ 
+Selbergs har beräknat tillskottskraften till 52.2 kN
+)
+ t
+32
+.5
+(
+vilket stämmer bra överens med 
+tillskottskraften i alla fall. 
+5 Analys av hängbroar 
+ 
+  
+23 
+ 
+5.5 Beräkning av deformationer 
+Selberg har genomfört deformationsberäkningar för fyra olika upplagsfall. Fallet med rullager 
+på båda sidor, och fallet med fast led på båda sidor. I det senare fallet har tre olika mate- 
+matiska ansatser använts. Dessutom har Selberg redovisat uppmätta värden på 
+deformationerna. För jämförelse med Selberg har en diskret beräkning utförts med samma 
+upplagsförhållanden som beskrivits i kapitel 5.4 
+5.5.1 Deformationsberäkningar för det kontinuerliga 
+systemet 
+ 
+Fig. 5.2 
+Deformationerna ur Selberg (1946) 
+ 
+ 
+Deformationen i två punkter vid olika förutsättningar. 
+ 
+ 
+ 
+ 
+0.7l 
+[mm] 
+0.15l 
+[mm] 
+Uppmätta värden 
+-61 
+157 
+Rullager på båda sidor 
+-100 
+200 
+Fastled på båda sidor 
+-86 → -56 
+172 → 144 
+5 Analys av hängbroar 
+ 
+  
+24 
+ 
+5.5.2 Deformationsberäkningar för det diskreta systemet 
+För att beräkna deformationerna som orsakats av punktlasterna och samtidigt ta hänsyn till 
+systemets styvhet, beräknas deformationerna simultant för modellen belastad med både 
+punktlaster och egentyngd. Därefter subtraheras deformationerna som uppkommit av enbart 
+egentyngd. 
+ 
+ 
+Fig. 5.3  
+Deformationer från beräkningar i Robot 
+ 
+Deformationen i två punkter vid olika förutsättningar 
+ 
+ 
+0.7l 
+[mm] 
+0.15l 
+[mm] 
+Fall 1  
+-91.2 
+182.3 
+Fall 2 
+-68.5 
+162.9 
+Fall 3 
+-67.7 
+162.1 
+Fall 4 
+-67.4 
+161.9 
+5 Analys av hängbroar 
+ 
+  
+25 
+ 
+5.5.3 Jämförelse av deformationerna 
+Deformationerna som beräknats i Robot stämmer bra överens med Selbergs deformationer. 
+Man kan konstatera att Robots deformationer vid de fyra olika upplagsfallen ligger mellan 
+Selbergs två ytterlighetsfall.  
+ 
+I alla fall har den största negativa deformationen hittats nära punkten 0.7l, dvs. i samma punkt 
+som Selberg har uppmätt sin största deformation. De tre senare fallen ligger närmare Selbergs 
+uppmätta värde i denna punkt än vad värdet beräknat för det första fallet gör.  
+ 
+Det kan även konstateras att ingen av Selbergs olika deformationskurvor, eller den diskreta 
+analysen, har god samstämmighet i punkterna 0.15l och 0.7l. Kausala förklaringar till detta 
+kan vara att ett rent mätfel uppstått i punkten 0.7l och/eller ofullständiga lager. Enligt Selberg 
+utfördes ingen kontroll av förskjutningen i lagerpunkterna. 
+5.6 Verifiering av resultatet 
+För att verifiera resultatet ytterliggare har beräkningarna på bron även genomförts i 
+beräkningsprogrammet Ansys Structural 10.0. som till skillnad från Robot inte kan anses vara 
+ett standardprogram utan är mer avancerat. Liksom i Robot används kabelelement för 
+huvudkabel och hängare. De olika upplagsförhållandena är modellerade som i fall 1 - fall 4. 
+Nedan jämförs resultaten från de båda programmen och upplagsförhållanden enligt fall 2. 
+ 
+ 
+Samstämmighet 
+Kabelkraft 
+99.9% 
+Deformation i 0.15l 
+99.7% 
+Moment i 0.15l 
+99.8% 
+ 
+Som synes erhålls mycket god samstämmighet mellan de två programmen. Detta betyder att 
+inga numeriska fel har gjorts.  
+5.6.1 En alternativ metod för injustering 
+En alternativ teknik till injustering av kabeln är att eliminera nedböjningen y1 genom att 
+förkorta huvudkabeln mellan pylonerna med en konstant temperaturlast. För detta exempel 
+sker det genom att införa en temperaturlast på -144 ˚C. Det maximala tvångsmoment som 
+uppstod vid temperaturlasten hade storleken 6.3 kNm, och uppträdde i 0.05l. H-kraften 
+erhölls till 5128 kN, dvs. i praktiken identiskt med den givna på 5120 kN. Införandet av 
+temperaturlasten gör att hängarnas övre nodpunkter måste injusteras i horisontalled. Det 
+verkliga momentet i balken beräknas på samma sätt som i den använda metoden. En 
+beskrivning av detta ges i kapitel 4.1.3 
+ 
+1
+2
+verkligt
+M
+M
+M
+−
+=
+ 
+ 
+För att skapa en momentfri farbana måste även hängarnas längder injusteras, detta med en 
+specifik temperaturlast för varje hängare, även detta kan studeras i kapitel 4.1.3. 
+  
+ 
+6 Fallstudie Johanneshovs isstadion 
+-ett efterspänt lintak 
+  
+27 
+ 
+6 Fallstudie Johanneshovs isstadion 
+-ett efterspänt lintak 
+1949 togs beslutet att bygga den ishockeyarena som skulle bli Johanneshovs isstadion och den 
+4 november 1955 invigdes den, dock som en utomhusarena. Det var inte förrän till VM 1962 
+som Hovet byggdes om till en inomhushall. Detta med en takkonstruktion som utvecklats av 
+David Jawerth på 1950-talet. 
+ 
+Systemet bygger på ett s.k. linfackverk där två stycken motspända linor ansluts i en 
+gemensam punkt. Den övre linan tar hand om belastning som är nedåtriktad, så som egentyng 
+och snö, medan den undre linan tar hand om uppåtriktade laster så som vindsug. Den 
+gemensamma anslutningspunkten minskar systemets horisontalrörelse och på så sätt de 
+oelastiska deformationerna. De båda linorna förbinds med sneda hängstag. Även dessa gör att 
+horisontalrörelsen minskar. Dessutom gör hängstagen systemet relativt okänsligt för 
+svängningar då rörligheten minskar. 
+ 
+Linorna är i ändarna anslutna till pelare vilka i sin tur är bakåtförankarade mot en utvändig 
+betongkonstruktion och jordankare. 
+6.1 Montering 
+Taket i Johanneshovs isstadion är byggd i flera steg. Nedan beskrivs montaget. 
+ 
+Fig. 6.1  
+Steg 1 Stödkonstruktionen  
+I ett första steg byggs pyloner och grundkonstruktioner. Det krävs också en tillfällig stagning 
+då pylonerna är ledade. 
+ 
+Fig. 6.2  
+Steg 2 Backstagen 
+Därefter monteras backstagen som ansluts till grundkonstruktionen. 
+ 
+6 Fallstudie Johanneshovs isstadion 
+-ett efterspänt lintak 
+  
+28 
+ 
+ 
+Fig. 6.3 
+Steg 3 Bärlinan 
+ 
+Fig. 6.4 
+Steg 4 Lyftlinan 
+ 
+Fig. 6.5 
+Steg 5 Stag och efterspänning 
+När stagen mellan de båda linorna satts på plats efterspänns konstruktionen. Detta genom att 
+B1, B2 och B3 förkortas så att de förutbestämda förskjutningarna uppnås. 
+ 
+ 
+Fig.6.6  
+Förskjutningarna orsakad av efterspänning 
+ 
+ 
+ 
+Förskjutningar orsakade av 
+efterspänningen 
+[mm] 
+Δ1 
+69 
+Δ2 
+25 
+Δ3 
+43 
+6 Fallstudie Johanneshovs isstadion 
+-ett efterspänt lintak 
+  
+29 
+ 
+Steg 6. Montage av taket 
+En taktäckning som är uppbyggd av metallkassetter med mineralullsisolering och ovan- 
+påliggande tätskikt har lagts ut på den övre linan. 
+ 
+Steg 7. Nyttiga laster som varierar med tiden 
+Olika lastkombinationer påverkar taket.  
+6.2 Datoruppbyggnad av Johanneshovs isstadion 
+Datoruppbyggnaden av Johanneshovs isstadion sker enligt den i kapitel 4 beskrivna metoden 
+Detta för att vid belastning av egentyngd erhålla den önskade startgeometrin. Dessutom måste 
+strukturen injusteras med avseende på efterspänningen.  
+ 
+ 
+ 
+Fig.6.7 
+Takkonstruktionens olika komponenter 
+ 
+ 
+ 
+Tvärsnitt- och materialdata 
+Bärlina  
+ 
+mm
+ 
+58
+=
+φ
+ 
+Lyftlina 
+ 
+mm
+ 
+48
+=
+φ
+ 
+Diagonaler 
+ 
+mm
+ 
+19
+=
+φ
+ 
+Backstag 1 
+ 
+st
+ 
+12
+mm
+ 
+26
+=
+φ
+ 
+Backstag 2 
+ 
+st
+ 
+15
+mm
+ 
+26
+=
+φ
+ 
+Backstag 3 
+ 
+st
+ 3
+mm
+ 
+26
+=
+φ
+ 
+Pelare  
+ 
+2
+mm
+ 
+21900
+=
+A
+ 
+ 
+ 
+ 
+4
+4
+y
+mm
+ 
+10
+57750⋅
+=
+I
+ 
+ 
+ 
+ 
+4
+4
+z
+mm
+ 
+10
+54390⋅
+=
+I
+ 
+Kablar  
+ 
+MPa
+ 
+1510
+brott =
+f
+ 
+Stag 
+ 
+ 
+MPa
+ 
+800
+brott =
+f
+ 
+ 
+6.2.1 Efterspänning 
+Vid efterspänning förkortas stagen som ska spännas samtidigt som en dragkraft införs i dem. 
+Detta beteendet skapas lämpligast genom att temperaturlaster införs på backstagen. Tre olika 
+temperaturer, en för vart och ett av stagen införs. Vid införande av temperaturlaster 
+uppkommer inte heller några moment som det gör om man efterspänner med punktlaster. 
+Temperaturerna som ska användas för att skapa de givna förskjutningarna itereras fram. 
+Förskjutningarna redovisas i tabellen i kapitel 6.1. 
+ 
+6 Fallstudie Johanneshovs isstadion 
+-ett efterspänt lintak 
+  
+30 
+ 
+6.2.2 Hur mycket kan kablarna utnyttjas? 
+Nedan visas en sammanställning över vilka krafter som kan tillåtas i kablarna. För en mer 
+detaljerad sammanställning se bilaga 6.1 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  
+ 
+6.3 Laster 
+Johanneshovs isstadion påverkas både av permanenta och variabla laster. Den permanenta 
+lasten utgörs av takets egentyngd. Dessutom påverkas taket av snö- och vindlast. Snö- och 
+vindlasten är beräknade enligt Boverkets handbok om snö- och vindlast. BSV 97. 
+Beräkningarna kan studeras i bilaga 6.2  
+ 
+Sedan taket på Johanneshovs isstadion konstruerades och byggdes har flera saker påverkat 
+dess bärförmåga: 
+ 
+• Mängden installationer i taket har ökat och ett behov av att tillfälligt hänga in laster i 
+taket finns fortfarande. 
+• Den föreskrivna snölasten har ökat. 
+• Dimensioneringsmetoderna har förändrats. 
+6.4 Lastkombinering 
+I Lastkombineringen ska värden på variabla laster sättas lika med noll om det ger en 
+ogynnsammare lasteffekt. I det här fallet betyder det att snö- och vindlast aldrig behöver 
+kontrolleras samtidigt, då dessa motverkar varandra. Tre variabla laster, (snö, vind mot 
+kortsida och vind mot långsida) och två lastkombinationer är relevanta för Johanneshovs 
+isstadion. Efter att ha undersökt takets form har fyra farliga lastkombinationer hittats. 
+Beräkning av lastkombineringen framgår av bilaga. 6.3 
+ 
+Backstag 1 
+kN
+ 
+4247
+ 
+Backstag 2 
+kN
+ 
+5309
+ 
+Backstag 3 
+kN
+ 
+1062
+ 
+Diagonaler 
+kN
+ 
+189
+ 
+Bärlina 
+kN
+ 
+1700
+ 
+Lyftlina 
+kN
+ 
+1160
+ 
+6 Fallstudie Johanneshovs isstadion 
+-ett efterspänt lintak 
+  
+31 
+ 
+6.5 Beräkning i Robot 
+Nedan visas en sammanställning över utnyttjandegraden i kablarna på Johanneshovs isstadion 
+då konstruktionen påverkas av krafter enligt dagens gällande normer.  
+6.5.1 Vind mot kortsidan som huvudlast 
+ 
+Fig.6.8 
+Lasteffekterna vid vind som huvudlast.  
+Värdena i bilden har enheten N/m 
+ 
+Fig. 6.9  
+Lasteffekterna vid vind som huvudlast. 
+Värdena i bilden har enheten N/m 
+ 
+ 
+ 
+Kraft 
+[kN] 
+Tillåten Kraft 
+[kN] 
+Utnyttjandegrad  
+% 
+Bärlina 
+779 
+1700 
+45.8 
+Lyftlina 
+474 
+1160 
+40.9 
+Diagonaler 
+45 
+189 
+23.6 
+Backstag 1 
+1590 
+4247 
+37.4 
+Backstag 2 
+4557 
+5309 
+85.8 
+Backstag 3 
+446 
+1062 
+42 
+ 
+Kraft 
+[kN] 
+Tillåten Kraft 
+[kN] 
+Utnyttjandegrad  
+% 
+Bärlina 
+574 
+1700 
+33.8 
+Lyftlina 
+674 
+1160 
+58.1 
+Diagonaler 
+75 
+189 
+39.9 
+Backstag 1 
+915 
+4247 
+21.5 
+Backstag 2 
+4467 
+5309 
+84.1 
+Backstag 3 
+779 
+1062 
+73.3 
+6 Fallstudie Johanneshovs isstadion 
+-ett efterspänt lintak 
+  
+32 
+ 
+6.5.2 Vind mot långsidan som huvudlast 
+ 
+Fig. 6.10 
+Lasteffekterna vid vind som huvudlast.  
+Värdena i bilden har enheten N/m 
+ 
+ 
+6.5.3 Snö som huvudlast 
+ 
+ 
+Fig. 6.11  
+Lasteffekterna vid snö som huvudlast.  
+Värdena i bilden har enheten N/m 
+ 
+Kraft 
+[kN] 
+Tillåten Kraft 
+[kN] 
+Utnyttjandegrad  
+% 
+Bärlina 
+681 
+1700 
+40 
+Lyftlina 
+616 
+1160 
+53.1 
+Diagonaler 
+69 
+189 
+36.6 
+Backstag 1 
+1383 
+4247 
+32.6 
+Backstag 2 
+4511 
+5309 
+85.0 
+Backstag 3 
+713 
+1062 
+67.1 
+ 
+Kraft 
+[kN] 
+Tillåten Kraft 
+[kN] 
+Utnyttjandegrad  
+% 
+Bärlina 
+2410 
+1700 
+142 
+Lyftlina 
+18 
+1160 
+1.5 
+Diagonaler 
+8 
+189 
+4 
+Backstag 1 
+4770 
+4247 
+112 
+Backstag 2 
+6228 
+5309 
+117 
+Backstag 3 
+91 
+1062 
+8.6 
+6 Fallstudie Johanneshovs isstadion 
+-ett efterspänt lintak 
+  
+33 
+ 
+6.6 Resultat av beräkningarna 
+Beräkningarna visar att taket på Johanneshovs isstadion idag utnyttjas mer än tillåtet med 
+hänsyn tagen till dagens gällande normer. Detta sker i det dimensionerande lastfallet med snö 
+som huvudlast. Dock kan konstateras att detta inte bara gäller Hovet, då den ökade snölasten 
+torde ge en högre utnyttjandegrad i alla byggnader som dimensionerats enligt gamla 
+bestämmelser.  
+ 
+En kanske större risk än brott i kablarna, är att systemet vid en viss last inte längre är stabilt. 
+Brottet inträffar vid laster som medför stor avlastning av lyftlinan. Vid dessa laster viker sig 
+systemet i mellanleden och uppträdande böjmoment tillsammans med andra ordningens 
+effekter bestämmer systemets bärförmåga. Vid snö som huvudlast utnyttjas lyftlinan endast 
+till 1.5% vilket är för lite för att få ett stabilt system. För att undersöka kablarnas kapacitet har 
+därför mellanleden i detta fall tagits bort. 
+ 
+Vidare kan konstateras att Jawerths systemet fungerar som det är tänkt. När de nedåtriktade 
+lasterna ökar, ökar också utnyttjandet av bärlinan och när de uppåtriktade lasterna ökar får 
+lyftlinan istället arbeta mer. Detta precis som väntat.  
+ 
+Man kan även spekulera runt mellanledens egentliga betydelse. Med dagens datorhjälpmedel 
+kan det konstateras att leden inte fyller någon funktion då den troligen införts för att 
+underlätta beräkningsarbetet för Jawerth. 
+ 
+ 
+7 Initial handberäkning för indata till en ny modell 
+ 
+ 
+35 
+ 
+7 Initial handberäkning för indata till en ny modell 
+Resultaten ovan visar att den beskrivna metoden gör det möjligt att kontrollera befintliga 
+konstruktioner. Men metoden är även tillämpbar vid projektering av nya konstruktioner. 
+Nedan visas ett tillvägagångssätt för att få en första ansats till ett system med bär- och 
+lyftkabel med lika pilhöjd f. Denna beräkning görs primärt genom att systemets jämvikts- 
+villkor beaktas och linans deformationsvillkor (kabelns töjning) ej primärt beaktas. 
+7.1 Villkor  
+Villkoren som måste uppfyllas för systemet: 
+ 
+• Hållfasthetskrav i kablar 
+• Nedböjning 
+• Instabilitet. Knäckning av pyloner 
+7.2 Tillvägagångssätt  
+ 
+1. Antag att arean på bärkabeln är lika stor som arean på lyftkabeln. Nämligen: 
+ 
+A
+A
+A
+=
+=
+l
+b
+  
+ 
+Om 
+b
+A  väljs skilt från
+lA  kan ingen enkel relevant överslagsberäkning upprättas som 
+ger adekvata deformationer. 
+ 
+2. För att klara deformationskravet krävs att systemet efterspänns. Kraften i bärlinan 
+måste vara lika stor som den i lyftlinan så att pilhöjden blir oförändrad. 
+ 
+Konstruktionen efterspänns med en kraft så att utnyttjandegraden i de båda kablarna är 
+50 % 
+ 
+ 
+Fig. 7.1 
+Systemet vid efterspänning 
+ 
+ 
+7 Initial handberäkning för indata till en ny modell 
+ 
+ 
+36 
+ 
+3. Därefter belastas systemet med den dimensionerande lasten. Beräkningar från Hovet 
+visar att det dimensionerande lastfallet i en första ansatts kan anses vara snö som 
+huvudlast. Belasta bärkabeln till 100 % 
+ 
+ 
+Fig.7.2 
+Systemet belastad med nyttig last 
+ 
+4. Teckna uttryck för momentet för de båda kablarna. 
+ 
+f
+H
+f
+H
+H
+M
+e
+e
+b
+)
+)(
+(
+−
++
+Δ
++
+=
+δ
+ 
+)
+(
+e
+b
+δ
+δ
++
+Δ
++
+=
+f
+H
+H
+M
+ 
+ 
+f
+H
+f
+H
+H
+M
+e
+e
+l
+)
+)(
+(
++
+−
+Δ
+−
+−
+=
+δ
+ 
+)
+(
+e
+l
+δ
+δ
+−
+Δ
++
+=
+f
+H
+H
+M
+ 
+ 
+Och även det totala momentet i systemet: 
+ 
+l
+b
+M
+M
+M
++
+=
+∑
+ 
+)
+(
+)
+(
+2
+e
+δ
+δ
+δ
+−
+Δ
++
++
+Δ
++
+=
+∑
+f
+H
+f
+H
+H
+M
+ 
+Hf
+H
+M
+Δ
++
+=
+∑
+2
+2
+eδ
+ 
+ 
+5. Momentet som systemet ska bära är momentet av den utbredda lasten: 
+ 
+8
+2
+ql
+M =
+∑
+ 
+ 
+6. De båda uttrycken för ∑M  sätts lika.  
+8
+2
+2
+2
+e
+ql
+Hf
+H
+=
+Δ
++
+δ
+ 
+ 
+7. Eftersom bärkabeln är utnyttjad till 100 % är nu  
+7 Initial handberäkning för indata till en ny modell 
+ 
+ 
+37 
+ 
+e
+e
+%
+ 
+50
+%
+ 
+50
+%
+ 
+100
+H
+H
+H
+=
+⋅
+−
+=
+Δ
+ 
+ 
+8. Detta gör att uttrycket kan förenklas ytterliggare: 
+8
+2
+2
+2
+e
+e
+ql
+f
+H
+H
+=
++
+δ
+ 
+ 
+Med kända siffervärden på 
+q
+f
+H
+,
+,
+e
+ och l kan nedböjningen δ beräknas. 
+ 
+9. Nedböjningen beräknad med denna metod är 13 % större än den exaktare ned- 
+böjningen som beräknats i Robot. Dock kan konstateras att denna metod är avsevärt 
+mycket enklare och duger mycket bra som en första ansats till fortsatt dimensionering. 
+För beräkningar enligt denna metod se bilaga 7.1 
+ 
+Beräkningen kan nu iterativt fortsätta i exempelvis Robot. Genom att variera 
+b
+A ,
+lA , 
+och 
+e
+H  tills villkoren i kapitel 7.1 är uppfyllda och den slutgiltiga geometrin erhållits.  
+ 
+Beräkningarna resulterar i att förhållandet 
+l
+b
+A
+A  optimeras, adekvata nedböjningar 
+erhålls, samt relevant uppgift på systemets knäcksäkerhet.  
+ 
+ 
+ 
+8 Generella slutsatser 
+ 
+ 
+39 
+ 
+8 Generella slutsatser 
+Det kan konstateras att den föreslagna metoden för ickelinjära diskreta beräkningar erbjuder 
+en rationell teknik för att analysera uppträdande krafter och deformationer. Till skillnad från 
+beräkningar utförda med den kontinuerliga teorin innehåller datormodellen byggnadsverkets 
+alla element, och de begränsningar som gäller för traditionella kontinuerliga beräkningar 
+bortfaller utan något merarbete.  
+ 
+Metoden är verifierad genom jämförande beräkningar mot traditionella analyser enligt den 
+kontinuerliga teorin. För att minimera risken för numeriska fel är resultatet även verifierat 
+genom jämförelser med ett annat beräkningsprogram.  
+ 
+Den 
+beskrivna 
+metoden 
+är 
+praktiskt 
+användbar 
+i 
+tidiga 
+skeden 
+då 
+olika 
+utföranden/gestaltningar skall utvärderas på ett adekvat, snabbt och nyanserat sätt för 
+konceptuella studier. Dessutom är metoden väl tillämpbar för detaljberäkningar av 2D system. 
+ 
+ 
+9 Referenser 
+ 
+ 
+41 
+9 Referenser 
+1. 
+Asplund, S O: “On the Deflection Theory of Suspension Bridges”. IVAs handling nr 
+184. Stockholm 1945 
+ 
+2. 
+Björk Sven.Olof och Svensk Byggtjänst,  ”Bärande konstruktioner och laster”, 
+Byggvägledning 2 
+ 
+3. 
+Boverket, byggavdelningen ”Boverkets handbok om snö- och vindlast”, utgåva 2 
+november 1997 
+ 
+4. 
+Granholm H., ”Beräkning av hängbroar del I”, Chalmers tekniska högskolas 
+handlingar, Avd. Väg- och vattenbyggnad 5,  Nr 22, 1943 
+ 
+5. 
+Granholm H., ”Beräkning av hängbroar del II”, Chalmers tekniska högskolas 
+handlingar, Avd. Väg- och vattenbyggnad 8,  Nr 46, 1945 
+ 
+6. 
+Handboken Bygg Huvuddel 1 ”Allmänna grunder”, Tredje upplagan, Byggmästarens 
+förlag, Stockholm 1961 
+ 
+7. 
+Handboken Bygg Huvuddel 3 ”Konstruktionsteknik”, Tredje upplagan, 
+Byggmästarens förlag, Stockholm 1969 
+ 
+8. 
+Jawerth D., ”Förspända hängkonstruktioner med mot varandra förspända linor”, 
+Byggmästaren volym 38, Nr 10, 1959, sid 223-226 
+ 
+9. 
+J. Melan, “Handbuch der Ingenieurwissenschaften, Der Brückenbau”, Bd II, V Abt., 
+Berlin 1925 
+ 
+10. 
+Lorentsen M., Sundquist H., ”Bågkonstruktioner”, TRITA-BKN. Rapport 17, 
+Brobyggnad 1995, KTH Byggvetenskap, Utgåva 5, 2005 
+ 
+11. 
+Lorentsen M., Sundquist H., ”Hängkonstruktioner”, TRITA-BKN. Rapport 18, 
+Brobyggnad 1995, KTH Byggvetenskap, Utgåva 6, 2006 
+ 
+12. 
+Selberg A., ”Design of suspension bridges” Det kongelige norske videnskabes 
+selskabs skrifter 1942-1945, Trondheim 1948 
+ 
+13. 
+WSP Byggprojektering.,”Hovet Utredning angående last- och 
+belastningsförhållanden för takkonstruktionen” 2004 
+ 
+14. 
+www.hammarbyhockey.se, januari 2007 
+ 
+ 
+ 
+ 
+ 
+Bilaga 
+3.1 Linjär analys 
+Indata 
+m
+ 5
+=
+l
+ 
+deg
+ 
+45
+=
+α
+ 
+GPa
+ 
+210
+=
+E
+ 
+2
+mm
+ 
+707
+=
+A
+ 
+kN
+ 
+10500
+=
+P
+ 
+ 
+Punktlasten P väljs så att deformationen ska bli 0.5 m 
+a
+b
+d
+D
+l2
+l1
+d
+a=45°
+ 
+Kontroll: 
+ 
+EA
+l
+P
+⋅
+⋅
+=
+2
+δ
+  
+ 
+m
+ 5.0
+=
+δ
+ 
+ 
+ 
+Bilaga 
+3.2 Ickelinjär analys små deformationer 
+Antagna startvärden 
+mm
+ 
+500
+ =
+δ
+ 
+deg
+ 
+45
+=
+β
+ 
+ 
+Given 
+l
+2)
+sin(
+05
+.0
+β
+δ =
+  
+l
+l
+=
+δ
+β
++
+ 
+ )
+tan(
+ 
+ 
+Detta ger: 
+ 
+ 
+ 
+ 
+ 
+mm
+ 
+675
+.
+459
+ 
+ =
+δ
+ 
+ 
+ 
+ 
+ 
+deg
+ 
+516
+.
+47
+ 
+ =
+β
+ 
+ 
+ 
+ 
+)
+,
+(
+ 
+ 
+β
+δ
+β
+δ
+Find
+=
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+ 
+ 
+Bilaga 
+3.3 Ickelinjär analys stora deformationer 
+Antagna startvärden 
+mm
+ 
+500
+=
+δ
+ 
+deg
+ 
+45
+=
+β
+ 
+ 
+Given 
+(
+)
+δ
+δ
+β
+l
+l
+l
+l
+2
+2
+ 
+ 
+)
+sin(
+1.0
+5.0
+2
+2
+2
+2
++
++
+=
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+⋅
+⋅
++
+ 
+ 
+ 
+ 
+l
+l
+=
+δ
+β
++
+ 
+ )
+tan(
+ 
+ 
+Detta ger: 
+ 
+ 
+ 
+ 
+ 
+mm
+ 
+576
+.
+468
+ 
+ =
+δ
+ 
+ 
+ 
+ 
+ 
+deg
+ 
+563
+47
+ 
+ 
+.
+β =
+ 
+ 
+)
+,
+(
+ 
+ 
+β
+δ
+β
+δ
+Find
+=
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+ 
+ 
+Bilaga 
+3.4 Beräkning av C-värdet 
+ 
+Linjär approximation 
+ 
+Horisontalkraften och kabelkraften 
+S  
+I fältmitt är lika 
+ 
+ 
+ 
+Kabelkraften vid upplag 
+ 
+S
+S
+097
+.1
+)3.
+24
+cos(
+=
+ 
+Medelkraften  
+ 
+ 
+S
+S
+S
+048
+.1
+2
+097
+.1
+=
++
+ 
+Den korrekta lösningen med en parabel 
+ 
+Parabelns ekvation:   
+ 
+)
+(
+4
+2
+x
+l
+l
+x
+f
+y
+−
+⋅
+=
+ 
+Area 1  
+ 
+ 
+ 
+6
+4
+3
+2
+4
+0
+3
+2
+0
+2
+1
+fl
+x
+x
+l
+l
+f
+ydx
+A
+l
+l
+=
+⎥⎦
+⎤
+⎢⎣
+⎡
+−
+⋅
+=
+= ∫
+ 
+Area 2  
+ 
+ 
+ 
+Sl
+Sl
+Sl
+fl
+Sl
+A
+03233
+.1
+6
+097
+.0
+4
+097
+.1
+6
+4
+097
+.1
+2
+=
+⋅
+−
+=
+−
+=
+ 
+Medelhöjden  
+ 
+ 
+ 
+S
+l
+A
+03233
+.1
+2 =
+ 
+ 
+ 
+Bilaga 
+3.5 Viktlös kabel 
+Antagna startvärden  
+m
+ 2
+1 =
+L
+ 
+ 
+ 
+ 
+ 
+m
+ 2
+2 =
+L
+ 
+ 
+ 
+ 
+ 
+mm
+ 
+60
+=
+δ
+ 
+ 
+ 
+ 
+ 
+0323
+.1
+=
+C
+ 
+ 
+Given 
+⎥
+⎥
+⎦
+⎤
+⎢
+⎢
+⎣
+⎡
+⎥
+⎥
+⎦
+⎤
+⎢
+⎢
+⎣
+⎡
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
+⋅
++
++
+⋅
+⋅
+⋅
++
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
+⋅
++
+⋅
+⋅
+=
+2
+2
+4
+ln
+4
+2
+1
+l
+f
+4
+1
+l
+f
+f
+l
+l
+f
+4
+1
+l
+L1
+ 
+ 
+(
+)
+(
+)
+(
+)
+(
+)
+⎥
+⎥
+⎦
+⎤
+⎢
+⎢
+⎣
+⎡
+⎥
+⎥
+⎦
+⎤
+⎢
+⎢
+⎣
+⎡
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
++
++
++
++
+⋅
++
++
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
++
++
+⋅
+⋅
+=
+2
+2
+2
+4
+ln
+4
+2
+1
+l
+f
+4
+1
+l
+f
+f
+l
+l
+f
+4
+1
+l
+L
+δ
+δ
+δ
+δ
+ 
+ 
+(
+) EA
+L
+f
+l
+q
+C
+L
+L
+1
+2
+1
+2
+8
+⋅
++
+⋅
+⋅
+=
+−
+δ
+ 
+ 
+Detta ger: 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+m
+ 
+2.8196693
+1 =
+L
+ 
+m
+ 
+2.86171673
+2 =
+L
+ 
+mm
+ 
+64.8688
+=
+δ
+ 
+ 
+Beräkningar i Robot 
+mm
+ 
+64.8077
+=
+δ
+ 
+ 
+ 
+%
+ 
+0.094
+100
+64.8688
+64.8077
+1
+=
+⋅⎟
+⎠
+⎞
+⎜
+⎝
+⎛−
+ 
+)
+,
+,
+(
+2
+1
+2
+1
+δ
+δ
+L
+L
+Find
+L
+L
+=
+⎟
+⎟
+⎟
+⎠
+⎞
+⎜
+⎜
+⎜
+⎝
+⎛
+ 
+ 
+Bilaga  
+4.1 Injustering 
+För att kontrollera noggrannheten i injusteringen studeras hängaren mellan nod 8 och 29 
+ 
+Startkoordinater: 
+ 
+m
+ 
+08
+.
+80
+08
+.
+80
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+=
+start
+x
+ 
+ 
+ 
+m
+ 
+8465
+.1
+5942
+.2
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+−
+=
+start
+y
+ 
+ 
+Egentyngden läggs på som nodlaster på förstyvningsbalken. Därefter beräknas nodernas 
+förskjutningar. Startkoordinaterna flyttas sedan i motsatt riktning mot förskjutningarna och de 
+nya koordinaterna är beräknade. 
+ 
+m
+ 
+0767
+.
+80
+1178
+.
+80
+_
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+=
+start
+ny
+x
+  
+ 
+m
+ 
+2712
+.1
+1685
+.3
+_
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+−
+=
+start
+ny
+y
+ 
+ 
+Egentyngden läggs på igen och koordinaterna förflyttas tillbaka till ursprungsläget. 
+ 
+ 
+m
+ 
+0799
+.
+80
+0792
+.
+80
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+=
+slut
+x
+ 
+ 
+ 
+m
+ 
+8728
+.1
+5676
+.2
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+−
+=
+slut
+y
+ 
+ 
+I detta fall ligger slutgeometrin 
+cm
+ 5.2
+≈
+lägre än den önskade. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+För att visa att en iteration är tillräcklig kontrolleras hängarnas rakhet 
+ 
+0
+,0)
+(
+_
+slut
+start
+y
+y
+över
+y
+−
+=
+Δ
+ 
+ 
+ 
+ 
+mm
+ 
+6305
+.
+26
+_
+=
+Δ
+över
+y
+ 
+0
+,1)
+(
+_
+slut
+start
+y
+y
+under
+y
+−
+=
+Δ
+  
+ 
+ 
+mm
+ 
+2606
+.
+26
+_
+=
+Δ
+under
+y
+ 
+under
+y
+över
+y
+y
+_
+_
+Δ
+−
+Δ
+=
+ΔΔ
+  
+ 
+ 
+mm
+ 
+3699
+.0
+=
+ΔΔy
+ 
+ 
+0
+,0)
+(
+_
+slut
+start
+x
+x
+över
+x
+−
+=
+Δ
+ 
+ 
+ 
+ 
+mm
+ 
+7746
+.0
+_
+=
+Δ
+över
+x
+ 
+0
+,1)
+(
+_
+slut
+start
+x
+x
+under
+x
+−
+=
+Δ
+  
+ 
+ 
+mm
+ 
+1119
+.0
+_
+=
+Δ
+under
+x
+ 
+under
+x
+över
+x
+x
+_
+_
+Δ
+−
+Δ
+=
+ΔΔ
+  
+ 
+ 
+mm
+ 
+6627
+.0
+=
+ΔΔx
+ 
+ 
+ 
+En liknande kontroll kan göras för huvudkabeln. 
+ 
+ 
+Bilaga  
+5.1 Selbergs nomogram 
+Laster 
+kN
+ 
+46
+1 =
+P
+ 
+kN
+ 
+22.6
+2 =
+P
+ 
+kN
+ 6.
+68
+2
+1
+=
++
+=
+P
+P
+P
+ 
+ 
+Punktlasternas läge  
+l
+z
+1451
+.0
+1 =
+ 
+l
+z
+1626
+.0
+2 =
+ 
+ 
+Beräkna C-värdet 
+ 
+Horisontalkraft av egentyngd 
+och nyttig last (ur Robot) 
+ 
+ 
+kN
+ 3.
+5171
+=
++
+=
+s
+w
+H
+H
+H
+ 
+ 
+Brobalkens tröghetsmoment  
+ 
+4
+m
+ 
+00108
+.0
+=
+I
+ 
+ 
+Elasticitetsmodulen 
+ 
+ 
+ 
+GPa
+ 
+210
+=
+E
+ 
+ 
+Brons längd 
+ 
+ 
+ 
+ 
+m
+ 8.
+228
+=
+l
+ 
+ 
+EI
+H
+l
+C =
+ 
+ 
+ 
+ 
+ 
+438
+.
+34
+=
+C
+ 
+ 
+Beräkningar med P=P1+P2 
+ 
+Beräkna momentet i 0.2l för en punktlast P placerad i punkten med hjälp av Selbergs 
+nomogram. 
+ 
+Avläser ur nomogram: 
+ 
+ 
+l
+0137
+.0
+2.0 =
+μ
+   
+ 
+Beräkna momentet i punkten  
+ 
+kNm
+ 2.
+215
+2.0
+2.0
+=
+⋅
+=
+P
+M
+μ
+ 
+ 
+ 
+Beräkna momentet i 0.1l för en punktlast P placerad i punkten med hjälp av Selbergs 
+nomogram. 
+ 
+Avläser ur nomogram: 
+ 
+ 
+l
+0142
+.0
+1.0 =
+μ
+   
+ 
+Beräkna momentet i punkten  
+ 
+kNm
+ 0.
+223
+1.0
+1.0
+=
+⋅
+=
+P
+M
+μ
+ 
+ 
+Beräkna momentet för en punktlast P placerad i 0.15l 
+ 
+Medelvärdet beräknas  
+ 
+ 
+kNm
+ 
+219.1
+=
++
+=
+2
+1.0
+2.0
+15
+.0
+M
+M
+M
+ 
+ 
+ 
+Beräkningar med P1 och P2 på varsin sida om punkten. 
+ 
+Beräkna momentet i 0.2l för två punktlaster P1 och P2 placerade bredvid punkten med 
+hjälp av Selbergs nomogram. 
+ 
+Läge för P1 
+ 
+ 
+ 
+ 
+l
+z
+l
+l
+1951
+.0
+)
+15
+.0
+(
+2.0
+1 =
+−
+−
+ 
+Läge för P2 
+ 
+ 
+ 
+ 
+l
+z
+l
+2126
+.0
+)
+15
+.0
+(
+2.0
+2
+=
+−
++
+ 
+ 
+Avläser ur nomogram: 
+ 
+ 
+l
+0137
+.0
+2.0
+=
+μ
+  
+ 
+ 
+Antag att momentet varierar linjärt  
+mellan punkten 0.2l och lastpunkterna 
+2.0
+1951
+.0
+2.0
+1951
+.0
+μ
+μ
+⋅
+=
+l
+l
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2.0
+2126
+.0
+2126
+.0
+2.0
+μ
+μ
+⋅
+=
+l
+l
+ 
+ 
+Beräkna momentet i punkten  
+ 
+kNm
+ 5.
+207
+2
+2126
+.0
+1
+1951
+.0
+2.0
+=
++
+=
+P
+P
+M
+μ
+μ
+ 
+ 
+ 
+Beräkna momentet i 0.1l för två punktlaster P1 och P2 placerade bredvid punkten med 
+hjälp av Selbergs nomogram. 
+ 
+Läge för P1 
+ 
+ 
+ 
+ 
+l
+z
+l
+l
+0951
+.0
+)
+15
+.0
+(
+1.0
+1 =
+−
+−
+ 
+Läge för P2 
+ 
+ 
+ 
+ 
+l
+z
+l
+1126
+.0
+)
+15
+.0
+(
+1.0
+2
+=
+−
++
+ 
+ 
+Avläser ur nomogram: 
+ 
+ 
+l
+0142
+.0
+1.0 =
+μ
+   
+ 
+Antag att momentet varierar linjärt  
+mellan punkten 0.1l och lastpunkterna 
+1.0
+0951
+.0
+1.0
+0951
+.0
+μ
+μ
+⋅
+=
+l
+l
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+1.0
+1126
+.0
+1126
+.0
+1.0
+μ
+μ
+⋅
+=
+l
+l
+ 
+ 
+Beräkna momentet i punkten  
+ 
+kNm
+ 5.
+207
+2
+1126
+.0
+1
+0951
+.0
+1.0
+=
++
+=
+P
+P
+M
+μ
+μ
+ 
+ 
+ 
+Beräkna momentet i 0.15l för två punktlaster P1 och P2 placerade bredvid punkten. 
+Medelvärdet beräknas  
+ 
+ 
+kNm
+ 
+207.5
+=
++
+=
+2
+1.0
+2.0
+15
+.0
+M
+M
+M
+ 
+ 
+ 
+Proportioneringsfaktorn 
+ 
+ 
+1.056
+kNm
+ 
+207.5
+kNm
+ 
+219.1
+=
+ 
+ 
+ 
+ 
+ 
+Bilaga  
+5.2 Superpositionsprincipen 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Den största avvikelsen mellan de beräknade kurvorna finns i 0.75l. Den procentuella av- 
+vikelsen beräknas nedan: 
+ 
+%
+ 9.2 
+ 
+100
+9.
+183
+5.
+178
+1
+=
+⋅⎟
+⎠
+⎞
+⎜
+⎝
+⎛−
+ 
+0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+1
+200
+100
+0
+100
+200
+Deformationen av P i 0.5l
+Deformationen av P i 0.15l
+Sammanlagda deformationen enligt superpositionsprincipen
+Nedböjning
+0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+0.9
+1
+200
+100
+0
+100
+Deformationen då P samtidigt verkar i 0.15 och 0.5l
+Sammanlagda deformationen enligt superpositionsprincipen
+Nedböjning
+ 
+ 
+Bilaga  
+6.1 Hur mycket kan kablarna utnyttjas? 
+ 
+Johanneshovs isstadion skall enligt BKR hänföras till säkerhetsklass 3. Detta ger en 
+säkerhetsfaktor 
+2.1
+=
+n
+γ
+ 
+ 
+Stag 
+Backstag 1 
+ 
+st
+12
+mm
+ 
+26
+=
+φ
+ 
+Backstag 2 
+ 
+st
+15
+mm
+ 
+26
+=
+φ
+ 
+Backstag 3 
+ 
+st
+3
+mm
+ 
+26
+=
+φ
+ 
+Diagonaler 
+ 
+mm
+ 
+19
+=
+φ
+ 
+ 
+ 
+ 
+MPa
+ 
+800
+=
+brott
+f
+ 
+ 
+ 
+ 
+2
+26
+2
+mm
+ 
+26
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛⋅
+= π
+φA
+ 
+2
+19
+2
+mm
+ 
+19
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛⋅
+= π
+φA
+ 
+kN
+ 
+354
+26
+26
+=
+⋅
+=
+n
+brott
+f
+A
+F
+γ
+φ
+φ
+ 
+kN
+ 
+189
+19
+19
+=
+⋅
+=
+n
+brott
+f
+A
+F
+γ
+φ
+φ
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Kablar 
+ 
+Bärlina  
+ 
+mm
+ 
+58
+=
+φ
+ 
+Lyftlina 
+ 
+mm
+ 
+48
+=
+φ
+ 
+MPa
+ 
+1510
+=
+brott
+f
+ 
+ 
+Kraften som bärkabeln klarar är enligt katalog 2040 kN 
+ 
+kN
+ 
+1700
+kN
+ 
+2040
+=
+=
+n
+Rtd
+F
+γ
+ 
+ 
+Proportionering med hjälp av kablarnas storlek. 
+kN
+ 
+1160
+kN
+ 
+1700
+58
+48
+2
+=
+⋅
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
+=
+Rtd
+F
+ 
+ 
+Bärlina 
+Rtd
+F
+ 
+kN
+ 
+1700
+ 
+Lyftlina 
+Rtd
+F
+ 
+kN
+ 
+1160
+ 
+Backstag 1 
+26
+12
+φF
+FRtd
+⋅
+=
+ 
+kN
+ 
+4247
+ 
+Backstag 2 
+26
+15
+φF
+FRtd
+⋅
+=
+ 
+kN
+ 
+5309
+ 
+Backstag 3 
+26
+3
+φF
+FRtd
+⋅
+=
+ 
+kN
+ 
+1062
+ 
+Diagonaler 
+19
+φF
+FRtd =
+ 
+kN
+ 
+189
+ 
+ 
+ 
+Bilaga  
+6.2 Laster 
+Avstånd mellan ramarna 
+ 
+m
+ 
+28
+.5
+=
+⋅
+ram
+l
+ 
+Höjd  
+ 
+ 
+ 
+m
+ 7.
+16
+=
+h
+ 
+ 
+Egentyngd 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+m
+kN
+ 4.4 
+ 
+s
+m
+ 
+81
+.9
+m
+kg
+ )
+30
+3
+35
+(
+m
+kg
+ )
+10
+40
+36
+(
+ 
+2
+2
+ 
+=
+⋅⎥⎦
+⎤
+⎢⎣
+⎡
++
++
++
++
++
+=
+⋅
+ram
+egen
+l
+q
+ 
+ 
+Snölast 
+ 
+Snöns grundvärde på mark 
+2
+0
+m
+kN
+ 2
+=
+s
+ 
+Formfaktorer 
+för 
+motfallstak 
+med taklutning 
+°
+= 12
+α
+ 
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+=
+0.1
+8.0
+μ
+ 
+Termisk koefficient som beror av 
+energiförluster 
+1
+=
+t
+C
+ 
+Karakteristiskt värde för snölast 
+på tak 
+t
+k
+C
+s
+S
+⋅
+⋅
+=
+μ
+0
+ 
+Som utbredd last 
+⋅
+⋅
+=
+ram
+k
+snö
+l
+S
+q
+ 
+ 
+m
+kN
+ 
+56
+.
+10
+45
+.8
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+=
+snö
+q
+ 
+ 
+Del 
+Vikt 
+Kablar, stag och lås 
+36 kg/m 
+Tätskikt, isolering mm 
+35 kg/m2 
+Gångbryggor 
+40 kg/m 
+Trycksträvor i övre linplanet 
+3 kg/m2 
+Ledningsstråk, följer gångbrygga 
+10 kg/m 
+Kompletterande takbeklädnad 
+30 kg/m2 
+ 
+ 
+Vindlast 
+ 
+Referenshastighet i Stockholm 
+s
+m
+ 
+24
+=
+ref
+v
+ 
+Terrängtyp III  
+m
+ 8
+m
+ 3.0
+22
+.0
+min
+0
+=
+=
+=
+z
+z
+β
+ 
+Exponeringsfaktor. Där z är höjden på 
+byggnaden. I detta fall h=16.7m  
+2
+0
+exp
+ln
+)
+(
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+⋅
+=
+z
+z
+z
+C
+β
+min
+z
+z ≥
+ 
+782
+.0
+)
+(
+exp
+=
+h
+C
+ 
+Luftens densitet 
+3
+m
+kg
+ 
+25
+.1
+=
+ρ
+ 
+Referenshastighetstryck 
+ref
+ref
+v
+q
+⋅
+=
+ρ
+2
+1
+ 
+Vindstötsfaktor. Där z är höjden på 
+byggnaden. I detta fall h=16.7m 
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
++
+=
+0
+ln
+6
+1
+)
+(
+z
+z
+z
+Cdygn
+ 
+493
+.2
+)
+(
+=
+h
+Cdygn
+ 
+ 
+ref
+dygn
+k
+q
+h
+C
+h
+C
+q
+⋅
+⋅
+=
+)
+(
+)
+(
+exp
+ 
+Formfaktorer för  
+motfallstak med taklutning 
+°
+= 12
+α
+ 
+om vinden angriper den korta sidan. 
+⎟⎟
+⎟
+⎟
+⎟
+⎠
+⎞
+⎜⎜
+⎜
+⎜
+⎜
+⎝
+⎛
+=
+2.0
+6.0
+9.0
+2.1
+μ
+ 
+Formfaktorer för 
+motfallstak med taklutning 
+°
+= 12
+α
+ 
+om vinden angriper den långa sidan 
+⎟⎟
+⎟
+⎟
+⎟
+⎠
+⎞
+⎜⎜
+⎜
+⎜
+⎜
+⎝
+⎛
+=
+6.0
+3.0
+87
+.0
+18
+.1
+μ
+ 
+ 
+μ
+⋅
+⋅
+=
+⋅
+ram
+k
+vind
+l
+q
+q
+ 
+ 
+m
+kN
+ 
+74
+.0
+22
+.2
+33
+.3
+45
+.4
+_
+⎟⎟
+⎟
+⎟
+⎟
+⎠
+⎞
+⎜⎜
+⎜
+⎜
+⎜
+⎝
+⎛
+=
+kort
+vind
+q
+ 
+ 
+m
+kN
+ 
+22
+.2
+11
+.1
+22
+.3
+37
+.4
+_
+⎟⎟
+⎟
+⎟
+⎟
+⎠
+⎞
+⎜⎜
+⎜
+⎜
+⎜
+⎝
+⎛
+=
+lång
+vind
+q
+ 
+ 
+ 
+ 
+ 
+ 
+Bilaga  
+6.3 Lastkombinering enligt BKR 
+Lastkombination 
+1 
+2 
+Permanent last 
+k
+G
+1,0
+ 
+k
+G
+85
+,0
+ 
+Variabel last 
+k
+Q
+1,3
+ 
+k
+Q
+1,3
+ 
+Övriga variabla laster 
+k
+ψQ
+1,0
+ 
+k
+ψQ
+1,0
+ 
+ 
+Lastkombination 1 
+snö
+egen
+q
+q
+q
+⋅
++
+⋅
+=
+3.1
+0.1
+1
+ 
+ 
+ 
+m
+kN
+ 
+719
+.
+17
+973
+.
+14
+1
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+=
+q
+ 
+ 
+Lastkombination 2 
+kort
+vind
+egen
+q
+q
+q
+_
+2
+3.1
+85
+.0
+⋅
+−
+=
+ 
+ 
+Ramen som finns i sektion A. 
+upptar endast  halva lasten. 
+dvs. 
+2
+⋅
+ram
+l
+ska användas vid 
+beräkning. Lasten i sektion A 
+blir hälften så stor som den 
+framräknade.  
+ 
+m
+kN
+ 
+429
+.2
+502
+.0
+943
+.0
+388
+.2
+2
+⎟⎟
+⎟
+⎟
+⎟
+⎠
+⎞
+⎜⎜
+⎜
+⎜
+⎜
+⎝
+⎛
+−
+−
+=
+q
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+m
+N
+ 
+1194
+2
+m
+N
+ 
+2429
+=
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Lastkombination 2 
+lang
+vind
+egen
+q
+q
+q
+_
+3
+3.1
+85
+.0
+⋅
+−
+=
+ 
+ 
+m
+kN
+ 
+502
+.0
+947
+.1
+798
+.0
+291
+.2
+3
+⎟⎟
+⎟
+⎟
+⎟
+⎠
+⎞
+⎜⎜
+⎜
+⎜
+⎜
+⎝
+⎛
+−
+−
+=
+q
+ 
+ 
+ 
+ 
+ 
+Bilaga  
+7.1 Handberäkningar för indata till datormodell 
+Indata 
+m
+ 
+008
+.
+83
+=
+l
+ 
+m
+ 
+545
+.4
+=
+f
+ 
+2
+mm
+ 
+2642
+=
+b
+A
+ 
+2
+mm
+ 
+2642
+=
+lA
+ 
+ 
+Konstruktionen förspänns så att utnyttjandegraden i kablarna är 50 % 
+ 
+kN
+ 
+850
+=
+e
+H
+  
+ 
+Därefter belastas konstruktionen med last så att bärkabeln utnyttjas till 100 % 
+ 
+m
+kN
+ 3.
+10
+=
+q
+ 
+ 
+Detta innebär att kraften i bärkabeln har ökat till det dubbla, och tillskottskraften är lika stor 
+som förspänningskraften 
+ 
+e
+H
+H =
+Δ
+ 
+ 
+Vi kan nu lösa ekvationen från kapitel 7 och erhålla värdet på δ  
+ 
+Antaget startvärde 
+mm
+ 
+500
+=
+δ
+ 
+ 
+Given 
+ 
+8
+2
+2
+2
+ql
+f
+H
+H
+e
+e
+=
++
+δ
+ 
+ 
+Find(δ )→0.673 m 
+ 
+Resultat från Robot 
+mm
+ 
+585
+=
+δ
+ 
+ 
+%
+ 
+13
+100
+673
+585
+1
+=
+⋅⎟
+⎠
+⎞
+⎜
+⎝
+⎛−
+  

@@ -1,0 +1,2853 @@
+ 
+ 
+ 
+Adaptiv varvtalsstyrning vid användning 
+av en lastbils kraftuttag 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ADAM CLAESSON 
+ 
+ 
+ 
+ 
+ 
+Examensarbete 
+Stockholm, Sverige 2010 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Adaptiv varvtalsstyrning vid användning av 
+en lastbils kraftuttag 
+ 
+av 
+ 
+Adam Claesson 
+ 
+ 
+ 
+Examensarbete MMK 2010:53 MDA 366 
+KTH Industriell teknik och management 
+Maskinkonstruktion 
+SE-100 44  STOCKHOLM 
+ 
+ii 
+ 
+ 
+iii 
+ 
+ 
+ 
+ 
+ 
+Examensarbete  MMK 2010:53 MDA 366 
+ 
+Adaptiv varvtalsstyrning vid användning 
+av en lastbils kraftuttag 
+ 
+ 
+ 
+ 
+ 
+Adam Claesson 
+ 
+Godkänt 
+2010-06-01 
+Examinator 
+Jan Wikander 
+Handledare 
+Bengt Eriksson 
+ 
+Uppdragsgivare 
+Scania CV 
+Kontaktpersoner 
+Mattias Borg 
+Magnus Eriksson 
+ 
+Sammanfattning 
+Med ett växande fokus på ett långsiktigt hållbart samhälle som tar ansvar för miljön 
+strävar fordonstillverkare efter att sänka energiförbrukningen på sina fordon. Detta 
+arbete behandlar hur man kan sänka bränsleförbrukningen för lastbilar med 
+påbyggnader. En påbyggnad kan t.ex. vara en kran, en lastväxlare eller en 
+betongpump. En metod för att sänka energiförbrukningen är att sänka det varvtal som 
+lastbilens dieselmotor arbetar vid. Vid lägre varvtal jobbar motorn oftast mer 
+effektivt och en mindre del av motorarbetet försvinner då i förluster, dock kan inte 
+motorn belastas lika hårt. Varvtalet kan i vissa situationer sänkas under drift av 
+påbyggnaden. Mellan drift då applikationen väntar på användarens kommando kan 
+varvtalet alltid sänkas så att energiförbrukningen sjunker. 
+ 
+För att veta när varvtalet ska sänkas används en signal från motorn som anger vilket 
+lastmoment som motorn jobbar mot. Vid låg last sänks varvtalet och bränsle kan 
+sparas, vid hög last höjs varvtalet för att kunna möta det pålagda momentet. 
+ 
+Fältstudier har genomförts för att kunna undersöka vilka typer av lastbilspåbyggnader 
+som skulle kunna ha nytta av en funktion som sänker varvtalet när lasten är låg. 
+Under arbetet har även uppskattningar över hur mycket bränsle som skulle kunna 
+sparas om varvtalet sänks mellan operationerna med påbyggnaden gjorts. Resultatet 
+pekar på att det i många fall går att spara bränsle genom att sänka motorns varvtal då 
+lastbilens påbyggnad inte används. De visar också på att det inte går att spara bränsle 
+med 
+denna 
+metod 
+i 
+de 
+fall 
+där 
+föraren 
+sitter 
+kvar 
+i 
+hytten 
+under 
+påbyggnadsanvändningen.
+ 
+iv 
+ 
+v 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2010:53 MDA 366
+ 
+Adaptive speed control for truck PTO usage 
+ 
+ 
+ 
+ 
+ 
+Adam Claesson 
+ 
+Approved 
+2010-06-01 
+Examiner 
+Jan Wikander 
+Supervisor 
+Bengt Eriksson 
+ 
+Commissioner 
+Scania CV 
+Contact persons 
+Mattias Borg 
+Magnus Eriksson 
+ 
+Abstract 
+With a growing focus on a sustainable society with responsibility for the environment, 
+vehicle manufacturers strive to reduce energy consumption for their vehicles. This 
+thesis discusses how to reduce the fuel consumption for trucks with ad-on equipment. 
+Ad-on equipment is for example cranes, demountable body vehicles and concrete 
+pumps. A method for lowering the energy consumption is to reduce the speed that the 
+truck's diesel engine is working at. At lower engine speed the engine most often work 
+more efficiently and less of engine power is being loosed, however, at lower engine 
+speed the engine can not deliver as much power. The engine speed can be reduced in 
+certain situations during operation of the ad-on equipment. Between the operations 
+when the equipment is waiting for the users command, the speed can always be 
+reduced to lessen the fuel consumption. 
+In order to know when to reduce the engine speed, a signal from the engine that 
+indicates the engines delivered torque is analysed. When the load is low the engine 
+speed is reduced and fuel is saved. When the load is high the engine speed is 
+increased so it can deliver more power. 
+Field studies have been conducted to investigate the types of trucks that could 
+benefit from a feature that lowers the speed when the load is low. Estimates of how 
+much fuel that could be saved by lowering the engine speed between operations has 
+also been made. The results indicate that in many cases it is possible to save fuel by 
+lowering engine speed when the truck's ad-on equipment is not used. It also shows 
+that it is not possible to save fuel with this method in those cases where the driver is 
+in 
+the 
+driving 
+seat 
+when 
+the 
+equipment 
+is 
+used.
+ 
+vi 
+ 
+vii 
+ 
+Förord 
+Det här examensarbetet har utförts mellan november 2009 och maj 2010 på 
+institutionen för maskinkonstruktion på kungliga tekniska högskolan i Stockholm och 
+Scania CV AB i Södertälje. 
+ 
+Jag vilja börja med att tacka Magnus Eriksson och Mattias Borg på Scania för all den 
+tid de har ägnat åt att handleda mig. De har varit med och stöttat mig under hela 
+projektet och bidragit med många värdefulla kontakter inom Scania. Jag vill också 
+tacka Bengt Eriksson som har handlett mig och bidragit med värdefulla åsikter från 
+KTH. Dessutom vill jag tacka alla de personer på Scania som har hjälpt mig i form av 
+kunskap, information och resurser under projektets gång. 
+ 
+Adam Claesson 
+Södertälje, Maj 2010
+ 
+viii 
+ 
+ 
+1 
+Innehållsförteckning 
+1 
+Introduktion.................................................................................... 4 
+1.1 
+Bakgrund ................................................................................... 4 
+1.2 
+Syfte och mål.............................................................................. 4 
+1.3 
+Problembeskrivning ...................................................................... 4 
+1.4 
+Avgränsningar ............................................................................. 5 
+1.5 
+Metod....................................................................................... 5 
+ 
+2 
+Tidigare projekt ............................................................................... 6 
+2.1 
+“Improved truck engine control for crane driving” ................................. 6 
+2.2 
+”Framtidens elgränssnitt för Scanias påbyggare” ................................... 7 
+2.3 
+Reflektion.................................................................................. 8 
+ 
+3 
+Motor, drivlina och hydraulik ............................................................... 9 
+3.1 
+Förluster i motorn ........................................................................ 9 
+3.2 
+Bränsleförbrukning ......................................................................11 
+3.3 
+Dieselmotorns momentegenskaper ...................................................13 
+3.4 
+Hydraulik..................................................................................13 
+3.5 
+Teori till bränslebesparing .............................................................18 
+3.6 
+Bränsleförlust vid accelerationer .....................................................19 
+3.7 
+Ljudnivå...................................................................................21 
+ 
+4 
+Hydrauliska maskiner och applikationer..................................................22 
+4.1 
+Maskiner och dess motorstyrning .....................................................22 
+4.2 
+Scanias Opticruise växellåda ..........................................................23 
+4.3 
+Lastbilsapplikationer....................................................................23 
+ 
+5 
+En ny motorstyrning .........................................................................26 
+5.1 
+Teori.......................................................................................26 
+5.2 
+Implementering..........................................................................30 
+5.3 
+Funktionstest.............................................................................31 
+ 
+6 
+Fältstudie......................................................................................37 
+6.1 
+Kassettbil .................................................................................37 
+6.2 
+Lastväxlare ...............................................................................39 
+6.3 
+Kranbil.....................................................................................41 
+6.4 
+Fordonstransport ........................................................................43 
+6.5 
+Betongpump ..............................................................................45 
+6.6 
+Sopbilar ...................................................................................47 
+ 
+7 
+Resultat och slutsats.........................................................................48 
+7.1 
+Bränslebesparing ........................................................................48 
+7.2 
+Ljudnivå...................................................................................48 
+7.3 
+Regulator .................................................................................48 
+7.4 
+Applikationer.............................................................................48 
+ 
+ 
+2 
+ 
+8 
+Diskussion/Rekommendationer ............................................................50 
+8.1 
+Scanias förutsättningar till att införa adaptiv varvtalsstyrning ..................50 
+8.2 
+Eliminering av accelerationspåverkan på lastmomentsignalen ..................50 
+8.3 
+Momentmarginal.........................................................................51 
+8.4 
+Inbyggd vararvalsregulator.............................................................52 
+8.5 
+Effekter från varvtalsförändringar....................................................52 
+8.6 
+Testbegränsningar.......................................................................53 
+8.7 
+Simulering ................................................................................53 
+ 
+9 
+Fortsatt arbete ...............................................................................55 
+9.1 
+Adaptiv varvtalsstyrning med tvåpedalssystem.....................................55 
+9.2 
+Körcykeltest i testcell ..................................................................55 
+9.3 
+Momentmarginal.........................................................................55 
+9.4 
+Tillståndsövergångar ....................................................................55 
+9.5 
+Påverkan av accelerationer............................................................56 
+9.6 
+Modellen ..................................................................................56 
+9.7 
+Eliminering av accelerationsbidrag på lastmomentsignalen......................56 
+ 
+10  Källor...........................................................................................57 
+ 
+ 
+ 
+3 
+Terminologi 
+ 
+Mm 
+Momentmarginal 
+[Nm] 
+n 
+Varvtal 
+[rpm] 
+Ma 
+Använt moment 
+[Nm] 
+M 
+Moment 
+[Nm] 
+P 
+Effekt 
+[W] 
+F 
+Kraft 
+[N] 
+q 
+Flöde 
+[m3/s] 
+p 
+Tryck 
+[Pa] 
+J 
+Tröghetsmoment 
+[kgm2] 
+K 
+Konstant 
+a 
+Konstant 
+b 
+Konstant 
+ 
+ 
+ 
+CAN 
+Controller Area Network 
+BWS 
+BodyWorkSystem 
+EOC 
+Ergonic Output Control 
+ 
+ 
+4 
+1 Introduktion 
+1.1 Bakgrund 
+Lastbilar kan användas till många olika uppgifter och för att kunna utnyttja dem till 
+dess fulla potential specialiseras varje lastbil för en viss sorts arbete. För att kunna 
+tillgodose många olika varianter av applikationer bygger de flesta lastbilstillverkare 
+inte kompletta fordon. Extrautrustning så som flak, kranar, skåp, lastväxlare etc. är 
+påbyggnader som ofta tillverkas och monteras av olika påbyggare. Vissa av dessa 
+påbyggnader kräver en kraftkälla. Det vanliga är då att kraften tas från lastbilsmotorn 
+med hjälp av ett kraftuttag. En kranbil är ett bra exempel på en påbyggd lastbil där 
+lastbilsmotorn används för att driva en hydraulpump som förser kranen med 
+hydraulolja. När kranen ska användas arbetar lastbilsmotorn vid ett i förväg valt fast 
+varvtal. Varvtalet väljs av påbyggaren men brukar ligga runt 900rpm. Lasten varierar 
+kraftigt från att kranen står still till att den lyfter med högsta hastighet och last. 
+1.2 Syfte och mål 
+Med ett växande fokus på ett långsiktigt hållbart samhälle som tar ansvar för miljön 
+strävar fordonstillverkare efter att sänka bränsleförbrukningen på sina fordon. 
+Dessutom är de ekonomiska vinsterna av sänkt bränsleförbrukning stora. Syftet med 
+examensarbetet har varit att utreda om det går att använda ett variabelt varvtal 
+istället för ett fast för att kunna spara bränsle samt sänka ljudnivån. Syftet med att 
+sänka ljudnivån är att användaren och omgivningen ska få en bättre miljö. Arbetet 
+skulle också utreda vilka påbyggnadstyper som skulle kunna använda sig av 
+automatiskt variabelt varvtal och vilken strategi som skall användas för att välja 
+varvtal. 
+1.3 Problembeskrivning 
+Arbetet med att införa ett variabelt varvtal innebär flera problem. Eftersom lastbilen 
+och påbyggnaden är två olika system från olika tillverkare är tillgången av signaler 
+från påbyggnaden ytterst begränsade i lastbilen. Detta gör det svårt att från lastbilen 
+styra varvtalet på ett effektivt sätt när påbyggnaden ska användas. Dessutom är inte 
+hydraulpumparna tillverkade för att arbeta vid alla motorvarvtal utan riskerar att gå 
+sönder om varvtalet blir för högt. Ett annat problem är att plötsliga förändringar av 
+lasten kan leda till motorstopp. 
+ 
+Eftersom det finns så många olika sorters påbyggnader är det svårt att göra ett 
+generellt system som passar alla utan antingen måste systemet vara anpassade efter 
+var och ens unika behov eller också en kompromiss.
+Kap 1 Introduktion 
+ 
+ 
+5 
+1.4 Avgränsningar 
+Innan arbetets påbörjade gjordes dessa avgränsningar: 
+ 
+• Arbetet skulle inte resultera i en färdig produkt. 
+• Arbetet skulle inte undersöka alla olika lastbilsapplikationer. 
+ 
+Under arbetet har dessa delar valts bort: 
+• Utvärdering av risken för motorstopp. 
+• Test i labboratoriemiljö. 
+• Test av bränslebesparing. 
+• Att göra några förändringar av befintlig hårdvara på lastbilen utan arbeta efter 
+de nuvarande begränsningarna. 
+ 
+1.5 Metod 
+Problemet har studerats tidigare och reglerstrategin från de studierna har analyserats 
+och vidareutvecklats. Kod har genererats med hjälp av Matlab/Simulink och 
+implementerats på en funktionsprovlastbil med kran och lastväxlare. 
+ 
+Tidigare projekt har visat att det tillfredställande går att styra motorn genom att 
+reglera på flödes- och trycksignaler från påbyggnadens hydraulsystem. Eftersom inga 
+flödessignaler finns tillgängliga på lastbilssidan utan endast en motormomentsignal 
+som påverkas av hydraultrycket har detta arbete utrett om det går att reglera endast 
+på denna del. Detta examensarbete har därigenom fokuserat på hur Scania skulle 
+kunna göra för att införa en adaptiv varvtalsstyrning utan ett nära samarbete med 
+påbyggarna och utan att läsa av information från påbyggnaden. 
+ 
+Fältstudier har genomförts för att analysera hur användare nyttjar olika påbyggnader 
+och vilka möjligheter det skulle finnas att optimera motorstyrningen för de olika 
+typerna av lastbilsapplikationer.
+ 
+ 
+ 
+6 
+2 Tidigare projekt 
+Införandet av variabelt motorvarvtal vid användning av lastbilens kraftuttag har 
+tidigare studerats men då endast med fokus på kranbilar. Ett examensarbete 
+”Improved truck engine control for crane driving” och ett studentprojekt vid KTH 
+under rubriken ”Framtidens elgränssnitt för Scanias påbyggare” har genomförts [1,2]
+2.1 “Improved truck engine control for crane driving”  
+Examensarbetet ledde fram till en reglering av motorvarvtalet när kranen används, 
+istället för det konstanta som används i dagsläget. Varvtalet styrs så att 
+hydraulsystemets behov av tryck och flöde kan levereras. 
+ 
+Behovet av flöde är kopplat till motorvarvtalet genom att kranföraren ger ett 
+kommando för hur snabbt användaren vill flytta kranen, hastigheten på kranen leder 
+till att ett visst flöde i hydraulsystemet behövs och för att flödet skall kunna 
+tillfredställas måste pumpen arbeta vid en viss hastighet. Pumpens hastighet beror av 
+motorns varvtal. Detta är det flödesrelaterade motorvarvtalet. 
+ 
+Kopplingen mellan varvtal och tryck är mer indirekt. Enkelt utryckt kräver kranens 
+last ett visst hydraultryck. Hydraultrycket kräver ett moment från motorn via 
+hydraulpumpen. Motorn kan leverera ett visst maximalt moment vid ett visst varvtal. 
+Detta är det tryckrelaterade varvtalet. 
+ 
+Genom detta fås två olika varvtal, ett som beror av flödet och ett som beror av 
+trycket. Om det högsta av dessa varvtal väljs uppfylls båda kraven. 
+ 
+Varvtalet som beror av flödet är en framkoppling som läser kranförarens kommando 
+och räknar om det till ett flöde. Flödet används sedan för att räkna ut den 
+motorhastighet som behövs.  
+Kap 2 Tidigare projekt 
+ 
+ 
+7 
+ 
+Figur 1.  Motorn regleras så att momentmarginalen hålls konstant. [1] 
+Varvtalet som beror av trycket är en återkopplad reglering. Motorvarvtalet reglerades 
+efter motorns momentmarginal så att den i alla lägen ska orka det pålagda momentet 
+enligt: 
+)
+(
+,
+Ma
+Ma
+K
+n
+n
+ref
+engine
+T
+set
+−
+⋅
++
+=
+ 
+ 
+ 
+ 
+( 1 ) 
+Där nset,T är motorreferensvarvtalet, nengine är det nuvarande motorvarvtalet, K är en 
+konstant, Maref är momentmarginalens referens och Ma är den nuvarande 
+momentmarginalen. Se Figur 1. Om momentmarginalen skulle bli för liten till följd av 
+ett plötsligt pålagt moment och det finns risk för motorstopp stryps styrsignalen från 
+krankontrollen till kranen. 
+ 
+Vid implementeringen sattes ett hysteresintervall in där ingen reglering fick 
+förekomma för att undvika instabillitet. 
+ 
+Slutsatserna från projektet slår fast att det troligtvis går att spara ca 10% bränsle med 
+metoden under krankörning utan negativ inverkan för användaren. Se [1] för mer 
+information. 
+2.2 ”Framtidens elgränssnitt för Scanias påbyggare” 
+Projektet byggde vidare på den metoden som exjobbet [1] tog fram men gjorde en 
+del förändringar. Framkopplingen som kontrollerar att rätt flöde kan uppnås togs bort 
+och motorvarvtalet styrdes endast med momentmarginalen. I exjobbet [1] ströps 
+styrsignalen från krankontrollen då det fanns risk för motorstopp. Den strypningen 
+togs ofrivilligt bort då det blev problem med hårdvaran som hanterade strypningen. 
+Inga reflektioner eller utvärdering av detta har behandlats. Dock nämner författaren 
+att en större momentmarginal än nödvändigt har används och att endast lätta lyft har 
+gjorts. Detta projekt har även implementerat ett ”idlemode” som sänker varvtalet till 
+tomgångsvarvtalet och ett ”powersavemode” som stänger av motorn när kranen inte 
+används. För att detektera om kranen användes kopplades systemet in direkt på 
+kranen och läste av spakrörelserna. I [2] var motorregleringen endast en del av 
+Kap 2 Tidigare projekt 
+ 
+ 
+8 
+projektet och flera andra styrenheter implementerades också. En av dessa var en 
+pekskärm från vilken ” idlemode” och ” powersavemode” kunde konfigureras genom 
+att ställa in de olika tider algoritmen skulle vänta innan lastbilen gick i dessa 
+sparlägen. För mer information se [2]. 
+ 
+2.3 Reflektion 
+I [1] reglerades varvtalet efter både last och hastighet. Efter följande samband: 
+ 
+ 
+Figur 2. Reglering efter två beroenden. 
+För att kunna reglera på lasten går det att läsa av motormomentet som skickas från 
+motorstyrenheten via lastbilens Controller Area Network, CAN-nätverk. Hastighen på 
+påbyggnadens rörliga delar, t.ex. kranen, hanteras i dagens lastbilar helt internt av 
+påbyggnaden. Kranförarens kommando skickas direkt till kranen och vilken hastighet 
+kranen har påverkar varken lastbilsmotorn eller kraftuttaget. För att kunna reglera 
+motorvarvtalet efter påbyggnadens hastighet behövs information som endast finns 
+tillgänglig på påbyggnaden. På grund av detta går det inte att implementera en sådan 
+reglering utan ett nära samarbete med påbyggnadstillverkaren. Därför har detta 
+examensarbete fokuserat på att försöka utveckla en reglering som går att 
+implementera på en Scania lastbil utan att gränssnittet mot påbyggnaden behöver 
+göras om.
+ 
+ 
+ 
+9 
+3 Motor, drivlina och hydraulik 
+De flesta lastbilar med påbyggnader som t.ex. kranbilar, betongbilar och lastväxlare, 
+använder sig av ett hydraulsystem. Hydraulik används eftersom den kan ge stora 
+krafter och moment med relativt kompakta enheter. Den ger även god styr- och 
+reglermöjlighet pga. oljan är inkompressibel [10]. Det finns flera varianter av 
+hydraulsystem med olika komplexitet. Några av dessa beskrivs i kapitel 3.4.1. Dessa 
+hydraulsystem drivs ofta med lastbilens motor. Kraften plockas ut från ett kraftuttag 
+som finns på motorn, svänghjulet eller längs drivlinan. Påbyggaren kan kommunicera 
+med lastbilen och styra vissa funktioner genom en styrenhet på lastbilen som på 
+Scanias lastbilar kallas för BodyWorkSystem, BWS. I Figur 3 ges ett exempel på hur en 
+påbyggnad kan vara sammankopplad med en lastbil. 
+ 
+ 
+Figur 3. Systembild över hur lastbil och påbyggnad kan se ut. 
+3.1 Förluster i motorn 
+Mycket av dieselenergin från lastbilen försvinner och bara en del hamnar där den 
+verkligen behövs. En stor del av de mekaniska förlusterna är friktion. För att få en 
+bättre bild av hur friktionsförlusterna ser ut i förhållande till varvtal i lastbilsmotorn 
+har följande analys genomförts. Analysen bygger på en utredning som Scania har gjort 
+ 
+Motor 
+Kraft‐
+uttag 
+Pump 
+Ventiler
+Hydraulik
+Förar‐ 
+kontroll 
+Styr‐
+enhet 
+BWS
+Elektrisk koppling 
+Mekanisk koppling 
+Hydraulisk koppling 
+Lastbil
+Påbyggnad 
+Kap 3 Motor, drivlina och hydraulik 
+ 
+ 
+10 
+för att få bättre förståelse för vilka parasitförluster olika komponenter ger. Se [7] för 
+mer information. 
+ 
+Förlusterna har studerats för följande komponenter: 
+Block och transmission 
+Här ingår lager och tätningar för vevaxel kamaxel samt transmission för kamdrivning 
+och aggregatdrivning samt oljepump. 
+Vattenpump och inre remkrets 
+Här ingår vattenpumpen samt remtransmissionen och fyra bryt- och spännrullar. 
+Kolvar och ringpaket 
+Här ingår kolvar och ringpaket samt vevstakar. 
+Ventilpaket 
+Här ingår hela ventilpaketet med vipparmspaketet ventiltätningar och glidfriktion 
+mellan kamaxel och tryckare samt friktion i lagring stötstångsändar och skålar. 
+Högtryckspump 
+Här ingår friktion i drivning och lagring av högtryckspump och lågtryckspump för 
+bränslet. 
+Kompressor 
+Här ingår friktionen i kompressorn och kompressorarbetet är inte inräknat. 
+Yttre remkrets och fläkt 
+Här ingår yttre remkrets för fläkt med spännrullar och brytrullar samt drivning av icke 
+belastad generator och fläkt. 
+ 
+Friktionen hos de olika delarna kan förenklat utryckas med formeln: 
+ 
+b
+n
+a
+M f
++
+⋅
+=
+  
+ 
+ 
+ 
+ 
+ 
+( 2 ) 
+ 
+Där Mf är friktionsmomentet, n är varvtalet samt a och b är konstanter. 
+ 
+Summan av förlusterna kan ses som: 
+ 
+92
+21
+,0
+−
+≈
+n
+M f
+ 
+ 
+ 
+ 
+ 
+ 
+( 3 ) 
+ 
+Den totala förlusteffekten blir således: 
+ 
+60
+2
+)
+92
+21
+,0
+(
+π
+⋅
+⋅
+−
+≈
+n
+n
+Pf
+ 
+ 
+ 
+ 
+ 
+ 
+( 4 ) 
+Där Pf är förlusteffekt och n är varvtal. 
+Kap 3 Motor, drivlina och hydraulik 
+ 
+ 
+11 
+ 
+500
+1000
+1500
+2000
+0
+10
+20
+30
+40
+50
+60
+70
+Effekt [kW]
+Varvtal [rpm]
+ 
+ 
+Pf=(0,21n-92) n 2π/60
+ 
+Figur 4. Total förlusteffekt vid olika varvtal. 
+I Figur 4 ses att förlusterna ökar exponentiellt med varvtalet. Därigenom kan mycket 
+energi sparas genom att varvtalet sänks. 
+3.2 Bränsleförbrukning 
+Bränsleförbrukningen kan ses som en funktion av last och varvtal och enkelt uttryckt 
+proportionell mot effekten, dvs. lasten gånger varvtal vilket kan ses i Figur 5. Detta är 
+en förenkling och stämmer någorlunda då accelerationen är noll. Att studera 
+bränsleförbrukningen momentant på en godtycklig Scania lastbil med befintliga 
+sensorer är mycket svårt. Motorstyrenheten beräknar visserligen bränsleförbrukningen 
+i realtid, men med en 5-10% felmarginal, vilket är för stor felmarginal för att vara den 
+enda källan till bränsleförbrukningen då tidigare studier har visat på att det är ca 10% 
+som går att spara genom att sänka varvtalet. Bränsleförbrukningen kan även beräknas 
+genom att jämföra lastmomentet och varvtal med en motor som har körts under 
+kontrollerade former i en motorprovcell där bränsleförbrukningen har kunnat mätas 
+mycket noggrant. Resultatet från ett sådant test kallas för bränslemussla och den kan 
+användas för att teoretisk räkna ut bränsleförbrukningen mer exakt. 
+ 
+ 
+Kap 3 Motor, drivlina och hydraulik 
+ 
+ 
+12 
+400
+600
+800
+1000
+1200
+1400
+1600
+1800
+2000
+5
+10
+15
+20
+25
+30
+35
+40
+45
+Varvtal[rpm]
+Bränsleförbrukning [g/min]
+ 
+ 
+Konstant moment 1000Nm
+400
+600
+800
+1000
+1200
+1400
+1600
+1800
+2000
+5
+10
+15
+20
+25
+30
+35
+40
+45
+Moment [Nm]
+ 
+ 
+Konstant varvtal 1000rpm
+ 
+Figur 5. Bränsleförbrukning vid konstant varvtal och moment. 
+En bränslemussla från en Scania motor har använts och kommer i fortsättning att 
+benämnas som bränslemusslan. Genom att studera bränslemusslan fås en uppfattning 
+över vad som påverkar bränsleförbrukningen. I Figur 6 ses tydligt att 
+bränsleförbrukningen är högre då effekten plockas ut vid ett lägre varvtal. När samma 
+effekt plockas ut vid lägre varvtal blir momentet högre än om det plockas ut vid ett 
+högre varvtal. 
+500
+1000
+1500
+2000
+0
+2
+4
+6
+8
+10
+12
+14
+Varvtal [rpm]
+Bränsleförbruknig [g/min]
+ 
+ 
+10kW
+40kW
+60kW
+ 
+Figur 6. Bränsleförbrukning vid konstant effekt. 
+Kap 3 Motor, drivlina och hydraulik 
+ 
+ 
+13 
+3.3 Dieselmotorns momentegenskaper 
+Hur mycket moment som går att plocka ut från en dieselmotor beror av det varvtal 
+som motorn för stunden arbetar med. Ofta ser sambandet ut som den tjocka linjen i 
+Figur 7. Den tjocka linjen gäller dock vid fullt laddtryck. Laddtrycket byggs upp av 
+turbon och tar en stund att bygga upp. Laddtrycket kommer då oftast med en 
+ketchupeffekt vilket kan uppfattas negativt vid användning av t.ex. en kran. Om inte 
+fullt laddtryck finns tillgängligt kan inte ett lika högt moment plockas ut. 
+ 
+ 
+Figur 7. Momentsläpning. [1] 
+3.4 Hydraulik 
+Det finns två olika sorters hydraulpumpar, pumpar med fast deplacement och pumpar 
+med variabelt deplacement. Pumpar med fast deplacement levererar alltid samma 
+mängd flöde vid ett visst motorvarvtal. När pumpen arbetar byggs trycket upp så 
+länge ingen ventil öppnas och flöde släps på till cylindrarna. En fast pump kväver 
+därför en övertrycksventil för att inte trycket ska kunna bli större än vad 
+komponenterna klarar av. 
+ 
+Alternativet är en pump med variabelt deplacement som kan leverera olika flöde vid 
+samma varvtal och på så vis anpassa flödet till det som behövs. Dessa pumpar behöver 
+ingen övertrycksventil och levererar endast den olja som behövs för stunden. 
+ 
+Det finns flera olika faktorer som avgör vilken sorts system som väljs. Den största är 
+oftast kostnaden. De system som har lägre förluster är oftast mer komplicerade. Även 
+platsbrist kan vara en viktig faktor.  
+3.4.1 Hydraulsystem 
+De vanligaste systemvarianterna är dessa: 
+Fast pump med tryckbegränsning – Detta är det enklaste hydraulsystemet och består 
+av en pump med fast deplacement och en tryckbegränsningsventil. Hydraulpumpen 
+levererar ett konstant flöde och trycket ligger vanligtvis konstant på den maximala 
+25% laddtryck 
+50% laddtryck 
+75% laddtryck 
+Kap 3 Motor, drivlina och hydraulik 
+ 
+ 
+14 
+nivån som begränsas av tryckbegränsningsventilen. Denna typ av system har därför 
+ofta ett överskott av både tryck och flöde. Därför har också systemet stora förluster. I 
+Figur 8 kan ett hydraulschema för detta system ses. Till höger ses också en tryck-
+flödesgraf där p är tryck och q är flöde. De mörkgråa fälten är den effekt som 
+utnyttjas av de två lasterna, Last 1 behöver mest tryck och mindre flöde medan last 2 
+gör av med ett större flöde och ett mindre tryck. Det ljusgråa fältet är den totala 
+effekt som system förbrukar. 
+ 
+Figur 8. Fast pump med tryckbegränsning. [3] 
+Pump med variabelt deplacement – System med en pump som kan anpassa flödet 
+efter behovet. Detta leder till att systemet inte har outnyttjat flöde och 
+energiutnyttjandet blir då också bättre. Pumpen levererar dock ett högre tryck än vad 
+som är nödvändigt vilket leder till förluster i systemet. Se Figur 9. 
+ 
+Figur 9. Pump med variabelt deplacement. [3] 
+Kap 3 Motor, drivlina och hydraulik 
+ 
+ 
+15 
+System med konstantflöde – Ett system med fast pump och konstant flöde som 
+åstadkoms med en ventil som är öppen i mittenläget. Ventilen kan då leda oljan helt 
+fritt mellan pump och tank när oljan inte behövs vilket minimerar överflödigt tryck. 
+Se Figur 10. 
+ 
+ 
+Figur 10. System med konstantflöde. [3] 
+Lastkännande system med variabel tryckkontroll – Med variabel tryckkontroll hålls 
+trycket strax över lasttrycket. Eftersom en pump med fast deplacement används fås 
+förluster på grund av att flödet blir större än nödvändigt. Se Figur 11. 
+ 
+Figur 11. Lastkännande system med variabel tryckkontroll. [3] 
+Lastkännande system med variabel tryck- och flödeskontroll – Ett system med 
+variabel pump som styrs av lasttrycket och systemtrycket kan därför hållas på en nivå 
+Kap 3 Motor, drivlina och hydraulik 
+ 
+ 
+16 
+strax över lasttrycket. Flödet styrs med den variabla pumpen och allt flöde utnyttjas. 
+Detta system är det mest komplexa men har också lägst förluster. Se Figur 12. 
+ 
+Figur 12. Lastkännande system med variabel tryck- och flödeskontroll. [3] 
+3.4.2 Varvtalspåverkan på hydraulpumpar 
+Används en fast pump i hydraulsystemet är hydraulflödet direkt proportionellt mot 
+varvtalet, vilket innebär att hydraulkolvarnas hastighet kommer att direkt påverkas av 
+det varvtal som lastbilsmotorn har. 
+ 
+Används en variabel pump kommer inte hydraulflödet direkt att påverkas av 
+motorvarvtalet. Utan pumpens deplacement kommer att styra flödet med varvtalet 
+som en begränsare. Vanligtvis specificeras hydraulpumparna mot 1000rpm dvs. en 
+120l pump kan vid 1000rpm maximalt leverera 120l/min och vid 500rpm kan den 
+maximalt leverera 60l/min. 
+ 
+Med ett lägre varvtal kan pumpen således inte leverera ett lika högt flöde. Ett lägre 
+flöde betyder långsammare hydraulsystem. För att kunna leverera samma flöde vid 
+ett lägre varvtal kan en större pump användas men en större pump är oftast dyrare. 
+Ett annat sätt skulle vara att installera en hög utväxling mellan motor och pump men 
+det finns då tillverkningsproblem samt att detta leder till större förluster och dålig 
+verkningsgrad i växeln.  
+ 
+De flesta pumpar tål heller inte ett varvtal som är högre än vad de är gjorda för utan 
+om varvtalet höjs riskerar pumpen att gå sönder. 
+3.4.3 Möjlighet till bränslebesparing 
+I ett system med fast pump är pumpflödet det samma oavsett vilket flöde som 
+faktiskt utnyttjas. Eftersom den fasta pumpens levererade flöde är linjärt mot 
+dieselmotorns varvtal kan flödet i systemet sänkas genom att varvtalet sänks. På så 
+vis kan den del av pumpeffekten som är markerad med streck i Figur 13 elimineras. 
+Figuren är en tryck-flödesgraf där PLoad är det tryck som utnyttjas av lasten, PMax är 
+Kap 3 Motor, drivlina och hydraulik 
+ 
+ 
+17 
+det maximala trycket hydraulsystemet kan uppnå, QLoad är det utnyttjade flödet och 
+QMax är det maximala flödet och det hydraulflöde som en fast hydraulpump levererar. 
+ 
+Figur 13. De streckade ytan representerar den potentiella besparingen i ett system med fast pump. [1] 
+Med den variabla pumpen finns det inget onyttjat flöde eftersom pumpen anpassar 
+flödet till hur mycket som används. Därför får vi inga hydrauliska effektvinningar 
+genom att sänka varvtalet. Se Figur 14. 
+ 
+Figur 14. Variabel pump ger ingen möjlighet till att eliminera hydrauliska effektförluster. [1] 
+Kap 3 Motor, drivlina och hydraulik 
+ 
+ 
+18 
+Genom att styra motorvarvtalet kan flödet i hydraulsystemet regleras. Däremot går 
+det inte att påverka trycket i hydraulsystemet. Därför kan inte förluster från ett för 
+högt hydraultyck elimineras genom att motorvarvtalet sänks. 
+3.5 Teori till bränslebesparing 
+Genom att sänka varvtalet kan förlusteffekterna reduceras och därigenom kan också 
+bränsleförbrukningen sänkas. 
+ 
+I Figur 6 konstaterades att dieselmotorn arbetar mer effektivt vid höga varvtal än vid 
+låga. Dock konstaterades det i Figur 4 att förlusterna ökar med varvtalet. Därför leder 
+ett sänkt varvtal i de flesta fall till reducerad bränsleförbrukning. I Figur 15 ses tydligt 
+att desto lägre ”nyttig” effekt desto mer sparas på att sänka varvtalet. Detta innebär 
+att mest bränsle kan sparas vid tomgångskörning då inget nyttigt arbete förekommer. 
+Förklaringen till varför bränsleförbrukningen ökar vid högre varvtal finns i Figur 16.  
+Där ses att det totala effektbehovet stiger med ökat varvtal pga. förlusterna. I dessa 
+grafer har endast de förluster som förekommer i dieselmotorn tagits med. Därutöver 
+uppkommer förluster i växellådan, hydraulpumpen etc. Dessa förluster följer troligtvis 
+samma mönster som de i motorn vilket skulle innebära att bränslebesparingen skulle 
+bli större än i Figur 15. 
+ 
+Används en fast pump sparas även hydrauliska förlusteffekter in genom att flödet blir 
+lägre när motorvarvtalet sjunker. Se Figur 13. Detta innebär att bränslebesparingen 
+blir ännu större. Hydraulsystem med fast pump kan då optimalt bli lika effektivt som 
+ett med variabel pump. 
+ 
+Dock är bränslemusslan komplex och ett lägre varvtal kan i vissa fall ge en högre 
+bränsleförbrukning. Det blir tydligt då de båda punkterna i Figur 15 jämförs. 
+Förbrukningen blir dock alltid lägre vid de tillfällen varvtalet sänks och systemet är 
+obelastat. 
+500
+1000
+1500
+2000
+5
+10
+15
+20
+25
+30
+ 
+ 
+X: 1700
+Y: 25.49
+Varvtal [rpm]
+Bränsleförbruknig [g/min]
+X: 1600
+Y: 25.76
+10kw arbete plus förluster
+30kw arbete plus förluster
+100kw arbete plus förluster
+ 
+Figur 15. Bränsleförbrukning vid konstant effektuttag plus motorförluster. 
+Kap 3 Motor, drivlina och hydraulik 
+ 
+ 
+19 
+500
+1000
+1500
+2000
+0
+100
+200
+300
+400
+500
+600
+Varvtal [rpm]
+Moment [Nm]
+30kw nyttigt arbete och förluster i motorn
+ 
+ 
+förluster
+nyttigt arbete
+totalt
+ 
+Figur 16. Moment vid 30kw arbete. 
+ 
+3.6 Bränsleförlust vid accelerationer 
+För att få en viss uppfattning av hur bränsleförbrukningen påverkas av acceleration 
+och retardation har motorns bränsleförbrukningssignal från CAN studerats. Denna 
+signal har en felmarginal på 5-10% men ger en viss indikation om hur 
+varvtalsförändringar påverkar bränsleförbrukningen. 
+ 
+Ett fall där motorn accelererar från 600rpm till 1000rpm och sedan retarderar tillbaka 
+till 600rpm ses i Figur 17. Där ses att bränsleförbrukningen varierar mycket under 
+accelerationen vilket kan komma av att lasten varierar kraftigt. Anledningen till att 
+lasten svänger kan bero på elasticitet i axlar och drivlina. När motorn accelererar och 
+varvtalet i motorn stiger förändras inte varvtalet hos alla tröghetsmassorna på exakt 
+samma sätt som i motorn utan accelerationen släpar efter. Det skulle också kunna 
+bero av mjukvara i lastbilens styrsystem. Exempelvis skulle det kunna vara lastbilens 
+rökbegränsare som stryper insprutningen av diesel. 
+Kap 3 Motor, drivlina och hydraulik 
+ 
+ 
+20 
+6
+8
+10
+12
+14
+16
+18
+20
+22
+0
+2
+4
+6
+8
+10
+12
+14
+16
+18
+Bränsleförbrukning [l/h]
+Tid [s]
+6
+8
+10
+12
+14
+16
+18
+20
+22
+500
+600
+700
+800
+900
+1000
+1100
+Varvtal [rpm]
+Bränsleförbrukning varvtalsförändringar 600 och 1000 rpm
+ 
+Figur 17. Bränsleförbrukning under varvtalsförändring. 
+Accelerationen tar knappt 2s och pågår under tidsintervallet 8-10s. 
+Medelförbrukningen under detta intervall är 6,1l/h vilket är ca 42% mer än under det 
+intervall då varvtalet ligger på konstant 1000rpm och är 4,3l/h. Den totala 
+förbrukningen för en acceleration blir dock liten eftersom det inte rör sig om mer än 
+2s. 
+ 
+Retardationen tar ca 1,6s och sker under tidsintervallet 19,6-21,2s. 
+Medelförbrukningen under detta intervall är 0,9l/h och ca 43% av vad den är vid 
+konstant 600rpm då förbrukningen är 2,1l/h. 
+ 
+Eftersom antalet accelerationer och antalet retardationer alltid är samma under en 
+körning kan vi räkna samman dessa förlopp och det ses då att medelförbrukningen blir 
+3.8l/h dvs. 12% lägre än bränsleförbrukningen vid konstant 1000rpm. 
+ 
+Tabell 1. Bränsleförbrukning under varvtalsförändring. 
+Händelse 
+Medelförbrukning 
+Tid 
+Konstant 600rpm 
+2,1l/h 
+- 
+Konstant 1000rpm 
+4,3l/h 
+- 
+Acceleration 600-1000rpm 
+6,1l/h 
+2s 
+Retardation 1000-600rpm 
+0,9l/h 
+1,6s 
+Acceleration och 
+retardation 
+3,8l/h 
+3,6s 
+ 
+Kap 3 Motor, drivlina och hydraulik 
+ 
+ 
+21 
+3.7 Ljudnivå 
+Genom att sänka motorns varvtal kan ljudnivån sänkas. För att få en bättre bild av 
+hur ljudnivån påverkas av varvtalet har ljudnivån uppmäts vid olika varvtal på den 
+funktionsprovlastbil som använts för testning. Mätningen är gjord tre meter rakt ut 
+ifrån lastbilens förardörr och resultatet kan beskådas i Figur 18. 
+ 
+500
+1000
+1500
+2000
+68
+70
+72
+74
+76
+78
+80
+82
+Ljudnivå [dB]
+Varvtal [rpm]
+ 
+Figur 18. Ljudmätning på provbil. 
+I Figur 18 ses att ljudnivån stiger med ökat varvtal och ungefär 1dB per 100rpm då 
+systemet är obelastat. Testet visar på att genom att sänka varvtalet kan onödigt 
+buller reduceras och på så vis ge användaren och omgivningen en trevligare miljö.
+ 
+ 
+ 
+22 
+4 Hydrauliska maskiner och 
+applikationer 
+4.1 Maskiner och dess motorstyrning 
+Det finns många andra maskiner som använder en förbränningsmotor för både 
+framdrivning och drivning av en hydraulpump som försörjer hydraulverktyg med kraft. 
+För att kunna dra lärdom av dessa och utnyttja den reglerstrategi som används i dessa 
+maskiner har ett antal applikationer studerats.
+4.1.1 Gaffeltruck fältstudie 
+En 3 tons motviktstruck med dieselmotor av okänt fabrikat har studerats i syfte att 
+förstå hur motorn styrs. Gaffeltrucken använder hydraulik för att ge kraft åt 
+gafflarna. Samma dieselmotor används för att driva hydraulpumpen och hjulen. 
+Motorn styrs manuellt med gaspedalen. För att höja varvtalet på motorn och 
+därigenom möjligheten att kunna göra ett tungt lyft måste föraren gasa. Inga 
+avancerade funktioner eller automatisk varvtalsreglering finns. Föraren lyssnar på 
+motorn och hör på så sätt hur den jobbar, om den inte orkar gasar föraren mer, låter 
+det som den varvar för högt släpper föraren på gasen. 
+ 
+I princip reglerar föraren gaspådraget och varvtalet på momentmarginalen genom att 
+lyssna på motorn. Detta kan likställas med hur tidigare projekt har styrt varvtalet på 
+kranbilen fast då med en automatisk reglering. 
+4.1.2 Grävmaskin fältstudie 
+En Terex 1605 M grävmaskin har undersökts och dess förare har intervjuats. 
+ 
+Enligt föraren fungerar de flesta maskiner av denna typ på ungefär samma sätt, när 
+det kommer till motorstyrning ur ett förarperspektiv.  
+ 
+Maskinen har inget gasreglage utan den har automatisk gas. Föraren väljer 
+arbetsvarvtal och maskinen varvar automatiskt upp till det varvtal som valts. Det finns 
+ett antal knappar där olika varvtal kan sparas så att det snabbt går att välja dem. Det 
+finns även en knapp som aktiverar automatisk varvtalssänkning till tomgångsvarvtalet 
+när systemet är obelastat. När systemet belastas varvar motorn upp igen. 
+Grävmaskinen jobbar aldrig vid varvtal mellan det valda varvtalet och 
+tomgångsvarvtalet. I vissa fall då belastningen ökar snabbt hinner inte regleringen 
+med och det blir en dipp i varvtalet. 
+ 
+Motorn dör aldrig även om ett för lågt varvtal har ställts in i förhållande till den 
+pålagda lasten. Därför kan det tänkas att styrsignalen stryps i dessa fall för att 
+undvika motorstopp. 
+Kap 4 Hydrauliska maskiner och applikationer 
+ 
+ 
+23 
+4.1.3 Volvo CE 
+Swecon är återförsäljare av Volvo CE:s anläggningsmaskiner. Verkstadschefen på 
+Swecon i Södertälje har intervjuats. 
+ 
+Volvo CE:s fungerar i princip på samma sätt som Terex grävmaskinen. Maskinföraren 
+väljer själv vilket varvtal som maskinen skall jobba med. Maskinen kan automatiskt 
+varva ner till tomgång då hydraulsystemet inte behöver kraft. Anläggningsmaskinerna 
+använder ett lastkännande hydraulsystem. Det är därför som en maskin inte stannar 
+även om maskinen arbetar med tomgångsvarvtalet och användaren försöker gör ett 
+tungt lyft. 
+4.2 Scanias Opticruise växellåda 
+En svårighet som fås med variabelt varvtal handlar om när man snabbt försöker plocka 
+ut ett högt moment vid ett lågt varvtal. Om ett högre moment än vad motorn kan 
+leverera plockas ut dör motorn. Ett exempel där detta är en risk är då en kranbils last 
+ökar från en låg nivå vilket medför att motorn ska accelerera från ett lågt varvtal 
+samtidigt som lasten är hög. I det tidigare exjobbet [1] ströps styrsignalen från 
+styrenheten om kranen försökte plocka ut mer moment än vad motorn momentant 
+klarar av. 
+ 
+En helt annan typ av applikation där detta problem behandlas är Scanias Opticruise 
+växellåda. I växellådan läggs ett högt moment på vid lågt varvtal. Opticruise styr då 
+växlar och koppling. När en Scania lastbil med Opticruise skall köra iväg skattas det 
+moment som kommer att behövas för att sätta bilen i rullning. Ett varvtal väljs så att 
+detta moment skall kunna plockas ut. När kopplingen stängs bevakar systemet 
+moment som plockas ut (om skattningen skulle vara felaktig). Om momentet stiger för 
+högt höjer systemet varvtalet och försöker stänga kopplingen med det nya varvtalet. 
+På så sätt plockas aldrig ett större moment ut från motorn än vad motorn kan leverera 
+[6]. Denna lösning skulle dock vara komplicerad att utnyttja eftersom det är svårt att 
+förutsäga vilken last som kommer att läggas på innan den läggs på. Dessutom kräver 
+lösningen en metod att begränsa lasten om skattningen är fel. 
+ 
+4.3 Lastbilsapplikationer 
+Kraftuttaget kan användas till flera olika applikationer. De vanligaste kan ses i Tabell 
+2.  En snabb fältstudie har genomförts över hur fordonstyperna använder kraftuttaget 
+genom att studera videoklipp där de olika lastbilstyperna används. Eftersom kranbilar 
+har studerats tidigare har applikationer som liknar denna samlats i samma kategori. 
+Kap 4 Hydrauliska maskiner och applikationer 
+ 
+ 
+24 
+ 
+Tabell 2. Olika fordonstyper, deras drift- och kraftbehov. [5] 
+Fordonstyp 
+Beräknad drifttid för 
+kraftuttaget under en fem 
+års tid. [h] 
+Kraftbehov 
+[kW] 
+ 
+Stegbil 
+0–500 
+65–68 
+Skylift (medelstor) 
+0–500 
+18–30 
+Lastväxlare 
+0–500 
+50–60 
+Liftdumper 
+0–500 
+40–50 
+Distributionsbil med kran 
+0–500 
+35–70 
+Sidolastare för container 
+0–500 
+30–60 
+Tippbil 
+0–500 
+20–50 
+Biltransport 
+0–1 200 
+15–20 
+Betongbil 
+500–1 400 
+40–90 
+Timmerbil 
+500–1 400 
+40–60 
+Kranbil 
+500–1 400 
+20–30 
+Sopbil 
+1 000–2 000 
+30–40 
+Tankbil 
+1 000–2 000 
+20–32 
+Kylbil 
+1 000–2 000 
+20–26 
+Mjölkbil 
+1 000–2 000 
+12–20 
+Betongpump 
+1 000–4 000 
+160–220 
+Slamsug 
+1 000–4 000 
+30–80 
+Bulk transport kompressor 
+1 000–4 000 
+40–60 
+ 
+4.3.1 Kranapplikationer 
+Dessa applikationer har stor variation i kraftbehov eftersom lasten och hävarmen 
+ändras under körcykeln. 
+ 
+ Stegbil – Stegen ger ungefär samma laster som för en kranapplikation, stegbilar 
+används för att lyfta människor men även i vissa fall för att lyfta personbilar vid 
+trafikolyckor [4].  
+ Skylift – Skylift påminner om en stegbil men är oftast inte lika stark. 
+ Timmerbil (lastare) – Timmerbilens lastare är i princip en kran med en klo. 
+ Kranbil – En kranbil. 
+ Distributionsbil med kran – En mindre kranbil. 
+4.3.2 Applikationer med intermittenta cykler med varierande last 
+Applikationer som använder kraftuttaget i kortare perioder och med en körcykel som har olika 
+kraftbehov. 
+ 
+ Lastväxlare – Lastväxlaren plockar upp, lämnar och tippar containrar. Kraftbehovet 
+beror på om den lyfter en container och hur mycket den väger. 
+ Liftdumper – Fungerar som en lastväxlare. 
+ Sidolastare för container – Fungerar också som en lastväxlare men i sidled. 
+ Tippbil – Bil med tippbart flak, kraftbehov varierar med lasten. 
+ Biltransport – Hydraulcylindrar används för att lyfta ställningarna där bilarna står upp 
+och ner.  
+ Sopbil – Pressar sopor, kraften beror av hur “hårda” soporna är. 
+Kap 4 Hydrauliska maskiner och applikationer 
+ 
+ 
+25 
+4.3.3 Applikationer där kraftuttaget används under färd. 
+Dessa fordonstyper använder kraftuttaget under färd. 
+ 
+ Betongbil – Behöver kraft till betongroteraren, små variationer i kraftbehovet då 
+lasten förblir konstant fram till tömningen. Under tömningen kan dock tänkas att 
+effektbehovet ändras. 
+ Kylbil – Kylbilen behöver kraft för att driva kylsystemet, kan dock tänkas att behovet 
+varierar eftersom kompressorn för kylsystemet inte jobbar konstant. 
+ Mjölkbil – Kyler mjölken. 
+4.3.4 Specialfall 
+ 
+ Betongpump – Dessa bilar har dels en lång arm som kommer att kräva högre 
+moment när hävarmen blir längre. Armen påminner därför om en kran, armen 
+lyfter slangen som betongen pumpas genom så lasten varierar också. Pumpen 
+däremot kan tänkas ha ett mer eller mindre konstant högt effektbehov.
+ 
+ 
+ 
+26 
+5  En ny motorstyrning 
+5.1 Teori 
+För att styra motorn har en metod valts där varvtalet väljs efter påbyggnadens last 
+enligt följande samband: 
+ 
+ 
+Figur 19. Motorvarvtalet styrs efter lasten. 
+Påbyggnadens hastighet styr inte motorhastigheten eftersom det i dagens lastbilar 
+med de signaler som finns tillgängliga där, inte går att avgöra vilken hastighet 
+påbyggandens rörliga delar har. För att inte påbyggnaden skall kännas seg vid de 
+tillfällen då lasten är låg samtidigt som användaren vill göra snabba rörelser med 
+påbyggnaden har en strategi arbetats fram. Strategin bygger på att endast varva ner 
+till ett mycket lågt varvtal då påbyggnaden inte utför några rörelser dvs. inte 
+används. Se Figur 20.  
+ 
+Figur 20. Strategi för att kunna bibehålla hastighet. 
+ 
+Till arbetsläget har tre olika typer av regulatorer utvecklats, analyserats och testats. 
+Påbyggnaden 
+används inte 
+Sovläge 
+tomgångsvarvtal 
+(alternativt förhöjt 
+tomgångsvarvtal) 
+Alternativt sovläge 
+med lägre  
+tomgångsvarvtal 
+ 
+Arbetsläge med regulator 
+låg last 
+hög last 
+hög last 
+hög last 
+efter x tid 
+efter x2 tid 
+Kap 5 En ny motorstyrning 
+ 
+ 
+27 
+ 
+1. En P-regulator som är en vidareutveckling av regulatorn i [2]. 
+2. En framkopplad regulator. 
+3. Ett konstant arbetsvarvtal. 
+ 
+De olika regulatorerna har testats var och en för sig tillsammans med strategin i Figur 
+20 och de har då aktiverats när lasten har blivit hög. Regulatorn har sedan 
+inaktiverats när lasten blivit låg. Det tredje alternativet är i själva verket ingen 
+regulator utan ett i förväg bestämt fast varvtal. 
+5.1.1 Momentkurvan 
+Momentkurvan för den lastbil där regulatorn har implementerats kan ses i Figur 21. 
+Där ses att varvtal över 1000rpm inte resulterar i nämnvärt större moment. Utan den 
+enda fördelen med att använda varvtal över 1000rpm skulle vara i form av ett större 
+hydraulflöde och en högre hastighet på hydrauliken. Eftersom P-regulatorn och 
+framkopplingen endast reglerar på lastmoment och inte kan ta hänsyn till en önskad 
+hastighet finns det ingen anledning att reglera varvtalet till mer än 1000rpm. 
+Momentkurvan finns på lastbilen tillgänglig via CAN från motorstyrenheten.  
+500
+1000
+1500
+2000
+1000
+1200
+1400
+1600
+1800
+2000
+2200
+2400
+2600
+2800
+varvtal [rpm]
+moment [Nm]
+ 
+Figur 21. Momentkurvan från provfordonets motorstyrenhet. 
+5.1.2 Momentsignal 
+Det finns två lastmomentsignaler tillgängliga från motorn via CAN. Båda anger 
+momentet i procent. Skillnaden mellan dessa är att den ena anger lastmomentet i 
+procent av det maximala moment som kan plockas ut vid det aktuella varvtalet, 
+denna signal kallas i fortsättningen för den relativa signalen. Den andra anger 
+lastmomentet i procent av det maximala momentet som kan plockas ut från lastbilen, 
+den signalen kallas i fortsättningen för den absoluta. Ett exempel på skillnaden 
+mellan de båda kan ses i Figur 22. 
+ 
+Kap 5 En ny motorstyrning 
+ 
+ 
+28 
+ 
+Figur 22. Två  momentsignaler. 
+ 
+Den bästa signalen att reglera efter är den absoluta signalen eftersom den inte 
+påverkas av ofrivilliga hastighetsförändringar, dvs. om den regulatorn som sitter i 
+motorn inte hinner med en förändring av lasten, avviker hastigheten från referensen. 
+Detta inträffar då momentsignalen förändras hastigt som kan ses i Figur 23. Där har 
+referensvarvtalet satts till 900rpm och ca 7s in lyfts lastväxlaren och lasten ökar viket 
+får varvtalet att falla. Vid det lägre varvtalet kan inte ett lika stort moment plockas 
+ut vilket medför att den relativa momentsignalen stiger mer än den absoluta. Den 
+relativa momentsignalen fluktuerar därför mer än den absoluta. 
+ 
+Den absoluta signalen har också en högre uppdateringsfrekvens än den relativa och 
+uppdateras var 20ms. Den relativa uppdateras var 50ms. Signalen som innehåller 
+varvtalshastigheten uppdateras också var 20ms. 
+500
+1000
+1500
+2000
+1000
+1200
+1400
+1600
+1800
+2000
+2200
+2400
+2600
+2800
+varvtal [rpm]
+moment [Nm]
+2621Nm
+Absolut momentsignal: 61%
+Relativ momentsignal: 80% 
+1600Nm
+2000Nm
+ii●  
+Kap 5 En ny motorstyrning 
+ 
+ 
+29 
+4
+6
+8
+10
+12
+14
+16
+18
+20
+400
+500
+600
+700
+800
+900
+1000
+Lastväxlare 900rpm
+Tid [s]
+Varvtal [rpm]
+ 
+ 
+Varvtal
+Ref varvtal
+4
+6
+8
+10
+12
+14
+16
+18
+200
+10
+20
+30
+40
+50
+60
+70
+80
+90
+100
+Moment [%]
+ 
+ 
+Absolut momentsignal
+Relativ momentsignal
+ 
+Figur 23. Test av lastmomentsignaler 
+5.1.3 P-regulator 
+P-regulatorn räknar ut referensvarvtalet enligt:  
+ 
+)
+(
+Mm
+Mm
+K
+n
+n
+ref
+motor
+ref
+−
+⋅
++
+=
+ 
+ 
+ 
+ 
+ 
+( 5 ) 
+ 
+Där nref är referensvarvtalet som styr motorvarvtalet, nmotor är det aktuella 
+motorvarvtalet, K är en konstant, Mmref är momentmarginalens referens och Mm är 
+den aktuella momentmarginalen. [2] 
+ 
+P-regulatorn reglerar på den relativa momentsignalen eftersom regulatorn är en 
+återkoppling och reglerar relativt det rådande varvtalet. Därför är det enklast att 
+använda den momentsignal som redan presenterar lastmomentet på denna form. 
+5.1.4 Framkoppling 
+Framkopplingen använder sig av den momentkurva som presenteras i Figur 21 och som 
+finns tillgänglig via CAN. Kurvan används för att se vilket varvtal motorn måste ha för 
+att kunna möta det pålagda momentet plus den momentmarginal som satts. 
+ 
+Framkopplingen kan använda den absoluta momentsignalen som referensvärde 
+eftersom den inte tar hänsyn till det nuvarande varvtalet utan endast till den 
+nuvarande lasten. 
+ 
+Funktionen har som input det pålagda momentet plus momentmarginalen och 
+returnerar ett referensvarvtal efter momentkurvan i Figur 21 enligt: 
+ 
+)
+(
+Ma
+Mm
+funktion
+n
+ref
+ref
++
+=
+  
+ 
+ 
+ 
+ 
+( 6 ) 
+ 
+Kap 5 En ny motorstyrning 
+ 
+ 
+30 
+Där nref är referensvarvtalet, Mmref är momentmarginalens referens och Ma är det för 
+stunden använda momentet. 
+5.1.5 Konstant arbetsvarvtal 
+Att använda ett konstant arbetsvarvtal är den enklaste metoden och påminner om hur 
+anläggningsmaskiner fungerar. Det hela syftar till att när hydrauliken används höjs 
+varvtalet och när den sedan inte används längre sjunker varvtalet för att spara 
+bränsle och sänka ljudnivån. För att bedöma om hydrauliken används använder 
+algoritmen den absoluta momentsignalen från motorn som skickas via CAN och kan 
+med den detektera om påbyggnaden används. 
+ 
+När kraftuttaget aktiveras och påbyggnaden börjar användas skall motorstyrningen 
+aktiveras. Logiken skickar tomgångsvarvtalet som referens till motorn fram till dess 
+att algoritmen detekterar att påbyggnadens hydraulik börjar användas. När 
+algoritmen detekterar detta genom att momentsignalen stiger, skickas 
+arbetsvarvtalet, ett i förväg bestämt varvtal, till motorn som referens. När det sedan 
+detekterats att hydrauliken stannar, genom att momentsignalen sjunker, växlar 
+logiken tillstånd och en räknare börjar räkna ner. Algoritmen fortsätter samtidigt att 
+analysera momentsignalen och om den detekterar användning av påbyggnaden innan 
+räknaren räknat klart sänks inte varvtalet. Däremot om ingen användning av 
+påbyggnaden detekteras innan räknaren räknat klart kommer algoritmen att börja 
+skicka tomgångsvarvtalet som referensvarvtal till motorn. Se Figur 24. 
+Arbetsvarvtal
+Tomgångsvarvtal
+Arbetsvarvtal
+låg last
+hög last
+hög last
+2
+efter x tid
+1
+ 
+ 
+Figur 24. Logik för konstant arbetsvarvtal. 
+5.1.6 Momentmarginal 
+Momentmarginalen är den buffert som finns mellan den aktuella lasten och den last 
+som maximalt kan plockas ut från motorn.  Att välja momentmarginalen är invecklat 
+eftersom det är önskvärt att ha en så liten momentmarginal som möjligt för att kunna 
+sänka bränsleförbrukningen maximalt. Väljs för liten momentmarginal finns dock risk 
+för motorstopp pga. motorn inte kan leverera det moment som plockas ut.  
+5.2 Implementering 
+Motorstyrningen har implementerats på en funktionsprovlastbil som har kran och 
+lastväxlare. Detta har gjorts för att kunna avgöra om de olika 
+motorstyrningsalternativen fungerar i verkligheten. 
+Kap 5 En ny motorstyrning 
+ 
+ 
+31 
+5.2.1 Hårdvara 
+För att implementera regulatorn på lastbilen har en av Scanias standardstyrenheter 
+används. För att kommunicera med lastbilen har styrenheten kopplats in lastbilens 
+externa CAN-buss via BWS. 
+5.2.2 Programmering 
+Programmet har skrivits i Matlab/Simulink och har kompilerats med en kompilator 
+som Scania använder för just denna typ av styrenheter. Koden har sedan laddats ner 
+på styrenheten. 
+5.3 Funktionstest 
+Test har utförts med funktionsprovlastbilens lastväxlare och kran. Testen har 
+genomförts när lastbilen stått still och använt de olika påbyggnaderna. Eftersom det 
+har varit svårt att få tag på lämpliga objekt att lyfta har kranen och lastväxlaren fått 
+vara olastade. Lastväxlaren har testats genom att kroken har från infällt läge lyfts 
+samtidigt som ett motorstyrningsalternativ har varit aktiverat. 
+ 
+Kranen har testats på ett liknande sätt men rörelsen har gjorts från ett läge där 
+kranen är varit utfälld rakt bakåt och har lyfts i en båge uppåt. 
+5.3.1 Lastväxlare 
+För att det skall gå att reglera på lastbilens momentsignal på ett bra sätt måste 
+signalen tillfredställande kunna representera effektbehovet. Momentsignalen från 
+lastväxlaren är olämplig att reglera på eftersom kraftbehovet är mycket stort de 
+första sekunderna när cylindrarna börjar röra sig. Sen sjunker lasten till lägre nivåer 
+vilket kan ses i Figur 25. Detta innebär att varvtalet blir störst i början. 
+5
+10
+15
+20
+25
+0
+5
+10
+15
+20
+25
+30
+35
+tid [s]
+moment [%]
+ 
+Figur 25. Momentspik när hydrauliken börjar röra sig, den absoluta momentsignalen. 
+Eftersom lastväxlaren använder en fast pump kommer hydraulflödet och lastväxlarens 
+hastighet vara störst i början när varvtalet är som störst och därefter sjunka till lägsta 
+Kap 5 En ny motorstyrning 
+ 
+ 
+32 
+tillåtna arbetsvarvtal, som i detta test var satt till 650rpm, då återkopplingen eller 
+framkopplingen används, 5.1.3, 5.1.4. Detta är inte att föredra utan ett önskvärt 
+resultat är att kroken rör sig med mer eller mindre konstant hastighet. En sjunkande 
+hastighet upplevs irriterande och som att lastbilen är slö. I Figur 26 används 
+framkopplingen. Test med återkopplingen har gett samma resultat. 
+0
+5
+10
+15
+20
+25
+550
+600
+650
+700
+750
+800
+850
+900
+950
+Tid [s]
+Varvtal [rpm]
+ 
+ 
+Varvtal
+Ref varvtal
+0
+5
+10
+15
+20
+250
+5
+10
+15
+20
+25
+30
+35
+40
+45
+Moment [%]
+ 
+ 
+Momentsignal
+ 
+Figur 26. Varvtalet sjunker efter momentspiken då framkopplingen används, den absoluta momentsignalen 
+används som styrsignal. 
+Att använda motorstyrningen med fasta steg, 5.1.5, tillsammans med lastväxlaren 
+fungerar utomordentligt. När kroken börjar röra sig stiger momentsignalen. Höjningen 
+detekteras av algoritmen som höjer varvtalet till det i förväg bestämda 
+arbetsvarvtalet, i detta test användes 800rpm. Kroken rör sig vid detta varvtal snabbt 
+och med konstant hastighet. Fem sekunder efter att algoritmen detekterar att kroken 
+stannat sänks varvtalet. I Figur 27 kan ses att kroken börjar röra sig vid 4s och att 
+varvtalet höjs. Vid 15s så stannar kroken och momentsignalen sjunker. Fem sekunder 
+efter att momentsignalen har stabiliserat sig på den lägre nivån sänks varvtalet. 
+Kap 5 En ny motorstyrning 
+ 
+ 
+33 
+0
+5
+10
+15
+20
+25
+30
+35
+550
+600
+650
+700
+750
+800
+850
+Tid [s]
+Varvtal [rpm]
+ 
+ 
+Varvtal
+Ref varvtal
+0
+5
+10
+15
+20
+25
+30
+350
+10
+20
+30
+40
+50
+60
+Moment [%]
+ 
+ 
+Momentsignal
+ 
+Figur 27. Styrning med ett fast arbetsvarvtal, den absoluta momentsignalen används som styrsignal 
+5.3.2 Kran 
+Momentsignalen från kranen har ett gynnsammare utseende än den från lastväxlaren. 
+Ingen spik uppkommer utan lasten går upp till en viss nivå och ligger sedan still tills 
+något nytt händer. Se Figur 28. Signalen borde därför fungera som styrsignal till ett 
+variabelt varvtal. 
+0
+5
+10
+15
+20
+25
+450
+500
+550
+600
+650
+700
+750
+800
+850
+900
+Tid [s]
+Varvtal [rpm]
+ 
+ 
+Varvtal
+0
+5
+10
+15
+20
+250
+5
+10
+15
+20
+25
+30
+Moment [%]
+ 
+ 
+Moment
+ 
+Figur 28. Absolut momentsignal från motorn när kranen används. 
+Regulatorerna har testats med ett lägsta arbetsvarvtal av 700rpm. Då kranen står still 
+skall varvtalet gå ner till 600rpm. 
+Kap 5 En ny motorstyrning 
+ 
+ 
+34 
+ 
+Vid test med den återkopplade p-regulatorn, 5.1.3, uppkommer dock en momentspik 
+som kommer från själva varvtalsaccelerationen. Se Figur 29. Detta bidrag är också det 
+enda som gör så att varvtalet behöver vara större än det lägsta tillåtna arbets-
+varvtalet, som är satt till 700rpm, vid 50% momentmarginal. 50% momentmarginal 
+måste ses som mycket stor. Regulatorn med 50% momentmarginal strävar efter att 
+motorn ligger på ett varvtal där lasten kan dubblas utan att motorn stannar.  Detta 
+betyder att varvtal egentligen inte behöver höjas alls för att lastbilen skall orka. 
+Vilket vi också såg i Figur 28 där kranen kördes vid 500rpm. Resultatet blir givetvis det 
+samma när framkopplingen används, 5.1.4, lastbilen är mycket stark och behöver inte 
+varva upp. Varvtalet stiger på grund av accelerationsbidraget och håller sig sedan på 
+700rpm så länge som kranen används. Se Figur 30. 
+0
+5
+10
+15
+20
+25
+30
+550
+600
+650
+700
+750
+800
+Tid [s]
+Varvtal [rpm]
+ 
+ 
+Varvtal
+Ref varvtal
+0
+5
+10
+15
+20
+25
+300
+10
+20
+30
+40
+50
+60
+70
+Moment [%]
+Återkoppling med 50% momentmarginal
+ 
+ 
+Absolut momentsignal
+Relativ momentsignal(styrsignal)
+ 
+Figur 29. P-regulatorn och kran. 
+ 
+Kap 5 En ny motorstyrning 
+ 
+ 
+35 
+5
+10
+15
+20
+25
+600
+650
+700
+750
+800
+850
+900
+950
+1000
+Tid [s]
+Varvtal [rpm]
+ 
+ 
+Varvtal
+Ref varvtal
+5
+10
+15
+20
+250
+5
+10
+15
+20
+25
+30
+35
+40
+45
+50
+Moment [%]
+Framkoppling med 50% momentmarginal
+ 
+ 
+Moment
+ 
+Figur 30. Framkoppling och kran, den absoluta momentsignalen används som styrsignal. 
+Strategin med fasta steg, 5.1.5, fungerade mycket bättre. Algoritmen kan detektera 
+när kranen börjar användas och höjer då varvtalet till ett fast arbetsvarvtal. Varvtalet 
+förblir högt fram till att kranen stannar och varvtalet sjunker efter 5s när inget har 
+hänt. Se Figur 31. Men det finns en del brister. Eftersom vi inte har någon spik i 
+början är det mycket svårare att detektera att kranen har börjat användas. Därför är 
+det lättare att ”lura” systemet. Om små rörelser görs blir inte lasten så pass stor att 
+systemet kan detekterar att kranen används. Självklart skulle gränsen kunna läggas 
+lägre så att även denna rörelse kan detekterades. Detta skulle fungera eftersom det 
+går att se att även denna lilla rörelse gav ett tydligt märke i signalen när den 
+påbörjades efter 3s. Denna inverkan var dock för liten för att algoritmen skulle kunna 
+detektera kranrörelsen. Algoritmen upptäckte inte att kranen används förrän efter 
+17s när lasten hade ökat tillräckligt. Beteendet att algoritmen inte höjer varvtalet vid 
+små laster kan i vissa avseenden vara bra då användaren ska göra lätta lyft och 
+motorn inte behöver arbeta vid det höga varvtalet. Se Figur 32. 
+ 
+Kap 5 En ny motorstyrning 
+ 
+ 
+36 
+15
+20
+25
+30
+35
+600
+650
+700
+750
+800
+850
+900
+Tid [s]
+Varvtal [rpm]
+ 
+ 
+Varvtal
+Ref varvtal
+15
+20
+25
+30
+35
+0
+5
+10
+15
+20
+25
+30
+35
+40
+45
+50
+Moment [%]
+Fasta steg med kran
+ 
+ 
+Moment
+ 
+Figur 31. Fasta steg med kran, den absoluta momentsignalen används som styrsignal. 
+ 
+0
+5
+10
+15
+20
+25
+30
+35
+40
+550
+600
+650
+700
+750
+800
+850
+Tid [s]
+Varvtal [rpm]
+ 
+ 
+Varvtal
+Ref varvtal
+0
+5
+10
+15
+20
+25
+30
+35
+400
+5
+10
+15
+20
+25
+30
+35
+40
+45
+50
+Moment [%]
+Fasta steg med kran liten rörelse
+ 
+ 
+Moment
+ 
+Figur 32. Det går att lura systemet, den absoluta momentsignalen används som styrsignal. 
+Det var under dessa test svårt att få en uppfattning om hur flödet påverkades av det 
+variabla varvtalet. Hastigheten på kranen verkade inte påverkas av motorvarvtalet 
+dock kördes endast en cylinder åt gången vilket kan vara en förklaring till detta och 
+att pumpen då klarade av att leverera tillräckligt med flöde för att möta behovet. Om 
+hydraulpumpen skulle klara av att leverera rätt flöde vid 500rpm om flera cylindrar 
+användes samtidigt utreder inte testet.
+ 
+ 
+ 
+37 
+6 Fältstudie 
+6.1 Kassettbil 
+ 
+ 
+Figur 33. Kassettbil 
+6.1.1 Fakta 
+Scania Kassettbil 
+Chassityp: R480LB8X4*4HHA 
+Motor: DT1217 480hk 
+Pump: Sunfab 80L fastpump  
+6.1.2 Observationer 
+En kassettbil är en bil med tippflak och som på ett släp efter bilen finns en kassett. 
+Kassetten kan dras över på bilen och in i flaket på bilen och fungerar som ett extra 
+flak. Under observationen körde kassettbilen grus mellan Gladö och ett bygge vid 
+Globen. 
+Kap 6 Fältstudie 
+ 
+ 
+38 
+Körningen gick till så här:  
+Tabell 3. Körning med kassettbil. 
+Lastning 
+Bilen lastades av en hjullastare på krossen i Gladö medan föraren 
+satt kvar i bilen. 
+Transport 
+Körningen till byggen vid Globen tog lite mer än en halvtimme. 
+Utanför bygget släppte föraren släpet med en knapp ifrån hytten och 
+körde sedan in på byggarbetsplatsen. Det var ganska trångt inne på 
+bygget och det hade inte gått att lossa på samma plats om släpet 
+hade suttit på. 
+Lossning 
+Innan föraren skulle tippa lasten sattes kraftuttaget på. Föraren 
+tryckte först ner bromspedalen. Därefter börjar föraren tippa flaket 
+med en knapp och samtidigt tryckte föraren på gaspedalen och 
+varvade upp motorn till ca 1000 varv per minut. (Bilen hade 
+automatlåda och två pedaler.) Att höja flaket tog ca 20s och att 
+sänka det tog ungefär lika lång tid. 
+Kassettväxling Föraren körde sen ut till släpet och dockade med det för att kunna 
+dra över kassetten på bilen. Föraren varvade då också upp till ca 
+1000 varv per minut och det tog ca 30s att dra över kassetten.  
+Lossning 
+När kassetten var på bilen kördes denna bort och tippades på samma 
+ställe.  
+Kassettväxling Bilen körde sedan tillbaka till släpet och dockade igen, för att kunna 
+dra tillbaka kassetten på släpet. Efter detta kopplade föraren släpet 
+och var då tvungen att gå ut ur bilen för att kunna koppla slangarna. 
+När föraren lämnade byggarbetsplatsen kopplades kraftuttaget ur. 
+Transport 
+Föraren kör iväg från bygget och tillbaka till krossen. Vid krossen 
+upprepades körningen ytterliggare en gång. 
+6.1.3 Reflektion 
+Eftersom föraren hela tiden sitter i bilen när kraftuttaget används finns ingen 
+automatgas. Föraren kan själv bestämma vilken hastighet som tippen skall ha genom 
+att reglera gaspådraget. Tändningen stängdes inte av någon gång under tiden som 
+föraren observerades och föraren var endast ute ur bilen vid ett fåtal tillfällen.  
+ 
+Denna bil skulle troligtvis inte passa att implementera adaptiv varvtalstyrning på. 
+Kap 6 Fältstudie 
+ 
+ 
+39 
+6.2 Lastväxlare 
+ 
+ 
+Figur 34. Lastväxlaren utan containrar och släp 
+6.2.1 Fakta 
+Scania lastväxlare 
+Chassityp: R480LB6X2HSZ 
+Motor: 480hk 
+6.2.2 Observationer 
+Bilen är en lastväxlare med en container på bilen och sen ytterliggare två som står på 
+ett släp efter bilen. Under observationen körde lastväxlaren grovsopor från Gladö till 
+Igelsta och Högdalen. 
+ 
+ 
+Körningen gick till så här:  
+Tabell 4. Körning med lastväxlare. 
+Lastning 
+Första körningen var från Gladö till Igelsta och föraren började med 
+att lasta av de tre tomma containrarna som fanns på bilen för att 
+sedan lasta på tre fulla. Det första föraren gjorde var att koppla 
+ifrån släpet. Sen kunde föraren lyfta av den container som stod på 
+bilen. Vid detta tillfälle las kraftuttaget i och samtidigt som 
+containern lastades av, tryckte föraren ner kopplingen och gasade 
+upp till ett varvtal mellan 1200 och 1500 varv per minut. (Denna bil 
+hade en manuell växellåda.) Föraren gick ut och släppte på 
+låsanordningen till de andra containrarna. Efter det kunde en 
+container lyftas över till bilen för att sedan kunna ställas ner på 
+marken och efter det gjordes likadant med den andra. Föraren var 
+Kap 6 Fältstudie 
+ 
+ 
+40 
+även tvungen att gå ut för att veva upp locken som containrarna var 
+försedda med så att dessa skulle kunna bli lastade av en hjullastare. 
+När både bil och släp var tomt plockade föraren upp den första av de 
+fulla containrarna på bilen och åkte sedan och ställde den på släpet, 
+sen hämtades den andra fulla containern och ställdes den med på 
+släpet. Den sista containern plockades upp och fick stå kvar på 
+bilen. Därefter kopplades släpet på bilen, föraren låste fast 
+containrarna och körde till Igelsta värmeverk. Samtidigt som föraren 
+började köra mot Igelsta kopplades kraftuttaget ur. 
+Transport 
+Ca 45 min 
+Lossning 
+På Igelsta lossades först släpet och föraren gick ut och lossade på 
+låsningen till containrarna på släpet. Sen tippade föraren den första 
+containern och ställde ner den på marken, tog den andra, tippade, 
+ställde tillbaka, tog den tredje tippade och ställde tillbaka den med. 
+Efter det kunde föraren plocka upp första containern som stått på 
+marken, koppla släpet, låsta containrarna och åka iväg. Kraftuttaget 
+var på från att den första containern skulle tippas tills föraren var 
+klar med hela lossningen. Innan varje tippning var föraren tvungen 
+att gå ut och öppna luckorna bak på containern och efter tippning 
+stänga luckorna igen. 
+Transport 
+Ca 45 min 
+Lastning 
+Nästa last var en annan sorts sopor och det fanns då inga 
+färdiglastade containers vilket ledde till att föraren fick lasta av alla 
+containers och ställa dem på marken så att en hjullastare kunde 
+fylla dem. (De kunde inte stå kvar på bilen eftersom det då blev för 
+högt för lastaren.) När containrarna var fyllda lyftes de på bilen 
+igen. Därefter kördes bilen till Högdalen värmeverk där lasset 
+tippades. 
+ 
+När soporna lastades för Högdalen var kraftuttaget på i ca 30min. 
+Bilen stod still i 10-15min medan containrarna fylldes och föraren 
+var ute och jobbade/väntade. 
+Transport 
+Ca 30 min 
+Lossning 
+Att tippa flaket tog ca 30s och att sänka det igen tog ca 20s. Att 
+lyfta en container från släpet till bilen tog ca 20s och att lyfta 
+tillbaka den tog lika lång tid. Föraren använde sig av varvtal mellan 
+1200-1500 varv/min när lyften skedde. 
+6.2.3 Reflektioner 
+Denna bil påminner mycket om kassettbilen. Lastväxlaren stod dock still mer än vad 
+kassettbilen gjorde då det tog längre tid att lasta och lossa den. Under tiden som 
+lastväxlaren lastade containrarna var bilen igång på tomgång. 
+ 
+Denna bil skulle troligtvis inte passa att implementera adaptiv varvtalstyrning på. 
+Kap 6 Fältstudie 
+ 
+ 
+41 
+6.3 Kranbil 
+ 
+ 
+Figur 35. Kranbil 
+6.3.1 Fakta 
+Scania kranbil med flak 
+Chassityp: P340LB6X2*4HHA 
+Motor: 340hk 
+6.3.2 Observationer 
+Bilen är en kranbil med skopa som gör olika typer av jobb åt NCC. Denna dag hjälpte 
+föraren till med att köra utrusning i form av skyltar och däck (som används som 
+skyddsbarriär) till ett vägarbete, asfalt till samma vägarbete och grus till ett 
+reparationsarbete i ett garage. Lastbilens tomgångsvarvtal var 550 rpm (och förhöjt 
+från det vanliga 500 rpm) och föraren kunde höja varvtalet till 800rpm med en av 
+spakarna på fjärrkontrollen när han skulle köra kranen. Han kunde även stänga av och 
+sätta på lastbilsmotorn med fjärrkontrollen. 
+ 
+Tabell 5. Körning med kranbil. 
+Lastning 
+utrustning 
+Vid lastningen av utrustningen användes kranen för att lyfta upp 
+tunga saker på flaket samt till att gräva fram utrustningen ur snön. 
+(Att flytta snö med kranen var enligt föraren ovanligt.) Lastningen 
+tog ca 35min och kranen användes aktivt i ca 15min. Varvtalet låg 
+konstant på 800 rpm under hela lastningen. 
+Lossning 
+utrusning 
+Vid lossningen av utrustningen var lastbilen igång i ca 6 min och 
+kördes aktivt i två omgångar om ca 1min däremellan sänkte föraren 
+varvtalet till tomgång. 
+Lastning sand 
+Sanden som skulle till garagereparationen lastades av en lastmaskin 
+på ett grustag. 
+Kap 6 Fältstudie 
+ 
+ 
+42 
+Lossning sand 
+När sanden skulle lämnas kunde föraren inte få in skopan i garaget 
+utan han släppte ner sanden i en skottkärra och körde in det i 
+garaget. Under första delen av lossningen körde föraren själv in 
+skottkärran i garaget. Då sänkte inte föraren varvtalet utan 
+lastbilsmotorn jobbade konstant vid 800rpm. Under den andra 
+delen tog en annan person skottkärran och körde in gruset och då 
+sänkte föraren varvtalet mellan skottkärrslassen. Lastbilen stod på 
+ett högt varvtal i ca 2min och 40s utan att kranen användes. 
+Lastning asfalt 
+Lastbilen körde in under en behållare som innehöll asfalt. En lucka i 
+behållaren öppnades och asfalten rann ner på flaket. 
+Lossning asfalt 
+Att lossa asfalten tog ca 13min. Under dessa 13min var det ca 2min 
+som lastbilen stod still på ett högt varvtal och ca 2min då den stod 
+still på ett lågt varvtal. 
+6.3.3 Reflektioner 
+En kranbil kan användas till många olika uppgifter och kan köras på många olika sätt. 
+Varje kranbil tillsammans med sin förare blir därför unik och det är svårt att dra 
+generella slutsatser. Det går dock att dra slutsatser för just denna kranbil och 
+kranförare. De slutsatser som har gjorts för denna arbetsdag med denna kranbil och 
+förare är att det troligtvis skulle gå att sänka varvtalet vid vissa lyft och det skulle 
+utan tvivel gå att sänka varvtalet under de perioder som kranen inte användes och 
+varvtalet förblev högt. 
+6.3.4 Bränslebesparing 
+Det är svårt att dra några slutsatser för hur mycket bränsle som skulle kunna sparas 
+under lyft däremot går det att göra en uppskattning för de perioder då kranen inte 
+användes. 
+ 
+Enligt uppmätta värden i bränslemusslan förbrukar motorn vid tomgångskörning ca 
+4,29l/h vid 550rpm och 5,85l/h vid 800rpm. Dvs. en skillnad i 0,026l/min. 
+ 
+Om det antas att det hade varit samma motor i denna lastbil som den som 
+bränslemusslan gäller för skulle bränsle sparas om varvtalet automatiskt sänks när 
+kranen inte används. 
+ 
+Under lastning av utrustningen till vägarbetet stod kranen på det höga varvtalet under 
+ca 15min utan att kranen användes. Skulle varvtalet sänkas skulle ca 0,39l bränsle 
+sparas. 
+ 
+Under sandlossningen jobbade motorn i onödan vid 800rpm under ca 2min och 40s 
+vilket motsvarar en besparing på ca 0,069l bränsle om varvtalets skulle ha sänkts till 
+550rpm. 
+ 
+Samma typ av bränslebesparing skulle under asfaltläggningen ge ca 0,052l bränsle. 
+ 
+Totalt under observationen skulle ca 0,51l bränsle kunnat sparas om varvtalet sänktes 
+under de tider då kranen inte användes och varvtalet förblev högt.  
+Kap 6 Fältstudie 
+ 
+ 
+43 
+6.4 Fordonstransport 
+ 
+ 
+Figur 36. Motortransport 
+6.4.1 Fakta 
+Scania motortransport med släp 
+Chassityp: R480LB6X2HLB 
+Motor: 480hk 
+6.4.2 Observationer 
+Föraren körde lastbils och busschassier från Scania Södertälje till Värtahamnen under 
+fältstudien. Han brukade även köra till Nynäshamn. När hydrauliken användes jobbade 
+lastbilsmotorn vid 600rpm vilket är det tomgångsvarvtal som motorn har. 
+ 
+Figur 37. Körning med motortransport. 
+Lastning 
+Det tog ca 41min att lasta bilen med tre chassier vilket var längre tid 
+än vanligt eftersom ett chassi inte gick att lasta då ekipaget blev för 
+högt. Normalt tar det ca 30min att lasta tre chassier och lika lång tid 
+att lossa. Varje skift är på mellan åtta till nio timmar och föraren kör 
+då tre lass med chassier. 
+ 
+Hydrauliken användes i korta intervaller under lastningen. De längsta 
+intervallerna var en halv minut och de kortaste ett par sekunder. 
+Föraren går oftast inte in i motortransportens hytt under lastningen 
+eller lossningen. 
+Lossning 
+Under lossningen användes hydrauliken en aning mindre men också 
+här i korta intervaller. 
+ 
+Kap 6 Fältstudie 
+ 
+ 
+44 
+Föraren berättade att man kan ställa upp varvtalet manuellt för att få hydrauliken att 
+gå fortare. Dock ej på hans lastbil eftersom knappen var sönder. Varvtalet ställdes då 
+upp till mellan 800-1000 varv per minut. Detta är vanligast då personbilar ska köras 
+eftersom hydrauliken då används mer. Vissa rörelser kan då ta flera minuter, enligt 
+föraren upp till 10 minuter om man inte ställer upp varvtalet. 
+ 
+Föraren var positiv till ett system som höjer varvtalet då hydrauliken används 
+eftersom det då skulle leda till att hydrauliken skulle gå snabbare.  
+6.4.3 Reflektioner 
+Fordonstransporten kör mellan åtta och nio timmar och lastar ca 90 minuter och 
+lossar lika länge. Vilket innebär att varje arbetspass så står lastbilen still på ett 
+förhöjt tomgångsvarvtal i ca tre timmar medan föraren lastar och lossar. Av dessa tre 
+timmar är det ungefär 15min som hydrauliken faktiskt används. Detta innebär att 2h 
+och 45min under varje skift står lastbilen på ett förhöjt tomgångsvarvtal utan att 
+detta skulle behövas. 
+ 
+En stor vinst med att höja varvtalet är att hydrauliken går snabbare och föraren 
+sparar tid. Höjs varvtalet från 600rpm till 1000rpm fås en lika stor höjning i 
+hydraulflödet och hydrauliken går då således 67% snabbare. 
+6.4.4 Bränslebesparing 
+De följande beräkningarna bygger på hur mycket bränsle som skulle spara genom att 
+bara höja varvtalet under de perioder då varvtalet faktiskt utnyttjas istället för att 
+föraren manuellt höjer varvtalet under hela lastningen/lossningen, 
+ 
+Enligt uppmätta värden i bränslemusslan förbrukar motorn vid tomgångskörning ca 
+3,95l/h vid 500rpm och 4,63l/h vid 600rpm. Dvs en skillnad i 0,66l/h. 
+ 
+Under körning drar lastbilen ca 4,75l/mil. Mellan Scania i Södertälje och Värtahamnen 
+är det ungefär 4mil. Lastbilen kör tre gånger till Värtahamnen vilket innebär att 
+lastbilen förbrukar ungefär 114l per skift under körning. Lastbilen står still och lastar 
+under ca 3h varje skift vilket blir ca 14l dvs. totalt ca 130l per skift. 
+ 
+Tabell 6. Sammanställning av bränslebesparingarna. 
+Varvtal 
+500rpm 
+600rpm 
+800rpm 
+1000rpm 
+Bränsleförbrukning 
+3,95/h 
+4,63l/h 
+5,85l/h 
+6,99l/h 
+Förbrukning under 
+2h och 45min 
+10,86l 
+12,73l 
+16,09l 
+19,22l 
+Bränsle besparing 
+om varvtalet sänks 
+till 500rpm. 
+- 
+1,87l 
+5,23l 
+8,36l 
+Bränslebesparing i 
+procent av 130l 
+- 
+1,4% 
+4% 
+6,4% 
+ 
+Om vi antar att motorn skulle vara av samma typ som den bränslemusslan gäller för 
+skulle 1,87l bränsle per skift sparas om varvtalet skulle sänkas från 600rpm till 
+500rpm under de 2h och 45min som hydrauliken inte används. Vilket motsvarar ca 
+1,4% av den totala bränsleförbrukningen. 
+Kap 6 Fältstudie 
+ 
+ 
+45 
+ 
+Om föraren manuellt skulle höja varvtalet till 800rpm drar lastbilen 5,85l/h vilket 
+innebär att lastbilen då förbrukar 5,23l mer bränsle under de 2,45h per skift, vilket 
+motsvarar ca 4% av den totala bränsleförbrukningen.  
+ 
+Om föraren höjer varvtalet till 1000rpm förbrukar lastbilen 6,99l/h vilket blir ca 8,36l 
+mer bränsle än om lastbilen får jobba på det vanliga tomgångsvarvtalet 500rpm. 
+Detta motsvarar ca 6,4% av den totala förbrukningen. 
+6.5 Betongpump 
+ 
+ 
+Figur 38. Betongpump 
+6.5.1 Fakta 
+Scania Betongpump från Putzmeister 
+Chassityp: P420LB8x4*4HHA 
+Motor: 420hk 
+6.5.2 Observationer 
+Betongpumpen användes för att gjuta väggarna till en ny byggnad på ett värmeverk i 
+Jordbro. Var 15:e minut kom en betongbil med ca 5 kubikmeter betong, vissa tog mer 
+andra mindre. Betongbilarna lossade betongen i betongpumpen som pumpade upp 
+betongen på bygget. Föraren styrde betongpumpen med en fjärrkontroll och stod den 
+mesta av tiden uppe på bygget där betongen skulle vara. Första timmarna kom bilarna 
+Kap 6 Fältstudie 
+ 
+ 
+46 
+för tätt och de stod på kö för att få lossa betongen. Sen kom de lite för sällan och det 
+blev ca 5min väntan på nästa bil innan de började komma med ett bra mellanrum. 
+Föraren pumpade betong oftast i ca 1,5min och flyttade armen och pumpade mer. Att 
+flytta armen tog ca 1min. Bilen började även läcka hydraulolja vilket resulterade i ett 
+stopp på ca 10min. 
+ 
+Användaren kunde styra pumpoperationen på två olika sätt dels mer manuellt eller 
+med hjälp av en funktion som Putzmeister kallar för Egonic Pump Control, EOC. Det 
+EOC gör är att styra dieselmotorns varvtal automatiskt. Föraren kunde inte svara på 
+hur varvtalet valdes men enligt Figur 39 väljs det efter den pumphastighet som ställts 
+in. Kopplas EOC ur ställer användaren in motorvarvtalet manuellt och kan då öka och 
+sänka varvtalet med fjärrkontrollen. Den betongpump som användaren hade innan 
+denna var av märket Schwing och deras betongpumpar har endast ett manuellt 
+läge.[9] 
+ 
+Föraren pumpade betongen med en hastighet av 60m3/h och motorvarvtalet hamnade 
+då på 1400rpm. EOC förklaras av tillverkaren med Figur 39. Den gröna linjen anpassas 
+enligt tillverkaren för att undvika det ogynnsamma varvtalsområdet för respektive 
+motor. Under pumparbetet i Jordbro sjönk varvtalet under en kort period till 1350rpm 
+av oförståelig anledning. När föraren flyttade armen låg varvtalet kvar på 1400rpm. 
+Om föraren inte rörde armen eller pumpade gick varvtalet ner på 850rpm. Om föraren 
+tryckte på nödstopp gick motorn ner i normal tomgång. Föraren tryckte inte på 
+nödstoppet i annat fall än om det var ett nödläge eftersom hela påbyggnaden då 
+stannade, inklusive den roterare som såg till så att betong som fanns i pumpen inte 
+stelnade.[8] 
+ 
+ 
+Figur 39. EOC motorstyrning från Putzmeister. [8] 
+6.5.3 Reflektioner 
+Det går inte att avgöra hur väl optimerat varvtalet är mot motorn eller om den 
+framför allt är optimerad mot hydrauliken. Lasten mättes aldrig eftersom det kräver 
+att lastbilen modifieras. Av ljudet på motorn lät det inte som om den jobbade särskilt 
+hårt. Varvtalet skulle eventuellt kunna sänkas till mer än till 850rpm. Det skulle 
+Kap 6 Fältstudie 
+ 
+ 
+47 
+kanske även gå att sänka arbetsvarvtalet något. Detta skulle dock eventuellt medföra 
+att en större hydraulpump skulle behövas för att hydraulflödet inte ska sänkas. En 
+anledning till varför varvtalet borde kunna sänkas och att lastbilen ändå skulle orka är 
+att momentkurvan för en Scania lastbil oftast påminner om Figur 21. Dock kan det 
+hända att effekten blir för låg. En annan anledning till att EOC borde kunna optimeras 
+mer är att pumpen borde kunna pumpa 16m3/h betong vid ett lägre motorvarvtal än 
+om den ska pumpa 112 m3/h.  
+6.6 Sopbilar 
+På sopbilar använder sig påbyggaren av en funktion som höjer varvtalet samtidigt som 
+aggregatet börjar arbeta. Det fungerar som så att när knappen för att komprimera 
+sopor trycks in skickas även en signal till lastbilen om att varvtalet ska höjas. 
+ 
+ 
+ 
+48 
+7 Resultat och slutsats 
+7.1 Bränslebesparing 
+Arbetet visar tydligt att genom att sänka varvtalet går det att spara bränsle. Hur 
+mycket bränsle som går att spara blir individuellt för de olika applikationerna. Där 
+möjligheterna till bränslebesparing verkar mest lovande är de motortransporter där 
+föraren höjer varvtalet manuellt för att få upp hastigheten på hydrauliken. I det mest 
+extrema beräkningsfallet med motortransporten skulle den totala 
+bränsleförbrukningen kunna sänkas med 6,4% om en funktion som automatiskt höjer 
+och sänker varvtalet används istället för att föraren manuellt höjer varvtalet till 
+1000rpm under hela lastningen och lossningen.
+7.2 Ljudnivå 
+Genom att sänka varvtalet kan också bullret från lastbilsmotorn reduceras. 
+Provfordonets ljudnivå sänktes generellt med 1dB per 100rpm, 3m från hytten.  
+7.3 Regulator 
+Den enda reglerstrategin som kan sägas fungera korrekt är den med fasta steg. 
+Strategin som höjer varvtalet när applikationen används fungerade tillfredställande 
+och är troligtvis den metod som fungerar tillsammans med flest typer av påbyggnader. 
+Den är inte den mest optimala strategin och sparar inget bränsle då applikationen 
+faktiskt används, däremot kan den spara bränsle där emellan. 
+7.4 Applikationer 
+De lastbilstyper där automatiskt varvtalsval är aktuellt är framförallt de där 
+användaren står utanför lastbilen för att använda applikationen. De typer av 
+påbyggnader med fast pump där föraren sitter inne i hytten när applikationen används 
+är inte lika intressanta eftersom användaren då använder sig av motorvarvtalet för att 
+reglera hastigheten, såsom tippflak och krokväxlare. 
+7.4.1 Fordonstransporter 
+Fordonstransporten är en den mest intressanta applikationen. Föraren som körde den 
+studerade fordonstransporten var mycket positiv till att varvtalet automatsikt skulle 
+höjas då hydrauliken användes. Hydrauliken blir snabbare vid högre varvtal och därför 
+skulle föraren spara mycket tid utan att manuellt behöva ställa upp varvtalet. Ska 
+föraren manuellt höja varvtalet kommer lastbilen stå på det högre varvtalet under 
+hela lastningen eller lossningen. Detta eftersom föraren är långt ifrån hytten och det 
+skulle vara ohållbart för honom att bara höja det under den tiden som hydrauliken 
+används. 
+ 
+Den motorstyrningsstrategi som skulle passa bäst på fordonstransporter är den med 
+ett fast arbetsvarvtal som aktiveras då hydrauliken används. Det användaren vill ha är 
+högre flöde och snabbare hydraulik. 
+Kap 7 Resultat och slutsats 
+ 
+ 
+49 
+7.4.2 Kranbilar 
+På kranbilar är ett variabelt arbetsvarvtal det mest effektiva ur bränslesynpunkt. Då 
+kan bränsle sparas under hydraulikanvändning såväl som mellan. Det krävs dock fler 
+tester för att dra några slutsatser om det räcker med momentsignalen för att på ett 
+tillfredställande sätt välja varvtalet så att flödeskravet uppfylls. Att kranhastigheten 
+inte påverkades nämnvärt av varvtalet under testen kan bero av att endast en 
+cylinder kördes åt gången. 
+7.4.3 Betongpump 
+Hur betongpumpar styr motorn i dag skulle behöva studeras vidare. Tillverkare till den 
+betongpump som studerades under fältstudien uppger att motorvarvtalet sätts 
+optimalt och att det anpassas mot lastbilsmotorn. Hur väl det anpassas mot 
+lastbilsmotorn är svårt att veta. Varvtalet verkade också styras endast mot vilken 
+pumphastighet som önskas och inte efter armrörelserna. En punkt som verkade lite 
+underlig var också det faktum att det var ett stort intervall av pumphastigheter som 
+satte samma motorhastighet. 
+7.4.4 Lastväxlare 
+Lastväxlare har vanligtvis en hydraulpump med fast deplacement. Detta gör att 
+hydraulflödet direkt påverkas av motorvarvtalet. 
+  
+Den lastväxlare som studerades under fältstudierna kunde endast styras från hytten 
+medan den som finns på provfordonen har en trådlös fjärrkontroll. Detta innebär att 
+med provfordonet kan användaren stå utanför lastbilen och sköta lastväxlaren. 
+Däremot går det inte att med denna fjärrkontroll styra motorvarvtalet. Användes 
+lastväxlaren vid tomgångsvarvtalet rör sig armen mycket långsamt. I dessa fall skulle 
+en automatisk höjning av varvtalet vara önskvärt. Den automatiska höjningen borde 
+då vara till ett fast arbetsvarvtal eftersom det är en höjning av hydraulflödet som är 
+önskvärt och man vill kunna använda lastväxlaren med konstant hastighet. 
+ 
+I de flesta fall där användaren sitter inne i hytten när lastväxlaren används kan 
+hastigheten styras med gaspedalen och en automatisk varvtalsstyrning är då inte lika 
+intressant. 
+ 
+ 
+ 
+50 
+8 Diskussion/Rekommendationer 
+8.1 Scanias förutsättningar till att införa adaptiv 
+varvtalsstyrning 
+Scania har begränsade möjligheter till att implementera en optimal adaptiv 
+varvtalsstyrning utan ett nära samarbete med påbyggarna. Mycket av den information 
+som skulle behövas finns endast tillgänglig internt på påbyggnaden. En påbyggare har 
+större möjlighet att implementera en adaptiv varvtalsstyrning eftersom de har 
+tillgång till denna information. Kompetensnivån hos påbyggarna varierar dock mycket 
+och de påbyggare som besitter rätt resurser har redan implementerat en adaptiv 
+varvtalstyrning, vilket sågs i fallet med betongpumpen. Det är dock fullt möjligt att 
+från Scania, utan ett nära samarbete med påbyggarna, implementera en algoritm i 
+linje med den som utvecklats under examensarbetet. 
+8.2 Eliminering av accelerationspåverkan på 
+lastmomentsignalen 
+Som referenssignal har momentsignalerna från motorn används. Till den återkopplade 
+p-regulatorn användes den relativa momentsignalen och till den framkopplade 
+användes den absoluta. Dessa signaler skulle behöva behandlas om en återkopplad 
+eller en framkopplad regulator ska användas. Den stora påverkan som accelerationen 
+medför skulle behövas elimineras så att en acceleration inte gör så att varvtalet blir 
+större än vad det egentligen behöver vara. I Figur 40 ses hur momentsignalerna 
+påverkas av en acceleration från 600 till 1200rpm. Ett alternativ skulle vara att göra 
+systemet långsammare, då skulle inte påverkan bli lika stor. Nackdelen med det är att 
+en snabb acceleration är önskvärt så att användaren får en snabb respons. 
+ 
+ 
+ 
+51 
+4
+5
+6
+7
+8
+9
+10
+500
+600
+700
+800
+900
+1000
+1100
+1200
+1300
+Steg 600 till 1200 rpm
+Tid [s]
+varvtal [rpm]
+ 
+ 
+Varvtal
+4
+5
+6
+7
+8
+9
+100
+10
+20
+30
+40
+50
+60
+70
+80
+90
+100
+Moment [%]
+ 
+ 
+Absolut momentsignal
+Relativ momentsignal
+ 
+Figur 40. Accelerationspåverkan på momentsignalerna. 
+En annan bättre metod än att göra systemet långsammare skulle vara att modellera 
+accelerationspåverkan på momentsignalen. Den enklaste modellen är troligtvis en 
+stelaxel med en massa enligt: 
+n
+J
+M acc
+&
+⋅
+=
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+( 7 ) 
+Denna modell fungerar bra i simuleringsmiljön där systemet inte är lika elastisk och 
+där det inte finns någon okänd mjukvara i form av rökbegränsare etc. som det gör i 
+verkligheten. Om den fungerar bra i en riktig lastbil där axeln är mer elastisk och där 
+annan mjukvara är implementerad krävs det fler test för att utreda. Anledningen till 
+att detta inte implementerades på provbilen beror på att i de tidigare projekten hade 
+inte accelerationsbidraget eliminerats och regleringen fungerade bra ändå. Därför var 
+det först i slutet av projektet som det upptäcktes att detta är ett problem. 
+ 
+Om accelerationsbidraget skulle elimineras från referenssignalen skulle eventuellt 
+framkopplingen eller återkopplingen fungera tillsammans med kranen. Den skulle 
+troligtvis inte fungera med lastväxlaren eftersom med den uppstår spikar i 
+momentsignalen även om varvtalet är konstant. 
+8.3 Momentmarginal 
+Momentmarginalen har satts högre än vad den skulle behöva vara för att kunna testa 
+hur regulatorn beter sig eftersom inga vikter har lyfts under testen. Under testkörning 
+har den största uppmätta lasten varit ca 50% av det maximala momentet som 
+diselmotorn kan leverera. Halva maxmomentet kan motorn leverera vid ca 600rpm. 
+Denna motor kan dock leverera ett högre moment än vad den lastbil som studerades 
+under fältstudien kan göra. Den lastbilen var ca 30% svagare och kunde inte använda 
+kranen vid 550rpm även om ingen vikt lyftes. Ett sätt att simulera en svagare lastbil 
+var att höja momentmarginalen. Att använda en momentmarginal på 50% kan då ses 
+som att vi simulerar den svagare lastbilen med en 20% momentmarginal. Denna 
+simulering påverkar inte risken för motorstopp vilket har gjort att den risken har varit 
+Kap 8 Diskussion/Rekommendationer 
+ 
+ 
+52 
+svår att utvärdera. För att säkerställa att motorn inte stannar skulle 
+lastaccelerationen kunna specificeras så att det inte är tillåtet att plocka ut 
+momentet snabbare än en viss gräns. Istället för att all last läggs på en gång kan 
+lasten rampas upp så att motorn hinner med att accelerera. 
+8.4 Inbyggd vararvalsregulator 
+Det har funnits två inbyggda varvtalsregulatorer i motorn att välja mellan för 
+implementationen, en snabb och en som är långsammare. Skillnaden är ungefär en 
+faktor två i regulatorns proportionaldel. Den snabba har fördelen att den kan hålla 
+rätt varvtal mycket bättre, speciellt då belastningen är hög. Nackdelen med denna 
+regulator är att den får motorn att låta dåligt och man får en känsla av att något är 
+fel i motorn. Denna regulator upplevs också i vissa fall som sämre för att den kan få 
+varvtalet att svänga runt referensvarvtalet. 
+ 
+Den långsammare regulatorn har svårare att hålla rätt varvtal speciellt vid stora 
+lastförändringar vilket leder till stora varvtalsavvikelser. Denna regulator får dock 
+motorn att låta mycket bättre och motorn upplevs inte gå konstigt. 
+ 
+Den regulator som har valts är den långsamma för att den får motorn att låta mycket 
+bättre. Man skulle dock kunna fundera på om den snabba regulatorn skulle kunna 
+användas i accelerationer från låga varvtal för att snabbt kunna komma upp i varvtal. 
+Därefter skulle den långsamma användas för att användaren skall få en mer harmonisk 
+upplevelse.  
+8.5 Effekter från varvtalsförändringar 
+Hur motor- accelerationer och –retardationer påverkar lastbilen i form av slitage och 
+livslängd har inte fastställts under projektet. Det är dock fastställt att det som 
+begränsar växellådan i lastbilen är en lastgräns, dvs. vilket som är det största moment 
+som växellådan klarar av att leverera. Dessutom begränsas den av en effektgräns. Hög 
+effekt leder till mycket värme som kan få lager etc. att gå sönder. På växellådan kan 
+det sitta stora svängmassor som kan bidra med stora moment om varvtalet förändras 
+kraftigt och som borde kunna leda till utmattningsskador. Anledningen till att detta 
+kan vara intressant för ämnet är att om ett helt variabelt varvtal används, som hela 
+tiden optimerar bränsleförbrukningen, skulle varvtalet i princip kunna ändras en gång 
+i sekunden, vilket är mycket oftare än vad som normalt sker i lastbilen. Framför allt 
+är det intressant hur kraftiga, snabba upprepade varvtalsförändringar påverkar 
+lastbilen, om en funktion med ett helt variabelt varvtal som leder till detta ska 
+införas. Det är inte lika intressant om en motorstyrning med ett fast arbetsläge införs 
+eftersom det inte kommer att innebära lika många varvtalsförändringar. 
+ 
+Vid konstruktionen av varvtalsstyrningen begränsades retardationen eftersom det i 
+början av studien verkade som om accelerationer skulle ha en negativ effekt på 
+bränsleförbrukning och slitage. Retardationen begränsades också för att inte 
+användaren skulle uppleva motorn som ryckig utan att körningen skulle bli mer jämn. 
+En annan anledning var också att eftersom det tar en liten stund för varvtalet att 
+stiga skulle denna fördröjning inte bli lika stor om varvtalet sänks långsammare. Se 
+Figur 41. När ett fast arbetsvarvtal används och varvtalet sänks först en stund efter 
+att användaren slutat använda hydrauliken finns det troligtvis ingen anledning att 
+sänka varvtalet långsamt. 
+Kap 8 Diskussion/Rekommendationer 
+ 
+ 
+53 
+0
+2
+4
+6
+8
+10
+12
+500
+550
+600
+650
+700
+750
+800
+850
+900
+950
+1000
+Varvtal [rpm]
+Tid [s]
+Skillnad mellan långsam och snabb retardation
+ 
+ 
+Snabb retardation
+Långsam retardation
+ 
+Figur 41. Snabbare retur till arbetsvarvtalet med långsam retardation. 
+Under accelerationer vill man alltid att motorn ska accelerera så fort som möjligt för 
+att användaren ska få en snabb respons. 
+8.6 Testbegränsningar 
+För att testa motorstyrningen har endast en lastbil med lastväxlare och kran använts. 
+Kranen har dessutom varit svårt att få tid med eftersom den kräver en utbildad 
+operatör. Den har dessutom varit trasig vid ett tillfälle och krävt reparation. 
+Lastväxlaren har däremot använts flitigt för att utveckla motorstyrningen. 
+ 
+Inga objekt har lyfts utan kranen och lastväxlaren har endast lyft sin egen vikt. 
+ 
+Inga riggtester i labborationsmiljö har genomförts i den rigg där olika applikationer 
+skulle ha kunnat simuleras pga. problem med hårdvaran. Riggtester hade dessutom 
+krävt data med körcykler från de applikationer som skulle ha simulerats, data som 
+inte finns på Scania och eftersom riggen var trasig gjordes inga ansträngningar med 
+att försöka införskaffa data med körcykler. 
+8.7 Simulering 
+För att simulera händelseförlopp med olika motorstyrningsalternativ har 
+lastbilsmodellen och en kranmodell från [3] använts. 
+ 
+Kranmodellen har kopplats ihop med lastbilsmodellens kraftuttag genom att lastbilen 
+skickar kraftuttagets varvtalshastighet till kranen och kranen skickar den pålagda 
+lasten till lastbilen. De olika motorstyrningsalternativen har sedan kunnat testas mot 
+modellen genom att ta emot motorvarvtalet och motormomentet och skicka tillbaka 
+en referenshastighet till motorn. Se Figur 42. 
+Kap 8 Diskussion/Rekommendationer 
+ 
+ 
+54 
+ 
+Figur 42. Lastbilsmodell med kran och regulator 
+ 
+Simuleringsmiljön övergavs dock tidigare än vad som hade varit optimalt för 
+projektet. Istället fortsatte utvecklingsarbetet med hjälp av en verklig lastväxlare. 
+Anledningen till detta var misstankar om att modellen inte stämde speciellt bra med 
+verkligheten. Det slutgiltiga steget togs när regulatorn, som hade arbetats fram under 
+studentprojektet [2] och bevisligen fungerade, blev instabil i modellen. Övervägningar 
+gjordes då om modellen skulle förbättras eller om arbetet skulle fortsätta på själva 
+lastbilen. Bedömningen blev då att fortsätta med lastbilen eftersom modellen redan 
+var så pass komplex och troligtvis skulle ta resten av projekttiden att få bra. Vid detta 
+tillfälle var det inte heller känt att riggtester inte skulle kunna genomföras.
+ 
+ 
+ 
+55 
+9 Fortsatt arbete 
+9.1 Adaptiv varvtalsstyrning med tvåpedalssystem 
+Algoritmen skulle kunna nyttjas då Scanias Opticruse växellåda och tvåpedalssystem 
+används. Kopplingen är då integrerad i gaspedalen vilket gör så att föraren inte kan 
+varva upp motorn med gaspedalen, ha en växel i och samtidigt stå still. Algoritmen 
+skulle då kunna användas för att varva upp motorn när föraren vill använda 
+kraftuttaget samtidigt som bilen står still. Villkoren att kraftuttaget ska vara 
+inkopplat och att gaspedalen inte skall var nertryckt, dvs. föraren vill inte köra iväg, 
+skulle då kunna användas för att styra när varvtalsstyrningen skall bli aktiverad.
+9.2 Körcykeltest i testcell 
+För att bättre kunna testa regulatorn skulle test i en testcell där hydrauliken kan 
+styras kunna genomföras. Om hydraulsystemets tryck och flödesbehov kan 
+kontrolleras går det att simulera olika typer av påbyggnader vilket skulle leda till att 
+reglerstrategier lättare skulle kunna utvärderas för olika typer av påbyggnader. Detta 
+kräver dock data med körcykler så att olika påbyggnaders hydraulsystems beteenden 
+är kända. 
+9.3 Momentmarginal 
+Det skulle behöva utredas vilken momentmarginal som behövs för att kunna 
+säkerställa att lastbilen inte får motorstopp. Detta kommer att bero av vilken 
+”lastacceleration” som skall tillåtas. Hur snabb ökning av lasten ska motorn klara av 
+utan motorstopp?  
+9.4 Tillståndsövergångar 
+Villkoret för att byta tillstånd i styrlogiken är satta som fasta momentgränser. Se 
+Figur 20.  Detta är inte optimalt eftersom dessa gränser måste sättas olika på olika 
+fordon och också olika på samma lastbil beroende av vilken utrustning som används. 
+Ta som exempel lasten vid tomgång vilket kan skilja sig över tiden beroende på hur 
+mycket generatorn, som alltid är igång, belastas eller om kylfläkten är påslagen och 
+hur hårt den jobbar. Istället för en fast absolut momentsignalgräns skulle algoritmen 
+kunna använda derivatan av momentsignalen och på så vis detektera när hydrauliken 
+börjar användas. När momentsignalen från lastväxlaren har studerats ses tydligt att 
+inledningsvis fås alltid en momentsignalspik som är lätt att detektera. Den följs alltid 
+av en kraftig dipp i momentsignalen innan momentsignalen svänger in mot en mer 
+konstant nivå. Denna dipp gör att derivatan inte går att använda för att avgöra när 
+varvtalet ska sjunka. Däremot uppkommer ett annat momentsignalmönster med en 
+momentsignal dipp som ofta har sin lägsta punkt nära noll när hydrauliken stannar. 
+Denna dipp följs av att momentsignalen stiger och får en översläng innan det svänger 
+in mot tomgångsnivån. Om algoritmen skulle känna igen dessa mönster skulle ett 
+villkor som inte beror av om fläkt, generator etc. är igång fås. Mönstren skulle se lika 
+dana ut oberoende av vilka andra aggregat som är i gång, enda skillnaden blir att 
+Kap 9 Fortsatt arbete 
+ 
+ 
+56 
+tomgångsnivån är olika. Mönstret skulle dock bli olika för olika typer av påbyggnader. 
+För vissa påbyggnader skulle mönstret också bli olika från gång till gång beroende hur 
+användarens kommando ser ut. Som med en kran där användaren kan både kan göra 
+små och fina rörelser men också stora och kraftiga rörelser. 
+ 
+En annan metod skulle vara att kombinera absoluta momentsignaltrösklar med 
+derivatan. Ett självkalibrerande system skulle kunna användas som utnyttjar det 
+faktum att när lastbilen jobbar vid tomgång ligger momentsignalen på en relativt fast 
+nivå och systemet skulle då kunna kalibrera vart tomgång ligger på för nivå. Sen vet 
+systemet att när hydrauliken börjar användas kommer en spik och kan höja varvtalet. 
+Systemet kan senare detektera när momentsignalen har sjunkigt till tomgång igen. 
+Denna metod känns inte som implementerbar eftersom det kan hända mycket under 
+kalibrering och den kan bli helt fel. 
+ 
+Den lättaste skulle troligtvis vara att ha ett mycket högt tröskelvärde för att varva 
+upp och ett mycket lågt för att varva ner. Detta skulle troligtvis fungera i fallet med 
+lastväxlaren på provlastbilen eftersom lasten blir mycket stor under en kort stund när 
+hydrauliken börjar röra sig och mycket litet när den stannar, åtskilligt lägre än vid 
+något annat tillfälle. 
+9.5 Påverkan av accelerationer 
+Skadar kraftiga upprepade accelerationer motor, växellåda eller någon annan del i 
+lastbilen? Detta skulle behöva utredas om man vill använda en styrning där det blir 
+påföljden. 
+9.6 Modellen 
+Simulinkmodellen skulle kunna utvecklas så att den stämmer bättre överens med 
+verkligheten. Dessutom skulle flera typer av påbyggnader kunna modelleras så att 
+dessa kan testas i simuleringsmiljön. 
+9.7 Eliminering av accelerationsbidrag på 
+lastmomentsignalen 
+Momentsignalen som används som referenssignal skulle behövas elimineras från 
+accelerationsbidraget som uppkommer då motorn accelererar ifall man vill använda p-
+regulatorn eller framkopplingen.
+ 
+ 
+ 
+57 
+10 Källor 
+ 
+1. Martin Svensson, Improved truck engine control for crane, KTH-MD, (2008) 
+2. P. Berglund, E. Cheng, A. Claesson, K. Gustafsson, F. Iversen, C. Jonsson, J. Juhlén, 
+S. Petterson och J. Thelander, Framtidens elgränssnitt för Scanias påbyggare, KTH-MD 
+(2009) 
+3. D. Axelsson, A Laghamn, Heavy truck bodyworks and their affect on engine control, 
+Department of mechanical engineering, Linköpings Universitet (2006) 
+4. Svensk Utryckningsfordonsförening http://www.utryckningsfordon.se/, Senast besökt 
+November 2009 
+5. Scania CV AB, Bodywork Manual; Selecting a power take-offs, (2009), 
+http://webapp109.scania.com/y/ytp/bbh/index.aspx, Senast besökt November 2009 
+6. Richard Boström utvecklingsingenjör Scania 
+7. A. Rindeskär, Friktionsutredning parasitförluster DL6, M60_057, Scania (2009) 
+8. Putzmeister, http://www.putzmeister.de, Senast besökt Mars 2010 
+9. Schwing, http://www.schwing.com/, Senast besökt Mars 2010 
+10. Jan-Gunnar Persson, Hydraulik och pneumatik, KTH Maskinkonstruktion, (1991) 
+ 
+ 

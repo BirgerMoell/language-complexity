@@ -1,0 +1,1188 @@
+ 
+ 
+ 
+A study of Fish- Bird’s path planner 
+system 
+ 
+ 
+ 
+ 
+ 
+LISA EDVINSSON 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis 
+Stockholm, Sweden 2009 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+En studie av Fish-Bird’s navigeringssystem
+ 
+av 
+ 
+Lisa Edvinsson 
+ 
+ 
+ 
+ 
+ 
+Examensarbete MMK 2009:40 MDA 275 
+KTH  Industriell teknik och management 
+Maskinkonstruktion 
+SE-100 44  STOCKHOLM 
+ 
+ 
+ 
+ 
+ 
+A study of Fish-Bird’s path planner system 
+ 
+ 
+ 
+Lisa Edvinsson 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2009:40 MDA 275 
+KTH Industrial Engineering and Management 
+Machine Design 
+SE-100 44  STOCKHOLM 
+ 
+ 
+ 
+ 
+ 
+ 
+Examensarbete MMK 2009:40 MDA 275 
+ 
+En studie av Fish-Bird’s navigeringssystem 
+ 
+ 
+ 
+ 
+ 
+Lisa Edvinsson 
+ 
+Godkänt 
+2009-05-05 
+Examinator 
+Mats Hanson 
+Handledare 
+Martin Grimheden 
+ 
+Uppdragsgivare 
+Sydney University 
+Kontaktperson 
+David Rye 
+ 
+Sammanfattning 
+Fish-Bird är ett pågående vetenskapligt/konstnärligt projekt som genomförs i samarbete 
+mellan konstnären Mari Veloni och Australien Center for Field Robotics. I korthet består 
+projekt av två robotar i form av rullstolar som interagerar med varandra och sin 
+omgivning. Robotarna heter Fish respektive Bird och därav projektnamnet Fish-Bird. 
+Detta examensarbete utvärderar Fish-Birds navigeringssystem. Bakgrunden till 
+utvärderingen är en oklarhet i huruvida navigeringssystem är ofullständigt eller felaktigt. 
+Navigeringssystemet har visat bristande funktionalitet vid upprepade tillfällen. En stor 
+del av problematiken förekommer oftast när hinder befinner sig nära varandra. 
+Studien är gjord genom en detaljerad analys av Fish-Birds navigeringssystem. För att 
+kunna studera systemets beteende i olika situationer användes MatLab. I MatLab har 
+ett program utvecklats som gör det möjligt att skapa olika miljöer för att testa systemets 
+förmåga att navigera. Med denna arbetsmetodik har problemet kunnats identifieras och 
+definieras. 
+Studien har kommit fram till att navigeringssystemets brist är att det saknar förmågan att 
+erhålla information om avstånd mellan hinder. 
+I rapporten presenteras olika förslag på lösningar. Grundtanken är att låta Fish-Birds 
+ursprungliga navigeringssystem kompletteras med en identifieringsfunktion som känner 
+av när Fish eller Bird har fastnat. När detta inträffar anropas ett kompletterande 
+navigeringssystem, som guidar Fish eller Bird bort från området den fastnade i. När det 
+kompletterande navigeringssystemet analyserat omgivningen och anser att det inte 
+finns någon risk att Fish eller Bird fastnar igen i samma ställe överlämnas styrningen till 
+det ursprungliga navigeringssystemet. 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2009:40 MDA 275
+ 
+A study of Fish-Bird’s path planner system 
+ 
+ 
+ 
+ 
+ 
+Lisa Edvinsson 
+ 
+Approved 
+2009-05-05 
+Examiner 
+Mats Hanson 
+Supervisor 
+Martin Grimheden 
+ 
+Commissioner 
+Sydney University 
+Contact person 
+David Rye 
+ 
+Abstract 
+Fish-Bird is an ongoing scientific/art project collaboration between Mari Veloni and 
+Australien Center for Field Robotics. Fish and Bird are two autonomous wheelchairs, 
+hence the name of the project. The chairs are interacting with each other and with its 
+surroundings. 
+This thesis is an evaluation of Fish-Bird’s path planner. The reason for this study is 
+uncertainty regarding whether the path planner is faulty. The path planner has shown it 
+self incomplete at numerous accessions. The problem often occurs when obstacles are 
+involved. 
+A detailed study of Fish-Bird’s path planner has been carried out. MatLab has been 
+used as a tool to realise Fish-Bird’s behaviour in different situations. With the program 
+developed in MatLab it’s been possible to test the path planner’s ability to navigate in 
+different environments. With this method the problem has been identified and defined. 
+The result of the study is that the path planner lacks the ability to obtain information of 
+distances between obstacles. 
+Different solutions are presented in the thesis. The idea is to complement Fish-Bird’s 
+path planner with an identification function that signifies when Fish or Bird are stuck. 
+When this occur the complement path planner will be called. It will help navigate Fish 
+and Bird out of the problem area. When this planner concludes that there is no risk for 
+Fish or Bird to get stuck again, the original path planner takes control of the navigation. 
+ 
+ 
+1 
+Table of content 
+1 
+Introduction.................................................................................................................2 
+2 
+Problem statement .....................................................................................................3 
+3 
+Background research .................................................................................................3 
+3.1 
+Fish-Bird’s system...............................................................................................3 
+3.1.1 
+Fish-Bird is a media artwork, technical presentation...................................3 
+3.1.2 
+Description of Vector Force Field, VFF .......................................................5 
+3.2 
+Theoretical study.................................................................................................6 
+3.2.1 
+Principles of Robot Motion...........................................................................6 
+3.2.2 
+Rapidly-Exploring Random Trees (RRT).....................................................8 
+3.2.3 
+Artificial Intelligence a Modern Approach ..................................................10 
+3.2.4 
+A* Algorithm...............................................................................................12 
+3.2.5 
+Lifelong Planning A* (LPA*).......................................................................13 
+3.2.6 
+Dstar, Dstar lite and field Dstar..................................................................14 
+3 Method..........................................................................................................................14 
+3 Method..........................................................................................................................15 
+4 
+Solution.....................................................................................................................16 
+4.1 
+The source of the problem................................................................................16 
+4.1.1 
+Indicate the problem ..................................................................................16 
+4.1.2 
+Analyze the problem..................................................................................21 
+4.2 
+Proposal for a solution ......................................................................................23 
+4.2.1 
+How to indicate that Fish-Bird is stuck.......................................................23 
+4.3 
+The complementing path planner .....................................................................28 
+4.3.1 
+VFF takes over the path planner ...............................................................32 
+5 
+Result .......................................................................................................................35 
+6 
+Discussion ................................................................................................................35 
+7 
+Conclusion................................................................................................................36 
+8 
+Future Work..............................................................................................................36 
+ 
+2 
+ 
+1 Introduction 
+The Fish-Bird project consists of two autonomous robots that are shaped like 
+wheelchairs. One wheelchair has the color red and its name is Bird. The other one is 
+blue with the name Fish. The Fish-Bird projects purpose is to create feelings between 
+the two chairs and the audience. 
+The chairs have a given area where they move. The audience steps into this area and 
+start to interact with them. The chairs movement decides from how they feel against 
+themselves, how they feel for the other chair and how they feel for the persons who are 
+interacting with them. Two persons can interact with the chairs at the same time. The 
+chairs can be sad and will try to avoid the other chair and the persons in the room by 
+moving close to the walls. The chairs can feel nervous and will move very slowly and 
+wiggle forward or the chairs can feel happy and can start to follow one of the persons or 
+the other chair. 
+The original concept/art direction of Fish-Bird is Mari Velonaki. The responsible of the 
+mechatronic system design is David Rye. Steve Schelding is the software architecture. 
+Stefan Williams built the tracking system & software design. 
+ 
+ 
+Figure 1 – Fish at exhibition
+3 
+ 
+2 Problem statement 
+Fish-Bird has been on several exhibitions and made a good impression on the 
+audience. Fish-Bird’s path planner system is working when interacting with the audience 
+and moving around in the room. The problem is that Fish-Bird sometimes gets stuck. 
+The audience does not always see when Fish-Bird gets stuck but for all the involved in 
+the project this is not a desired quality. 
+My assignment is to study Fish-Bird’s system and identify the cause why Fish-Bird get 
+stuck and give a proposal on a solution for the problem. 
+ 
+3 Background research 
+3.1 Fish-Bird’s system 
+3.1.1 Fish-Bird is a media artwork, technical presentation 
+Fish-Bird is a media artwork at Australian Center for Field Robotics, ACFR. Fish and 
+Bird are two autonomous wheelchairs. The chairs are interacting with each other and 
+with people. The chairs can change their behavior while interacting. The artist Mari 
+Veloni ambition is to make an artwork that can generate an environment filled with 
+feelings. The chairs, Fish and Bird are able to create feelings between them and people 
+through their behaviors. They can for example behave shy and nervous but also 
+interested and follow people. 
+The two robots moves with a PWM motor on each wheel. This is the lowest level of the 
+Fish-Bird software. On each chair there is a PIC controller that receives the commands 
+the puppet master sends from the server. The puppet master is the highest level of 
+Fish-Bird’s software. The PIC can talk directly to two motor controllers via its PWM 
+outputs. In Ref. [5] the design for the chairs wheel axis for the motor, gear and power 
+transmission is described. 
+Fish-Bird’s ability to move around in a given area is managed through lasers and 
+cameras. There are four cameras and two lasers. The cameras are mounted in the 
+ceiling and the lasers are placed on the floor against adjacent walls to maximize 
+visibility. The lasers measurement systems are capable of 180° sweeps of the space. 
+The laser scanners return information containing the distance from itself to the first 
+obstacle in a straight path. The cameras are visualizing every movement under the 
+sealing. All the information gathered from the cameras and the lasers is sent to the 
+server. The server translates the information and gives it to the puppet master. This is 
+the middle level of Fish-Bird’s software. The puppet master also has information about 
+the chairs behavior and decides witch commands it sends to the PIC controller. Fish-
+Bird’s physical ability to move regarding the turn rate and speed is studied in Ref. [5].  
+Fish Bird’s movement decides form an algorithm that includes all influences from all 
+obstacles and the other chair in the room. The influence is a repulsing force or an 
+attracting force. All obstacles have repulsing forces, the goal has an attraction force and 
+the other chair can have both. The other chairs force depend on how the chairs feelings 
+for each other. 
+4 
+The algorithm calculates the resultant force from all the obstacles in the room including 
+the other chair. The direction of the resultant force is the direction the chair is 
+commanded to follow. 
+ 
+5 
+ 
+3.1.2 Description of Vector Force Field, VFF 
+Fish-Bird is commanded to follow the direction of the resultant force. The resultant force 
+is the sum of all the repulsive and attractive force vectors from all the obstacles in the 
+room. In Figure 2 is the VF vector the resultant force. VF is the result from the attracting 
+force VT and the two repulsive forces V01 and V02. The concept and method for the 
+Vector Force Field is presented in ref. [6] and described how the VFF is implemented in 
+the Fish-Bird project.  
+ 
+ 
+ 
+The room has one set of x- and y-axes but the x- and y-axes used for Fish-Bird’s path 
+planner, the VFF, are fixed on Fish-Bird. 
+In ref. [6] an equation is developed for the obstacles that follow the flexibility required for 
+the Fish-Bird. 
+The equation is: V = A + Bpc. 
+Where: A is a constant, B is a constant coefficient gain, C is a constant power term and 
+p is the distance between the robot and the obstacle. 
+The equation for the waypoint is Vwaypoint = 7. The waypoint is acting as a constant 
+attractor. The result is that the waypoint will affect every point in the room. The waypoint 
+is the point that Fish-Bird always try to get to. The waypoint can be a moving person or 
+a place in the room. 
+For all obstacle in the room for example pillars the equation is Vobstacle = -4p-1. This 
+equation will give a high negative strength near the obstacle and further away from the 
+obstacle will the strength decrees to zero. For example if we look in Figure 3 “Obstacle 
+strength profile” at the distance 0.6m from obstacle the field strength is -7 but when the 
+distance is 4m the field strength is -1. 
+Fish-Bird’s appearance is a square with the edge of 0.6m in the plane. The distance 
+from Fish-Bird and the obstacle is measured from Fish-Bird’s centre. When the distance 
+is 0.6m the object is 0.3m from Fish-Bird’s edge. 
+The walls equation is Vwall = -0.75p-1.4. Near the wall the strength will be very high as 
+Figure 3 “wall strength profile” shows, but the strength will fast decrees when the 
+distance from obstacle increase. This quality of the equation will allowed Fish-Bird to be 
+close to the walls. When the distance from obstacle is 0.3m the strength is -14 as 
+shown in Figure 3 but when the distance is 0.6m is the strength -1.5. Compare with the 
+obstacle where the strength is -7 at the same distance. 
+Figure 2 – Contributing vectors to the summation vector for Fish-Bird. VF is the resultant 
+force, VT is the attracting force and VO1-VO2 is repulsive force. 
+6 
+ 
+The other chair has the equation Vchair = -3.7p-1.5 and is represented in Figure 4 
+“wheelchair strength profile”. When the distance is 0.6m the strength is -7 and when the 
+distance is 2m the strength is -1. This equation has the same affect as the obstacle the 
+only different is that the strength decrees faster away from the chair as shown in Figure 
+4 “obstacle strength profile”. This allows Fish-Bird to be nearer the other chair then to an 
+obstacle. 
+ 
+People in the audience that interact with Fish-Bird have not a potential field. The 
+potential field would give the audience power to herd the chairs and that is not 
+desirable. Tracks of the visitors are made by the cameras. The chairs execute their 
+paths unless a person is within 90° window in front of the chair and within two meters. If 
+a person is in the way the chairs slows down and stop one meter on front and wait until 
+the person moves. Studies are made and when the chairs stop the audience thinks it is 
+boring and moves away. 
+3.2 Theoretical study 
+3.2.1 Principles of Robot Motion 
+The book Principles of Robot Motion is well written and goes through in detail all the 
+possibilities of planning paths for different kind of robots. Chapter 7.1 Probabilistic 
+Roadmaps informs about connection strategy for example selecting closest neighbours. 
+An important choice to be made is that of selecting the set Nq of closest neighbours to a 
+Figure 3 – Field strength for wall and obstacle
+Figure 4 – Field strength for wheelchair and obstacle
+7 
+configuration q. Many data structures have been proposed in the field of computational 
+geometry that deal with the problem of efficiently calculating the closest neighbour to a 
+point in a d-dimensional space. A relatively efficient method both in terms of space and 
+time is the kd-tree data structure. 
+A d-dimensional kd-tree uses as input a set of S of n points in d dimensions and 
+constructs a binary tree that decompose space into cells such that no cell contains too 
+many points. A kd-tree is built recursively by splitting S by a plane into two subsets of 
+roughly equal size: Sl, which includes points of S that lie to the left of the plane; and Sr, 
+which includes the remaining points of S. the plane is stored at the root, and the left and 
+right child are recursively constructed with input Sl and Sr, respectively. Figure 5 
+illustrates the construction of a 2-dimensionel kd-tree for ten points and a plane. 
+ 
+ 
+A kd-tree for a set of n points in d dimensions uses O(dn) storage and can be built in 
+O(dn log n) time. A rectangular range query takes O(n1-1\d + m) time, where m is the 
+number of reported neighbours. As d grows large, the cost of using kd-trees becomes 
+linear. The rectangular range query time can be reduced considerably by introducing a 
+small approximation error. This modified approach is called Approximate Nearest 
+Neighbour queries (ANN) and is becoming increasingly popular. 
+ 
+Figure 5 – 2-dimensionel kd-tree
+Figure 6 – Sampling along the straight line path between two configuration q’ and q’’. 
+(a) Incremental: The algorithm returns 
+failure after five collision checks. 
+(b) Subdivision: The algorithm returns 
+failure after three collision checks. 
+8 
+An important design decision is related to how fast the local planner should be. There is 
+clearly a trade-off between the time spent in each individual call of this planner and the 
+number of calls. If a powerful local planner is used, it would often succeed in finding a 
+path when one exists. There will also be relatively few nodes that require building a 
+roadmap and having reliably answers for the path planning queries. Such local planner 
+would rather be slow, but this could be somewhat compensated by the small number of 
+calls needed. On the other hand, a very fast planner is likely to be less successful 
+finding a path. It will require more configurations to be included in the roadmaps and as 
+a result, the local planner is called more times for the connections between nodes. Each 
+call will however be cheaper compare to the slow and powerful local planer. 
+The choice of the local planner also affects how fast we can detect if there is possible to 
+connect the start qinit with the goal qgoal. There are many discussions about this effect on 
+witch local planner to use. One of the most popular planners is connecting any two 
+given configurations with a straight line. This line is then checked for collision. There are 
+two common used collision checking, the incremental and the subdivision collision 
+algorithms. In the case of the incremental collision checking the robot is positioned in q’ 
+and moved at each step a constant step size along the straight line between q’ and q’’. 
+A collision check is performed at the end of each step. The algorithm terminates as 
+soon as a collision is detected or when q’’ is reached. In the case of the subdivision 
+collision checking the middle point qm of the straight line between q’ and q’’ is first 
+checked for collision. Then the algorithm recourses on the straight lines between (q’, 
+qm) and (qm, q’’). The recursion halts when a collision is found or the length of the 
+straight line segment is less then the constant step_size. 
+Neither algorithm has a clear theoretical advantage over the other, but in practice the 
+subdivision collision checking algorithm tends to perform better. The reason is that, in 
+general shorter paths tend to be collision free. The subdivision collision checking also 
+cut down the length of the path as soon as possible. One smart way of modified the 
+subdivision collision checking is to use an algorithm that dynamically adjust the 
+step_size. 
+The benefits of slow but powerful local planner compare to a fast but not so accurate 
+local path planner can be discussed for ever. The most important thing is to have the 
+local planner that suite the mission best. One approach is to use both local planners to 
+complement each other. 
+3.2.2 Rapidly-Exploring Random Trees (RRT) 
+A different planner that I have studied is called Rapidly-Exploring Random Trees (RRT). 
+James Kuffner and Steven La Valle have written papers about this planner and I like the 
+thought about planning both from the start and the goal. 
+In the ref. [1] they explain that the path planning task is to compute a continuous path 
+from an initial configuration, qinit, to a goal configuration, qgoal, without performing any 
+pre-processing. The method works by incrementally building two Rapidly-exploring 
+Random Trees rooted at the start and the goal configurations. The trees each explore 
+space around them and also advance towards each other through the use of a heuristic. 
+The basic algorithm for RRT construction is given in Figure 7. 
+9 
+ 
+ 
+The code above is the foundation code and it’s is the base of the RRT. The code starts 
+with an iteration that is performed in which each step attempts to extend the RRT by 
+adding a new vertex that is influenced by a randomly-selected configuration. The 
+EXTEND function, illustrated in Figure 8, selects the nearest vertex already in the RRT 
+to the given sample configuration q. The function NEW_CONFIG makes a motion 
+toward q with some fixed incremental distance є, and tests for collision. This can be 
+performed quickly (“almost constant time”) using incremental distance computation 
+algorithm. Three situations can occur: Reach, in which q is directly added to the RRT 
+because it already contains a vertex within є of q; Advanced, in which a new vertex qnew 
+≠ q is added to the RRT; Trapped, in which the proposed new vertex is rejected 
+because it does not lie in Cfree.  
+ 
+In the ref. [1] they designed a specifically planner for problems that involve no 
+nonholonomic. They based the RRT-Connect planner method on two ideas; the connect 
+heuristic that attempts to move over a longer distance and the growth of RRTs from 
+both qinit and qgoal. In the paper they test different design on the planner, one of the 
+designs was that instead of attempting to extend an RRT by single є step, the connect 
+ 
+BUILD_RRT(qinit) 
+1   T.init (qinit); 
+2   for k = 1 to K do 
+3 
+qrand ← RANDOM_CONFIG(); 
+4 
+EXTEND(T, qrand); 
+5   Return T; 
+ 
+EXTEND(T,q) 
+1   qnear ← NEAREST_NEIGHBOR(q,T): 
+2   if NEW_CONFIG(q,qnear,qnew) then 
+3 
+T.add_vertex(qnew); 
+4 
+T.add_edge(qnear,qnew); 
+5 
+if qnew = q then 
+6 
+ 
+Return Reached; 
+7 
+else 
+8 
+ 
+Return Advanced; 
+9   Return Trapped; 
+Figure 7 – The basic RRT construction algorithm 
+Figure 8 – The EXTEND operation 
+10 
+heuristic iterates the EXTEND step until q or an obstacle is reached, as shown in the 
+CONNECT algorithm description in Figure 9.  
+ 
+ 
+Several variations of the planner can be done to improve the planner to suites different 
+problems and in ref. [1] they tested more variations. 
+In the ref. [2] they consider the Voronoi regions of the vertices. The result they made 
+was that vertices with large Voronoi regions had to much unexplored space, but by 
+reducing the size of larger Voronoi regions it’s become much better. The probability that 
+a vertex is selected for extension is proportional to the area of its Voronoi region. 
+The “best’ solution of growing trees according to Randomized Kinodynamic Planning is 
+to have a coast function based on some criteria for example execution time or used 
+distance. 
+One more issue to consider is the size of the step. When there is no colliding influences 
+the steps can be longer. The step could be chosen dynamically during execution. 
+There are many experiments and implementations of the RRT. They are both in 2D and 
+3D and the number of degrees of freedom is from 2-7. One example is a path for 
+moving a piano through a 3D room and another one is the human arms. For you who 
+are more interested and want to reed more about James Kuffner’s ideas can do so at 
+his homepage ref. [7]. 
+3.2.3 Artificial Intelligence a Modern Approach 
+In the book Artificial Intelligence a Modern Approach by Stuart Russell and Peter Norvig 
+is the basics about how planning for an object to move in any kind of environment 
+detailed explained. By using uniformed search strategies you can find solutions to 
+problems by systematically generating new states and testing them against the goal. 
+This method is incredibly inefficient in most cases. If we plan to use a GENERAL-
+SEARCH algorithm as explained above the only place where knowledge can be applied 
+is in the queuing function, which determines the node to expand next. Usually, the 
+knowledge to make this determination is provided by an evaluation function that returns 
+ 
+RRT_CONNECT_PLANNER(qinit,qgoal) 
+1   Ta.init(qinit); Tb.init(qgoal); 
+2   for k = 1 to  K do 
+3 
+qrand ← RANDOM_CONFIG(); 
+4 
+if not (EXTEND(Ta,qrand) = Trapped) then 
+5 
+ 
+if (CONNECT(Tb,qnew) = Reached) then 
+6 
+ 
+ 
+Return PATH(Ta, Tb); 
+7 
+SWAP(Ta, Tb); 
+8   Return Failure; 
+ 
+CONNECT(T,q) 
+1   repeat 
+2 
+S ← EXTEND(T,q); 
+3   until not (S = Advanced) 
+4   Return S; 
+Figure 9 – The RRT-Connect algorithm 
+11 
+a number purporting to describe the desirability of expanding the node. When the nodes 
+are ordered so that the one with the best evaluation is expanded first, the resulting 
+strategy is called best-first search. It can be implemented directly with the GENERAL-
+SEARCH, as shown in Figure 10. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+There is a whole family of BEST-FIRST-SEARCH algorithms with different evaluation 
+functions. Because they aim to find low-cost solutions, these algorithms typically use 
+some estimated measure of the cost g to decide which path to extend. This measure 
+does not direct search toward the goal. In order to focus the search, the measure must 
+incorporate some estimate of the cost of the path from a state to the closest goal state. 
+There are two basic approaches. The first tries to expand the nodes closest to the goal. 
+The second tries to expand the node on the least-cost solution path. 
+Minimize estimated cost to reach a goal: Greedy search 
+One of the simplest best-first search strategies is to minimize the estimated cost to 
+reach the goal. That is, the node whose state is judged to be closest to the goal state is 
+always expanded first. For most problems, the cost of reaching the goal from a 
+particular state can be estimated but cannot be determined exactly. A function that 
+calculates such cost estimates is called a heuristic function, and is usually denoted by 
+the letter h: 
+ 
+h(n) = estimated cost of the cheapest path from the state at node n to the goal state. 
+A best-first search that uses h to select the next node to expand is called greedy 
+search. Given a heuristic function h, the code for greedy search is following. 
+ 
+ 
+ 
+ 
+ 
+The heuristic function, h can be any function at all. The only require is that h(n) = 0 if n 
+is a goal. 
+Minimizing the total path cost: A* search 
+Greedy search minimizes the estimated cost to the goal, h(n), and thereby cuts the 
+search cost considerably. Unfortunately, it is neither optimal nor complete. Uniform-cost 
+search, on the other hand, minimizes the cost of the path so far, g(n); it is optimal and 
+complete, but can be very inefficient. It would be nice to combine these two strategies to 
+function BEST-FIRST-SEARCH(problem, EVAL-FN) returns a solution 
+sequence 
+ 
+inputs: problem, a problem 
+ 
+ 
+Eval-Fn, an evaluation function 
+ 
+function GREEDY-SEARCH(problem) returns a solution or failure 
+ 
+return BEST-FIRST-SEARCH(problem, h) 
+  
+Figure 10 – Algorithm for best-first-search in general 
+Figure 11 – Algorithm for greedy-search in general 
+12 
+get the advantages of both. Fortunately, that can be done by simply summing the two 
+evaluation functions: 
+ 
+f(n) = g(n) + h(n) 
+Since g(n) gives the path cost from the start node to node n, and h(n) is estimated cost 
+of the cheapest path from n to the goal, we have 
+ 
+f(n) = estimates cost of the cheapest solution through n 
+If we are trying to find the cheapest solution, a reasonable thing to try first is the node 
+with the lowest value of f. The pleasant thing about this strategy is that it is more than 
+just reasonable. We can actually prove that it is complete and optimal, given a simple 
+restriction on the h function. The restriction is to choose an h function that never 
+overestimates the cost to reach the goal. Such an h is called an admissible heuristic. 
+Admissible heuristics are by nature optimistic, because they think the cost of solving the 
+problem is less then it actually is. This optimism transfers to the f function as well: If h is 
+admissible, f(n) never overestimates the actual cost of the best solution through n. Best-
+first search using f as the evaluation function and an admissible h function is known as 
+A* search. 
+ 
+ 
+3.2.4 A* Algorithm 
+The basic algorithm for path planning is the A* algorithm. The A* produce the smallest 
+distance between the current location and the goal. The basic ground for A* is the 
+square grid configuration of the environment. A* make the robot move to the square that 
+has the smallest distance. It evaluates squares (henceforth called a “node”) by 
+combining h(n), the distance(cost) to that node and g(n), the distance(cost) to get from 
+that node to the goal node. The total cost f(n) = g(n) + h(n) is calculated for each 
+successor node and the node with the smallest cost f(n) is selected as a successor. 
+A* maintain two lists one OPEN and one CLOSED. The list OPEN stores all successive 
+paths that are yet to be explored while list CLOSED stores all paths that have been 
+explored. When the robot reaches a dead end these lists will help look for other options. 
+In the OPEN list there are other paths to explore. 
+The A* Algorithm 
+Step 1: Put the start node on the list OPEN and calculate the cost function f(n).  
+Step 2: Remove from the list OPEN the node with the smallest cost function and put it 
+on CLOSED. This is the node n. (In case two or more nodes have the cost function, 
+arbitrarily resolve ties. If one of the nodes is the goal node, then select the goal node). 
+Step 3: If n is the goal node then terminate the algorithm and use the pointer to obtain 
+the solution path. Otherwise, continue. 
+Step 4: Determine all the successor nodes of n and compute the cost function for each 
+successor not on list CLOSED. 
+Step 5: Associate with each successor not on list OPEN or CLOSED the cost calculated 
+and put these on the list OPEN, placing pointers to n (n is the parent node). 
+function A*-SEARCH(problem) returns a solution or failure 
+ 
+return BEST-FIRST-SEARCH(problem, g + h) 
+Figure 12 – Algorithm for A*-search in general 
+13 
+Step 6: Associate with any successors already on OPEN the smaller of the cost values 
+just calculated and the previous cost value. (min (new f(n), old f(n))). 
+Go to Step 2. 
+This algorithm will be iterated until the node n is the goal node. The produced path is 
+not smooth it is very quadric and can some times be hard to follow precisely. There are 
+many smart way to make the path smooth. The important thing to have in mind is that 
+when making the path smooth you always loose a bit of the accuracy of the path and 
+can lead to crashes.  
+3.2.5 Lifelong Planning A* (LPA*) 
+Another planner that has that based from the A* algorithm is the Lifelong Planning A* 
+(LPA*). This planner is an incremental version of A* that uses consistent heuristics and 
+breaks ties among states with the same f-values in favour of states with smaller g-
+values. Path searches are often a repetitive process where it is necessarily to solve a 
+series of similar search tasks, for example because the actual situations change over 
+time. When new situations take place there are needs for replan the path for the robot. 
+In most cases search methods replan from scratch. The incremental search techniques 
+use plan adaptation, repair-based planning and learning search-control knowledge. This 
+gives LPA* the quality to find solutions on the search tasks faster than solving each 
+search task from scratch. 
+LPA* searches directed graphs, just like A*. We use the following notation. S denotes 
+the finite set of vertices of the graph. Succ(s) (belong to) S denotes the set of 
+successors of s (belong to) S in the graph. Similarly, Pred(s) (belong to) S denotes the 
+set of predecessors of s (belong to) S in the graph. 0 < c(s’, s) ≤ ∞ denotes the cost of 
+moving from s to s’ (exist in) Succ(s). The task of LPA* is to maintain a shortest path 
+from start vertex sstart (exist in) S to the goal vertex sgoal (exist in) S. 
+The first search of LPA* is the same as that of A* they both produces the same search 
+tree. The different is that LPA* reuses those parts of the previous search tree that are 
+identical to the new search tree and because of that, LPA* achieves a speedup over A*. 
+The heuristics h(s) has the calculation of the goal distances of the vertices s. They need 
+to be consistent and satisfy h(sgoal) = 0 and h(s) ≤ c(s, s’) + h(s’) for all vertices s (exist 
+in) S and s’ (exist in) Succ(s) with s ≠ sgoal. 
+LPA* maintains an estimate g(s) of the start distance g*(s) of each vertex s. These 
+values directly correspond to the g-values of an A* search. They are carried forward 
+from search to search. LPA* also maintains a second kind of estimate of the start 
+distance. The rhs-values are one-step lookahead values based on the g-values and 
+thus potentially better informed than the g-values.  
+For each state a g-value g(s) and an rhs-value rhs(s) is estimated. The rhs-value of a 
+state is based on the g-values of its successors and thus potentially better informed 
+than the g-values. It always satisfies the following relationship for all states: 
+[rhs(s) = {0, if s = sstart otherwise, mins’ ePred(s)(g(s’) + c(s’, s))] 
+A state is called locally consistent if g(s) = rhs(s), otherwise it is called locally 
+inconsistent. If all states are locally consistent then all of their g-values are equal to their 
+respective goal distance, which allows one to find minimum-cost plans from any state to 
+the goal state greedily. However LPA*, does not maintain the local consistency of every 
+state after each search episode. Instead, it uses heuristics h(s) to focus the search and 
+14 
+compute only the g-values that are relevant for computing a minimum-cost plan from the 
+start state to the goal state. h(s) approximate the cost of minimum-cost plan between 
+the start state and s. 
+Priority Queue LPA* maintains a priority queue that always contains exactly the locally 
+inconsistent states. These are the states whose g-values LPA* potentially needs to 
+change to make them locally consistent. The keys of the vertices in the priority queue 
+correspond to the f-values by A*, and LPA* always expands the vertex in the priority 
+queue with the smallest key. 
+The priority k(s) of state s in the priority queue is always a vector with two components: 
+k(s) = [k1(s); k2(s)], where k1(s) = min(g(s), rhs(s)) + h(s) and k2(s) = min(g(s), rhs(s)). 
+Thus, if its g-value or rhs-value changes, then its priority needs to get recomputed. 
+LPA* always determines a minimum-coast plan from a given start state to a given goal 
+state, knowing both the domain and the current action coast, where a minimum-cost 
+plan is defined to minimize the sum of the costs of the executed actions. 
+3.2.6 Dstar, Dstar lite and field Dstar 
+The name of the algorithm D* was chosen because it reminds of the A*, except that it is 
+dynamic in the sense that square cost parameters can change during the path 
+searching process. 
+D* incremental A* and D* Lite are extensions of A* that incrementally repair solution 
+paths when changes occur in the underlying graph. 
+When the robot found a need to replan, the evidence grid would be searched for nodes 
+that have changed from previously not being occupied to being occupied and constructs 
+a new path by propagating information outward from these nodes. The robot continues 
+to follow its path and replan until there not exist a path or it has reached the goal. 
+D* Lite is an incremental version of the heuristic search method A* and also combine 
+ideas from Lifelong Planning A*. It implement the navigation strategy that it moves the 
+robot from its current vertex to a given goal vertex on a given graph and replans the 
+shortest path when the edge costs change. 
+In ref. [4] they use linear interpolation during planning to calculate accurate path cost 
+estimates for arbitrary positions within each grid cell and to produce paths with a 
+continuous range of headings. 
+The Field D* algorithm extends D* and D* Lite to use linear interpolation to efficiently 
+produce smooth paths. This succeeds by the algorithm in ref. [4]. The field D* makes it 
+possible to plan around and through the cell grids edges compare to the others where 
+path only could be on the edges of the square grid. The result is more smooth and 
+accurate paths. 
+ 
+ 
+Figure 13 – Computing the path cost of node s using the path cost of two of its neighbors, s1
+and s2, and the traversal cost c of the center cell and b of the bottom cell 
+15 
+3 Method 
+The first question to answer is if there are problem in Fish-Bird’s path planner system. 
+To do that, I started to interact with the chairs in the reality. I tried to force them to 
+behave as they do on exhibitions when the get stuck. 
+My experiments gave the answer that there are problems in Fish-Bird’s system. 
+To find the cause of the problem Fish-Bird’s all technical script and software script 
+where studied. 
+For making a better view of the situation when the problem occur a MatLab program 
+was made. 
+A wide literature search in books and articles from journals and conferences was the 
+foundation to find an answer on Fish-Bird’s problem. 
+This literature search resulted in different solutions for the given problem. Every solution 
+was simulated in the MatLab program. The MatLab program gives an accurate 
+understanding of how the proposed solution will behave in critical situations. 
+The solutions had to fulfill different criteria: 
+• The solution expects to simply guide the chairs to not get stuck in the problem 
+area or to guide Fish-Bird out of the problem area. 
+• Fish-Bird is working after desired behaviour. The solution is not going to affect 
+the purpose of the Fish-Bird’s intention. 
+• The implementation of the solution is not allowed to change Fish-Bird’s software 
+script. 
+ 
+16 
+ 
+4 Solution 
+4.1 The source of the problem 
+4.1.1 Indicate the problem 
+Getting knowledge of Fish-Bird’s entire system is the first part of finding out why it gets 
+stuck. The easiest way is to observe the system in reality. I started to interacting with 
+Fish-Bird and discovered soon that the wheelchairs easily got stuck near obstacles. 
+This illustration is a typical example. 
+ 
+The distance between the pillar and the wall is 0.6 m. The chairs are in follow mode and 
+are trying to follow me. The VFF is trying to push the blue chair between the pillar and 
+the wall, but it’s to narrow and the bump sensor is stopping the chair. The bump sensors 
+are located on the chair for safety to avoid collision. The sensor stops the chair when 
+Fish-Bird is 0.3 - 0.4 meters close to an obstacle. Do notice that the distance is 
+measured from Fish-Bird’s center and Fish-Bird is a square 0.60 x 0.60 [m]. 
+The question is why the VFF doesn’t help Fish-Bird finding a way around the obstacle. 
+Has the VFF flaws or could the command to follow the direction, theta, of the resultant 
+force bee the significance that’s getting Fish-Bird stuck? 
+I used the VFF algorithm and created an environment that simulates Fish-Bird’s system 
+in MatLab. In MatLab it’s possible to study theta in different situations. The MatLab 
+codes can calculate theta at any point in the room. 
+Lisa 
+  The authors footprint 
+Wall 
+Pillar 
+Figure 14 – An illustration of Lisa’s interaction with Fish and Bird
+17 
+There are two figures that I’m using from MatLab in this report. One shows the 
+magnitude of the resultant force and the other shows the direction theta of the resultant 
+force. The calculated theta will show which direction Fish-Bird would be commanded to 
+follow if it was in that spot. The magnitude is the resultant force’s absolute value. 
+I simulated many different problematic situations for Fish-Bird’s VFF to solve. I have 
+found similarities between the problems. They occur when different obstacles and walls 
+are close to each other and there is a waypoint near them. There will always be 
+waypoint in Fish-Bird’s system when active. The waypoint is the only factor that effect 
+theta as a constant everywhere in the room. A description of VFF is in chapter 2.1.2.  
+The situations where Fish-Bird gets stuck are divided into two groups. The first definition 
+is that VFF makes local minima where Fish-Bird gets stuck in. The other group is where 
+VFF pushes Fish-Bird so close to the object that the bump sensor becomes active. To 
+see what is happening with the VFF all the problems where illustrated in detail in 
+MatLab. 
+The first group of problems is where VFF creates local minima. The situation that 
+illustrates this is when there are two obstacles standing on a straight line. In front is the 
+start and the waypoint is behind the obstacles. Theta is calculated for the whole room. 
+An illustrative situation, for the first group is when there are two obstacles lined up in a 
+straight line. The starting point is in the front while the waypoint is behind the obstacles. 
+Theta is calculated for the whole room. The Figure 16 shows two pillars lined up and the 
+theta. Fish-Bird is commanded to follow theta. 
+Figure 15 – Theta for the path planner
+18 
+Figure 16 shows the local minima in (2.5, 1.5) that VFF creates. The closest distance 
+between the two pillars before the local minima appear is 0.8m. 
+The result from different tests in MatLab shows that for pillars beside rectangles the 
+distance between the obstacles is 0.9m when the local minima appears. The rectangle 
+has a quality to create own local minima with no influences from the pillar. Figure 18 
+shows this situation. In this situation Fish-Bird finds its way to the waypoint at (3.5, 4.5) 
+when staring at (3, 1). The local minima that the rectangle creates are at (3.9, 1.75). 
+ 
+It is likely that Fish-Bird will get stuck in the local minima if Fish-Bird starts below the 
+rectangle and to the right side of (3.6, 0). 
+Figure 16 – Two pillars lined up
+Figure 17 – Pillar and rectangle
+19 
+ 
+From Figure 17 and Figure 18 we see that the local minimum is a spot where all the 
+theta is pointing to that spot and the magnitude is zero. 
+The case with rectangles beside rectangles is more difficult. When the distance is 1.2m 
+between them Fish-Bird finds the way through and reaches the goal. But when the 
+distance is 1.1m between the two rectangles Fish-Bird gets stuck in the local minima in 
+front of the rectangles at (2.5, 1.8). Figure 19 shows the case. 
+Figure 18 – Magnitude for pillar 
+and rectangle 
+20 
+ 
+Figure 19 – Two rectangles
+21 
+Fish-Bird can also get stuck in the local minima the rectangles creates at the 
+coordinates (3.4, 1.8) and (1.6, 1.8). This depends on where Fish-Bird starts. 
+ 
+Less then 1.1m between the rectangles the VFF behave the same with the creation of 
+local minima. If Fish-Bird find its way out of the local minima it will get stuck in the local 
+minima that is created by the rectangles. In this case Fish-Bird starts at (2.5, 0.5) and 
+gets stuck in (2.5, 1.7). 
+The second group of situations where Fish-Bird gets stuck is includes a wall. When 
+having a pillar close to a wall the VFF makes Fish-Bird find the way trough all the 
+distances until the distance between the pillar and the wall is 0.3m. At that distance the 
+VFF creates the local minima with theta pointing to the same spot. In reality the bump 
+sensor will go active when the distance between the wall and the other object becomes 
+close to 0.6 - 0.7m. The magnitude for the distances under 1m is zero. If Fish-Bird was 
+not equipped with a bump sensor there will be a crash every time a passage is smaller 
+then Fish-Bird. 
+The walls equation for the force, Vwall = -0.75p-1.4. This gives the quality that Fish-Bird 
+can move very close before the force from the wall pushes Fish-Bird away. This quality 
+is needed to fulfill a criterion for the project, but will cause problem when obstacles are 
+standing close to the wall. The reason is that the force will not bee strong enough to 
+push away Fish-Bird. 
+Fish-Bird will move against the passage by VFF, stop and then back from the passage 
+by the bump sensor and then move again towards the passage. This will repeat it self 
+until the direction of the VFF changes. 
+4.1.2 Analyze the problem 
+VFF has the potential in an easy way include all the influences from the surrounding 
+obstacles to the planner. Fish-Bird’s VFF works as it sounds with Vector Force Field. 
+The force field is calculated from positive and negative strengths that occur from the 
+Figure 20 – Two rectangles zoomed 
+22 
+obstacles. The strength is summed and the resultant force constructs the vector force 
+field. The vector force field can be calculated any place in the room. This gives the 
+planning a very accurate path to the goal. To use a planner, that is developed from the 
+force strength from the obstacle, is a smart way to make a visual for the robot. It suits 
+Fish-Bird’s capacity to change paths dynamic, constantly while changing mood. The 
+force field will make Fish-Bird avoid obstacles in the room. In Fish-Bird’s planner the 
+direction of the VFF is used to set Fish-Bird’s movement. 
+The problem that occurs when Fish-Bird was trying to follow me in the lab also occurs 
+when I, in MatLab, simulate two pillars beside each other with a waypoint behind them. 
+The picture below illustrates the situation. 
+ 
+With these two problems the VFF lacks of ability to take the distance between two 
+obstacles in account. 
+Using the direction of the resultant force will make a perfect planner if there never are 
+situations where the passage is smaller then Fish-Bird. When the passages are smaller 
+then Fish-Bird, the VFF will still try to push Fish-Bird trough the passage and Fish-Bird 
+gets stuck. 
+Another problem is that VFF’s smart algorithms for the force from obstacles create local 
+minima when obstacles are standing close to each other. The explanation is that the 
+force from the obstacle is decreasing when the distance to them is increasing. When the 
+distance is 1m from the obstacle is the force -1 to -4, compared to the waypoint which is 
+7 everywhere. The low negative force can’t push Fish-Bird away from the obstacle. The 
+resultant force will point to the waypoint and doesn’t have the knowledge that the 
+waypoint is behind the obstacles. 
+The VFF doesn’t have the information of how close objects stand next to each other. 
+Figure 21 – Two pillars
+23 
+4.2 Proposal for a solution 
+4.2.1 How to indicate that Fish-Bird is stuck 
+To avoid Fish-Bird getting stuck in the local minima an algorithm that looks for unique 
+behavior on Fish-Bird can be made. In this case the unique behavior is the low 
+magnitude. 
+With this algorithm another situation that gives us problem is created. There are some 
+local minima that are created when the field from an obstacle meets the field from the 
+walls. This always occurs and has nothing to do with the waypoints influences, this local 
+minima is no danger for Fish-Bird to enter. 
+Figure 22 shows the magnitude of two pillars and a waypoint. The blue area indicates 
+the local minima. In this situation Fish-Bird will find the way to the waypoint. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 22 – Magnitude for two pillars
+Figure 23 – Theta for two pillars
+24 
+Around the pillar where the magnitude is zero theta never point into a same spot. This 
+information is usefull for the algorithm to help FishBird to not getting stuck. An exemple 
+for the algorithm could be to look at the magnitude and see when it becomes low, if 
+theta indicates that FishBird is going to a point where no theta is pointing out of, the 
+result action is to avoid that point by calling a path planner. 
+The first to indicate that there could be local minima is the magnitude. The algorithm is 
+looking for magnitude that is lower then a boundary value. When the algorithm finds a 
+value lower then the boundary value it calls for the other algorithm that looks at theta. 
+Figure 24 and 25 show the magnitude of two pillars with a distance of 60 cm between. 
+We can see that we have local minima in front of them. 
+ 
+ 
+ 
+Figure 25 – Magnitude for two pillars
+Figure 24 – Magnitude for two pillars
+25 
+Figure 26-30 below show theta in different distances between the pillars. We start at 60 
+cm and decrease with 10 cm each picture. At all the different cases there is a low 
+magnitude as the pictures above shows. 
+ 
+ 
+50 cm 
+ 
+Figure 26 – Distance 60 cm
+Figure 27 – Distance 50 cm
+26 
+ 
+ 
+ 
+Figure 28 – Distance 40 cm
+Figure 29 – Distance 30 cm
+27 
+In these pictures there is a start point at (2.5, 0.5) and an end point at (2.5, 4.5). It is 
+from this line the distances between the pillars is calculated. If Fish-Bird execute straight 
+ahead on this line Fish-Bird always get stuck in all distances between the pillars. If  the 
+start where placed a close to the line Fish-Bird will just get stuck in distances from 50 
+cm to 80 cm between the pillars. For distances below 40 cm it will just take a start point 
+5 cm from the line to make Fish-Bird find its way to the goal. For distances near 40 cm 
+between the pillars Fish-Bird have to go 30 cm beside the line for manage to find the 
+way to the goal. 
+From these pictures we can also try to find out how we can indicate local minima by 
+looking at theta.  
+For distances between 50 cm to 80 cm between pillars we can sample a circle and see 
+if the theta on the edge of the circle is all pointing to the middle. This will give us an 
+indication where the local minima are. 
+This function will generate problems when the distance between the pillars is 40 cm or 
+less, since not all the theta on the edge is pointing to the middle of the circle. In this 
+situation the points on the circle in front and the back is pointing to the middle. If we look 
+at the field of theta beside the line we see that there are more situations where Fish-Bird 
+is not stuck but has theta that is pointing in the middle of the circle on two sides. To 
+have an algorithm that indicates local minima through looking at theta on the edge at 
+the circle and se if two sides is pointing at the middle of the circle is not a good function. 
+The reason is that it will indicate local minima when there isn’t one, but there is one on 
+the line between the pillars. 
+If we look at the magnitude it will in the case when pillars near the wall vary between 
+very high and very low. In other cases, for example when two pillars with 30 cm or less 
+distance between, the magnitudes will not vary so much just remains on a low level. 
+If we look at theta there will be big differences in cases where we have a point where all 
+the theta is pointing to the middle of the circle. For the pillar near the wall we get that 
+point when the distance between is 30 cm or less. Distances higher then 30 cm make 
+the field try to push Fish-Bird through between the wall and the pillar. This will not give a 
+big variation on theta. 
+Figure 30 – Distance 20 cm
+28 
+If we instead look at Fish-Bird actual position we can see if Fish-Bird is moving back 
+and forth. Another way is to look if Fish-Bird just moves in a particular area. The area 
+could be a circle with a repeating middle point.  
+We have to separate movement from Fish-Bird that’s indicate it’s stuck and movement 
+that’s indicate normal behavior. 
+Movement that’s indicate Fish-Bird is stuck is when Fish-Bird moves back and forth 
+constantly in some cases different directions but always back and forth. 
+One movement that is in Fish-Bird normal behavior that can be mistaken for movements 
+that it’s stuck can be when Fish-Bird has printed a massage. After printing a massage, 
+with the printer that is placed on the chairs, Fish-Bird moves back and after a while 
+Fish-Bird moves forward to print again. Almost all movements that Fish-Bird does when 
+interacting with people can some how make Fish-Bird moves back and then forth. 
+To avoid these movements to trigger that Fish-Bird is stuck the function that trigger 
+should look at the back and forth for a longer time or se if the back and forth is 
+continuous. 
+4.3 The complementing path planner 
+The idea with the path planners is that they are called when needed and when they are 
+active the waypoint is frozen. The path planner task is to plan the way from where Fish-
+Bird get stuck to the waypoint, the goal. 
+One proposal is to use the benefit of using a valley. By creating a valley we can easy 
+path plan with A* to follow the lowest magnitude. For the object we give them an x -1 
+function. The field is illustrated in Figure 31. 
+ 
+Figure 31 – x-1 function for obstacles
+29 
+For the goal or the way point we give the function x2. The Figure 32 illustrates the field 
+for one waypoint. 
+ 
+These two functions added together will give a result illustrated in Figure 33. 
+ 
+These functions will make a valley to the goal. The path planner can use this valley by 
+taking the lowest magnitude as a criterion. The path will always lead to the goal where 
+ever we are in the valley. Imagine that you drop a ball at any place in the valley. The 
+ball will always roll down to the bottom/goal. 
+Figure 33 – The valley 
+Figure 32 – x2 function for waypoint
+30 
+The problem occurs when we have two pillars, see Figure 34. 
+ 
+To the left of the pillars in Figure 34 there is a perfect valley and on the right there is 
+another valley. This valley creates problems for us when we want the path planner to 
+plan after the lowest magnitude. Figure 35 shows the valley that doesn’t lead to the 
+goal. 
+ 
+Figure 34 – The valley with tow pillars
+Figure 35 – Zoomed view 
+31 
+A way to handle the problem is to allow the path planner to plan uphill and go for the 
+highest magnitude. Make the path planner start plan uphill from the stuck point and at 
+the same time path plan uphill from the goal point. These to paths will finally meet at the 
+point showed in Figure 36 as the meeting point. 
+ 
+The path planner has no knowledge of where the meeting point is if it just looks at the 
+high magnitude. The path would go on the side of the pillar as shown in Figure 37. 
+ 
+Further work for this path planner is making it receive the knowledge of where the 
+meeting point is. A suggestion is to do a mathematical study of the magnitude and see if 
+there is some specific behavior, for example saddle points. 
+A variation of this path planner is that when obstacles get close to each other the 
+magnitude raises. That will develop a hill in the valley. The high hill will prevent Fish-
+Bird from passing between the obstacles. 
+Another proposal is to combine the obstacles that are near Fish-Bird and the point 
+where it gets stuck. Fish-Bird has knowledge of the obstacles coordinates and size. 
+With this knowledge Fish-Bird can creates a big pillar which includes the involved 
+Figure 36 – Meeting point.
+Figure 37 – Uphill path planning 
+32 
+obstacles. After creating the big pillar the VFF is used as the path planner. Fish-Bird will 
+stand inside the big pillar when it’s stuck and that’s why it is important that the VFF’s 
+theta is allowed inside the big pillar. The big pillar and the VFF will lead Fish-Bird out of 
+the problem area. 
+The knowledge Fish-Bird has about all the obstacles coordinates and sizes can bee 
+recalculated to distance between Fish-Bird, waypoint and obstacles. All these distances 
+can bee used together with the magnitude as weighting qualities in RRT-path planning. 
+The RRT’s algorithm can make a suitable path for Fish-Bird which will guide Fish-Bird 
+and give direction how to go out from the problem area. 
+4.3.1 VFF takes over the path planner 
+We look at the example of two pillar where the distance between them  is to small so FB 
+get stuck, the path planner is called and find the way to the goal and then start to 
+execute it. When executing the way there is a function that look when it’s safe to let VFF 
+starts and take over. 
+The VFF is allowed to take control of the path planning when the there is no possibility 
+for Fish-Bird to get stuck in the same spot. To find that safe area we can look at the 
+theta Fish-Bird has for the moment when executing the path. Analyze theta and see if 
+theta is pointing to the point Fish-Bird was stuck. If theta points in the direction, that 
+Fish-Bird was stuck in, continue execute the path.  
+Figure 38 – Theta
+33 
+This will only work in the red area shown in Figure 39. The black line in Figure 39 
+indicates that on the right side the VFF will make Fish-Bird go back to the point where it 
+got stuck. Theta is then approximated on the side of the unit circle as Figure 40 
+illustrates. 
+ 
+On the left side of the black line in Figure 39 the VFF will work fine and makes Fish-Bird 
+reach the goal. Theta is on that side approximate in the unit circle according to Figure 
+41. 
+Another way to look for the safety area where VFF safely can take the control over the 
+path planning is to sample two points beside Fish-Bird or beside the midpoint of Fish-
+Bird, as Figure 42 illustrates. 
+Figure 39 – Analyze of theta 
+Figure 40 – Right side of 
+the unit circle
+Figure 41 – Left side of 
+the unit circle 
+34 
+ 
+ 
+From comparing these three thetas we can find a safe spot to let VFF take over. The 
+spot should be where all the three theta is approximate have the same value. Fish-
+Bird’s actual value on theta is taken in the middle of Fish-Birds. 
+ 
+Figure 42 – Sample points on Fish-Bird
+35 
+ 
+5 Result 
+The cause for Fish-Bird’s behavior that sometimes it gets stuck is coming from the 
+qualities in the VFF. One of VFF flaws is that no distance between obstacles in the 
+room weight against Fish-Bird’s actual dimension. The other flaw is the force field’s 
+design shown in Figure 16. 
+Fish-Bird is not in need of a new path planner, the VFF is working perfect for Fish-Birds 
+purpose. What Fish-Bird needs is knowledge of when it’s stuck and a help to get out of 
+the problem area. When Fish-Bird is out of the problem area the planner for Fish-Bird 
+will go back to the VFF. 
+I have presented two different approaches of identification that Fish-Bird is stuck. The 
+fist one is an algorithm that weights the magnitude and theta together and detects that 
+Fish-Bird is stuck. The other approach is a feedback algorithm that looks at Fish-Birds 
+actual movements for detecting that Fish-Bird is stuck. 
+When Fish-Bird has accomplished to let the system know that it’s stuck the helping path 
+planner will start. The waypoint is not changing when the help planner is active. With 
+this situation the path planner can make Fish-Bird be concern to get to the goal. The 
+RRT planner’s main quality is to start searching paths from both start and goal and get a 
+connection between them. Using RRT gives a rapid planner that will quickly explore the 
+room for the shortest path to get from start to the goal. This will give Fish-Bird a perfect 
+path to execute. 
+When using A*, the algorithm will iterate to look for the cost on different path’s in the 
+grid. A* will always look at the shortest path to get from start to goal. The path from A* 
+will be angularly pointy and can give Fish-Bird a hard time to follow. 
+The field D* algorithm is a very smart and easy way to plan smooth paths in a grid and 
+is created from A*. Field D* give the opportunity to plan through the square in the grid.  
+The VFF will deactivate the helping planner when Fish-Bird is out of the problem area 
+as described in chapter 4.3.1or when Fish-Bird reaches the waypoint. 
+6 Discussion 
+When I started to look at the problem I also looked at what information Fish-Bird system 
+already had and maybe I cold work with that information to come up with a smart and 
+simple solution. 
+The information that the system already provided me with was the resultant’s force 
+direction calculated in any position in the room. From that I can compute the magnitude 
+of the resultant force which also is the absolute value. From the cameras I can calculate 
+Fish-Bird’s position. I can also work out Fish-Bird’s movement. 
+First I started to interact with Fish-Bird in the reality. This gave me knowledge about 
+how Fish-Bird acts with the audience and each other. The specific behavior for Fish-Bird 
+is that the environment is always changing. People and the chairs are moving and the 
+chairs are also switching behavior and printing massages. Because of Fish-Bird’s 
+dynamic system the existing planner is not planning the path ahead and force Fish-Bird 
+to follow it. Instead the planner calculate new paths every 10Hz. 
+ The MatLab program gives the opportunity to study Fish-Bird’s path planner system at 
+a specific time. The program can in detail simulate different problematic situations and it 
+is possible to study how the path planner would command Fish-Bird to move. In my 
+36 
+study are obstacles, walls and waypoint simulated. In the reality there will be obstacles 
+and walls. The waypoint will be for example a person. The other chair is not included in 
+the simulation in my study. My opinion is that the other chair does not make a 
+contribution that makes Fish-Bird stuck in that problematic way that I’m study. 
+ 
+7 Conclusion 
+The conclusion after the study is that Fish-Bird’s path planner has flaws. The 
+characteristics a path planner gets when using forces to guide the robot suites Fish-
+Bird’s purpose. Witch is not to go the straightest path to the goal but instead move 
+around in the room very close to obstacles without crashing. 
+My thesis started when the Fish-Bird project had been going on for two ears. There 
+have been analyses and decisions that make Fish-Bird look as it does today with all 
+from batteries, cameras and program to the colors of the chairs. For me it is very 
+important that I stay with the contour that Fish-Bird has. My solution for the problem 
+should not make a lot of changes for Fish-Bird’s appearance. The two solutions I have 
+suggested for letting Fish-Bird’s system know that the chairs are stuck will not change 
+Fish-Bird’s contour. The “helping path planner” will in a way change Fish-Bird’s behavior 
+but not its contour when it is active.  
+  
+8 Future Work 
+The major issue for work on the algorithm that weights the magnitude and theta 
+together and detects areas where Fish-Bird can get stuck is how the algorithm should 
+execute. Should the algorithm execute ahead or in real-time together with the VFF. 
+Future work on the algorithm that uses Fish-Bird’s movements is to study the script for 
+the cameras and lasers. This is a feedback algorithm that execute with a time 
+sequence. 
+The “helping” path-planner can have different smart algorithms. I have suggested 
+Rapidly-exploring Random Trees (RRT), A* or D*. They all need to be evaluated against 
+the projects contour and effectively. 
+The switch from the helping planner to the VFF will take place when there is no chance 
+for Fish-Bird to get stuck again. When the switch will take place needs to be analyzed 
+and tested. A way to avoid all the uncertainties that Fish-Bird will get stuck again is to let 
+the helping path planner guide Fish-Bird to the goal before the switch takes place. 
+ 
+37 
+References 
+[1] James J. Kuffner, Jr and Steven M. LaValle. RRT-Connect: An Efficient Approach to 
+Single-Query Path Planning. In IEEE International Conference on Robotics & 
+Automation 2000. Pages 995-1001. 
+[2] Steven M. LaValle and James J. Kuffner, Jr. Randomized Kinodynamic Planning. In 
+IEEE International Conference on Robotics & Automation 1999. Pages 473-479. 
+[3] Steven M. LaValle and James J. Kuffner, Jr. In B. R. Donald, K. M. Lynch, and D. 
+Rus, editors, Algorithmic and Computational Robotics: New Directions, pages 293-
+308. A K Peters, Wellesley, MA, 2001. (HOMEPAGE) 
+[4] Dave Ferguson and Anthony Stentz. Field D*: An Interpolation-based Path Planner 
+and Replanner. ISRR05: Draft Program. Carnegie Mellon University 
+[5] Martin Edgren, Erik Wahlström. Design of a mobile actor and investigation of 
+navigation from external sensors. Master’s Degree Project in Stockholm 2004. 
+[6] Luke P. Sassé. Room Mapping and Path Planning of an autonomous Vehicle in a 
+New Media Art Context. Bachelor Thesis at The Uneversity of Sydney 2005. 
+[7] James Kuffner, Rappidly-Exploring Random Trees.  http://msl.cs.uiuc.edu/rrt/ 

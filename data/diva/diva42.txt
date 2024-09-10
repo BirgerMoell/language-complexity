@@ -1,0 +1,2781 @@
+ 
+Antispinn för högprestandabilar 
+och motorsport 
+ 
+ 
+ 
+ 
+ 
+NIKLAS WESTERLUND 
+ 
+ 
+ 
+ 
+ 
+Examensarbete 
+Stockholm, Sverige 2006 
+ 
+ 
+ 
+ 
+ 
+Antispinn för högprestandabilar och 
+motorsport 
+ 
+av 
+ 
+Niklas Westerlund 
+ 
+ 
+ 
+ 
+ 
+Examensarbete MMK 2006:9 MDA268 
+KTH  Industriell teknik och management 
+Maskinkonstruktion 
+SE-100 44  STOCKHOLM 
+ 
+ 
+1
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Examensarbete  MMK 2006:9 MDA268 
+ 
+Antispinn för högprestandabilar och motorsport 
+ 
+ 
+Niklas Westerlund 
+Godkänt 
+2006-07-04 
+Examinator 
+Jan Wikander 
+Handledare 
+Mikael Hellgren 
+ 
+Uppdragsgivare 
+NIRA Automotive AB 
+Kontaktperson 
+Tomas Olofsson 
+Sammanfattning 
+Detta examensarbete har omfattat konstruktion, implementering och funktionsstudie av 
+antispinnsystemet NTRAC, ett antispinnsystem framtaget i ett prestandahöjande syfte. En 
+djupare studie i den grundläggande funktionaliteten av traditionella säkerhetsinriktade 
+antispinnsystem har genomförts. Därigenom har olika metoder framkommit för att begränsa 
+och sänka motorns aktuella kraftmoment. Det aktuella systemet NTRAC använder en 
+bränsleavstängande metod och de eventuella risker och konsekvenser som detta innebär, samt 
+tillhörande lösningar, förklaras på en djupare nivå.  
+Ett av delmålen med NTRAC har varit att det lätt ska kunna anpassas till olika fordon, 
+NTRAC har därför implementerats i två testbilar av mycket skiljda fysikaliska mått och 
+motorkaraktäristik. Därigenom har eventuella behov av förändringar på ett effektivt sätt 
+utvärderats. Som ett delresultat av detta har olika förenklande och tidsbesparande 
+matematiska modeller tagits fram och implementerats i numeriska beräkningsprogram för 
+MATLAB. Det är två modeller som tagits fram och bägge beskrivs ingående i rapporten, även 
+MATLAB programmen återfinns i bilagorna tre och fyra. 
+ 
+Den första är en modell som generellt beskriver sambandet mellan momentbegränsande 
+åtgärd och procentuellt kvarvarande motormoment. Rapporten förklarar varför detta inte följer 
+ett linjärt samband som man annars är frestad att tro. 
+Friktionen mellan däck och vägbana har en väsentlig roll i teorin bakom antispinnsystem och 
+rapporten beskriver ingående hur säkerhetssystem ofta tvingas kompromissa vad gäller den 
+tillåtna spinnivån, och därigenom inte utnyttjar maximal dragkraft. Fokus för 
+prestandahöjande system ska vara att kontinuerligt begränsa spinnet till den optimala 
+spinnivån och minimera dess fluktuering, då situationen så tillåter. Den för fordonet uppmätta 
+spinnivån varierar, exempelvis då fordonet kör genom en kurva, detta måste kompenseras för 
+i beräkningarna. Den andra modellen som tagits fram och redovisas i rapporten beskriver 
+ingående de matematiska samband som råder mellan de olika hjulens rotationshastigheter.  
+Slutligen har en prestandahöjande effekt verifierats genom nyttjandet av NTRAC i KTHR2. 
+Under riktiga tävlingsförhållanden sommaren 05 på Bounthingsthorp proving grounds, 
+Leicestershire, England, presenterades en tidsvinst av ca nio procent under accelerationstest 
+noll till 75 meter vid optimala friktionsförhållanden. Man kan anta att systemet genererar 
+ännu högre prestandaökning då friktionen är lägre. 
+ 
+ 
+2
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2006:9 MDA268 
+ 
+Traction control for high performance vehicles and 
+motorsport 
+ 
+ 
+Niklas Westerlund 
+Approved 
+2006-07-04 
+Examiner 
+Jan Wikander 
+Supervisor 
+Mikael Hellgren 
+ 
+Commissioner 
+NIRA Automotive AB 
+Contact person 
+Tomas Olofsson 
+Abstract 
+ 
+This master’s degree project includes the construction, implementation and the theory of 
+function of the traction control system NTRAC, a traction control system designed to increase 
+performance.  A closer functionality study of the more common safety-designed traction 
+control systems has been executed. As a result of this study different techniques in decreasing 
+engine torque has been concluded. NTRAC uses a fuel-cutting method to decrease the torque. 
+The risks and consequences by this, as well as different solutions, are in detail discussed in 
+the report. 
+ 
+One of the main design purposes with NTRAC was to be able to adapt it easily to different 
+vehicles. To evaluate this ability NTRAC has been implemented into two test vehicles, most 
+different to each other by means of physical measurements. As an outcome of this evaluation, 
+a number of mathematical models have been derived and implemented in numerical 
+MATLAB programs. Two models are explained in the report and are included in MATLAB-
+files as appendix three and four at the end of the report.  
+ 
+The first model describes the dependency between the action of decrease in torque and the 
+relative remaining degree of efficiency and the report explains why this does not show a linear 
+dependency. 
+The friction between the tire and the road surface plays a crucial part in the theory behind 
+traction control and the report describes in detail how traditional traction control systems are 
+designed to make compromises, in wheel spin tolerances, and thus not uses the maximum 
+amount of traction. To increase performance traction control systems continuously have to 
+optimise this amount and also minimise its fluctuations. Wheels travel with different speeds 
+when cornering, thus the traction control system has to compensate for this, and the second 
+mathematical model in the report describes this in detail. 
+ 
+Finally an increase in performance is verified through the usage of NTRAC in the formula car 
+KTHR2. During an international competition in the summer of 05, at Bounthingsthorp 
+proving grounds, Leicestershire, England, under perfect weather conditions, a time-saving of 
+nine percentage where registered at acceleration tests from 0 to 75 meters. 
+ 
+ 
+3
+ 
+ 
+ 
+ 
+Innehållsförteckning 
+SAMMANFATTNING ................................................................................................................1 
+ABSTRACT..............................................................................................................................2 
+INNEHÅLLSFÖRTECKNING......................................................................................................3 
+1  INTRODUKTION..................................................................................................................4 
+1.1 Historik och funktionskoncept .......................................................................................4 
+1.2 Antispinn för ökad prestanda .........................................................................................4 
+1.3 Mål och syfte.................................................................................................................5 
+1.4 Omfattning och begränsningar.......................................................................................5 
+2  INTERAKTIONEN MELLAN DÄCK OCH VÄGBANA.................................................................6 
+2.1 Fysikalisk funktion........................................................................................................6 
+2.2 Friktion .........................................................................................................................7 
+Kraftöverföringen genom däckets kontaktyta ...................................................................9 
+Säkerhetssystem i personbilar...........................................................................................9 
+2.3 Komplett friktionsmodell – viskoelastiskt material ......................................................10 
+Variabel procentsats spinn för olika hastigheter..............................................................10 
+Komplett friktionsmodell enligt Radó ............................................................................10 
+3  HJULHASTIGHETER..........................................................................................................12 
+3.1 Geometriska samband..................................................................................................12 
+3.2 Modell för framhjulsdrift .............................................................................................15 
+3.3 Modell för bakhjulsdrift...............................................................................................16 
+3.4 Verifiering av modeller................................................................................................18 
+4  NTRAC – ANTISPINN FÖR HÖGPRESTANDABILAR...........................................................19 
+4.1 Adaptivitet...................................................................................................................19 
+4.2 Momentbegränsande åtgärd.........................................................................................19 
+5  IMPLEMENTERING............................................................................................................22 
+5.1 Testbil 1, SAAB 9.3 ....................................................................................................22 
+5.2 Testbil 2, KTHR2........................................................................................................23 
+5.3 Genomförande.............................................................................................................24 
+6  DISKUSSION......................................................................................................................26 
+6.1 Två kritiska grenar.......................................................................................................26 
+6.2 Motorkaraktäristik.......................................................................................................26 
+6.3 Optimal friktion...........................................................................................................27 
+6.4 Applicering i antispinn ................................................................................................27 
+6.5 Alternativ lösning........................................................................................................28 
+7  SLUTSATS.........................................................................................................................29 
+8  REFERENSER....................................................................................................................30 
+BILAGA 1, RADÓS KOMPLETTA FRIKTIONSMODELL................................................................31 
+BILAGA 2, UPPMÄTTA FRIKTIONSVÄRDEN.............................................................................32 
+BILAGA 3, MATLABPROGRAM FÖR MOTORMOMENT EFTER ÅTGÄRD.......................................33 
+BILAGA 4, MATLABPROGRAM FÖR KURVKOMPENSERING.......................................................34 
+ 
+ 
+4
+ 
+ 
+ 
+ 
+1  Introduktion 
+Som en följd av ABS systemet (Anti-lock Braking System), växte under 80 talet 
+antispinnsystemet fram och har därefter funktionellt förfinats med åren. Utvecklingen har 
+förts vidare till hela säkerhetskoncept där man även infört stabiliserande effekter. Mycket 
+forskning har således bedrivits på friktions- och däcksområdet och parallellt med detta har 
+motorsporten sett fördelarna med dessa säkerhetssystem, man ser prestandahöjande 
+möjligheter om man nyttjar tekniken rätt.  
+ 
+ 
+1.1 Historik och funktionskoncept 
+ 
+Under 80-talet kom ett nytt säkerhetstänkande i fokus inom bilindustrin. Man beaktade 
+riskerna som det innebär då man förlorar kontrollen över sitt fordon i kritiska situationer och 
+som en första åtgärd kom utvecklingen av ABS systemet.  
+Som den naturliga följden av ABS systemet kom idéerna om antispinnsystem. Olika 
+konstruktörer hade olika lösningar med grundidéerna var desamma, att reglera drivhjulens 
+moment då det aktuella hjulspinnet överskridit ett allt för högt värde.  
+ 
+1988 sammankallade man, på initiativ av ”the Automobile Division of the Institution of 
+Mechanical Engineers”, de ledande biltillverkarna till en internationell konferens där man 
+presenterade sina olika lösningar och diskuterade fördelar och nackdelar samt den fortsatta 
+utvecklingen inom området.  
+Man kunde konstatera tre olika koncept för att uppfylla antispinnets grundidé. Koncept ett och 
+två är nära besläktade och kan med fördel användas i kombination, man minskar motorns 
+effekt genom att bryta tändningen eller att bryta bränsletillförseln. Drivlinesystemets tröghet 
+samt responstiden ansågs kunna skapa vissa problem vilket dock koncept tre ansågs lösa.  
+För snabb responsen samt att ABS redan var implementerat menade bland annat Volkswagen 
+att man aktivt bör bromsa varje hjul separat, i kombination med att begränsa motorns effekt 
+genom koncept ett eller två. Detta skulle även ge fördelar i de situationer då olika hjul rullar 
+på olika hala underlag och således behöver regleras olika mycket.  
+Samtliga koncept hade både för- och nackdelar och systemutvecklares laborering med 
+bromsarna har fört vidare utvecklingen till dagens antisladdsystem. 
+ 
+ 
+1.2 Antispinn för ökad prestanda 
+ 
+Forskning på friktionen mellan hjul och vägbana har sedan länge bedrivits och forskare visade 
+tidigt att den optimala friktionen erhålls vid ett visst hjulspinn, se avsnitt 2.1. Man har även 
+konstaterat en viss hysteres då den optimala spinnivån överskridits. När hjulspinnivån för den 
+optimala friktionen, den optimala spinnivån, har överskridits så krävs att hjulspinnet minskas 
+till en nivå långt under den optimala spinnivån för att återfå fästet.  
+Företeelsen kan mycket förenklat beskrivas genom skillnaden mellan glidande friktion och 
+stationär friktion. Exempelvis när ett föremål på ett plan börjar glida på grund av planets 
+lutning, den stationära friktionströskeln överskrids. Försöker man nu få föremålet att stanna 
+igen genom att minska lutningen på planet så krävs att man minskar lutningen till en mycket 
+lägre nivå än den vid vilken föremålet började glida, den glidande friktionsnivån måste 
+övervinna planets lutning.  
+Det är bland annat därför traditionella antispinnsystem arbetar mot en något lägre spinnivå än 
+optimalt, överskrids denna hjulspinnivå behöver inte systemet överkompensera med att 
+ 
+ 
+5
+ 
+ 
+ 
+ 
+ytterligare minska spinnivån för att återfå fästet. Men även andra riskfaktorer och 
+komfortproblem tillkommer om ett system arbetar för nära den optimala nivån. 
+ 
+Antispinnsystem kan även användas i syfte att öka fordonets prestanda. Ytterst få sådana 
+system finns att tillgå på marknaden. Däremot utvecklas många system och då framförallt 
+inom Formula 1 där systemen åter har blivit tillåtna efter några års förbud.  
+Marknadens prestandahöjande system är i regel konstruerade så att systemdesignen bortser 
+från komfortproblemen och omvärderar även riskfaktorerna, användaren räknar inte med 
+plötsliga friktionsförändringar mot underlaget och är väl medveten om följderna av att passera 
+den optimala spinnivån. Systemet ska i den mån det är möjligt alltid arbeta på ovan nämnda 
+optimala toppnivå, se avsnitt 2.4.  
+ 
+ 
+1.3 Mål och syfte 
+ 
+Målet för detta examensarbete har varit att konstruera ett justerbart och prestandahöjande 
+antispinnsystem. Det nya antispinnsystemet skulle baseras på NIRA Automotive ABs tidigare 
+erfarenheter från utveckling av antispinnsystem. Under konstruktionens slutskede skulle 
+systemet implementeras i den av KTH Racing 05 konstruerade och egentillverkade 
+formelbilen KTHR2.  
+Syftet med det nya antispinnsystemet är att det lätt ska kunna anpassas till andra 
+högprestandabilar oavsett motorstyrsystem, cylinderantal och andra eventuella fysikaliska 
+skillnader som exempelvis fram- alternativt bakhjulsdrift.  
+ 
+ 
+1.4 Omfattning och begränsningar 
+ 
+Examensarbetet har omfattat implementeringar i två olika testbilar av mycket skiljd karaktär. 
+Första steget har varit att implementera det framtagna antispinnsystemet i NIRA Automotive 
+ABs SAAB 9.3. Därefter monteras ett likadant system i KTHR2 efter nödvändig anpassning.  
+Genom att implementera det framtagna systemet i ovan nämnda testbilar har 
+förbättringsmöjligheter, förenklingar samt nya idéer kontinuerligt framkommit och direkt 
+kunnat utgöra en naturlig del av examensarbetet. Därigenom har examensarbetets praktiska 
+del varvats med teori och djupare studier inom olika områden som uppkommit efter hand. 
+Speciellt har teorin bakom det fysikaliska kraftöverföringsförloppet mellan däck och vägbana 
+behandlats då detta har en central roll i antispinnsystemets funktion. Arbetet har även täckt 
+framtagning av nödvändiga mattematiska modeller för att effektivisera antispinnsystemets 
+framtida implementeringsprocess. 
+  
+ 
+ 
+ 
+6
+ 
+ 
+ 
+ 
+2  Interaktionen mellan däck och vägbana 
+Den kanske mest centrala delen av ett antispinnsystem är interaktionen mellan däck och 
+vägbana. Det är här de prestandahöjande effekterna kan hämtas, exempelvis då systemet 
+tillåts variera det maximalt tillåtna spinnet efter olika situationer.  
+ 
+ 
+2.1 Fysikalisk funktion 
+ 
+När ett objekt är i rörelse utsätts det för ett antal motverkande krafter relativt förflyttningen. 
+Många av dessa krafter framställs ofta summerat och lite felaktigt som en motståndskraft, 
+Fmotstånd. Euler har namngivit denna summa krafter i relation till objektets normalkraft som 
+friktion med tillhörande fysikaliska definition. 
+ 
+ 
+l
+motstånd
+norma
+F
+F
+=
+µ
+ 
+ 
+ 
+(1) 
+ 
+Ser man till systemet däck – vägbana så märks de olika friktionssambanden tydligt, blöt is 
+relativt torr asfalt likväl som rätt däck till de aktuella underlagen. Friktionen bestämmer hur 
+mycket kraft som kan överföras mellan däck och vägbana.  
+Gummit i normala däck kan anses utgöra den kraftöverförande länken mellan hjul och 
+vägbana. En motors vridmoment överförs här till vägbanan och för på så sätt fordonet framåt. 
+ 
+Gummi är ett viskoelastiskt material och kan därför representeras av ett antal 
+sammankopplade fjäder-dämpare system. För att en kraft ska överföras genom en fjäder krävs 
+en viss deformation av fjädern, på samma sätt krävs även en viss deformation av däckets 
+gummi för att kraft ska kunna överföras från det drivande hjulet till vägbanan.  
+Varje väglag klarar bara att överföra en viss maximal kraft (deformation av gummit) och varje 
+däcksort klarar bara en viss maximal deformation för att jobba optimalt, överskrids denna 
+gräns så kan friktionen sjunka drastiskt och okontrollerat.  
+ 
+Som mått på ovan nämnda deformation kan man mäta hjulets spinn. Om man definierar spinn 
+som ekvation (3) mellan däckets tangentiala hastighet och fordonets hastighet relativt 
+omgivningen så gäller följande; total avsaknad av spinn (spinn=1,0) medför att ingen kraft 
+alls försöker driva fordonet framåt (ingen deformation av gummit). 
+ 
+υ 
+= Hastighet 
+ω 
+=  Rotationshastighet 
+Rdäck =  Däcksradie 
+däck
+däck
+R
+υ
+= ω
+ 
+ 
+ 
+(2) 
+ 
+däck
+fordon
+spinn
+υ
+= υ
+ 
+ 
+ 
+(3) 
+ 
+ 
+7
+ 
+ 
+ 
+ 
+2.2 Friktion 
+ 
+Man kan konstatera att för varje unik däck-vägbana kontakt ska däcket drivas med en viss 
+mängd spinn för att utnyttja den maximala friktionen. 
+Vanligtvis hittar man denna topp, hädanefter kallad µpeak, någonstans mellan 7 och 20 % spinn 
+vid hyfsade väglag. Extremfall är i snö och på lös grusväg då däcket behöver gräva sig fram 
+med många gånger högre spinn för att nå optimal friktion. I detta fall spelar däckets mönster 
+en mycket större roll då däckgummits deformation inte utnyttjas på samma sätt utan snarare 
+att snö glider mot snö och grus mot grus. Andra extremfall är de extremt hala, som blöt is, här 
+arbetar dock gummit som det ska. Här nås µpeak vid en väldigt låg nivå, kanske redan vid en 
+halv till en procents spinn på grund av att systemet inte klarar att föra över mera kraft än vad 
+denna gummideformation representerar (däckens mönster har dock en betydande inverkan). 
+Figur 2.2.1 visar diagram över typiska mätvärden, taget ur [3]. Här väljer författaren att tala 
+om engelskans slip i stället för spin. I en direkt översättning svarar slip mot glid och spin mot 
+rotation eller (hjul-) spinn och dessa bör i generella fall inte förväxlas eftersom glid inte 
+automatiskt motsvarar någon riktning medan hjulspinn underförstått definieras i däckets 
+rotationsriktning. I detta fall kan slip likställas med spinn och i fortsättningen av denna 
+rapport kommer också slip att vara lika med spinn om inget annat anges. 
+ 
+ 
+Figur 2.2.1.  
+Friktionskoefficient som funktion av spinn  
+Källa: Mobility Friction Technology AS 
+ 
+ 
+Däckstillverkare har forskat kring detta länge och konstruerar sina däck efter att de ska arbeta 
+på ett förutbestämt sätt där säkerhet och komfort kommer i fokus. Ett däck kan tillåtas arbeta 
+optimalt under ett visst spinn i bilens färdriktning men bör bibehålla maximal stabilitet för de 
+laterala krafter som verkar på hjulet under körning genom en kurva.  
+ 
+ 
+ 
+8
+ 
+ 
+ 
+ 
+Omfattande experiment och tester har genomförts för att öka förståelsen om friktionen. 1995 
+förenades ett stort antal länders motsvarigheter till svenska Vägverket i ett stort experiment1 
+för att standardisera vägytors friktionskoefficienter. Resultaten av detta experiment, enligt 
+Norsemeter Friction AS [2], är att friktionskurvans karakteristiska utseende är grundat av två 
+huvudinfluenser. Däckets karakteristik och sammansättning ger upphov till kurvans första del, 
+innan extrempunkten vid µpeak. Den senare delen beror till största delen av vägytans makro- 
+och mikrotextur. Figur 2.2.2 visar asymptoterna till däckens och vägbanans inverkan.  
+ 
+ 
+Figur 2.2.2.  
+Friktionskoefficient som funktion av spinn 
+Källa: Norsemeter Friction AS 
+  
+ 
+En av de absolut främsta forskarna inom området, Mr Zoltán Radó2, analyserade PIARC 
+(World Road Association) databasen [1] och har ställt samman enklare och mera avancerade 
+algoritmer för friktionskurvan vilket förklaras mer ingående i avsnitt 2.3.  
+ 
+                                                        
+1 International PIARC Experiment to Compare and Harmonize Texture and Skid Resistance 
+Measurements 
+ 
+2 Mr Zoltán Radó, Director, Vehicle Systems and Safety Program Senior Research Associate 
+The Pennsylvania State University Pennsylvania Transportation Institute 
+ 
+ 
+9
+ 
+ 
+ 
+ 
+Kraftöverföringen genom däckets kontaktyta 
+ 
+Om man utnyttjar maximal kraftöverföring genom däckets kontaktyta för att driva bilen 
+framåt så minskar däckets förmåga att överföra laterala krafter. För den enkla åskådningen 
+kan vi anse att summan av dessa krafter är konstant3. Mätningar som gjorts på området visar 
+tendenser enligt nedanstående diagram, figur 2.2.3. Här tolkar man den laterala och den 
+longitudinella kraftöverföringens samband med det longitudinella spinnet. Mätningen är 
+utförd under 3 graders glidvinkel. 
+ 
+ 
+Figur 2.2.3.  
+Samband mellan longitudinell och lateral kraft. 
+Källa: Peng,H. et al. 
+ 
+ 
+ 
+Säkerhetssystem i personbilar  
+ 
+I det tidigare avsnittet diskuterades summan av krafterna som man önskar överföra genom 
+däckets kontaktyta. Många av de säkerhetslösningar man kan finna i dagens personbilar 
+bygger på en kompromiss, där man inte vill riskera att förlora greppet i någon ledd. 
+Traditionella antispinnsystem får arbeta där, på kurvan, man fortfarande har kontrollen över 
+en ansenlig lateral kraft. Ett litet intervall som börjar strax före den punkt där de båda 
+kraftkurvorna möts och slutar ett stycke före µpeak, enligt Institution of Mechanical Engineers 
+[5].  
+Dagens ABS system utnyttjar friktionen bättre och bygger på att man kan se en ökad friktion 
+då däcket är ”på väg” att hitta fästet igen, strax innan spinnet närmar sig noll efter att ha varit i 
+näst intill låst läge. 
+ 
+                                                        
+3 Granskar man detta noggrant ser man summan av dessa kraftkomposanter dock inte är 
+konstant utan beror av däckets uppbyggnad samt fordonets dynamik med avseende på 
+hjulvinklar mm. 
+ 
+ 
+10
+ 
+ 
+ 
+ 
+ 
+2.3 Komplett friktionsmodell – viskoelastiskt material 
+ 
+Tvetydighet råder inom diskussionen för detta område. Vilseledande mätutrustningar har 
+genererat missvisande resultat och den mesta djupare forskning inom området bedrivs oftast, 
+på grund av konkurrens helt inofficiellt, inom de stora däckstillverkarnas egna subventioner. 
+Ur prestandahöjande synpunkt finns stora effektiviseringsmöjligheter inom detta område, 
+nyckelvärdet för den optimala friktionspeaken µpeak bör variera med hastigheten. 
+ 
+ 
+Variabel procentsats spinn för olika hastigheter  
+ 
+I de flesta tidigare rapporter och skrivelser inom området utgår man från att µpeak hittas vid en 
+konstant procentsats spinn. Man mäter dock ofta spinnet i spinnhastighet (slipspeed) vilket 
+svarar mot spinnet multiplicerat med den aktuella hastigheten. I dessa fall förstår man genast 
+att µpeak varierar med hastigheten och man utgår därigenom från att den optimala procentuella 
+spinnivån är konstant när man endast ser till procentsatsen spinn. Genom en diskussion med 
+Mr. Zoltán Radó kunde jag ta del av testresultat4 som styrker att positionen av µpeak varierar 
+med hastigheten både vad gäller µpeak relativt procent spinn samt µpeak relativt 
+spinnhastigheten.  
+ 
+Detta ger stöd för mitt tidigare påstående om att gummidäcket kan beskrivas som en samling 
+fjäder-dämpare system. Vid ett snabbare ingrepp (högre hastighet) på gummit krävs en större 
+kraft för att deformera gummit lika som vid en lägre hastighet. Alltså krävs olika procentsats 
+spinn för att maximera kraftöverföringen genom kontaktytan mellan däcket och vägbanan. 
+Exempel på mätresultat finns i bilaga 2 Uppmätta friktionsvärden. 
+ 
+ 
+Komplett friktionsmodell enligt Radó 
+ 
+Radó har tagit fram en mycket komplex modell som numeriskt kan användas för att beräkna 
+µpeak –kurvan (Peak influence curve), vilken enligt Radó sträcker sig över hela planet och är 
+unik för varje däck-vägyta system. Har man tillgång till en µpeak för en viss hastighet, så kan 
+man genast se hur mycket det optimala spinnet bör justeras efter samtliga hastigheter. 
+                                                        
+4 Tester utförda vid NASA Langley dynamic landing research facility 
+ 
+ 
+11
+ 
+ 
+ 
+ 
+ 
+ 
+Figur 2.3.1.           Utifrån vetskapen om placeringen av friktionstoppen kan  
+dess hastighetsberoende förflyttning räknas ut. 
+Källa: Norsemeter Friction AS 
+ 
+ 
+ 
+Den matematiska modellen finns i bilaga 1 Radós kompletta friktionsmodell. Jag lämnar dock 
+till läsaren att tolka denna modell och rekommenderar endast vidare läsning, exempelvis 
+Norsemeter Friction AS [2] för ökad förståelse, då detta ej ligger inom ramen för mitt 
+examensarbete. 
+ 
+ 
+ 
+ 
+12
+ 
+ 
+ 
+ 
+3  Hjulhastigheter 
+När man åker genom en kurva färdas bilens hjul olika lång sträcka under samma tidsperiod, 
+därav roterar hjulen med olika hastighet. Detta beror helt av fordonets fysikaliska mått, eller 
+rättare beskrivet däckens inbördes avstånd till kurvcentrumet. En matematisk modell över hur 
+de individuella hjulrotationshastigheterna bör kompenseras, förenklar anpassningen då ett 
+antispinnsystem ska implementeras i ett nytt fordon. 
+ 
+Vid beräkning av aktuellt hjulspinn måste de icke drivande hjulen användas som referens. 
+Således måste dessa referenshastigheter kompenseras för den aktuella krökningsradien på 
+kurvan.  
+Vi söker ett uttryck för den tillåtna snitthastigheten av de drivande hjulen som funktion av 
+bilens axelavstånd, axelbredd, snitthastighet på icke drivande hjul samt ett kurvindex 
+definierat som kvoten mellan det yttre och inre icke drivande hjulets hastighet.  
+ 
+νB  = Genomsnittlig bakhjulshastighet 
+νF  = Genomsnittlig framhjulshastighet 
+κB = Kurvindex baserat på bakhjulen 
+κF  = Kurvindex baserat på framhjulen 
+B  
+= Bredd, avstånd mellan inre och yttre hjulpar 
+L  
+= Längd, avstånd mellan främre och bakre hjulpar 
+ 
+ 
+ 
+, ,
+ν (
+ν ,κ )
+L B
+B
+F
+F  
+ 
+ 
+(4) 
+ 
+ 
+, ,
+ν (
+ν ,κ )
+L B
+F
+B
+B  
+ 
+ 
+(5) 
+ 
+ 
+ 
+3.1 Geometriska samband 
+ 
+Genom att utnyttja geometri samt fordonets krökning runt kurvans centrum, se 
+problemuppställning enligt F.Gustafsson [4], kan ekvation (3) erhållas genom följande 
+resonemang. I nedanstående beräkningar bortses från att axelbredderna inte nödvändigtvis är 
+de samma för fram- och bakaxel. Om man så önskar kan man lägga till detta i beräkningarna i 
+efterhand. 
+En annan parameter som till viss del spelar in är de varierande normalkrafter som verkar på 
+däcket under all körning, speciellt acceleration-retardation samt kurvkörning.  
+ 
+Verifieringen av de modeller som tas fram i kommande kapitel kommer dock att visa att all 
+inverkan från både normalkrafter och axelbredder kan negligeras då resultaten är fullt 
+tillfredsställande utan dessa.   
+ 
+ 
+ 
+ 
+13
+ 
+ 
+ 
+ 
+ 
+ 
+Figur 3.1.1  
+Definitioner av beräkningsgeometrier för hjulvinklar och 
+rotationer, baserade på kurvcentrum.  
+ 
+ 
+ 
+ωZ  =  Rotation runt kurv-centrum 
+RF,I  =  Radie från kurvcentrum till aktuellt hjul (Exemplifierat; Främre Inre hjul) 
+ωF,Y  =  Rotationshastighet för aktuellt hjul (Exemplifierat; Främre Yttre hjul) 
+υF,Y  =  Hastighet för aktuellt hjul, utmed hjulets naturliga färdväg (Exemplifierat; Främre  
+ 
+Yttre hjul) 
+ 
+ 
+Man får direkt hastigheterna för varje hjul, baserat på radien till kurvcentrum samt rotationen 
+runt denna. 
+ 
+ 
+ 
+ 
+B,I
+Z
+B,I
+R
+υ
+= ω
+ 
+ 
+ 
+(6) 
+ 
+(
+)
+B,Y
+Z
+B,Y
+Z
+B,I
+R
+R
+B
+υ
+= ω
+= ω
++
+ 
+ 
+(7) 
+ 
+2
+2
+F,I
+Z
+F,I
+Z
+B,I
+R
+R
+L
+υ
+= ω
+= ω
++
+ 
+ 
+(8) 
+ 
+(
+)
+2
+2
+F,Y
+Z
+F,Y
+Z
+B,I
+R
+R
+B
+L
+υ
+= ω
+= ω
++
++
+ 
+ 
+(9) 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+14
+ 
+ 
+ 
+ 
+ 
+Definiering av det tidigare nämnda kurvindexet, vilket är individuellt för fram- och bakhjul 
+ger (10) och (11). 
+B,Y
+B,I
+υ
+κ ≡υ
+B
+                                                                       (10) 
+ 
+F,Y
+F,I
+υ
+κ ≡υ
+F
+ 
+ 
+ 
+ 
+(11) 
+ 
+2
+B,Y
+B,I
+υ
++ υ
+ν =
+B
+ 
+ 
+ 
+(12) 
+ 
+2
+F,Y
+F,I
+υ
++ υ
+ν =
+F
+ 
+ 
+ 
+(13) 
+ 
+ 
+Ekvationerna (8) till och med (11) ger ett uttryck för de individuella hjulhastigheterna, 
+ 
+ 
+1
+B,I
+2ν
+υ
+= + κ
+B
+B
+  
+ 
+ 
+(14) 
+ 
+1
+1
+B,Y
+2ν
+υ
+=
+
+
++
+
+κ
+
+
+B
+B
+ 
+ 
+ 
+(15) 
+ 
+1
+F,I
+2ν
+υ
+= + κ
+F
+F
+  
+ 
+ 
+(16) 
+ 
+1
+1
+F,Y
+2ν
+υ
+=
+
+
++
+
+κ
+
+
+F
+F
+ 
+ 
+ 
+(17) 
+ 
+Vi har nu alla de uttryck som behövs. 
+Ekvationerna (6) till och med (17) sätts nu samman och kommer att ligga till grund för 
+samtliga vidare beräkningar, för att slutligen mynna ut i (4) och (5).  
+ 
+ 
+15
+ 
+ 
+ 
+ 
+3.2 Modell för framhjulsdrift 
+ 
+Vid framhjulsdrift söks (4). Följande resonemang verifierar denna funktion. 
+(6) och (7) löst för 
+Z
+ω och 
+B,I
+R
+ tillsammans med definitionen 
+B,I
+R
+R
+≡
+ ger 
+B,I
+B,Y
+B,I
+B
+R
+υ
+= υ
+−υ
+ 
+ 
+ 
+(18) 
+ 
+B,Y
+B,I
+Z
+B
+υ
+−υ
+ω =
+ 
+ 
+ 
+(19) 
+ 
+ 
+ 
+(18) och (19) insatt i (8) respektive (9) ger 
+2
+2
+B,Y
+B,I
+B,I
+F,Y
+B,Y
+B,I
+B
+B
+L
+B
+
+
+
+
+υ
+−υ
+υ
+υ
+=
++
++
+
+
+
+
+
+
+υ
+−υ
+
+
+
+
+ 
+(20) 
+ 
+2
+2
+B,Y
+B,I
+B,I
+F,I
+B,Y
+B,I
+B
+L
+B
+
+
+υ
+−υ
+υ
+υ
+=
++
+
+
+υ
+−υ
+
+
+  
+(21) 
+ 
+ 
+ 
+(20) och (21) insatt i (13) samt omformulering enligt (14) ger det sökta uttrycket  
+ 
+, ,
+L B
+ν (
+ν ,κ )
+B
+B
+F
+= 
+ 
+(
+)
+2
+2
+2
+2
+2
+1
+1
+1
+2
+2
+2
+2
+2
+1
+1
+1
+1
+2
+1
+2
+B,Y
+B
+B
+B
+B,Y
+B,Y
+B
+L
+L
+B
+ν
+ν
+ν
+υ
+−
++κ
++κ
++κ
+ν
+ν
+ν
++κ
++κ
+κ
++κ
+
+
+
+
+ν
++
++
++
++
+
+
+
+
+
+
+
+
+υ
+−
+υ
+−
++
+−
+
+
+
+
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+ 
+ 
+(22) 
+ 
+ 
+ 
+16
+ 
+ 
+ 
+ 
+3.3 Modell för bakhjulsdrift 
+ 
+På samma sätt kan (5) nås för bakhjulsdrift.  
+Dock krävs mycket mer komplexa beräkningar för att lösa de geometriska sambanden. 
+(8) och (9) löst för 
+Z
+ω  och R  ger 
+ 
+(
+)
+(
+)
+(
+)
+2
+4
+2
+2
+2
+2
+4
+2
+2
+2
+2
+2
+2
+4
+F,Y
+F,I
+F,Y
+F,Y
+F,Y
+F,I
+Z
+L
+B
+L
+L
+B
+B B
+L
+υ
++
++
+υ
+υ
+−υ
+−
+υ
++ υ
+ω = −
++
+2 -
+i
+ 
+(23) 
+ 
+ 
+(
+)
+2
+4
+2
+2
+2
+2
+4
+2
+2
+2
+2
+F,Y
+F,I
+F,Y
+F,Y
+F,Y
+F,I
+L
+B
+L
+L
+R
+υ
++
++
+υ
+υ
+−υ
+=
+υ
+−υ
+-
+ 
+ 
+(24) 
+ 
+ 
+Med (23) och (24) insatt i (6) och (7) samt omformulering enligt (16) och (17) krävs endast 
+det slutliga steget enligt (12) för att nå (4).  
+ 
+, ,
+2
+B,Y
+B,I
+L B
+υ
++ υ
+= ν (
+ν ,κ )
+B
+F
+F  
+ 
+ 
+(25) 
+ 
+ 
+Jag redovisar endast varje del för sig då den sammansatta slutliga ekvationen blir mycket stor. 
+Om man så önskar finner man den totala ekvationen i programkoden i bilaga 4, ekvation (32).  
+ 
+Nedan redovisas varje del av (12). 
+ 
+Enligt ekvation (7),
+B,Y
+Z
+B,Y
+R
+υ
+= ω
+ 
+ 
+ 
+där 
+Z
+ω -delen är 
+ 
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+2
+2
+2
+2
+4
+4
+2
+2
+2
+2
+1
+1
+1
+2
+2
+2
+2
+2
+2
+2
+2
+1
+1
+1
+1
+1
+1
+4
+B
+L
+L
+L
+B
+B B
+L
+κ
+κ
+κ
+
+
+ν
++
+
+
+ν
+ν
+ν
+ν
+ν
+−
++
+⋅
+−
++
+
+
++κ
++κ
++κ
+
+
++
++
++
+
+
++
+−
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+-2
+2
+i
+ 
+(26) 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+17
+ 
+ 
+ 
+ 
+samt tillhörande 
+B,Y
+R
+-del 
+ 
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+2
+2
+2
+2
+4
+4
+2
+2
+2
+1
+1
+2
+2
+1
+2
+2
+2
+2
+2
+1
+1
+1
+1
+1
+2
+2
+1
+1
+B
+L
+L
+L
+B
+B
+κ
+κ
+κ
+ν
++
+ν
+ν
+ν
+ν
+−
++
+⋅
++
++κ
++κ
++κ
++
++
+ν
+ν
+−
++κ
++
++
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+-2
+ 
+(27) 
+ 
+ 
+ 
+ 
+ 
+Enligt ekvation (6),
+B,I
+Z
+B,I
+R
+υ
+= ω
+ 
+ 
+Z
+ω -delen 
+ 
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+2
+2
+2
+2
+4
+4
+2
+2
+2
+2
+1
+1
+1
+2
+2
+2
+2
+2
+2
+2
+2
+1
+1
+1
+1
+1
+1
+4
+B
+L
+L
+L
+B
+B B
+L
+κ
+κ
+κ
+
+
+ν
++
+
+
+ν
+ν
+ν
+ν
+ν
+−
++
+⋅
+−
++
+
+
++κ
++κ
++κ
+
+
++
++
++
+
+
++
+−
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+i
+-2
+2
+ 
+(28) 
+ 
+ 
+B,I
+R
+-delen 
+ 
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+2
+2
+2
+2
+4
+4
+2
+2
+2
+1
+1
+2
+2
+1
+2
+2
+2
+2
+2
+1
+1
+1
+1
+1
+2
+2
+1
+1
+B
+L
+L
+L
+B
+κ
+κ
+κ
+ν
++
+ν
+ν
+ν
+ν
+−
++
+⋅
++
++κ
++κ
++κ
++
++
+ν
+ν
+−
++κ
++
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+F
+-2
+ 
+(29) 
+ 
+ 
+ 
+18
+ 
+ 
+ 
+ 
+3.4 Verifiering av modeller 
+ 
+Genom cirkelkörningstester genomförda med en testbil loggades en mängd parametrar för att 
+i ett senare tillfälle kunna användas för eventuell analys. Vid detta test loggades i första hand 
+okompenserade5 hjulrotationssignaler, dessa rotationshastighetssignaler har här använts för att 
+verifiera de framarbetade matematiska modellerna som ingående beskrevs i avsnitt 3. 
+Ekvation (4) och (5) ska stämma överens med motsvarande uppmätta värden.  
+Då Testbil 1 är framhjulsdriven kommer dock framhjulen att driva med visst spinn under 
+konstant hastighet och acceleration, enligt avsnitt 2.1. Detta framgår i den översta grafen i 
+figur 3.4.1 där den beräknade framhjulshastigheten är något lägre än den uppmätta vid 
+acceleration och något högre då hastigheten minskas.  
+Den matematiska modellen verifieras genom att den uträknade framhjulshastigheten följer 
+den verkliga med bra noggrannhet. Vissa avvikelser uppträder då vi verifierar modellen för 
+bakhjulsdrift på mätdata från den framhjulsdrivna Testbil 1, vilket kan ses i det nedersta 
+graffönstret. 
+ 
+ 
+Figur 3.4.1.  
+Verifiering av matematisk modell för kurvkompensering.  
+ 
+Loggade mätvärden kan jämföras med modellberäknade.  
+ 
+ 
+                                                        
+5 När fordonet färdas genom kurva roterar de olika hjulen med olika hastighet beroende av de inbördes avstånden 
+till kurvcentrumet. I naturlig drift kompenserar antispinnets styrenhet för detta genom att dra ifrån de olika 
+hjulens hastighetsdifferenser från det uppmätta värdet. Det eftersträvade resultatet av detta förfarande är att alla 
+hjulen kontinuerligt ska ha noll inbördes hastighetsskillnad vid noll hjulspinn oavsett om fordonet färdas rakt 
+eller genom en kurva.  
+ 
+ 
+19
+ 
+ 
+ 
+ 
+4  NTRAC – Antispinn för högprestandabilar 
+NTRAC (NIRA TRAction Control) är det antispinnsystem som konstruerats och 
+implementerats genom detta examensarbete. Systemet är till viss del intelligent och anpassar 
+sig till rådande underlag. Det aktuella motormomentet begränsas genom att bryta 
+bränsleinsprutningen och detta ger upphov till vissa effekter som måste beaktas då systemet 
+arbetar. 
+ 
+ 
+För att uppskatta det aktuella vridmomentet läser NTRAC av nödvändiga parametrar från 
+motorstyrsystemet, exempelvis mäts varvtal, trottelläge, trycket och temperaturen i insuget 
+mm. NTRAC känner även av bromsinverkan, vid aktiverad broms tillåts ingen 
+momentbegränsande åtgärd för att undvika eventuell stallning av motorn. 
+Det aktuella hjulspinnet beräknas som de drivande hjulens medelhastighet dividerat med de 
+frirullande hjulens medelhastighet. Därefter kompenseras hjulspinnets värde med hänsyn till 
+aktuell kurvkrökning samt fordonets fysikaliska mått med avseende på hjulens inbördes 
+avstånd. 
+NTRAC kalibreras och justeras mjukvarumässigt genom koefficienter i flerdimensionell 
+matrisform, vilket även möjliggör tredimensionell överskådlighet över valda parametrars 
+beteende. NTRAC möjliggör även loggning av valfritt antal parametrar vilket varit till stor 
+fördel under detta examensarbetes genomförande. 
+ 
+ 
+4.1 Adaptivitet 
+ 
+NTRAC är ett antispinnsystem skräddarsytt för att optimera prestanda. Detta antispinnsystem 
+är adaptivt vilket betyder att det kontinuerligt anpassar sig efter rådande förhållande, både 
+med avseende på aktuellt underlag (friktion) samt motorns aktuella vridmoment och justerar 
+därför det maximalt tillåtna hjulspinnet beroende på vilket underlaget är.  
+NTRAC uppskattar det momentana vridmomentet i de drivande hjulen kontinuerligt samtidigt 
+som aktuellt hjulspinn mäts, därigenom kan en exakt effektsänkningsåtgärd vidtas då något 
+däck spinner över den för stunden maximalt accepterade nivån.  
+ 
+ 
+4.2 Momentbegränsande åtgärd 
+ 
+NTRAC arbetar efter ett bränsleavstängningskoncept, efter förutbestämda mönster hindras 
+insprutningsventilerna att arbeta. Eftersom detta antispinnsystem ska kunna monteras i olika 
+bilmodeller med varierande antal cylindrar får effektsänkningen representeras av en 
+åtgärdsföljd. En följd av 16 på varandra följande förbränningsförlopp stryps i olika nivåer. 
+Den lägsta effektstrypningen svarar då mot att endast 15 av 16 förbränningar fullbordas 
+respektive den högsta då noll av 16 förbränningar fullbordas. Av dessa 16 olika nivåer väljs 
+nu 12 nivåer ut som de steg vid vilka effektbegränsningsåtgärden kommer att variera mellan. 
+Detta på grund av att vi inte vill döda motorn helt, noll av 16 fullbordade förbränningar, samt 
+att effektstrypningsnivåerna inte är linjärt proportionella mot momentsänkningen. 
+ 
+ 
+ 
+20
+ 
+ 
+ 
+ 
+Det verkliga förhållandet, mellan den procentuella momentsänkningen och kvarvarande 
+förbränningar efter åtgärd, är mycket komplicerat vid bränslestrypningsåtgärder, detta beror 
+på en mängd faktorer: En viss mängd oförbränt bränsle från föregående förlopp finns 
+fortfarande kvar på cylinderväggar, vilket kommer att antändas. En naturlig masströghet i 
+motor-drivlinekedjan medför också att en viss åtgärd får större inverkan efter en viss tid. På 
+motsvarande sätt är inte en förbränning optimal direkt efter en åtgärd, forskning har visat att 
+det krävs fler än tre normala förbränningar i rad innan en arbetande cylinder fungerar normalt 
+igen.  
+Detta gör att en grov och generell modell över den procentuella momentsänkningen i relation 
+till aktuell åtgärd krävs, där även beroendet av motorvarv bör beaktas. Ett antagande är att 
+effekten avtar med antalet bortkopplade förbränningar, men ett viktigt tillägg är även att 
+motorns verkningsgrad minskar proportionellt mot antalet förbränningar som den aktuella 
+åtgärden kopplar bort. 
+ 
+C  
+=  Antalet aktiva förbränningar, antalet kvarvarande av det totala antalet 
+N  
+=  Totala antalet förbränningar i följden, i detta fall 16st 
+Ven-1  =  Uppskattad verkningsgrad i procent vid tillfälle n-1 (relativa verkningsgraden) 
+ 
+C
+N
+C
+1
+100
+N
+N
+−
+
+
+
+
+=
+−
+
+
+
+
+
+
+
+
+n
+n-1
+Ve
+Ve
+×
+×
+ 
+ 
+Modellen jämförd med mätvärden från accelerationstester med fyracylindrig testbil visar 
+tillfredsställande resultat, se figur 4.2.1. Ur figuren framgår språng som uppträder på grund av 
+släpeffekterna vid varje åtgärdstal som svarar mot jämn avstängning av fyrtalet cylindrar.  
+ 
+ 
+ 
+Figur 4.2.1.  
+Procentuell verkningsgrad som funktion av åtgärd. En 
+  
+jämförelse mellan ett linjärt beroende, ovan nämnda 
+kompenserade modell samt uppmätta accelerationsvärden av 
+fyracylindrig testbil. Märk speciellt ”ramp-bildningen” vid 
+fjärde, åttonde och tolfte åtgärden.  
+ 
+ 
+ 
+ 
+ 
+21
+ 
+ 
+ 
+ 
+Beroendet till motorvarvet fås genom den till fordonet individuella momentkurvan enligt 
+följande resonemang.  
+Den kompenserade kurvan ovan multipliceras med, den till fordonet individuella, 
+momentkurvan som skalfaktor. Förfarandet resulterar i en tredimensionell matris som grafiskt 
+ritats upp i figur 4.2.2. Grafen visar den kvarvarande relativa verktingsgraden som funktion av 
+åtgärd och motorvarvtal, se bilaga 3 Matlabprogram för motormoment efter åtgärd. 
+ 
+ 
+ 
+Figur 4.2.2.  
+3-D graf över modellberäknade värden (enligt bilaga 3). 
+Modellen baserades på en uppskattad procentuell 
+motormomentkurva. 
+ 
+ 
+22
+ 
+ 
+ 
+ 
+5  Implementering 
+Det nya antispinnsystemet, NTRAC, framarbetas och implementeras i två bilar av skiljd 
+karaktäristik för att urskilja eventuella förbättringsmöjligheter och effektiviseringar. Först 
+monteras systemet i en bil av standardtyp för att därefter monteras i en mycket liten och lätt 
+formulabil.  
+ 
+Syftet med detta examensarbete har varit att konstruera ett kompatibelt antispinnsystem, lätt 
+att implementera och anpassa till olika bilmodeller. Därför har genomförandet av arbetet valts 
+att innefatta implementeringar i två kraftigt skiljda bilmodeller. Genom kvalitativ utvärdering 
+i form av fortlöpande diskussion har därefter olika förbättringsmöjligheter framkommit.  
+ 
+ 
+5.1 Testbil 1, SAAB 9.3  
+ 
+Första implementering har utförts i testbil 1, NIRA Automotive ABs framhjulsdrivna SAAB 
+9.3 turbo utrustad med NIRA I3 motorstyrsystem. SAABen väger ca 1350kg och aktuell 
+effekt kan endast uppskattas till ca 250hk och maximalt vridmoment inom intervallet 300 till 
+320Nm. Vikt i förhållande till effekt kan därigenom uppskattas vara ca 5,4kg/hk och 
+motsvarande vikt per vridmoment är ca 4,4 kg/Nm. 
+ 
+Hjulens rotationssignaler tas direkt från ABS systemets induktiva hjulrotationsgivare. 
+Antispinnsystemets kopplas in i serie mellan motorstyrsystemet I3 och det för SAAB 
+ordinarie elsystemet. I övrigt kopplas antispinnet parallellt med I3 där så krävs. Vissa, för 
+antispinnet unika, signaler tas även direkt från det ordinarie elsystemet, exempelvis 
+bromssignal och dylikt.  
+ 
+ 
+ 
+ 
+ 
+ 
+Figur 5.1.1.  
+Blockschema över NTRACs inkoppling.  
+ 
+ 
+ 
+ 
+ 
+ 
+23
+ 
+ 
+ 
+ 
+5.2 Testbil 2, KTHR2 
+ 
+Andra implementeringen har utförts i KTHR2. Bilen är helt konstruerad av KTH Racing 05 
+och är baserad på ett kolfiberchassi och drivs av en konfigurerad 600cc fyracylindrig Yamaha 
+FZR Thundercat motor, vilken överladdas med turbo och intercooler. Även i denna testbil 
+nyttjas NIRA I3 motorstyrsystem. KTHR2 är bakhjulsdriven, väger 240kg och har en 
+maximal effekt av 110hk samt maximalt vridmoment av 115Nm vilket motsvarar 2,18kg/hk 
+samt 2,08kg/Nm.  
+ 
+Hjulrotationssignalerna genereras från infraröda optiska sensorer som triggas av 
+enkoderskivor som roterar med hjulen. Enkoderskivorna genererar 50 triggpunkter per varv 
+och sensorerna har stigtid och falltid om 70 respektive 90ns vilket är tillfredsställande lågt för 
+att inte påverka systemet. Resterande signaler tas, på samma sätt som i testbil 1, direkt i serie 
+eller parallellt med I3 systemet. 
+ 
+ 
+  
+ 
+Figur 5.2.1.  
+Konceptbild av KHTR2,Testbil 2 
+Källa: KTH Racing 05 
+ 
+ 
+ 
+ 
+24
+ 
+ 
+ 
+ 
+5.3 Genomförande 
+ 
+Med NIRA Automotive ABs tidigare erfarenheter av antispinnsystem, i kombination med 
+författarens egna tidigare erfarenheter, har detta nya prestandahöjande antispinnsystem växt 
+fram.  
+I ett första steg sattes en utvecklingsmiljö upp för NTRAC projektet vilket bland annat 
+inkluderar anpassningsverktyg. Genom detta anpassningsverktyg kan den som implementerar 
+systemet visuellt sätta alla nödvändiga anpassningsparametrar både i numerisk matrisform 
+samt i 3-d grafik och därigenom tydligt åskådliggöra valda parametrars karaktäristik. I det här 
+första steget är delmålet att implementera och anpassa det nya systemet i Testbil 1. 
+ 
+I detta prototypstadium, vilket examensarbetet behandlar, kunde det nya systemet till viss del 
+baseras på en tidigare framtagen elektronisk styrenhet. Vissa förändringar krävdes dock då det 
+nya systemet krävde andra signaler. Ett antispinnsystems kanske viktigaste information är 
+hjulens rotationssignaler, för NTRAC togs dessa signaler direkt från de redan befintliga 
+hjulrotationssensorerna, ABS systemets sensorer i fallet med Testbil 1. 
+ 
+Härefter följde anpassningen av mjukvaran, till en början anpassades systemet med avseende 
+på fysikaliska egenskaper som cylinderantal, motorvolym, fram- alt. bakhjulsdrift med mera. 
+Därefter följde finjustering av parametrar och matriser efter önskat beteendet hos NTRAC, 
+hur mycket effekt som skulle brytas vid olika tillfällen, kompensering för kurvkörning, start 
+från stillastående etc.  
+ 
+NTRAC justerades i första hand efter prestandahöjande principer och utan att behöva 
+kompromissa fungerade systemet snällt även i lugn stadstrafik. Här uppmärksammades det 
+tidskrävande anpassningsarbetet av bland annat systemets momentbegränsande åtgärd samt 
+spinnkompenseringen för kurvkörning.  
+Testkörningar utfördes kontinuerligt i stadsmiljö på både grus- och asfaltsunderlag. Data om 
+hjulrotation, kurvradie, hjulspinn, mm. loggades under cirkelkörning i olika hastigheter för att 
+senare kunna användas i jämförelsestudier. 
+ 
+Det andra steget utgjordes av att implementera en kopia av det nya antispinnsystemet i Testbil 
+2. Då Testbil 2 konstruerades utan ABS system krävdes nya signalgenererande sensorer för 
+hjulrotationerna. Här prioriterades låg vikt och därför valdes mycket små optiska infraröda 
+sensorer i form av läsgafflar. Signalerna genererades utifrån att läsgafflarna monterades över 
+tunna enkoderhjul av plast i vilka 50 hål borrats. När varje hål passerade läsgaffelns optik så 
+genererades en digital etta av fem volt till aktuella ingångar på antispinnets styrenhet. 
+ 
+Därefter justerades NTRAC efter samma förfarande som för Testbil 1 och efter utprovning 
+under optimala förhållanden valdes karaktäristiken något aggressivare, med avseende på 
+tillåtet hjulspinn, kurvkaraktäristik mm. Genom Testbil 2 erhölls en god uppfattning om hur 
+systemet arbetar vid hjulspinn i höga farter trots hög friktion mot underlaget.  
+Inom motorsport är startmomentet en mycket viktig del och även detta prövades fördelaktigt 
+ut med Testbil 2 och här visade sig NTRAC fungera optimalt i kombination med det för 
+NIRA I3 inbyggda Launch systemet. Körtester utfördes i första hand på Barkarby flygfält, 
+under både torra varma och blöta kalla asfaltförhållanden. Inga data loggades i studiesyfte 
+utan nyttjades snarare direkt för att optimera NTRACs inställningar och funktion med 
+avseende på att maximera Testbil 2s acceleration. Slutligen deltog KTH Racing 05 med 
+Testbil 2 i en internationell tävling i sommaren 05, den engelska Formula Student 
+deltävlingen på Bounthingsthorp proving grounds i Leicester. Där uppmättes bilens 
+acceleration, med respektive utan NTRAC inkopplat inför domare. 
+ 
+ 
+25
+ 
+ 
+ 
+ 
+ 
+Den avslutande fasen i examensarbetet har varit att utvärdera de två implementeringarna, att 
+se förbättringsmöjligheter och möjlig effektiviseringspotential i dessa.  
+Redan i det första steget, Testbil 1, kunde vissa anpassningsproblem konstateras. Mycket tid 
+krävdes med att justera in alla för bilen individuella värden och de mest framträdande 
+problemområdena var justeringen av hjulspinnets kurvkompensering, se avsnitt 3, samt 
+motorns momentbegränsning beroende av aktuell åtgärd, se avsnitt 4.2.  
+Som tidigare beskrivits är NTRAC bland annat uppbyggt av en stor mängd flerdimensionella 
+matriser. Unika värden avläses ur dessa flerdimensionella matriser där aktuell avläsningscell 
+bestäms av de för stunden aktuella insignalerna till systemet. För att exemplifiera ett tänkbart 
+scenario; Det aktuella hjulspinnet måste justeras efter både den aktuella hastighet samt 
+kurvans krökningsradie. Hur mycket det aktuella spinnet ska justeras avläses ur en matris där 
+den ena axeln, hädanefter kallat dimensionen, representerar hastighet och den andra 
+dimensionen representerar kurvans krökningsradie.  
+ 
+ 
+Figur 5.3.1.  
+Exempelbild från anpassningsmjukvara, flerdimensionell matris. 
+ 
+ 
+Vid anpassning och kalibrering av dessa matriser så har tillvägagångssättet hittills varit att 
+sätta värden ”för hand” och pröva sig fram tills matriserna satisfierar fordonets specifika 
+behov. Härigenom konstaterades fördelen av att ta fram matematiska modeller som kunde 
+användas för att automatiskt grundinställa dessa matriser. En naturlig del av steg tre i 
+examensarbetet blev därför att fokusera på dessa samband och finna matematiska modeller till 
+dessa och att sedan bygga upp dessa beräkningsmodeller i mindre MATLAB program.  
+ 
+Alla MATLAB modeller som tagits fram av ovan nämnda anledning har, i den mån det varit 
+möjligt, slutligen verifierats genom att loggade mätvärden från Testbil 1 har jämförts med de 
+modellberäknade. 
+ 
+ 
+ 
+ 
+ 
+26
+ 
+ 
+ 
+ 
+6  Diskussion 
+Vid konstruktionen av ett prestandahöjande antispinnsystem måste hänsyn tas till en mängd 
+faktorer. Men grundprincipen är alltid densamma, att reglera drivhjulens vridmoment efter 
+den optimala friktionen. 
+ 
+Grundfunktionen är densamma för alla antispinnsystem på marknaden, alla har som primärt 
+mål att begränsa det aktuella vridmomentet efter rådande underlagsförhållanden. Men hur 
+detta genomförs och efter vilka principer och regler detta ska genomföras skiljer sig radikalt 
+mellan olika system. I denna rapport har olika effektreducerande principer beskrivits och 
+skillnaden mellan säkerhets- och prestandahöjande antispinnsystems syfte har förklarats.  
+Baserat på mina fördjupade kunskaper inom området vill jag i denna diskussion delge mina 
+tankar och min syn på prestandahöjande antispinnsystem, dess funktion samt förslag till 
+förändringar och vidare utveckling. 
+ 
+ 
+6.1 Två kritiska grenar 
+ 
+Antispinnets kärna är kraftöverföringen mellan däck och vägbana och därav grenas dess 
+funktion ut i två kritiska delar; friktionen mellan däck och vägbana samt drivhjulets 
+vridmoment. Det är sambandet mellan dessa som avgör allt inom teorin och praktiken om 
+antispinn och således är det utifrån dessa delar som problem ska lösas och nytänkande 
+utvecklas. Nedan beskrivs de mest centrala problemen och diskussionen leder till vissa nya 
+tankar angående detta.  
+ 
+ 
+6.2 Motorkaraktäristik 
+ 
+Motorns aktuella vridmoment är inom många antispinntekniker en mycket viktig faktor då 
+storleken på den effektbegränsande åtgärden är direkt baserad på denna. Det är således ett 
+mycket viktigt och tidskrävande moment att anpassa systemet efter den individuella motorns 
+karaktäristik. I avsnittet ”Momentbegränsande åtgärd” beskrivs detta mer ingående. En 
+generell funktion över sambandet mellan åtgärd och aktuellt vridmoment har tagits fram, men 
+denna kräver förkunskaper om motorns aktuella vridmomentskurva. 
+Vridmomentkurvan är högst individuell för olika motortyper. Baserat på de mest betydande 
+parametrarna kan man uppskatta denna, men detta ger endast en grov bild av realiteten. Ett 
+ökat antal parametrar ger såklart en mer ackurat bild men en tanke är att man istället kan 
+kringgå detta problem och/eller rentav bortse från vissa tillsynes viktiga parametrar. 
+ 
+Exempel på lyckade implementeringar av helt regulatorbaserade system har visat att ovan 
+nämnda problem kan kringgås.  
+Engbom/Granström [8] konstruerade 2003 en modellbaserad regulator med tillfredsställande 
+resultat, här fick gaspedalens läge momentant representera motorns genererade vridmoment. 
+Vid testkörning nyttjade man två olika system för inbördes jämförelse och man loggade de 
+utvalda parametrarna spinn och åtgärd. Man jämförde de loggade parametrarnas fluktuation 
+och fick därigenom en bra bild av systemens stabilitet. Deras slutsats var att mycket 
+implementeringstid kunde sparas med modellbaserad reglering samt att ovan nämnda 
+parametrar i många fall blev stabilare. 
+ 
+ 
+ 
+ 
+27
+ 
+ 
+ 
+ 
+Ett annat system konstruerades och implementerades 2004 i KTH Racings första formulabil 
+KTH01. Här nyttjades en ren PID reglering där bränsleinsprutningen bröts baserat på bland 
+annat beteendet, tidsderivator, av det aktuella spinnet samt åtgärd med mera. Inga parametrar 
+loggades vid testkörningarna med detta system, man koncentrerade sig istället på 
+tidsoptimering då systemet endast användes i prestandahöjande syfte för tävlingsbruk. Ingen 
+hänsyn togs alltså till motorns varvtal utan systemet arbetade istället utifrån de tendenser som 
+det aktuella spinnet visade.  
+Systemet var variabelt i bland annat, vad man kallade, aggressivitet och tillåtet spinn. 
+Aggressiviteten kunde ställas i tre lägen för olika underlag och spinnet ställdes i 
+procentenheter. Aggressivitetsinställningen gav därigenom ett visst mått på hur mycket kraft 
+föraren ansåg att det kunde överföras mellan hjul och vägbana. 
+ 
+Ur funktionssynpunkt fungerar de ovan nämnda systemen tillfredsställande för sina ändamål, 
+men i många fall är även komfort och ”kör-känsla” viktiga parametrar likväl som systemets 
+inverkan på fordonet, framförallt gällande motorns hållbarhet och eventuella miljökrav.  
+ 
+ 
+6.3 Optimal friktion 
+ 
+En anmärkningsvärd del av implementeringsprocessen är alla de kompenseringar som ett 
+antispinnsystem rent mjukvaru-mässigt bör arbeta utifrån. Exempelvis ska den maximalt 
+tillåtna spinnivån kontinuerligt kompenseras. Vid kurvkörning bör nivån minskas utifrån ett 
+prestandahöjande perspektiv för att kompromissa med laterala krafter, se avsnitt 2.2. 
+Kraftöverföring genom däckets kontaktyta, och kurvkompensation krävs även för rent 
+fysikaliska faktorer som bilens mått samt om bilen drivs av framhjuls- respektive 
+bakhjulsdrift, se avsnitt 3. Enligt resonemanget i avsnitt 2.3 bör djupare studier undersöka 
+effekten av att även kompensera för den aktuella hastigheten, detta diskuteras i avsnitt 6.4. 
+Detta är bara exempel på några av de osäkerhetsfaktorer som alla påverkar antispinnsystemets 
+funktion negativt om de bortses från.   
+ 
+Samtliga ovan nämnda system utgår från fasta, dock kompenserade, förutbestämda spinnivåer 
+eller ”mappningar”. Även om vissa system är intelligentare än andra och kan variera det 
+tillåtna spinnet efter rådande friktion så krävs olika mappningar för olika typer av däck. Lika 
+friktionsförhållanden betyder inte automatiskt samma optimala spinnivå. Ett tydligt exempel 
+kan vara då mjuka omönstrade däck kräver en betydligt högre spinnivå på blött underlag än de 
+något hårdare regndäcken för att nå samma friktion. 
+ 
+ 
+6.4 Applicering i antispinn 
+ 
+Ur resonemanget i avsnitt 2.2 Kraftöverföringen genom däckets kontaktyta, kan man 
+konstatera att ett traditionellt antispinn inte fungerar optimalt för högprestandabilar, där syftet 
+med antispinnet inte längre är säkerhet utan snarare att öka prestandan. I dessa fall är 
+däckslitage och bränsleförbrukning ointressant och systemet bör optimera spinnet till den 
+exakta µpeak –en då maximal kraft ska föra fordonet framåt. I kurvor bör dock systemet sänka 
+spinnet till lämplig kompromiss mellan laterala och longitudinella krafter.  
+ 
+Vad gäller hastighetskompensering så bör ett optimalt antispinnsystem, enligt avsnitt 2.3, 
+beräkna och utnyttja Radós µpeak –kurva för att optimera kraftöverföringen. Vi ser att en 
+ 
+ 
+28
+ 
+ 
+ 
+ 
+konstant nivå av maximalt tillåtet spinn kan resultera i drastiska förluster i dragkraft då 
+hastigheten förändras, se bilaga 2 Uppmätta friktionsvärden. 
+ 
+ 
+6.5 Alternativ lösning 
+ 
+Då diskussionen endast täcker prestandahöjande system krävs inte samma säkerhetstänkande 
+som vid de traditionella säkerhetssystemen, detta möjliggör nya lösningsmöjligheter och 
+andra angreppsvinklar till vissa moment.  
+Fokus bör vara två parallella mål, det ena att antispinnsystemet alltid ska arbeta mot en 
+optimal spinnivå och det andra att minimera fluktuationen både vad gäller det aktuella spinnet 
+och den aktuella effektsänkningen. All avvikelse från börvärdet är en förlust. 
+ 
+Jag tror detta kan lösas genom att omarbeta systemets grundfunktion. Optimalt skulle 
+kraftöverföringen mätas direkt genom däckets kontaktyta mot underlaget, men då detta skulle 
+bli mycket komplicerat får samma information sökas i dess anslutande närhet.  
+Denna mycket viktiga information kan, under vissa antaganden, istället läsas från vridningen i 
+drivaxlarna. Informationen om vridningen kräver endast förarens beteende som referens 
+(gaspedalens läge) för att avgöra var på friktionskurvan det aktuella spinnet befinner sig. 
+Därigenom kan man säkerställa att den optimala friktionen alltid erhålls och man slipper 
+dessutom ovan nämnda kalibreringsproblem eftersom systemet istället jobbar mot den 
+dynamiska optimala friktionsmaximat, µpeak, och inte mot en förutbestämd spinnivå.  
+Det är diskutabelt huruvida man kommer ifrån kravet att känna motorns karaktäristik för att 
+kunna avgöra hur stor inverkan en viss åtgärd får, men jag tror att nämnda lösning kan minska 
+dess betydelse drastiskt. 
+ 
+Ingen information har gått att finna i offentliga handlingar angående att tolka drivaxlarnas 
+vridning i ovan nämnda syfte och jag anser därför att vidare forskning bör bedrivas inom 
+området.  
+Vad gäller forskningen på friktion så har jag kunnat konstatera att stor del av skrivelserna om 
+detta är baserat på samma forskning. Man hänvisar till samma diagram och har allmänt en 
+förutbestämd uppfattning om hur det fungerar. Dock har min diskussion med den kanske 
+främsta forskaren inom området, Mr. Zoltán Radó, visat att den till synes allmänna 
+uppfattningen inte överensstämmer med verkligheten. Uppkomsten till denna motsägelse tror 
+jag har sitt ursprung i de olika metoder som använts för att bestämma friktion på vägbanor. 
+Detta är ett högst aktuellt problem vid teorin bakom prestandahöjande antispinnsystem 
+eftersom detta utgör grunden till dess funktion. Jag rekommenderar studier av [1] samt [2] för 
+djupare insikt i problemet. 
+ 
+ 
+ 
+ 
+29
+ 
+ 
+ 
+ 
+7  Slutsats 
+ 
+Implementeringen av NTRAC i formulabilen KTHR2 blev mycket lyckad trots fordonets 
+udda fysikaliska mått och prestanda. Även om systemet på grund av tidsbrist inte blivit till 
+fullo optimerat kunde en tydlig prestandaökning konstateras. Extra märkbar blev 
+prestandaökningen i acceleration från stillastående till 75m där tiderna sänktes med ca nio 
+procent under optimala friktionsförhållanden, uppmätt på Bounthingsthorp proving grounds, 
+Leicestershire, England sommaren 05. Här användes NTRAC i kombination med ett 
+”Launch” –system vilket förenklar och effektiviserar startförfarandet. Om startstudien 
+genomförts utan launch-system skulle den procentuella skillnaden ha blivit ännu tydligare 
+eftersom starten är mycket kritisk om den genomförs helt manuellt.  
+Bromssignalens inaktiverande verkan bör i framtida implementeringar kopplas via 
+strömställare, då man under många tävlingsmoment vill bromsa under pågående gaspådrag 
+utan att den aktuella motoreffekten ändras.  
+Kalibrering av systemet bör med fördel utnyttja tidigare beskrivna beräkningsmodeller för att 
+förkorta implementeringstiden.  
+ 
+Systemet kan med fördel implementeras i prestandahöjande syfte, olika mappningar kan dock 
+krävas för olika däck, se avsnitt 6.3.   
+ 
+ 
+ 
+Figur 7.1.1. 
+KTHR2, testkörning på Barkarby flygfält. Bilden är  
+ 
+tagen under testkörningar på våt asfalt, med respektive  
+ 
+utan NTRAC inkopplat.  
+ 
+Källa: KTH Racing 05 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+30
+ 
+ 
+ 
+ 
+8  Referenser 
+ 
+[1] 
+World Road Association, PIARC Technical Committee on Surface 
+Characteristics C1, International PIARC Experiment to Compare 
+and Harmonize Texture and Skid Resistance Measurements, 1995 
+ 
+[2] 
+Norsemeter Friction AS. A Primer on Modern Runway Surface 
+Friction Measurement, Norsemeter courtesy publication, Norway 
+ 
+[3] 
+Mobility Friction Technology AS. Friction Fundamentals, 
+Concepts and Methodology, Prepared for Transportation 
+Development Centre, Transport Canada, 1999 
+ 
+[4] 
+F.Gustafsson. Slip-based estimation of tire-road friction, Dept. of 
+Electrical Eng., Linköping University, 1995 
+ 
+[5] 
+Institution of Mechanical Engineers, Automobile Division, 
+Traction Control and Anti-wheel-spin Systems for Road Vehicles, 
+International Conference, London, 1988 
+ 
+[6] 
+J.C.Wambold, J.J.Henry; American Society for Testing and 
+Materials, Vehicle, Tire, Pavement Interface, Technical publication 
+1164, Baltimore, 1992 
+ 
+[7] 
+J.D.Walter, W.E.Meyer, American Society for Testing and 
+Materials, Frictional Interaction of Tire and Pavement, Special 
+technical publication 793, Baltimore, 1983 
+ 
+[8] 
+J.Engbom, M.Granström, Dept. of Machine and Vehicle Systems, 
+Chalmers Univ. of technology, model-based Anti-spin System, 
+Göteborg, Sweden, 2003 
+ 
+[9] 
+J.Svendenius, Dept. of Automatic Control, Lund Institute of 
+Technology, Tire Models for Use in Braking Applications , 
+Licentiate thesis, Lund, Sweden, 2003 
+ 
+[10] 
+H.Peng, JS.Hu, Vehicle System Dynamics, National Chiao-Tung 
+University, Traction/Braking Force Distribution for Optimal 
+Longitudinal Motion During Curve Following, Hsin-Chu, Taiwan, 
+the Republic of China.,  1996 
+ 
+[11] 
+J.C.Wambold,Decker, NCHRP Web Document 53, Contractors 
+Final Report, 2002 
+ 
+ 
+31
+ 
+ 
+ 
+ 
+Bilaga 1, Radós kompletta friktionsmodell 
+ 
+Nedanstående matematiska modell är den senast beskrivna och mest kompletta modellen över 
+friktionen mellan däck och vägbana. Baserat på vetskapen om ett specifikt friktionstoppsvärde 
+för ett visst hjulspinn så kan nedanstående modell användas för att beräkna hur denna 
+friktionstopps värde kommer att variera beroende av exempelvis hastighet. För djupare insikt i 
+modellen samt för ökad förståelse hänvisar jag till referens [2] samt referens [1], då jag anser 
+att förklaring av modellen ligger utanför mitt examensarbetes ramar. 
+ 
+Komplett friktionsmodell 
+ 
+ 
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+2
+k
+p
+s
+2(D-1)
+2
+2
+2(D-1)
+2
+2
+V
+(
+V )
+1
+1
+2ln 
+2(D -1)
+1
+1
+1
+ˆ
+2ln 
+2(2 - D)
+δ
+ν
+
+
+τ ν
+δ
+µ ν,
+≡
++
+−
+ψ
+
+
+ν
+π
+
+
+≡
+ω
+−ω
+γ
+
+
+≡
+−
+
+
+
+
+γ
+ω
+ω
+
+
+s
+V
+b
+-
+s
+r
+D-1
+D-1
+D-1
+Crit
+h
+l
+2-D
+2-D
+h
+l
+K
+b
+e
+r
+G
+b
+G
+V
+G
+C
+η
+ 
+ 
+ 
+Total model: 
+ 
+2
+V
+ln
+ˆ
+s
+p
+(
+V )
+
+
+
+
+
+
+
+
+
+
+
+−
+
+
+
+
+
+
+
+µ ν,
+= µ
+Crit
+V
+C
+e
+ 
+ 
+ 
+ 
+32
+ 
+ 
+ 
+ 
+Bilaga 2, Uppmätta friktionsvärden  
+ 
+Uppmätta friktionsvärden för olika underlag vid varierande slipspeed. 
+Diagram tagna från: Andresen/Wambold; Friction fundamentals, Consepts and methodology, 
+99  
+ 
+Observera att Slip speed ≡ Spinn⋅Hastighet  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Mätning av friktion som funktion av Slip speed i olika hastigheter 65, 95 och 130 km/h, på 
+olika underlag.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+33
+ 
+ 
+ 
+ 
+Bilaga 3, Matlabprogram för motormoment efter åtgärd  
+ 
+Nedanstående MATLAB program är färdig att föras in och sparas i separat fil och exekveras i 
+MATLAB. Programmet genererar matrisvärden som beskriver kvarstående motormoment 
+som funktion av aktuell åtgärd och motorvarvtal.  
+ 
+%NW050913_Momentum after action  
+ 
+clf, clear 
+format bank 
+format compact 
+ 
+disp('Default setting: Number of actions: 16, Number of cylinders: 4') 
+disp('Cylinder reduction by actionstep: [0.25, 0.5, 1, 1.5, 2, 2.5, 3, 3.5]') 
+disp('Momentcurve (percent/100):[0, 0.4, 0.6, 0.85, 1, 0.7, 0.5], (Rel.) engine efficiency: 0.85') 
+A=input('Change Momentcurve and Engine eff.? ("1" for yes ?)'); 
+ 
+if A==1     
+    Ve=input('(Rel.) engine efficiency (ex: 0.82)'); 
+    PM=input('Momentcurve, 7 values ? (ex: [0, 0.4, 0.6, ...])') 
+     
+else 
+    Ve=0.85866667; 
+    PM=[0,0.4,0.6,0.85,1,0.7,0.50]';                  
+%Percentage MOMENTUM, variable 
+     
+end 
+ 
+D=16;                                                       
+%number of avalible ACTIONS, (period time), fixed 
+AA=[0.25, 0.5, 1, 1.5, 2, 2.5, 3, 3.5];                 %Number of cylinders to be CUT, variable 
+C=4;                                                        
+%Number of CYLINDERS, variable 
+Steps=AA./C*D 
+RPM=[0,1,2,3,4,5,6]';    
+PMM=PM.^-1; 
+     
+for j=0:D 
+     
+    for r=1:1:length(RPM)   
+        A=(1-(j)/D)*Ve*100*((D-(j))/D); 
+        Ret=PMM(r)*0.1; 
+        Enginemomentum(j+3,r+1)=(A-A*Ret); 
+        Enginemomentum(j+2,1)=j; 
+        Enginemomentum(2,r+1)=100; 
+        Enginemomentum(1,r+1)=1000*(r-1); 
+    end         
+end 
+Enginemomentum 
+for r=1:1:length(RPM)-1 
+    for n=1:length(AA) 
+        ScaledEngineMomentum(n,r)=Enginemomentum(Steps(n)+2,r+2); 
+    end 
+end 
+     
+Enginemomentum 
+ScaledEngineMomentum   
+ 
+ 
+34
+ 
+ 
+ 
+ 
+Bilaga 4, Matlabprogram för kurvkompensering 
+ 
+Nedanstående MATLAB program är färdig att föras in och sparas i separat fil och exekveras i 
+MATLAB. Programmet genererar matrisvärden för hur de individuella hastigheterna för 
+hjulrotationerna ska kompenseras efter hastighet och kurvkrökningsradie.  
+ 
+%NW050913_Corner_compensation      
+ 
+clf, clear 
+ 
+format compact 
+warning off MATLAB:divideByZero 
+ 
+ 
+%Wz== Rotation, around curve-centre. 
+%Rxy==Radii, distance curv-centre to wheel. 
+ 
+ 
+%Rif=R 
+ 
+ 
+%Vof=Wz*Rof =Wz*sqrt((R+B)^2+(L)^2)                                              
+(1) 
+%Vif=Wz*Rif =Wz*sqrt((R)^2+(L)^2)                                               
+(2) 
+ 
+    %Vor=Wz*Ror =Wz*(R+B)                                                       (3) 
+    %Vir=Wz*Rir =Wz*R                                                            
+ 
+(4) 
+ 
+%Kf=Vof/Vif =>  
+%Vof=Kf*Vif                                                                      
+ 
+(5) 
+%Vif=Kf*1/Vof                                                                    
+ 
+(6) 
+ 
+ 
+%V^F=(Vof+Vif)/2 =>                            
+%Vof=2*V^F-Vif                                                                   
+ 
+(7) 
+%Vif=2*V^F-Vof                                                                   
+ 
+(8) 
+ 
+    %Kr=Vor/Vir => 
+    %Vor=Kr*Vir                                                                  
+ 
+(9) 
+    %Vir=Kr*1/Vor                                                                
+ 
+(10) 
+ 
+    %V^R=(Vor+Vir)/2 => 
+    %Vor=2*V^B-Vir                                                               
+ 
+(11) 
+    %Vir=2*V^B-Vor                                                               
+ 
+(12) 
+ 
+%(5)&(7) => Vif=2*V^F/(1+Kf)                                                     
+(13) 
+%(6) & (8) => Vof=2*V^F/(1+1/Kf)                                                 
+(14) 
+ 
+ 
+    %(9) & (11) => Vir=2*V^R/(1+Kr)                                              
+(15) 
+    %(10) & (12) => Vor=2*V^R/(1+1/Kr)                                           
+(16) 
+ 
+ 
+%FWD: Vf(L,B,Kr,Vr) == V^F 
+ 
+%(3) & (4)  =>  R=B*Vir/(Vor-Vir)                                                
+(17) 
+%               Wz=(Vor-Vir)/B                                                   
+ 
+(18) 
+ 
+%(1), (17) & (18)  =>  Vof=(Vor-Vir)/B * sqrt((B*Vir/(Vor-Vir)+B)^2+L^2)       (19) 
+%(2), (17) & (18)  =>  Vif=(Vor-Vir)/B * sqrt((B*Vir/(Vor-Vir))^2+L^2)           (20) 
+ 
+ 
+ 
+35
+ 
+ 
+ 
+ 
+%(19) & (20) =>  
+(21): 
+%V^F=(((Vor-Vir)/B * sqrt((B*Vir/(Vor-Vir)+B)^2+L^2))+((Vor-Vir)/B * sqrt((B*Vir/(Vor-Vir))^2+L^2)))/2 
+ 
+%(15), (16) & (21) =>  
+(22):{Vf(L,B,Kr,Vr)} 
+% 
+%   V^F=(((2*V^B/(1+1/Kr-2*V^B/(1+Kr))/B * sqrt((B*(2*V^B/(1+Kr))/ 
+%(Vor-(2*V^B/(1+Kr)))+B)^2+L^2))+((Vor-(2*V^B/(1+Kr)))/B *  
+% 
+%       sqrt((B*(2*V^B/(1+Kr))/(Vor-(2*V^B/(1+Kr))))^2+L^2)))/2 
+% 
+ 
+ 
+ 
+%RWD: Vr(L,B,Kf,Vf) 
+ 
+%(1)  =>  R=(sqrt(Vof^2-L^2*Wz^2) - B*Wz)/Wz         
+ 
+(23) 
+%         Wz=Vof/(R^2+2*R*B+B^2+L^2)                 
+ 
+(24) 
+%(2)  =>  R=sqrt(Vif^2-L^2*Wz^2)/Wz                  
+ 
+(25) 
+%         Wz=Vif/sqrt(R^2+L^2)                       
+ 
+ 
+(26) 
+ 
+%(23) & (25) =>          
+(27): 
+%Wz=-j*sqrt(2*sqrt(-L^2*Vof^4+(B^2+2*L^2)*Vif^2*Vof^2-Vif^4*L^2)-B*(Vof^2+V 
+%if^2))/sqrt(B*(B^2+4*L^2)) 
+% 
+%(24) & (26) =>          
+(28): 
+%R=(sqrt(-L^2*Vof^4+(B^2+2*L^2)*Vif^2*Vof^2-Vif^4*L^2)+B*Vif^2)/(Vof^2-Vif^2) 
+ 
+%(3), (27) & (28) =>     
+(29): 
+%Vor=-j*sqrt(2*sqrt(-L^2*Vof^4+(B^2+2*L^2)*Vif^2*Vof^2-Vif^4*L^2)-B*(Vof^2+V 
+%if^2))/sqrt(B*(B^2+4*L^2)) * ((sqrt(-L^2*Vof^4+(B^2+2*L^2)*Vif^2*Vof^2-Vif^4*L^2)+B*Vif^2)/ 
+%(Vof^2-Vif^2) + B) 
+% 
+%(4), (27) & (28) =>     
+(30): 
+%Vir=-j*sqrt(2*sqrt(-L^2*Vof^4+(B^2+2*L^2)*Vif^2*Vof^2-Vif^4*L^2)-B*(Vof^2+V 
+%if^2))/sqrt(B*(B^2+4*L^2)) * (sqrt(-L^2*Vof^4+(B^2+2*L^2)*Vif^2*Vof^2-Vif^4*L^2)+B*Vif^2)/ 
+%(Vof^2-Vif^2) 
+% 
+%(29) & (30) =>          
+(31): 
+%V^B = ((-j*sqrt(2*sqrt(-L^2*Vof^4+(B^2+2*L^2)*Vif^2*Vof^2-Vif^4*L^2)-
+%B*(Vof^2+Vif^2))/sqrt(B*(B^2+4*L^2)) *  
+%((sqrt(-L^2*Vof^4+(B^2+2*L^2)*Vif^2*Vof^2-Vif^4*L^2)+B*Vif^2)/(Vof^2-Vif^2) + B)) +  
+%(-j*sqrt(2*sqrt(-L^2*Vof^4+(B^2+2*L^2)*Vif^2*Vof^2-Vif^4*L^2)-%B*(Vof^2+Vif^2))/sqrt(B*(B^2+4*L^2)) 
+*  
+%(sqrt(-L^2*Vof^4+(B^2+2*L^2)*Vif^2*Vof^2-Vif^4*L^2)+B*Vif^2)/(Vof^2-Vif^2)))/2 
+ 
+%(31), (13) & (14) =>    
+(32):{Vr(L,B,Kf,Vf)} 
+% 
+%V^B = ((-j*sqrt(2*sqrt(-L^2*2*V^F/(1+1/Kf)^4+(B^2+2*L^2)*2*V^F/(1+Kf)^2*2*V^F/(1+1/Kf)^2-
+%2*V^F/(1+Kf)^4*L^2)-B*(2*V^F/(1+1/Kf)^2+2*V^F/(1+Kf)^2))/sqrt(B*(B^2+4*L^2)) *  
+%((sqrt(-L^2*2*V^F/(1+1/Kf)^4+(B^2+2*L^2)*2*V^F/(1+Kf)^2*2*V^F/(1+1/Kf)^2-
+%2*V^F/(1+Kf)^4*L^2)+B*2*V^F/(1+Kf)^2)/(2*V^F/(1+1/Kf)^2-2*V^F/(1+Kf)^2) + B)) +  
+%(-j*sqrt(2*sqrt(-L^2*2*V^F/(1+1/Kf)^4+(B^2+2*L^2)*2*V^F/(1+Kf)^2*2*V^F/(1+1/Kf)^2-
+%2*V^F/(1+Kf)^4*L^2)-B*(2*V^F/(1+1/Kf)^2+2*V^F/(1+Kf)^2))/sqrt(B*(B^2+4*L^2)) *  
+%(sqrt(-L^2*2*V^F/(1+1/Kf)^4+(B^2+2*L^2)*2*V^F/(1+Kf)^2*2*V^F/(1+1/Kf)^2-
+%2*V^F/(1+Kf)^4*L^2)+B*2*V^F/(1+Kf)^2)/(2*V^F/(1+1/Kf)^2-2*V^F/(1+Kf)^2)))/2 
+% 
+ 
+ 
+disp('Default setup; Vehicle Length=2.605m, Width=1.452m, RWD & FWD') 
+disp('Velocitys=[15,30,60,140], K=1:0.05:1.4') 
+ 
+C=input('Change Length and Width? (1=Yes):'); 
+ 
+ 
+36
+ 
+ 
+ 
+ 
+ 
+if C==1 
+     
+    L=input('Vehicle length (m)=?, (typical value 2.605):'); 
+    B=input('Vehicle width (m)=?, (typical value 1.452):'); 
+     
+else 
+    L=2.605; 
+    B=1.452;     
+    VV=[15,30,60,140]; 
+ 
+end 
+ 
+a=10; 
+ 
+for m=0:1 
+    if m==0 
+         
+    D=0; 
+    disp('RWD') 
+    else 
+    D=1; 
+    disp('FWD') 
+    end 
+ 
+for g=0:9 
+    for h=1:4 
+        VF=VV(h); 
+        VR=VV(h); 
+        K=1+g*0.05; 
+        Kf=K; 
+        Kr=K; 
+        if D==0                                             %RWD 
+  
+            Vif=2*VF/(1+Kf); 
+            Vof=2*VF/(1+1/Kf); 
+ 
+            VBO = (-j*sqrt(2*sqrt(-L^2*Vof^4+(B^2+2*L^2)*Vif^2*Vof^2-Vif^4*L^2)-
+B*(Vof^2+Vif^2))/sqrt(B*(B^2+4*L^2)) * ((sqrt(-L^2*Vof^4+(B^2+2*L^2)*Vif^2*Vof^2-
+Vif^4*L^2)+B*Vif^2)/(Vof^2-Vif^2) + B)); 
+            VBI = (-j*sqrt(2*sqrt(-L^2*Vof^4+(B^2+2*L^2)*Vif^2*Vof^2-Vif^4*L^2)-
+B*(Vof^2+Vif^2))/sqrt(B*(B^2+4*L^2)) * (sqrt(-L^2*Vof^4+(B^2+2*L^2)*Vif^2*Vof^2-
+Vif^4*L^2)+B*Vif^2)/(Vof^2-Vif^2)); 
+ 
+            Vcorr(a-g,h+1)= (VBO+VBI)/2 - VF; 
+             
+        end 
+        if D==1                                             %FWD 
+             
+            Vir=2*VR/(1+Kr); 
+            Vor=2*VR/(1+1/Kr); 
+ 
+             
+            VFO=(Vor-Vir)/B * sqrt(((B*Vir/(Vor-Vir))+B)^2+L^2); 
+            VFI=(Vor-Vir)/B * sqrt(((B*Vir/(Vor-Vir)))^2+L^2); 
+             
+            Vcorr(a-g,h+1)= (VFO+VFI)/2 - VR; 
+             
+        end 
+         
+        z=imag(Vcorr(a-g,h+1)); 
+         
+ 
+ 
+37
+ 
+ 
+ 
+ 
+        if z ~=0 
+           Vcorr(a-g,h+1) = 0; 
+           z=0; 
+        end 
+   
+        Vcorr(a-g,1)=K; 
+        Vcorr(1,h+1)=VV(h); 
+        Vcorr(1,1)=0; 
+         
+    end 
+end 
+ 
+Vcorr 
+end 

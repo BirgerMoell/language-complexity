@@ -1,0 +1,2449 @@
+ 
+Electric Power Assist Servo Steering for an ATV 
+ 
+By Johan Bäckvall 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2008:34 MDA323 
+KTH Industrial Engineering and Management 
+Machine Design 
+SE-100 44  STOCKHOLM  
+II 
+ 
+ 
+ 
+ 
+ 
+Examensarbete  MMK 2008:34 MDA323 
+ 
+Elektrisk servostyrning för fyrhjulingar 
+ 
+ 
+ 
+ 
+ 
+Johan Bäckvall 
+Godkänt 
+2008-06-10 
+Examinator 
+Jan Wikander 
+Handledare 
+Fredrik Roos 
+ 
+Uppdragsgivare 
+Nira Control AB 
+Kontaktperson 
+David Björklund 
+Sammanfattning 
+Det här examensarbetet är en förstudie för ett framtida produktutvecklingsprojekt. Syftet 
+med projektet är att utvärdera de möjligheter och svårigheter som finns med att 
+konstruera ett styrhjälpservo för fyrhjulingar. Projektet har utförs i samarbete Nira Contol 
+AB. Nira konstruerar och tillverkar elektriska och elektromekaniska produkter främst 
+ämnade för motorsportsegmentet.  
+ 
+Nira Control AB utvecklar på uppdrag av en ny tillverkare bränsleinsprutningssystemet 
+för en ny serie stora fyrhjulingar. För att kunna konkurrera med tillverkare som Yamaha 
+och Honda bör tillverkaren kunna erbjuda servostyrning av fordonet. Därför överväger 
+Nira möjligheten att konstruera ett hård- och mjukvarukoncept för en elektromekanisk 
+servostyrning.  
+ 
+Fokus för projektet har varit att utreda de olika ingående komponenterna, och deras 
+samverkan. Eftersom målet är en produkt som lämpar sig för serietillverkning har inga 
+dyra eller svårtillgängliga komponenter använts, med ett undantag. För att spara tid har 
+servomotorn för demonstrationsplattformen köpts in som reservdel från Yamaha. 
+ 
+Efter genomförda teoretiska studier och simuleringar har en demonstrationsplattform 
+konstruerats. Denna plattform demonstrerar men hjälp av en mikrokontroller och dess 
+periferienheter servots funktion, och bevisar konceptets duglighet. 
+ 
+De genomförda studierna har levererat ett positivt resultat. Det har visats att det är 
+möjligt att utan alltför stor svårighet utforma ett funktionellt styrhjälpservo. Studien visar 
+även att det finns många faktorer att ta hänsyn till under ett dylikt projekt och pekar även 
+på möjliga förbättringar av demonstratorkonstruktionen.  
+ 
+III 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2008:34 MDA323
+ 
+Electric Power Assist Servo Steering for an ATV
+ 
+ 
+ 
+ 
+ 
+Johan Bäckvall 
+Approved 
+2008-06-10 
+Examiner 
+Jan Wikander 
+Supervisor 
+Fredrik Roos 
+ 
+Commissioner 
+Nira Control AB 
+Contact person 
+David Björklund 
+ 
+Abstract 
+This thesis is a feasibility study for a future product development project. The purpose of 
+this project is to evaluate the possibilities and difficulties associated with the design of an 
+electric power assist servo for all terrain vehicles (ATVs). The project has been carried 
+out in collaboration with Nira Control AB. Nira designs and manufactures electric and 
+electro mechanic products mainly for the motor sport market segment. 
+ 
+Nira Control AB is developing a fuel injection system for a new line of large ATVs on 
+commission. To be able to compete with manufacturers like Yamaha and Honda the 
+commissioner should be able to offer optional power assist steering. Hence, Nira is 
+looking into designing a hard- and software concept for an electric power assist servo 
+steering.  
+ 
+The focal point of the project has been the evaluation of the constituent parts and their 
+interaction. Given that the target product should be suitable for production, no expensive 
+or hard to find components were used, with one exception. To conserve time, the servo 
+assembly for the demonstration platform was purchased as a spare part from Yamaha. 
+ 
+After theoretical studies and simulations a demonstration platform was designed. This 
+platform employs a microcontroller and its peripherals to demonstrate the functionality of 
+the assist servo and the overall feasibility of the concept. 
+ 
+The completed studies have had a positive outcome. It has been shown that it is possible 
+to design a functioning servo assist setup without special expertise or great difficulty. The 
+study also shows that there are many factors to consider during a project of this type and 
+further suggests possible improvements for the demonstration platform.  
+ 
+IV 
+Table of contents 
+1 INTRODUCTION..................................................................................................................................... 1 
+2 POWER ASSISTED STEERING – PAS................................................................................................. 2 
+2.1 HYDRAULIC POWER ASSIST STEERING – HPAS ................................................................................... 2 
+2.2 ELECTRO-HYDRAULIC POWER ASSIST STEERING – EHPAS................................................................. 3 
+2.3 ELECTRIC POWER ASSIST STEERING – EPAS ....................................................................................... 3 
+3 MODELING AND SIMULATIONS........................................................................................................ 4 
+3.1 MODELING OF ATV STEERING DYNAMICS........................................................................................... 5 
+3.1.1 Tire Friction Model...................................................................................................................... 5 
+3.1.2 Rim-tire Flexing........................................................................................................................... 8 
+3.1.3 Steering Linkage .......................................................................................................................... 9 
+3.2 SIMULATING CURRENT FEEDBACK CONTROLLER............................................................................... 12 
+4 ELECTRONICS...................................................................................................................................... 17 
+4.1MICROCONTROLLER – INFINEON XC164CM....................................................................................... 17 
+4.1.1 Development Tools..................................................................................................................... 18 
+4.1.2 Utilized Microcontroller Peripherals......................................................................................... 19 
+4.2 ALGORITHMS...................................................................................................................................... 19 
+4.2.1 Main Control Algorithm............................................................................................................. 19 
+4.2.2 Linear Interpolation Algorithm.................................................................................................. 21 
+4.3 SCHEDULING....................................................................................................................................... 22 
+4.4 OTHER ELECTRIC AND ELECTRO MECHANIC HARDWARE..................................................................... 23 
+4.4.1 Half bridge - Infineon BTS7960................................................................................................. 23 
+4.4.2 Current Sensor........................................................................................................................... 26 
+4.4.2 Torque sensor............................................................................................................................. 28 
+5 DEMONSTRATION PLATFORM ....................................................................................................... 33 
+6 RESULTS, CONCLUSIONS AND FURTHER WORK...................................................................... 35 
+6.1 TORQUE AS A FUNCTION OF ANGLE SIMULATION ................................................................................ 35 
+6.2 SIMULATING CURRENT FEEDBACK CONTROLLER............................................................................... 35 
+6.3 SENSORS............................................................................................................................................. 36 
+6.3.1 Current sensor ........................................................................................................................... 36 
+6.3.2 Additional Sensor Input ............................................................................................................. 37 
+6.4 SERVO MECHANICS ............................................................................................................................ 38 
+6.5 DEMONSTRATION PLATFORM ............................................................................................................. 38 
+6.5.1 Power Stage Heat Dissipation Calculations.............................................................................. 39 
+6.6 MAIN CONTROL LOOP ........................................................................................................................ 40 
+6.6.1 Stability ...................................................................................................................................... 40 
+6.7 SAFETY FIRST..................................................................................................................................... 40 
+6.8 GENERAL CONCLUSIONS .................................................................................................................... 41 
+7 ACKNOWLEDGEMENTS.................................................................................................................... 42 
+8 APPENDICES ......................................................................................................................................... 44 
+APPENDIX 1 – MAIN CONTROL ALGORITHM............................................................................................. 44 
+APPENDIX 2 – LINEAR INTERPOLATION ALGORITHM................................................................................ 44 
+APPENDIX 3 – ESSENTIAL MICROCONTROLLER PERIPHERALS.................................................................. 44 
+1 
+1 Introduction 
+The first known patent on power assisted steering (PAS) was allegedly filed in 1932, 
+however another 23 years came to pass before Chrysler made the technology publically 
+available with their “Imperial” model in 1951 [3].  
+Today, another five decades later, virtually all common cars and trucks are fitted with 
+some kind of PAS for two major and correlated reasons. The first reason is comfort, 
+today’s heavy and wide tired vehicles would be very cumbersome to manage in low 
+speeds situations like parking without assistance. The second reason is handling, which 
+will be an issue if one attempts to mitigate foresaid problem by steering gear ratio alone. 
+The introduction of PAS provides driver comfort without sacrificing handling 
+performance, at the cost of added vehicle complexity and decreased fuel economy. 
+ 
+Non recreational all terrain vehicles (ATVs) have been growing in size and power 
+steadily during the past decade. As a consequence, manageability has suffered and has 
+grown into a predicament un-catered for by manufacturers until recently.  
+Yamaha was the first company to incorporate electric power assisted steering (EPAS) in 
+the design of their high end models in 2007, closely followed by Honda in early 2008. 
+These new models have been well received by customers as well as critics with special 
+praise for smooth and effortless steering.  
+ 
+NIRA Control AB specialises in developing and manufacturing engine control units 
+(ECUs), mainly for relatively short production runs, race cars and enthusiasts. NIRAs 
+main expertise lies within combustion engines and fuel injection but they also offer 
+peripheral products such as electronic electrical centrals (EECs) as well as configuration 
+and tuning software for their products.   
+ 
+NIRA is currently designing an ignition system for a completely new line of ATVs and 
+shares the markets belief in the merits of EPAS. To investigate different approaches and 
+estimate the effort involved in the design of such a system NIRA announced a Master of 
+Science thesis project.  
+ 
+This report is dedicated to answering foresaid questions in a scientific manner and should 
+be of interest to automotive engineers as well as individuals with some knowledge in 
+electric- and control design. 
+ 
+The project is divided into a number of tasks which are completed in a semi parallel 
+fashion, note Figure 1. 
+ 
+Figure 1: Work Schedule 
+2 
+2 Power Assisted Steering – PAS 
+PAS is the name of a group of technologies whose main purpose is to facilitate the 
+steering of vehicles. They accomplish this by applying a driver initiated, but not actuated, 
+force to the steering rack, column or pinion. Depending on the age and type of vehicle the 
+actual method of achieving this force will vary, the three most common ones are briefly 
+explained in the following sections. 
+2.1 Hydraulic Power Assist Steering – HPAS 
+The first, and most common, method of generating a steering assist force is by the use of 
+hydraulics. A principle schematic of such a system is found in Figure 2, inspired by [6]. 
+ 
+ 
+Figure 2: HPAS principle schematic 
+ 
+When the driver turns the steering wheel he moves the steering rack by turning the 
+pinion. By applying a torque to the steering column the driver will furthermore twist the 
+torsion bar and thereby upset the pressure balance between left- and right hand side fluid 
+line. This pressure difference will assist the driver with his intention of turning the 
+vehicle. 
+ 
+ 
+ 
+3 
+This design has been proved over time, but has inherent disadvantages. Since the pump 
+must handle a wide velocity span the design requires a pressure valve to bleed away 
+excess pressure at high rpm’s. This is essentially a waste of energy and makes the HPAS 
+the most power consuming non essential system in the vehicle [10], air conditioning 
+systems included.  
+ 
+Further drawbacks include high weight, cumbersome installation and high component 
+cost. 
+2.2 Electro-Hydraulic Power Assist Steering – EHPAS 
+EHPAS is a hybrid technique, where the pump of the HPAS, note Figure 2, is replaced 
+with an electric motor. This provides some additional energy conserving- and control 
+capabilities. 
+ 
+From an energy point of view the electrical motor is advantageous since its output can be 
+tuned or entirely shut of when superfluous, which is likely at high speed. Hence, less 
+energy is wasted by the pressure release valve. Furthermore assist response can be tuned, 
+for example increased driver aid during low speed maneuvering. 
+2.3 Electric Power Assist Steering – EPAS 
+EPAS is the youngest member of the PAS family; the first EPAS fitted cars were 
+manufactured around 1996. With the introduction of EPAS all of the hydraulics formerly 
+incorporated into the steering setup is removed, note Figure 3. The assist force is 
+generated by a geared electric servo. The force is directly transferred to the steering 
+column, pinion or rack with a minimum of loss.  
+Due to the electrical nature of the servo control, variable assist levels are easy to achieve, 
+that is however not all. With more sophisticated control software the EPAS can double as 
+a force feedback unit, allowing the manufacturer to freely alter the steering experience. 
+ 
+ 
+Figure 3: EPAS overview [2] 
+4 
+ 
+The EPAS is the most energy efficient PAS solution since it only consumes power when 
+actually assisting the driver. It is also lighter, easier to assemble and is less burdensome 
+to refurbish that the HPAS, but there is one distinct disadvantage.  
+When vehicles grow in size and weight, they become hard to steer. This means a large 
+vehicle requires a large EPAS servo motors, which is not a problem for consumer cars.  
+ 
+Trucks and lorries, however, may require servo motors which can provide as much as 
+6kW [2] peak. This corresponds to about 250 amperes of surge current at 24V battery 
+voltage which modern batteries can handle [11]. The crucial points are the control 
+electronics and the power cables which will be required to safely cope with the same 
+load, not an easy task.   
+3 Modeling and simulations 
+The main objective of this project is to estimate how difficult, time-consuming and 
+expensive it would be to design a commercially viable soft- and hardware solution for 
+EPAS control. In an effort to make this rather diffuse project description manageable the 
+task is split in three core sections; modeling, electronics soft- and hardware design as 
+well as design of a demonstration platform. 
+ 
+The driver input, torque sensor, servo input, steering linkage and the road-tire friction 
+will be modeled in Simulink to give a picture of the dynamics of the steering system. The 
+model will be used as an important tool to gain understanding of, and to evaluate, 
+different control options. It will also provide a simple way to analyze the propagation and 
+dynamics of various disturbances introduced into the system. 
+ 
+When simulations have confirmed the proposed control scheme a microcontroller will be 
+used to implement the control loop. The microcontroller and its peripheral circuits will be 
+chosen with a realistic price/performance ratio. This provides “proof of concept” for the 
+technique in question as well as from an economic perspective. 
+ 
+The third part of the project is to assemble a simple demonstration platform. The demo 
+setup will be controlled by the software and hardware previously built. 
+The demonstration platform will neither include an actual ATV nor will it be required to 
+handle the numerous environments and situations an ATV will face.  
+5 
+3.1 Modeling of ATV Steering Dynamics 
+The steering dynamics of an ATV is influenced by a number of factors, which have been 
+divided into four categories. These categories are as follows: 
+ 
+• Changing terrain- or vehicle velocity conditions 
+• Tire-road friction 
+• Rim-tire flexing 
+• Steering linkage 
+ 
+This paper will concentrate on the later three categories, entirely neglecting the first 
+category on account of being to complex to model with the time resources available. 
+The model will furthermore only address what is believed [2] to be a worst case scenario 
+from a servo power point of view, zero velocity maneuvering on asphalt. 
+3.1.1 Tire Friction Model 
+There are several commercial tire friction models available today, all with different 
+abstraction levels and price tags. To keep the complexity of the model at a reasonable 
+level some simplifications are made based on the results of Fredrik Roos’s paper on 
+HVEPAS [2]. It is assumed that the two major torque components affecting the king pin 
+torque are tire-road friction and tire-rim spring effect.  
+ 
+The notation and orientation of the coordinate system is to great extent the same as in [2], 
+note Figure 4. Assume that the tire contact patch area is rectangular with sides a and b. If 
+the resulting force from the ground on the wheel is dubbed Nw and the contact pressure, 
+Pc is assumed constant, Pc can be written as in Equation 1. 
+ 
+ 
+Figure 4: Tire road contact patch 
+ 
+6 
+Equation 1 
+b
+a
+N
+P
+w
+c
+⋅
+=
+  
+ 
+ 
+If μ is the coefficient of friction between road and tire the force, dF, on an infinitesimal 
+tire element can be written as in Equation 2. 
+ 
+Equation 2 
+dxdy
+P
+dF
+c
+μ
+=
+ 
+ 
+ 
+The required king pin torque to overcome the friction torque from one tire element is 
+given by Equation 3 where rkp is the vector from the tire element to the ground-king pin 
+intersection, note Figure 5. 
+ 
+ 
+Figure 5: King pin definition, curtsey of [2] 
+ 
+Equation 3 
+dF
+r
+dT
+kp
+gkz =
+  
+ 
+ 
+The king pin torque is the sum of all torque elements and is derived by using Equation 2 
+and Equation 3, note Equation 4. 
+ 
+Equation 4 
+∫∫
+=
+1
+0
+1
+0
+x
+x
+y
+y
+c
+kp
+gkz
+dxdy
+P
+r
+T
+μ
+  
+ 
+ 
+7 
+The norm of the vector rkp is given by Equation 5, where e is the vector between the 
+center of the road-tire contact area and the king pin-ground intersection. 
+ 
+Equation 5 
+{
+}
+(
+)
+(
+)
+2
+2
+2
+2
+,
+y
+e
+x
+e
+y
+e
+r
+x
+e
+r
+r
+r
+r
+y
+x
+y
+kpy
+x
+kpx
+kpy
+kpx
+kp
+−
++
+−
+=
+−
+=
+−
+=
+=
++
+=
+  
+ 
+ 
+Combining Equations 1, 4, 5 provides the equation for the king pin torque in the Z-
+direction, note Equation 6. 
+ 
+Equation 6 
+(
+)
+(
+)
+∫∫
+−
+−
+−
++
+−
+⋅
+=
+2
+/
+2
+/
+2
+/
+2
+/
+2
+2
+a
+a
+b
+b
+y
+x
+w
+gkz
+dxdy
+y
+e
+x
+e
+b
+a
+N
+T
+μ
+  
+ 
+ 
+This torque is valid for the Z-direction only, to get the required king pin torque respect 
+has to be taken to the king pin inclination angle, α, and the caster angle, γ, note Equation 
+7. 
+ 
+Equation 7 
+( )
+( )
+( )
+( )
+(
+)
+(
+)
+∫∫
+−
+−
+−
++
+−
+⋅
+=
+=
+2
+/
+2
+/
+2
+/
+2
+/
+2
+2
+cos
+cos
+cos
+cos
+a
+a
+b
+b
+y
+x
+w
+gkz
+gkf
+dxdy
+y
+e
+x
+e
+b
+a
+N
+T
+T
+γ
+α
+μ
+γ
+α
+  
+ 
+Equation 7 contains one unknown variable, the king pin offset vector e, note Figure 4. 
+This vector depends upon the location of the ground-king pin intersection point and 
+consequently varies with different steering angles. The intersection point can be found by 
+several methods, this paper uses a simplified process.  
+ 
+Assume that the intersection point is fixed with the contact patch center describing a 
+circular motion around it. If the contact patch angle is denoted φcp and e0 is the offset  
+vector at φ=0 the components of e are given by Equation 8. 
+ 
+Equation 8 
+(
+)
+(
+)
+⎪
+⎩
+⎪
+⎨
+⎧
+=
++
+=
++
+=
+0
+sin
+cos
+0
+0
+z
+cp
+y
+cp
+x
+e
+e
+e
+e
+e
+β
+ϕ
+β
+ϕ
+  
+ 
+ 
+The angle β is given by Figure 4 and can be calculated by using Equation 9. 
+ 
+Equation 9 
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+=
+x
+y
+e
+e
+0
+0
+arctan
+β
+ 
+ 
+ 
+ 
+8 
+3.1.2 Rim-tire Flexing 
+When turning the steering wheel the tire does not begin to slide immediately. Since the 
+tire can flex with respect to the rim sliding the sliding is delayed, depending on the 
+stiffness of the tire, note Figure 6. 
+ 
+ 
+Figure 6: Definition of rim and tire coordinate systems 
+ 
+If modeled as a linear spring the stiffness of the spring, ks, is correlated with the 
+maximum steering angle before sliding occurs, φmax, and the king pin torque Tgkf, note 
+Equation 10. 
+ 
+Equation 10 
+max
+)
+(
+)
+(
+delta
+tp
+gkf
+tp
+s
+T
+k
+ϕ
+ϕ
+ϕ
+=
+  
+ 
+ 
+Hence, the torque in the non-sliding torque region is given by Equation 11  
+ 
+Equation 11 
+(
+)
+tp
+kp
+s
+delta
+s
+gkf
+k
+k
+T
+ϕ
+ϕ
+ϕ
+−
+=
+=
+ 
+ 
+ 
+9 
+3.1.3 Steering Linkage 
+The steering linkage geometry is essential to the steering experience, however precisely 
+modeling the complete steering linkage would be very time consuming. Hence, most 
+calculations will be made in the X-Y plane (2D) which is where the most significant 
+forces act, note Figure 7. 
+ 
+ 
+Figure 7: Schematic overview of the steering linkage  
+ 
+The driver actuated torque is transferred via the inclined steering column, note Figure 8 
+as well as Equation 12. 
+ 
+ 
+Figure 8: Definition of the steering column inclination angle 
+10 
+ 
+Equation 12 
+(
+)
+ss
+ss
+d
+M
+M
+ϕ
+cos
+=
+  
+ 
+ 
+The remainders of the geometry definitions are found in Figure 9, which also provides 
+several basic trigonometric associations. For the sake of simplicity it will be assumed that 
+φ3=φ4 and that Δφ is the same in both halves of the figure, note Equation 13 and Equation 
+14. 
+ 
+Equation 13 
+⎪⎩
+⎪⎨
+⎧
++
+=
++
+=
+5
+2
+4
+2
+8
+2
+2
+1
+2
+7
+:
+L
+L
+L
+L
+L
+L
+Static
+ 
+ 
+ 
+Equation 14 
+⎪⎩
+⎪⎨
+⎧
+=
+Δ
++
+=
+Δ
++
+=
+4
+3
+2
+8
+4
+1
+7
+1
+)
+cos(
+)
+cos(
+:
+ϕ
+ϕ
+ϕ
+ϕ
+ϕ
+ϕ
+L
+L
+L
+L
+Dynamic
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 9: Steering geometry definitions 
+ 
+The corresponding force and torque definitions are found in Figure 10. 
+ 
+11 
+ 
+Figure 10: Force and torque definitions 
+ 
+The driver applies the torque Md which generates the force F1x, calculated by combining 
+Equation 12 and Equation 14, note Equation 15. 
+ 
+Equation 15 
+(
+)
+(
+)
+ss
+d
+ss
+x
+L
+M
+L
+M
+F
+ϕ
+ϕ
+ϕ
+cos
+cos
+1
+7
+1
+1
+Δ
++
+=
+=
+  
+ 
+ 
+The force F1 in the connection rod is found by combining Equation 14 and Equation 15, 
+note Equation 16. 
+ 
+Equation 16 
+(
+)
+(
+)
+(
+)
+(
+)
+ϕ
+ϕ
+ϕ
+ϕ
+ϕ
+ϕ
+ϕ
+ϕ
+ϕ
+Δ
++
+=
+⇒
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
+Δ
++
+=
+=
+1
+7
+3
+1
+3
+1
+7
+3
+1
+1
+cos
+)
+cos(
+cos
+)
+cos(
+cos
+cos
+)
+cos(
+L
+F
+M
+L
+M
+F
+F
+ss
+d
+ss
+d
+x
+ 
+ 
+ 
+Since F2=-F1 applying Equation 14 will give the relations between wheel torque and 
+connection rod force, note Figure 10 and Equation 17. 
+ 
+Equation 17 
+(
+)
+(
+)
+(
+)
+(
+)
+3
+1
+2
+8
+4
+2
+2
+8
+3
+4
+cos
+cos
+cos
+cos
+ϕ
+ϕ
+ϕ
+ϕ
+ϕ
+ϕ
+F
+L
+F
+L
+F
+L
+M
+x
+w
+Δ
++
+=
+−
+Δ
++
+=
+=
+  
+ 
+ 
+The relation between driver torque and wheel torque is given by combining Equation 16 
+and Equation 17, note Equation 18. 
+ 
+Equation 18 
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+w
+ss
+d
+w
+ss
+d
+M
+L
+L
+M
+L
+M
+L
+M
+ϕ
+ϕ
+ϕ
+ϕ
+ϕ
+ϕ
+ϕ
+ϕ
+ϕ
+ϕ
+cos
+cos
+cos
+cos
+cos
+cos
+2
+8
+1
+7
+2
+8
+1
+7
+Δ
++
+Δ
++
+=
+⇒
+Δ
++
+=
+Δ
++
+  
+12 
+ 
+Combining Equation 7, Equation 11 and Equation 18 will produce the plot in Figure 11if 
+fed with constants and driver input. The input for Figure 11 is an angle zig-zag profile 
+with amplitude of 30°.  
+ 
+ 
+Figure 11: Driver angle and resulting torque on steering column 
+ 
+3.2 Simulating Current Feedback Controller 
+The simulation is designed around four main subsystems. These subsystems are 
+comprised of mechanical and/or electrical components that are mechanically or 
+electrically associated as far as possible. This is not always the most effortless way to 
+implement dynamic systems in simulink, but it lets the computer representation of the 
+system maintain a link with real world physics. Models constructed in such a visually 
+intuitive fashion are often easier to comprehend for people that are not involved in the 
+production of the model. 
+ 
+The top simulink view is shown in Figure 12, the four key subsystems are the rectangular 
+blocks. The signal that excites the system is a cosine that represents driver angular 
+steering velocity. This may not be a perfect driver simulation but as realistic driver data is 
+hard to produce it will suffice. 
+ 
+The velocity signal enters the “steering shaft” subsystem, note  
+Figure 13, where it is converted into torque and rotation. The torque sensor introduces a 
+torsional weakness to the steering column; this weakness is modeled by a torsional spring 
+dampener. The stiffness and dampening coefficients are adapted from [1] and taken to 
+Tdamp = 0.0225 Nm·s/rad and Tspring = 859 Nm/rad. An ideal torque sensor simulink block 
+provides the torque signal that is converted to a current reference.  
+ 
+The servo subsystem is further provided with a rotational velocity signal. This is to 
+ensure that back EMF and brush friction calculation are properly synchronized with the 
+main shaft model. 
+13 
+ 
+The PI current controller is fed with the current reference that is turned into a servo 
+voltage signal by the use of an error feedback loop. The voltage signal enters the 
+servo/gearbox subsystem which converts input voltage to output torque. Velocity and 
+acceleration values are not calculated in this subsystem, these integrations are provided 
+by the drive line environment. The output torque signal is reconnected to the main drive 
+line, closing the servo loop.  
+ 
+The wheel friction model is connected to a position sensor. This permits the calculation 
+of the wheel friction torque which is the last component required to create a torque 
+balance.  
+ 
+ 
+Figure 12: Simulink top view 
+ 
+ 
+The steering column is modeled with “Sim drive line” which is a Simulink toolbox that 
+simplifies the modeling of torques and rotations in shafts.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Steering shaft 
+14 
+ 
+ 
+Figure 13: Steering column modeled with “sim drive line” 
+ 
+The simulation data is stored in a file for later inspection and plotting. The outcome for 
+the most important parameters is seen in the following figures, starting with Figure 14.  
+The voltage spikes/oscillations are located at the time of input direction changes. They 
+can be eliminated by lowering the controller gains, at the cost of less smooth current 
+following. 
+ 
+ 
+Figure 14: Simulation output with respect to reference current, current and output (volts) 
+ 
+15 
+Figure 14 shows an ideal picture of controller performance. Since the most likely source 
+of control degrading noise is the current sensor, an artificial noise source is added to the 
+simulation. Figure 15 depicts the control performance after a sine wave with an amplitude 
+of 0.2 A frequency of 275 kHz has been overlaid onto the current sensor output. The 
+controller is still stable; however the controlled variable (U-Volts) is oscillating heavily. 
+The oscillation is unwelcome but will hopefully be removed with a low pass (LP) in 
+series with the current signal. This analogue LP filter is explained in section 4.4.2 but not 
+modeled. 
+ 
+ 
+Figure 15: Simulation with added current sensor noise. 
+ 
+Figure 16 visualize the road- driver- and servo torques, Figure 17 presents the same 
+simulation with added current sensor noise.  The addition of current sensor noise does not 
+seem to affect the torque significantly. 
+ 
+16 
+ 
+Figure 16: Simulation torque output, no sensor noise 
+ 
+Figure 17: Simulation torque output, with added current sensor noise 
+17 
+4 Electronics 
+Chapter four deals with the subject of microcontrollers and the electronics required to 
+power the servo motor and sample the sensors, note Figure 18 
+ 
+ 
+Figure 18: System overview 
+4.1Microcontroller – Infineon XC164CM 
+The XC164CM is a sibling of the 16 bit XC167 controller but has a reduced number of 
+I/O pins to cut cost. The XC164CM has got hardware support for motor control and 
+several other features, note Figure 19.  
+ 
+”Dave Drive” is a rapid development tool provided by Infineon. It supplies a graphical 
+interface for the dynamic design of commutation software for brushless direct current 
+motors (BLDCM). Dave Drive generates optimized assembly code that uses the built in 
+MAC unit, which means that very little CPU time will be required for control of the 
+BLDCM. These features could prove important if, at some point, control of a BLDC 
+servo became necessary while spare CPU execution time were sparse.  
+18 
+ 
+Figure 19: Block schematic of the XC164 hardware features 
+ 
+The XC164CM controller is capable of running at frequencies of up to 40 MHz. This has 
+some implications for basic timing issues, for example the minimum resolvable time unit 
+is 25nS at 40 MHz.  
+4.1.1 Development Tools 
+The project software was developed using Infineon’s digital virtual application engineer 
+(DAVE) and the Tasking C166 r3 compiler. The assembled code was flashed onto a 
+“Easy Kit XC164CM” using a debugger native to Tasking called Cross View. A USB 
+oscilloscope was employed for further real time debugging. 
+ 
+DAVE is essentially a tool used to facilitate low level embedded development. It 
+provides a graphical interface to help set up all of the microcontroller peripherals.  
+A simple task like configuring a port pin usually requires several registers to be properly 
+initialized. Configuring these registers take time since the manual has to be consulted at 
+every step of the process.  
+ 
+DAVE automatically configures the required register with a few clicks of the mouse, and 
+generates heavily commented C code that can be imported into the compiler. It also 
+provides “quick access” to the device manual and further supply several small C 
+functions. These functions are occasionally helpful for use and extended configuration of 
+the peripheral in question.  
+ 
+19 
+Tasking for C166 is a good but not exceptional compiler. It is pretty intuitive to set up but 
+does not have the option to import a DAVE project automatically, a functionality that can 
+be found in the Keil compiler. The integrated debugger, Cross View, is user friendly. 
+There were no issues when setting up break points, stepping through the program code or 
+monitoring the registers and variables. 
+ 
+The “Easy Kit” is basically a XC164CM mounted onto a PCB which provides easy 
+access to connectors, CAN transceiver, a few LED’s and a potentiometer. One of its 
+merits is that it is USB enabled (via an external IC), both in terms of communication and 
+power. 
+4.1.2 Utilized Microcontroller Peripherals 
+The XC164 has several interesting peripheral units, but not all of them are needed or 
+implemented for this project. If, for some reason, the software needs to be ported to 
+another controller a number of the peripherals are essential. These peripherals are 
+presented in further detail in Appendix 3. 
+4.2 Algorithms 
+Several algorithms are needed to implement the required functionality. The most 
+important ones are presented in the sections below.  
+4.2.1 Main Control Algorithm 
+The system layout, including sensors, filters and actuator is visualized by Figure 18. The 
+main control algorithm is of a very basic PI type. The algorithm is derived from the 
+standard expression for PI controllers [4], note Equation 19. The constants are as follows; 
+Kp is the proportional gain, Ki is the integral gain and Ts is the sampling time. 
+ 
+Equation 19 
+{
+}
+s
+K
+s
+e
+s
+e
+K
+s
+u
+s
+L
+t
+e
+K
+t
+e
+K
+t
+u
+i
+p
+t
+i
+p
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+1
+)
+(
+)
+(
+0
++
+=
+⇒
+⇒
++
+=
+∫
+  
+ 
+ 
+Equation 19 is continuous which means it could be implemented with analogue 
+electronics but not on a microcontroller. When dealing with embedded controllers the 
+transfer functions needs to be discrete.  
+ 
+There are two main options when designing controllers for discrete implementation. 
+Either the transfer functions are calculated with the Z transform, note Equation 20, or 
+they are approximated, note Equation 21, Equation 22 and Equation 23 [5]. 
+ 
+Equation 20 
+sTs
+e
+z =
+  
+ 
+ 
+Equation 21: Tustin’s approximation or bilinear approximation 
+)1
+(
+)1
+(
+2
++
+−
+≈
+z
+z
+T
+s
+s
+  
+20 
+ 
+ 
+ 
+Equation 22: Backward difference 
+s
+zT
+s
+−
+≈1
+1
+  
+ 
+ 
+ 
+Equation 23: Forward difference or Euler forward 
+s
+zT
+s
++
+≈1
+  
+ 
+ 
+ 
+For this project the bilinear approximation was chosen because any stable continuous 
+transfer function mapped with it will remain stable in the discrete time domain [5], note 
+Figure 20. 
+ 
+Figure 20: Stability regions for different approximations, curtsey of [5].  
+L:Euler forward M: Euler backward R: Tustin 
+ 
+Applying Equation 21 on Equation 19 yields Equation 24. 
+ 
+Equation 24 
+)
+(
+2
+)
+(
+)1
+(
+2
+)1
+(
+)1
+(
+)1
+(
+)1
+(
+2
+)
+(
+)
+(
+)
+(
+e
+ze
+T
+K
+e
+ze
+K
+u
+zu
+z
+e
+T
+K
+z
+e
+K
+z
+u
+z
+z
+Ts
+s
+s
+K
+s
+e
+s
+e
+K
+s
+u
+s
+i
+p
+s
+i
+p
+i
+p
++
++
+−
+=
+−
+⇒
+⇒
++
++
+−
+=
+−
+⇒
+⇒
+⎭
+⎬
+⎫
+⎩
+⎨
+⎧
++
+−
+≈
+⇒
++
+=
+  
+ 
+ 
+Since zu and ze corresponds to future samples both sides of the equation are multiplied 
+with z-1, note Equation 25 
+ 
+Equation 25 
+)
+(
+2
+)
+(
+)
+(
+2
+)
+(
+1
+1
+1
+1
+1
+1
+−
+−
+−
+−
+−
+−
++
++
+−
++
+=
+⇒
+⇒
++
++
+−
+=
+−
+k
+k
+s
+i
+k
+k
+p
+k
+s
+i
+p
+e
+e
+T
+K
+e
+e
+K
+u
+u
+ez
+e
+T
+K
+ez
+e
+K
+uz
+u
+  
+ 
+ 
+The final C code is found in Appendix 1. 
+21 
+4.2.2 Linear Interpolation Algorithm 
+The torque sensor output voltage is not linear with respect to the input torque. To get 
+useful data when sampling the sensor it is possible to set up a large array with a number 
+of elements corresponding to the A/D resolution. However, for a 10bit A/D unit this 
+would require 1024 empirical measurements which is very impractical.  
+To reduce the number of empirical tests a fast linear interpolation algorithm was 
+implemented. The algorithm is built around 9 equidistant measurements with the data 
+points 128bits apart. Since 27=128 the algorithm can be implemented using the shift 
+operator instead of the divider which saves several clock cycles per interpolation.  
+ 
+An example of the behavior is found in Figure 21, where the circle line can be thought of 
+as ideal, the stair as the values obtained by empiric measuring and the slash-dot line is an 
+interpolated Y value.  The interpolated value is for X = 750 is ~324.3 while the actual 
+value is 315.9, the accuracy is good enough for the intended purpose. 
+ 
+The matlab interpolation algorithm was also adapted to produce torque to current 
+conversion data by using gear ratio, torque constant, efficiency and desired servo gain, 
+note Figure 22. The extracted data points are used by the embedded algorithm to avoid 
+unnecessary calculations.  
+ 
+The final C code is found in Appendix 2. 
+ 
+ 
+ 
+Figure 21: Linear interpolation 
+ 
+22 
+ 
+Figure 22: Torque to current map. Measured torque values are stars, crosses is linearised torque, diamonds 
+are linearised current and circles correspond to current at a specific sensor voltage. Also note that there is a 
+0.35V offset between the torque and current curves to account for imperfect sensor calibration.   
+4.3 Scheduling 
+When running a system with several different tasks such as messaging/communication, 
+numerous interrupts and an abundance of sensors to sample scheduling becomes truly 
+crucial. Lots of effort goes into arranging priorities, managing overruns and deciding 
+queue strategies.  
+ 
+This project comprises relatively few tasks and employs a fairly fast microcontroller. 
+Hence, emphasis lies on writing code that is easy to implement and debug, however a 
+basic schedule is still needed, note Figure 23. 
+ 
+Tasks 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+Sample current 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+Sample torque 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+Convert signals 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+Calculate output 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+idle 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+Time, uS  
+1 
+  
+  
+ 50
+ 500
+1
+  
+  
+50
+ 500
+1
+  
+  
+ 50 
+500
+Figure 23: Microcontroller scheduling 
+ 
+23 
+4.4 Other electric and electro mechanic hardware  
+The XC164 contains most of the functionality required for the demo platform 
+construction, but not all of it. The remaining tasks are carried out by external peripherals, 
+note Figure 24, the vital ones are presented in the following sections.  
+ 
+Figure 24: Photo of external circuits 
+4.4.1 Half bridge - Infineon BTS7960 
+The BTS7960 is a smart 40A half bridge capable of switching at 25 kHz under the right 
+circumstances. This project uses twin BTS7960 in a full bridge configuration to support 
+four quadrant control of the servo. 
+ 
+The component is operated using TTL signals but requires protective series resistors for 
+the inputs. These protect the internal logic circuitry which is very sensitive to current 
+spikes created by fluctuating battery voltages.  
+ 
+As the BTS7960 is designed for the automotive market it is equipped to deal with the 
+ever present EMC predicament. A significant portion of the EMC usually emitted by the 
+bridge driver circuits emanates from the charge pumps which are used to switch the high 
+side N-channel FETs. This EMC source is avoided by using P-channel high side FETs 
+that do not require charge pumps.  
+ 
+The component also features a variable slew rate. By applying a resistor at one of the pins 
+the slew rate can be changed quite freely.  
+ 
+24 
+The BTS7960 is driven aggressively for this application. The microcontroller outputs are 
+set to switch fast and hard, and the slew rate of the BTS7960 is as low as possible. This 
+means the drivers will be running as cool as possible at the at the expense of high EMC 
+emission, note Figure 25.  
+ 
+Figure 25: Low rise time means low thermal switching loss,  
+however sharp flanks also means high EMC emission. 
+ 
+The thermal switching loss is affected by the internal resistance (Ron) of the component. 
+Since Ron depends on the gate voltage, note Figure 26 from the BTS7960 datasheet, high 
+switching frequencies and slow rise times will heat the device.  
+Theoretical thermal management studies are important since excessive heating will 
+damage or destroy the component rapidly. Theory is also supported by empirical 
+evidence in this case; several components were violently shattered during initial 
+experiments.    
+ 
+25 
+ 
+Figure 26: Ron as a function of gate voltage, figure curtsey of Infineon 
+ 
+Since the half bridges feature integrated drivers it is almost impossible to accurately 
+calculate the component heating, nevertheless a rough estimation is made using Equation 
+26, adapted from [7].  
+ 
+Equation 26 
+thja
+tot
+rise
+s
+rl
+rh
+tot
+g
+l
+sw
+in
+rss
+s
+dsonl
+l
+rl
+dsonh
+l
+rh
+R
+PD
+T
+PD
+PD
+PD
+PD
+I
+Du
+I
+F
+V
+C
+PD
+Du
+R
+I
+PD
+Du
+R
+I
+PD
+=
++
++
+=
+=
+=
+=
+2
+2
+2
+ 
+ 
+Using the data in Table 1 the temperature rise was estimated at Trise= 114.6 °K. Assuming 
+an ambient temperature of 25 °C will generate a junction temperature of 139.6 °C which 
+is dangerously close to the permissible 150 °C.  
+Fortunately the half bridges will only be handling as much as 20A intermittently, so the 
+problem is not that severe. Nevertheless, a small fan and some copper flanges are 
+installed to provide forced air convection cooling. 
+26 
+ 
+Table 1: Variables used for heat dissipation calculations 
+Variable 
+Description 
+Value 
+rh
+PD  
+Resistive power dissipation high side 
+ 
+rl
+PD  
+Resistive power dissipation low side 
+ 
+s
+PD  
+Switching power dissipation 
+ 
+tot
+PD
+ 
+Total  power dissipation 
+ 
+lI  
+Load current 
+20A 
+gI  
+Gate current 
+0.05A (estimated) 
+dsonh
+R
+ 
+MOSFET on resistance high side 
+7 mΩ 
+dsonl
+R
+ 
+MOSFET  on resistance low side 
+9 mΩ 
+Du  
+Duty cycle 
+0.5 
+rss
+C
+ 
+Miller capacitance 
+500 pF (estimated) 
+in
+V  
+MOSFET  source voltage 
+13.7 V 
+rise
+T
+ 
+Temperature rise 
+ 
+sw
+F  
+Switching frequency 
+1kHz 
+thja
+R
+ 
+Junction to ambient thermal resistance 
+35 °K/W 
+4.4.2 Current Sensor 
+The motor used in the demo setup has low inductance. It was experimentally determined 
+that the PWM switching frequency has to be 15 kHz or greater to keep the switching 
+frequency from significantly tainting the current measurements. The behavior is 
+illustrated in Figure 27 with an artificial load, two 65W light bulbs. 
+ 
+Switching at 15 kHz causes severe switching losses and power stage overheating 
+problems. This is unacceptable; to remedy the over heating the switching frequency is 
+lowered. If torque ripple were a major factor a series inductance would be used or the 
+power stage exchanged. As the level of ripple is deemed acceptable as long as it does not 
+cause poor driving feel or significantly reduced control performance, another solution is 
+chosen; signal filtering. The current sensor signal is low pass filtered with a cutoff 
+frequency below the switching frequency. This does not remedy the ripple, but it does 
+present the microcontroller with an average current value at the cost of lost phase margin.  
+ 
+The values of the low pass RC filter are calculated with Equation 27. If R is taken to be 
+10kΩ to provide current limiting and a cutoff frequency, Fc, of approximately 100Hz is 
+sought C must be 150nF. Figure 28 depicts the filtered signal with the same load as 
+previously. 
+ 
+Equation 27 
+RC
+Fc
+π
+2
+1
+=
+ 
+27 
+ 
+ 
+Figure 27: Unfiltered current signal at 1kHz,  
+also note the 43.6μS delay between on signal and turn on of FET.  
+ 
+ 
+Figure 28: LP filtered current signal at 1 kHz 
+28 
+After experiments it was determined that a switching frequency of 1kHz would present 
+an acceptable tradeoff between ripple and lost phase margin. With a resolution of 0,2μS 
+there are 5000 possible increments in the duty cycle, as opposed to 300 at 15 kHz, this 
+improves controller response. 
+ 
+A hall effect based current sensor was investigated since it offered built-in filtering and 
+galvanic isolation. However, it turned out that the sensor was unsuitable because of poor 
+dynamics, low signal to noise ratio (SNR) and high temperature drift.  
+ 
+A replacement could for example be a high- or low side shunt resistor, a rogowski coil or 
+a galvanometer. At first, high side shunt resistors combined with a differential amplifier 
+were considered. However, after consulting employees at NIRA a low side shunt without 
+amplifier was chosen, since the design is rugged and simple. 
+ 
+The shunt resistance is parallel 25W resistors at 0,15 ohms, presenting a combined 
+resistance of 0,075 ohms. Using Equation 28 where U is volts, I = 25 amperes and R is 
+resistance the maximum voltage drop was calculated to be 1,875V.  
+ 
+Equation 28: Ohm’s law 
+IR
+U =
+ 
+ 
+The maximum heat dissipation required by the resistors was calculated with Equation 29, 
+where P is power. The resistors will consume 23,44W each at 25 amperes, just below 
+specified maximum. 
+ 
+Equation 29 
+ 
+ 
+ 
+The current, I, is sampled with a 10 bit A/D converter, meaning there are 1024 
+increments between 0-5 volts. Since the voltage drop at 25A is 1,875V the used 
+resolution is 384 bits which correspond to 15 bits per ampere or a resolution of 0,065A, 
+which is sufficient. 
+4.4.2 Torque sensor 
+There are several ways of measuring the torque transferred by a shaft. All of these 
+methods involve detecting the shaft strain since there is no way of measuring the stress. 
+There are, however, several ways of measuring the strain, this paper covers four different 
+designs. 
+ 
+The potentiometer strain gauge is an old fashioned mechanical setup employed by 
+Yamaha among others. The servo motor used for the demonstration platform is equipped 
+with a sensor of this type. 
+ 
+The torsion bar, depicted by a spring in Figure 29, has a grove in which the spring loaded 
+potentiometer knob can slide. When the torsion bar is stretched or compressed the knob 
+slides up or down, which cause the voltage signal from the potentiometer to change. 
+2
+RI
+P =
+29 
+ 
+ 
+Figure 29: Functional diagram of potentiometer torque sensor 
+ 
+This is a simple, but proven and relatively cheap torque sensor. Since it is comprised 
+from several moving components it is more prone to break down than other sensors. It 
+also suffers from greater back-lash than its “competitors”.  
+ 
+The Wheatstone bridge based strain gauge should be applicable for the intended 
+purpose; it is however far from common. The Wheatstone bridge is based on four 
+resistors, note Figure 30. The resistor Rx is a foil strain gauge, note Figure 31, and R2 is a 
+potentiometer used for calibration. When the foil strain gauge is deformed its resistance 
+changes slightly. This change in resistance will unbalance the bridge which causes a 
+potential difference between points B and D. The signal is usually in the order of 
+millivolts, consequently it has to be amplified approximately one hundred times to be 
+serviceable.  
+ 
+The amplification unfortunately often cause signal noise degradation, which in turn 
+means that a good analogue low pass filter in needed. National Instruments uses a fourth 
+order Butterworth filter for their SCC-SG04 product, this level of filter complexity 
+should be sufficient.  
+ 
+ 
+Figure 30: Wheatstone bridge 
+ 
+ 
+Figure 31: Foil strain gauge
+31 
+The hall effect sensor strain gauge is investigated in [9]. The sensor design uses a 
+magnet ring and two stators mounted on a torsion bar, note Figure 32. 
+ 
+Figure 32: Torque sensor with flux concentrators, curtsey of [9] 
+ 
+When the torsion bar is twisted, the hall sensors detect the deformed magnetic field, note 
+Figure 33, which allows the twisting torque to be calculated. 
+ 
+ 
+Figure 33: Simulation of magnetic field at hall sensor position, curtsey of [9] 
+ 
+ 
+32 
+The hall effect torque sensor seems to be robust and fairly cheap, well suited for the 
+automotive market. It also sports an accuracy of “0.004 Nm @ 2Nm/°” which reduces the 
+necessary torque dead band. 
+ 
+A dual encoder strain gauge is designed by [8]. It operates by detecting the angle 
+difference over a torsion bar with dual encoders, note Figure 34. 
+ 
+Figure 34: Dual encoder torque sensor, curtsey of [8] 
+ 
+The dual encoder setup is able to detect low torques due to the gear ratio of the timing 
+belt. However, the torque resolution is a trade off-between torsion bar stiffness, gear ratio 
+and encoder resolution.  
+ 
+The torsion bar must be stiff to prevent a bad driving experience while the gear ratio have 
+to be within reasonable levels to prevent bulkiness and/or play. This leaves encoder 
+resolution as a variable, however encoder resolution is costly. It seems the dual encoder 
+setup is best suited for lab purposes.  
+  
+33 
+5 Demonstration Platform 
+The demo platform is essentially a brake bench assembled around a hydraulic bicycle 
+brake; a sketch is found in Figure 35.  
+ 
+ 
+Figure 35: Demonstration platform sketch 
+ 
+The servo motor and the brake are bolted on to a welded steel bar frame, the fit is 
+adjusted with shims. The shims and various other features can not bee seen in Figure 35, 
+as it is inconsistent with reality. The actual demonstration platform was photographed and 
+is shown in Figure 36 as well as in Figure 37.  
+The inconsistency between sketch and reality is explained by prioritizing. Sometimes it is 
+more efficient to build straight away than to make a proper drawing and build accurately 
+according to that drawing. 
+ 
+34 
+ 
+Figure 36: Demo platform, view from the left 
+ 
+ 
+Figure 37: Demo platform, view from the right 
+ 
+When brakes are applied to the servo it is possible to generate a torque sensor signal by 
+turning the handlebar. This will cause the control electronics react and aid the “driver” in 
+his effort. By changing gain or completely disabling the control electronics the demo 
+platform will help visualize the benefits of EPAS. 
+ 
+ 
+35 
+6 Results, Conclusions and Further Work 
+This chapter will present some of the results that were omitted earlier, as well as ideas for 
+improvement. It will also give the authors view on some of the issues problems that were 
+encountered during the project.  
+6.1 Torque as a function of angle simulation 
+The simulation in Figure 11 may look strange compared to, for example [2], [10], [11] 
+and [12]. Figure 11 implies that it would be easier to turn in one direction than the other, 
+which clearly cannot be the case. This behavior origin from the simulation 
+implementation, only one of the front tires is modeled. If the other tire were to be 
+modeled as well, the figure would be symmetrical in the discussed aspect. 
+ 
+The simulation in this paper further differs from [2], [10], [11] and [12] in the respect that 
+it does not account for lifting the vehicle. This explains why the steering wheel torque 
+demand does not increase for higher steering angles, note Figure 38. 
+ 
+Figure 38: Torque as a function of the angle. Alpha angle caused by tire-rim flexing,  
+Beta angle caused by lifting vehicle against gravity 
+6.2 Simulating Current Feedback Controller 
+The simulations are carried out in a continuous mode only. The original plan was to begin 
+with a continuous mode and then and as an intermediate stage discretize the controller 
+with a LTI a block. For the final simulation stage the LTI block would be exchanged with 
+an embedded Matlab script. This way it would have been possible to evaluate the control 
+algorithm before implementing it on the microcontroller. 
+ 
+36 
+The first discrete version of the controller was implemented with zero order hold (ZOH) 
+and discrete Simulink integration- and derivative blocks, at a sampling frequency of 15 
+kHz. Unfortunately the discrete time integrator blocks were set to employ the “Euler 
+forward” method, and time was wasted trying to figure out why the controller was 
+unstable. 
+ 
+After some time the erroneous setting was discovered, but instead of changing the setting 
+to “trapezoidal” an LTI block with the appropriate transfer function was used. This did 
+improve simulation stability somewhat; however proportional gain greater than 
+approximately 1.5 and integral gain exceeding about 0.5 caused controller instability. 
+These gains should be compared with the continuous mode ones; the continuous 
+controller was stable with a proportional gain of 600 and an integral gain of 200. 
+  
+Since the employed motor parameter data suggested an inductance of around 0.04mH and 
+a terminal resistance of 0.1Ω the associated time constant would be 25μS, note Equation 
+30. To control a dynamic event with such a time constant a sampling period of 
+approximately 2.5 μS (Ts = 400 kHz) is required. Sampling this often slows simulation 
+but is not inconceivable for proof of concept simulations. 
+  
+Equation 30 
+RL
+1
+=
+τ
+ 
+ 
+A simulation attempt at 400 kHz was made, however the results were disappointing 
+which initiated a trial at 4 MHz sampling frequency. The second attempt was also 
+unsuccessful which prompted a comparison with the continuous simulation. Since the 
+continuous simulation used noticeably fewer samples per time unit it was speculated that 
+the discrete simulation was suffering from numerical problems. At this point it was 
+decided that no further time could be invested in simulations. 
+ 
+It is important to understand that the simulations are carried out to try different control 
+topologies and gains only. A 400 kHz control loop simply cannot be implemented with 
+reasonable hardware. As a comparison the XC164 microcontroller might be able to 
+handle loop frequencies of up to 20 kHz with the current software.  
+6.3 Sensors 
+6.3.1 Current sensor 
+The current sensor needs to be replaced for a commercial product. Neither the combined 
+50W heat loss, nor the excessive voltage drop across the shunt resistors is acceptable.  
+ 
+The low side shunt also creates two ground planes, one for the micro controller and one 
+for the power stage. However the design works, since the maximum potential drop is 
+insufficient to force the TTL control signal from the μC below the power stage ON 
+threshold, note Equation 31. 
+ 
+37 
+ 
+Figure 39: Dual ground planes 
+ 
+Equation 31 
+halfbridge
+on
+drop
+shunt
+level
+ic
+V
+V
+V
+_
+_
+_
+log
+≥
+−
+ 
+ 
+If high side low resistance shunts are employed in conjunction with a differential 
+amplifier both problems are solved. The voltage drop and power dissipation problems are 
+mitigated by the lowered resistance whereas the resolution problem a smaller potential 
+drops causes is alleviated by the use of an amplifier.   
+6.3.2 Additional Sensor Input 
+The servo setup uses an interpolation table for finding the right current reference with 
+respect to the driver input torque. This rather stiff method of finding a reference requires 
+at least one more input; vehicle speed. With this data available the servo gain coefficient 
+could be lowered at high vehicle velocity, when steering assist is no longer required or 
+even unwanted.  
+ 
+During the longer test runs the servo motor became noticeably hot. To prevent costly 
+damage a temperature sensor should be attached to the servo. The temperature could be a 
+servo gain parameter that limits the motor current dynamically, when necessary 
+ 
+Since motor current and voltage are known parameters the temperature could also be 
+estimated with an energy model. Such a model would probably be fairly accurate in a 
+stable environment. Large temperature differences or airflow variations would however 
+increase model inaccuracy. 
+ 
+Given the servo motor angular velocity, the current sensor can be rendered superfluous. If 
+back EMF constant, angular velocity, winding resistance and armature voltage are known 
+variables the current can be accurately estimated.    
+38 
+6.4 Servo Mechanics 
+The servo DC motor is fitted with a worm gear, which I find peculiar since they are 
+inefficient. The only good characteristic I can think of is the reverse efficiency, note 
+Equation 32 from [12]. If the efficiency, η, is 0.5 or lower the reverse efficiency, ηrev, 
+becomes zero. This means that, for example, shocks from rough terrain will be reduced or 
+removed entirely before reaching the driver. 
+ 
+Equation 32 
+η
+η
+1
+2 −
+=
+rev
+ 
+ 
+The stall current of the motor is about 25 A at 13.7 V which correspond to 300 W of 
+input power. Assuming the DC motor has an efficiency of 70 % and the worm gear ditto 
+is 60 % there is about 125 W of usable power available. At two revolutions per second 
+this equals circa 63 Nm of available torque. 
+ 
+For a small vehicle with a limited power budget there are better solutions, given a 
+required torque of 63 Nm. If a brushless BLDCM equipped with a planetary gearbox in 
+conjunction with a belt drive were utilized, less power would be consumed for the same 
+amount of torque. The motor efficiency would be approximately 85 %, the planetary 
+gearbox efficiency 97% and the belt drive transmission efficiency 95%. This adds up to a 
+total efficiency of 78% which means an input power of around 155 W would suffice.  
+ 
+6.5 Demonstration Platform 
+The servo does not seem to be equipped with a bearing that can handle axial loads. This 
+is probably not a problem if the unit is used in a car or an ATV since there would be such 
+a bearing closer to the steering wheel/handle bar.  
+ 
+However, for the demonstration platform designed for this project it turned out to be a 
+major problem. The lack of an axial bearing causes an axial play of about two 
+millimeters. Two millimeters is enough to completely ruin the torque sensor data, causing 
+entirely unreliable servo behavior. 
+ 
+The problem was diminished by axially spring loading the shaft, note Figure 40 and 
+Figure 41 , but is not entirely gone. If a more reliable demonstration platform is required I 
+strongly recommend installing a proper bearing that is capable of handling axial loads. 
+ 
+ 
+ 
+39 
+ 
+Figure 40: Axial Spring 
+ 
+ 
+Figure 41: Compressed axial spring 
+6.5.1 Power Stage Heat Dissipation Calculations 
+The heat dissipation for the power stage is based on Equation 26. This equation does not 
+account for the non constant FET Rdson depicted in Figure 26. This means that the part of 
+the calculation that deals with the heat dissipation caused by switching is rather 
+inaccurate.  
+ 
+This statement is also confirmed by undocumented empirical tests. For these tests the half 
+bridges were operated at different switching frequencies but with identical load. The tests 
+showed more severe heating at high frequencies than Equation 26 can account for. 
+40 
+6.6 Main Control Loop 
+The integral controller part (ICP) in the main control loop is can never influence the 
+output by more than 16 units out of the 5000 available. This is because of the way that the 
+sampling period is implemented.  
+ 
+The sampling period is 500·10-6 (2 kHz sampling frequency) which is represented by 1 in 
+the control loop. This means that the ICP needs to be divided with 2000, to match the 
+other units, before a new output is set.  
+ 
+If the ICP were divided by 2000 the result would be zero every time (unless the error is 
+greater than 2000, corresponding to 200A) and no error accumulation would take place. 
+Hence, the division with 2000 is carried out after saving the accumulated ICP. This 
+allows the ICP to take the maximum values in Equation 33. 
+ 
+Equation 33 
+16
+2000
+2
+216
+±
+=
+⋅
+±
+ 
+6.6.1 Stability 
+The control loop oscillates for proportional gains exceeding one. Gains of five or more 
+causes very erratic control behavior, the loop may be unstable for these gains.  
+ 
+Given more time further investigation regarding the cause of these stability problems is 
+recommended. The source of the discrete simulation stability issues may not be 
+numerical, but in fact valid ones based on the dynamics of the system. 
+6.7 Safety First 
+The EPAS is a safety critical part of an ATV or any other vehicle for that matter. If the 
+EPAS malfunctions during travel it might send the vehicle off the intended path, or into 
+an obstacle. To avoid this scenario safety must be considered, both in soft- and hardware 
+design. If possible, the EPAS should be running on redundant systems that only actuates 
+when in consensus.  
+41 
+6.8 General Conclusions 
+The scope of this project is limited, and the demo setup is not optimal neither from a soft- 
+nor hardware perspective. This was never the intention; focus was on proof of concept 
+which was provided. The outcome of this project shows that designing an EPAS system 
+for an ATV is feasible without extensive prior experience.  
+ 
+There is one point I would like to put extra emphasis on, the servo motor and torque 
+sensor manufactured by KYB. The automotive industry is occasionally overly 
+conservative. They are quick to adapt to new ideas for their concept cars and showrooms, 
+however it is an entirely different story when it comes to bringing new technology to the 
+production line.  
+ 
+Skepticism and reluctance due to fear of unexpected costs should to be put aside. The 
+brushed motor and the mechanical torque sensor belongs to times past, in my opinion. 
+Fuel economy improvements and reduced maintenance requirements should be able to 
+make financial headroom for more expensive servo hardware. With development tools 
+like “Dave Drive” a very modest amount of additional development effort is required for 
+the implementation of software for BLDCM commutation. There are no excuses not to 
+follow the lead of others and improve upon this already outdated technology. 
+ 
+ 
+ 
+ 
+42 
+7 Acknowledgements 
+I would like to thank Nira Control AB and its employees for presenting me with the 
+opportunity to complete this project. In particular I would like to thank David, Tommy, 
+Tomas and Mats for putting up with my frequent questioning. 
+ 
+I would also like to direct thanks to my supervisor at KTH, Fredrik Roos, and Bengt 
+Eriksson, whom offered technical assistance as well as valuable insights provided by 
+experience.
+43 
+7 References 
+ 
+Articles and books 
+No. 
+Author/Publisher Title 
+Publication date
+1 
+Y.Hung et al. 
+A sensorless optimal control system for an automotive 
+electric power assist steering system 
+April 2004
+2 
+Fredrik Roos 
+Design and Theoretical evaluation of  
+Electric Power Steering in Heavy Vehicles 
+October 2005
+3 
+The Motor 
+The Chrysler Imperial 
+14 November 1951
+4 
+Torkel Glad et al. 
+Reglerteknik, grundläggande teori 
+2006
+5 
+Wittenmark et al. 
+Computer control : An overview 
+1997
+6 
+Marcus Rösth 
+Hydraulic power steering system design in road vehicles  
+2007
+7 
+Maxim AN 
+1832 
+Power supply engineer’s guide to calculate dissipation 
+for MOSFETs in high power supplies 
+26 December 2002
+8 
+J.Kim et al. 
+Control logic for an electric power steering 
+system using assist motor 
+20 Mars 2000
+9 
+Jerems, F et al. 
+Torque sensor for moderns steering assist systems 
+2004
+10 
+Verhoeff et al. 
+Tyre force estimation for improved steering feel in EPAS 
+and steer-by-wire 
+2004
+11 
+Peter D. Schmitt 
+Prediction of static steering torque during brakes-applied 
+manouvers 
+2003
+12 
+R.S Sharp et al. 
+On car steering torques at parking speeds 
+February 2003
+ 
+ 
+ 
+ 
+Digital sources 
+No 
+Author 
+Title 
+URL 
+Accessed on
+10 
+Dave Wilson 
+Electric power steering: One 
+good turn deserves another 
+ 
+http://www.embedded.com/columns/technicalinsi
+ghts/164904435?_requestid=143208 
+12 Mars 2008
+11 
+Varta 
+Super heavy duty battery 
+ 
+ 
+http://www.varta-
+automotive.com/swe/index2.php?p=3&content=p
+rodukter/index.html 
+1 April 2008
+12 
+SEW Eurodrive 
+Växelmotorkatalogen 
+GM2002 
+http://www.sew-
+eurodrive.se/dokument/dokument/gm_katalog/10
+541667_G04.pdf 
+21 May 21 2008
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+44 
+8 Appendices 
+Appendix 1 – Main Control Algorithm 
+//Main control algorithm 
+error = referenceCurrent - actualCurrent; 
+ 
+ 
+//Calculate the error 
+pPart = (pGain*(error-errorOld); 
+ 
+ 
+ 
+//Calculate the proportional feedback part 
+iPart = ((Ts*iGain/2)*((error+errorOld))); 
+ 
+ 
+//Calculate the integral feedback part 
+iPartAdj = iPart/2000; 
+ 
+ 
+ 
+ 
+//Adjust integral part for Ts 
+outputVoltage = outputVoltageOld + pPart + iPartAdj;   
+//Calculate output  
+ 
+ 
+ 
+setDuty(outputVoltage);  
+ 
+ 
+ 
+//Set output 
+erorrOld = error;  
+ 
+ 
+ 
+ 
+//Update old variables 
+outputVoltageOld = outputVoltage;  
+ 
+ 
+//Update old variables 
+ 
+ 
+ 
+Appendix 2 – Linear Interpolation Algorithm 
+int torqueLinInterp(int x) 
+{ 
+static volatile unsigned int xa = 0;  
+ 
+ 
+ 
+//Initiate variables 
+ 
+    
+static volatile signed int ya = 0,yb = 0; 
+ 
+ 
+ 
+//Initiate variables 
+ 
+ 
+int torqueArray[9] = {-512,-384,-256,-128,0,128,256,384,512}; 
+//Equidistant array 
+   
+xa = x >> 7; 
+    
+ 
+ 
+ 
+ 
+ 
+//Get the first element of x 
+ 
+ya = torqueArray[xa]; 
+ 
+ 
+ 
+ 
+ 
+//Get left limit 
+ 
+yb = torqueArray[xa+1];  
+ 
+ 
+ 
+ 
+//Get right limit 
+ 
+ 
+return (ya+(((yb-ya)*(x-(xa<<7)))>>7))*10;  
+ 
+ 
+//Interpolate and return 
+ 
+} 
+Appendix 3 – Essential Microcontroller Peripherals  
+CapCom unit 2 with timers 7 and 8 handles the timed tasks.  
+Channel 16 on pin 9.0 is linked to timer 7 and controls the output PWM via the 
+associated compare register.  
+Timer 8 is used to generate the interrupt which drive the main 2 kHz software loop. 
+ 
+The ADC unit uses two pins from port 5 for fixed channel single 10bit conversions. The 
+pins are connected to the current and torque sensors via LP filters. 
+ 
+One general I/O pin is used to monitor the CPU core load. This functionality is 
+implemented by setting the pin as soon as the main interrupt is entered and clearing it just 
+before leaving the interrupt. 
+ 

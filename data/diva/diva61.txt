@@ -1,0 +1,2135 @@
+ 
+Betydelsen av skuggning 
+vid volymrenderad visualisering  
+i en multimodal simulator för operativ 
+extraktion av visdomständer 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+M A R T I N  F L O D I N  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Examensarbete 
+ 
+Stockholm, Sverige 2009 
+ 
+ 
+ 
+Betydelsen av skuggning 
+vid volymrenderad visualisering  
+i en multimodal simulator för operativ 
+extraktion av visdomständer  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+ 
+M A R T I N  F L O D I N  
+ 
+ 
+ 
+ 
+ 
+Examensarbete i medieteknik om 30 högskolepoäng 
+ 
+vid Programmet för medieteknik 
+ 
+Kungliga Tekniska Högskolan år 2009  
+ 
+Handledare vid CSC var Lars Kjelldahl 
+ 
+Examinator var Nils Enlund 
+ 
+ 
+TRITA-CSC-E 2009:096 
+ 
+ISRN-KTH/CSC/E--09/096--SE 
+ 
+ISSN-1653-5715 
+ 
+ 
+ 
+ 
+ 
+ 
+Kungliga tekniska högskolan 
+ 
+Skolan för datavetenskap och kommunikation 
+ 
+ 
+KTH CSC 
+ 
+100 44 Stockholm 
+ 
+ 
+URL: www.csc.kth.se 
+ 
+ 
+ 
+ 
+ 
+ 
+Sammanfattning
+Detta examensarbete utfördes för att ta reda på hur viktig skuggning är
+som djupinformationsbärare i en multimodal simulator för operativ ex-
+traktion av visdomständer. Simulatorn har både haptik och stereograﬁk
+som kan förmedla djupinformation. Frågeställningen för examensarbetet
+var därför att undersöka om det fanns något behov av att använda sig
+av en relativt beräkningstung rendering med skuggning, eller om det
+skulle duga med en enklare typ av rendering.
+Användartester har utförts med erfarna tandläkare som har fått
+prova på simulatorn med olika typer av renderingar av ett och samma
+patientfall. Metoden som användes kallas kooperativ utvärdering vilken
+tillåter diskussion mellan användaren och utvärderaren.
+Det visar sig att skuggningen spelar en mycket stor roll för använd-
+arens djupuppfattning. Skuggningen visar sig faktiskt vara betydligt
+viktigare än stereoinformationen, särskilt som tandläkarna fokuserar på
+ett mycket litet område där stereoeﬀekten verkar försumbar. Det är även
+viktigt att väga in det faktum att inte alla kan se djup i stereobilder.
+Då de tänkta användarna är relativt unga tandläkarstudenter är de
+vana vid nästan verklighetstrogen graﬁk från dataspel och datoranime-
+rad ﬁlm. Därför bör graﬁken i simulatorn ligga så nära den standarden
+som möjligt.
+Användandet av haptik gör visserligen att användaren kan känna
+var denna beﬁnner sig i djupled, men vid konﬂikt med synintrycken så
+verkar synen ta överhanden.
+Slutsatsen blir därmed att skuggning deﬁnitivt är värd att imple-
+menteras, trots de extra resurser som krävs.
+Abstract
+The importance of shading in volume rendered
+visualization in a multimodal simulator for operative
+extraction of wisdom teeth
+The aim of this thesis was to investigate the importance shading has
+on the perception of depth in a multimodal simulator for operative ex-
+traction of wisdom teeth. The simulator uses both haptics and stereo
+graphics to convey information about depth. The problem formulated
+in the thesis was to investigate the necessity of using shading, which
+is quite demanding computationally, or if a simpler type of rendering
+would suﬃce.
+User tests have been performed with experienced dentists who have
+tried diﬀerent graphical renderings of the same patient case in the sim-
+ulator. The method used for the tests is called cooperative evaluation
+and allows for discussions between the user and the evaluator.
+Shading turns out to play an important role in the users’ perception
+of depth. It even seems to be more important than the stereo infor-
+mation since the area the dentists focus on is so small the stereo eﬀect
+seems negligible. The fact that not all people can see depth in stereo
+images is also important to consider.
+As the intended users are relatively young dental students, they are
+accustomed to almost photorealistic graphics in computer games and
+computer animation. Therefore the graphics in the simulator needs to
+be as close to that standard as possible.
+The use of haptics does make it possible for the user to feel where
+s/he is located depthwise, but when a conﬂict with the visual feedback
+occurs, the visual information tends to dominate.
+The conclusion therefore is to recommend that shading deﬁnitely is
+worth implementing, even though it requires additional resources.
+Förord
+Först och främst vill jag tacka Jonas Forsslund för att han ringde och erbjöd mig det
+här examensarbetet samt för den hjälp han gett mig under arbetets gång. De gånger
+jag har stött på problem har jag kunnat vända mig till honom och tillsammans har
+vi löst problemen.
+Jag vill också tacka Jonas far Hans Forsslund för all hjälp angående tandanatomi
+och ingreppets utförande samt förklaring av alla facktermer.
+Ett stort tack även till min handledare Lars Kjelldahl som hjälpt mig utkristal-
+lisera frågeställningen och gett mig bra tips på litteratur och kontaktpersoner inom
+ämnet volymrendering.
+Två mycket kunniga personer inom detta område är Karl-Johan Palmerius Lun-
+din och Daniel Evestedt som snällt svarat på mina frågor.
+Jag vill även tacka alla på HiQ och framför allt Helena Forsmark som låtit
+mig vara med på alla roliga aktiviteter och fått mig att känna mig som en del av
+gemenskapen. Min handledare på HiQ, Tore Gerhardsen, har sett till att jag fått
+all hjälp jag behövt. Det har varit väldigt trevligt och lärorikt att få göra mitt
+examensarbete på HiQ.
+Slutligen vill jag tacka mina föräldrar för deras stöd, framför allt min mor som
+även hjälpt mig ekonomiskt när CSN tyckt att det fått vara nog med studiebidrag.
+Utan er hade jag aldrig klarat det – eller ens funnits till om man nu ska vara petig.
+Martin Flodin
+Stockholm, 20 maj 2009
+ 
+Innehåll
+1
+Inledning
+1
+1.1
+Bakgrund . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1
+1.2
+Problemformulering
+. . . . . . . . . . . . . . . . . . . . . . . . . . .
+2
+1.2.1
+Frågeställning . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2
+1.2.2
+Avgränsning . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3
+1.3
+Syfte . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3
+1.4
+Mål
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4
+1.5
+Målgrupp . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4
+2
+Teori
+5
+2.1
+Käkkirurgi . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+6
+2.1.1
+Tand- och käkanatomi . . . . . . . . . . . . . . . . . . . . . .
+6
+2.1.2
+Operation av retinerade visdomständer
+. . . . . . . . . . . .
+6
+2.2
+Graﬁk . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+7
+2.2.1
+Polygonytor . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+7
+2.2.2
+Volymrendering . . . . . . . . . . . . . . . . . . . . . . . . . .
+8
+2.2.3
+Transferfunktioner . . . . . . . . . . . . . . . . . . . . . . . .
+8
+2.2.4
+Segmentering . . . . . . . . . . . . . . . . . . . . . . . . . . .
+9
+2.2.5
+Ray casting . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+9
+2.2.6
+Programmerbara graﬁkkort . . . . . . . . . . . . . . . . . . .
+10
+2.3
+Visuell perception
+. . . . . . . . . . . . . . . . . . . . . . . . . . . .
+12
+2.3.1
+Djupseende . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+13
+3
+Projekt Forssim
+18
+3.1
+Simulatorn
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+18
+3.1.1
+Hårdvara
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+18
+3.1.2
+Mjukvara . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+19
+4
+Metoder
+21
+4.1
+Litteraturstudie . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+21
+4.2
+Omvärldsanalys . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+21
+4.3
+En första utvärdering med experter . . . . . . . . . . . . . . . . . . .
+22
+4.4
+Utvärdering med studenter
+. . . . . . . . . . . . . . . . . . . . . . .
+23
+4.4.1
+Första tillfället . . . . . . . . . . . . . . . . . . . . . . . . . .
+24
+4.4.2
+Andra tillfället . . . . . . . . . . . . . . . . . . . . . . . . . .
+25
+4.5
+Utvärdering av skuggning . . . . . . . . . . . . . . . . . . . . . . . .
+25
+4.5.1
+Första sessionen
+. . . . . . . . . . . . . . . . . . . . . . . . .
+26
+4.5.2
+Andra sessionen
+. . . . . . . . . . . . . . . . . . . . . . . . .
+27
+4.5.3
+Tredje sessionen
+. . . . . . . . . . . . . . . . . . . . . . . . .
+27
+4.6
+Reliabilitet och validitet . . . . . . . . . . . . . . . . . . . . . . . . .
+28
+5
+Resultat
+30
+5.1
+Resultat från utvärdering med experter
+. . . . . . . . . . . . . . . .
+30
+5.1.1
+Tänder med textur . . . . . . . . . . . . . . . . . . . . . . . .
+31
+5.2
+Resultat från utvärdering med studenter . . . . . . . . . . . . . . . .
+32
+5.3
+Resultat från utvärdering av skuggning . . . . . . . . . . . . . . . . .
+32
+5.3.1
+Första sessionen
+. . . . . . . . . . . . . . . . . . . . . . . . .
+32
+5.3.2
+Andra sessionen
+. . . . . . . . . . . . . . . . . . . . . . . . .
+33
+5.3.3
+Tredje sessionen
+. . . . . . . . . . . . . . . . . . . . . . . . .
+38
+6
+Analys och diskussion
+44
+6.1
+Behovet av skuggning som djupinformation . . . . . . . . . . . . . .
+45
+6.1.1
+Urskiljande av små detaljer . . . . . . . . . . . . . . . . . . .
+45
+6.1.2
+Intermittent arbete . . . . . . . . . . . . . . . . . . . . . . . .
+46
+7
+Slutsats
+47
+7.1
+Rekommendationer . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+48
+7.2
+Vad kunde gjorts annorlunda . . . . . . . . . . . . . . . . . . . . . .
+48
+7.2.1
+Utvärderingstillfällena . . . . . . . . . . . . . . . . . . . . . .
+48
+7.2.2
+Testfallen . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+49
+8
+Förslag på fortsatt arbete
+50
+8.1
+Automatisk segmentering
+. . . . . . . . . . . . . . . . . . . . . . . .
+50
+8.2
+Integrering av vanliga ritverktyg vid segmentering
+. . . . . . . . . .
+50
+8.3
+Inverkan av skuggor som djupinformation . . . . . . . . . . . . . . .
+51
+8.4
+Integrering av haptik i modelleringsprogram . . . . . . . . . . . . . .
+51
+Litteraturförteckning
+52
+Kapitel 1
+Inledning
+I detta kapitel förklarar jag vad examensarbetet går ut på med en kort bakgrund och
+en problemformulering. Jag listar därefter syfte och mål och vilka avgränsningar
+som gjorts.
+1.1
+Bakgrund
+Att operera bort visdomständer som växt fel är ett vanligt förekommande ingrepp
+och egentligen något som en tandläkare bör kunna klara av. Problemet är att det
+inte ﬁnns vare sig tid eller resurser att lära sig detta under utbildningen. Den teor-
+etiska kunskapen lärs ut under utbildningen, men för att få praktisk erfarenhet
+måste tandläkaren själv ta initiativ. Vidareutbildningen kan ske genom en mästare-
+lärlinghandledning om tandläkaren arbetar på en klinik där det ﬁnns någon med
+ökad erfarenhet av ingreppet. Annars är tandläkaren hänvisad till kurser och egen
+praktisk träning på patient.
+De ﬂesta visdomstandsoperationer går därmed till oralkirurger, särskilt vid mins-
+ta ökad svårighetsgrad. De är egentligen överkvaliﬁcerade för denna typ av ingrepp
+som tar dyrbar tid från ett redan pressat schema. Det vore alltså en fördel om
+tandläkare själva kunde utföra operationen.
+Därför startade Jonas Forsslund sitt företag Forsslund Systems som arbetar med
+att ta fram en multimodal “simulator för operativ extraktion av visdomständer”
+(Forsslund, 2008) efter att ha utvecklat en prototyp under sitt examensarbete.
+Multimodal innebär att simulatorn påverkar ﬂer sinnen än bara synen, framför allt
+känseln. För detta används ett så kallat haptiskt gränssnitt som kan ge kraftåter-
+matning och låta användaren känna på virtuella objekt. Tanken är att studenterna
+ska kunna öva upp sin praktiska erfarenhet i simulatorn, så att de är bättre förbe-
+redda när den första verkliga operationen ska utföras.
+Utvecklingen sker i samarbete med Kungliga Tekniska Högskolan, IT-konsult-
+företaget HiQ och Odontologiska institutionen (tandläkarhögskolan) på Karolinska
+Institutet.
+Simulatorn utvecklas som ett projekt med öppen källkod och bygger på ramver-
+1
+KAPITEL 1. INLEDNING
+Figur 1.1. En tidig prototyp av simulatorn. Haptikenheten tillåter användaren känna
+på virtuella objekt genom kraftåterkoppling,
+ken X3D (graﬁk), H3DAPI (haptik) och MedX3D (volymrendering) som även de
+har öppen källkod.
+1.2
+Problemformulering
+Detta examensarbete handlar övergripande om visualiseringen av tredimensionella
+medicinska data från datortomograﬁ(3D-röntgen) i en simulator för visdomstands-
+operationer. Dessa data sparas som volymer uppbyggda av voxlar (volymbildpunk-
+ter) och visualiseras genom volymrendering som till skillnad från traditionell da-
+torgraﬁk även kan ta hänsyn till insidan av objekt.
+Då det är viktigt för tandläkarna att kunna orientera sig ordentligt i tre di-
+mensioner har jag valt att rikta in mig på att undersöka hur skuggning påverkar
+djupkänslan i en bild. Skuggning innebär att ytan på ett objekt får olika nyanser
+beroende på hur den är riktad mot en ljuskälla i scenen.
+Simulatorn använder sig av haptik för att ge användaren möjlighet att använda
+sig av känseln och känna på virtuella objekt. Användaren håller i det pennliknande
+handtaget (se ﬁg. 1.1) och kan på så sätt navigera runt i tre dimensioner.
+Vidare används stereoglasögon som gör att användaren kan se en tredimensionell
+bild genom att varje öga får bilden ur något olika vinklar. Detta gör att användaren
+upplever ett djup i bilden.
+1.2.1
+Frågeställning
+Frågan är då hur viktig skuggning är när användaren redan har dessa två sätt att
+tillgodogöra sig djupinformation. Skuggning kräver ytterligare beräkningar, särskilt
+när volymen förändras vilket den gör i simulatorn när tandläkarna borrar bort delar
+av volymen.
+2
+1.3. SYFTE
+De två frågor jag har undersökt är:
+1. Hur viktig är skuggning som djupinformationsbärare?
+2. Bör skuggning implementeras i simulatorn?
+Jag har därför valt att utvärdera ett antal olika fall med och utan skuggning för
+att se hur tandläkarna uppfattar de olika visualiseringarna. På så vis har jag fått
+svar på frågeställningen.
+1.2.2
+Avgränsning
+Det ﬁnns ﬂera olika sätt att visualisera en datavolym. Ett av sätten är att skapa
+polygonytor för varje material istället för att ta hänsyn till varje individuell vox-
+el. Ett av de vanligaste sätten kallas Marching cubes som förklaras översiktligt i
+avsnitt 2.2.1. Eftersom ytan förändras hela tiden i simulatorn har jag fokuserat
+på ren volymrendering för själva implementeringen. Ytrendering tas endast upp i
+teoridelen.
+Skuggning (shading på engelska) innebär att ytans färg påverkas av ljuskällorna i
+scenen. Ett närliggande fenomen som är viktigt att särskilja är skuggor (shadows på
+engelska). Skuggor uppkommer när objekt skymmer ljuskällor för andra objekt och
+kräver helt andra beräkningar än skuggning. En närmare beskrivning av skillnaden
+ges i avsnitt 2.3.1 och ﬁgur 2.8. Visserligen är även skuggor ett sätt att få information
+om djupet i en scen, men jag har i detta examensarbete endast inriktat mig på
+skuggning.
+För att testa de olika renderingarna har jag använt mig av det typfall för vis-
+domstandsoperationer som redan var implementerat i simulatorn, istället för att
+skapa egna modeller enbart för att testa djupkänslan. Det har även den fördelen att
+tandläkarna fått arbeta med en situation de känner igen och kan relatera till. Fallet
+i simulatorn består av en volymrenderad del av vänster underkäke samt en omgivan-
+de polygonmodell som består av resten av patientens huvud samt den omgivande
+operationssalen.
+Jag har heller inte brytt mig om att förbättra den omgivande polygonmodellen
+utan helt riktat in mig på den volymrenderade käkdelen.
+1.3
+Syfte
+Det övergripande syftet har varit att skapa en eﬀektiv visualisering av det inskan-
+nade käkpartiet så att simulatorn kan användas av studenterna under sina studier
+för att lära sig hur en visdomstandsoperation bör utföras. Detta har skett i samråd
+med erfarna kirurger, så att fokus lagts på de delar som är viktiga att visualisera.
+Det mer speciﬁka syftet har varit att utvärdera vilken inverkan skuggning och
+belysning av de volymrenderade tänderna spelar i en oralkirurgisimulator där även
+haptisk återkoppling och stereoseende ingår. Skuggning är ett bra sett att simulera
+3
+KAPITEL 1. INLEDNING
+djupinformation i en bild, men hur viktigt är det när djupseende och känsel kan
+användas för att avgöra var i den virtuella scenen objekt beﬁnner sig?
+Syftet har också varit att integrera visualiseringen i simulatorn och därmed låta
+den ingå i den öppna källkoden, så att andra kan använda sig av den och arbeta
+vidare med den. Eftersom simulatorn använder sig av en voxelvolym för att göra
+kraftberäkningarna och då denna volym förändras under körning när vissa voxlar
+borras bort, bör visualiseringen anpassas för detta.
+1.4
+Mål
+Ett delmål har varit att få volymrenderingen att se verklighetstrogen ut för att
+ge en större dos av realism i simulatorn. Framför allt bör den del av käken som
+verkligen volymrenderas, och alltså går att operera i, passa in i den omgivande
+polygonmodellen.
+För att förenkla inlärningen för studenterna ﬁnns även möjligheten att inte göra
+renderingen verklighetstrogen och istället förtydliga de delar som är viktiga för
+inlärningen av operationen. Till exempel kan användaren få se de delar som ska
+borras bort i en speciﬁk färg, och de som absolut inte får röras i en varnande färg.
+För att kunna få en överblick över vad som ska borras bort bör möjligheten att låta
+vissa delar av käken bli genomskinliga även implementeras.
+Målet har varit att efter att ha utrett vilka visuella aspekter som är viktiga
+implementera en volymrendering i simulatorn som studenter och lärare vid tandlä-
+karutbildningen kan använda i undervisningen.
+1.5
+Målgrupp
+Den primära målgruppen är de som utvecklar applikationer med multimodala gräns-
+snitt och är intresserade av hur den visuella informationen påverkar upplevelsen.
+Framför allt riktar sig rapporten till HiQ och Forsslund Systems, men alla intresse-
+rade är givetvis välkomna att ta del av den.
+Sekundära målgrupper är studenterna på tandläkarhögskolan och andra använ-
+dare av simulatorn som genom mitt arbete förhoppningsvis kommer få en bättre
+lärandeupplevelse och en mer användbar applikation.
+Rapporten kan även användas som en kort introduktion för den som vill lära sig
+mer om volymrendering.
+4
+Kapitel 2
+Teori
+I detta kapitel går jag igenom den bakomliggande teorin. Kapitlet är uppdelat i tre
+sektioner där den första handlar om den rent medicinska teorin angående ingreppet
+som ska simuleras. Den andra sektionen fokuserar på datorgraﬁk och de tekniker som
+använts i simulatorn. Den tredje och sista sektionen handlar om visuell perception
+och om hur människor uppfattar djup i verkligheten.
+Figur 2.1. Tand- och käkanatomi. De viktigaste delarna av tanden att visualisera
+är enligt de tandläkare jag intervjuat: emalj, dentin och pulpa. Övriga delar som till
+exempel tandcement, som är ett tunt skal runt roten, är försumbara rent visuellt. För
+den omgivande käken är det käkbenet och nerven som löper under tänderna som är
+viktiga. (Toverud, 2005)
+5
+KAPITEL 2. TEORI
+Figur 2.2. Mesioangulärt retinerad tand. Detta är den enklaste typen av retinerade
+visdomständer att operera och därmed lämplig för nybörjare. (Hupp, Ellis och Tucker,
+2008, s. 161)
+2.1
+Käkkirurgi
+2.1.1
+Tand- och käkanatomi
+En tand består av två stora delar, den synliga kronan och den skymda roten. Kronan
+är täckt av emalj och roten av tandcement. Under ytan består tanden av dentin som
+även kallas tandben. Detta täcker i sin tur pulpan där blodkärl och nerver ﬁnns.
+Nerverna och blodkärlen leds upp till pulpan genom rotkanalerna. Underkäkens
+kindtänder har vanligen två rötter vardera. Se ﬁgur 2.1 för en illustration av de
+olika delarna (Moore och Dalley, 1999, s. 933).
+Tänderna sitter fast i själva käkbenet som täcks av tandkött. En av kirurgerna
+uppgav i intervjun att det ﬁnns en tydlig fördjupning, en “vallgrav”, där tanden
+möter käkbenet. I underkäken går ett nervpaket som förutom att leda upp till
+tänderna även leder ut till underläppen via ett litet hål under hörntänderna (Moore
+och Dalley, 1999, s. 922). I vanliga fall ligger nerven en bra bit under tänderna, men
+särskilt när det gäller retinerade tänder, som ju alltså ligger djupare än vanligt,
+ﬁnns det risk för att nerven går precis vid rötterna, eller till och med mellan dem
+(Hupp, Ellis och Tucker, 2008, s. 161).
+2.1.2
+Operation av retinerade visdomständer
+Eftersom visdomständerna är de sista att bryta fram händer det ofta att det inte
+ﬁnns plats för dem. De blir då retinerade (se ﬁg. 2.2), d.v.s. de bryter inte ut
+även fast de är fullt utvecklade, vilket kan leda till diverse besvär. Därför måste
+retinerade tänder ofta opereras bort. Det ﬁnns ett antal typfall beroende på vilken
+vinkel tanden har. Det enklaste är det mesioangulära, när tanden lutar snett framåt
+(Hupp, Ellis och Tucker, 2008, s. 153-161). Det är också detta fall som kommer
+användas i simulatorn.
+Eftersom tanden är retinerad måste en del av käkbenet opereras bort för att det
+ska gå att komma åt tanden. Därför läggs först ett snitt i tandköttet för att kunna
+6
+2.2. GRAFIK
+vika undan detta med en sårhake. Det undanvikta tandköttet kallas för lambå.
+När käkbenet frilagts borrar kirurgen med en rundborr tills kronan är tillräckligt
+synlig. Rundborren är mer att betrakta som en fräs än som en borr i ordets vanliga
+bemärkelse. Den består av en liten rund kula som sitter på ett smalare skaft som
+i sin tur går in i ett handstycke. Därefter borras kronan bort (Hupp, Ellis och
+Tucker, 2008, s. 170-171). Under intervju med en av kirurgerna framkom att de
+gärna följer gränsen mellan emalj och dentin som ska gå att se med blotta ögat.
+Vissa av kirurgerna föredrar att behålla rundborren även för detta ingrepp, medan
+andra byter till en rakare så kallad ﬁssurborr. Kirurgen borrar ett spår under kronan
+nästan hela vägen genom tanden. Därefter används en hävel, ett skruvmejselliknande
+instrument, för att knäcka av den kvarvarande biten. Om det är möjligt så kan
+rötterna nu plockas bort. Det kan krävas att man delar rötterna först, så att de kan
+plockas ut en och en. Slutligen rengörs såret och sys ihop (Hupp, Ellis och Tucker,
+2008, s. 170-176).
+2.2
+Graﬁk
+Vid datortomograﬁoch magnetröntgen genereras 3D-bilder uppbyggda av voxlar
+som är en förkortning för volymetriska pixlar. Varje voxel kan ha ett eller ﬂera
+värden. Oftast är det hur mycket strålning som tagits upp i voxeln som registreras.
+Detta ger ett mått på hårdheten hos materialet. Vanliga storlekar på volymerna är
+256x256x256 voxlar. I simulatorn används en något beskuren volym på 109x186x108
+voxlar.
+Fördelen med att ha data i en 3D-volym är att det då är möjligt att visa olika
+delar av modellen i olika färger eller genomskinlighet, samt möjligheten att titta på
+dem i godtyckliga vinklar. Det går även att göra tvärsnitt i volymen för att visa
+insidan av olika objekt (Akenine-Möller, Haines och Hoﬀman, 2008, s. 502).
+2.2.1
+Polygonytor
+Det ﬁnns ett ﬂertal olika sätt att rendera en voxelmängd. Det går att skapa poly-
+gonytor av voxlar med ett visst gränsvärde, så kallade iso-ytor. Dessa går att tänka
+på som höjdlinjer på en karta. En känd algoritm för att generera en iso-yta är mar-
+ching cubes som går ut på att det för varje grupp av åtta voxlar ﬁnns 256 olika sätt
+att dela av dem med en polygon. På grund av symmetri går det att reducera dessa
+till enbart 15 olika fall. Algoritmen marscherar sedan igenom voxelmängden och
+avgör vilket av de 15 fallen som passar in vid respektive grupp voxlar och genererar
+därmed en polygonyta. Nackdelen med polygonytor är att de är just ytor och det
+därmed inte går att utnyttja informationen som ﬁnns inuti volymen (Kaufman och
+Mueller, 2005, s. 128-129).
+7
+KAPITEL 2. TEORI
+2.2.2
+Volymrendering
+Det ﬁnns ett ﬂertal olika typer av volymrendering, men följande steg ingår oftast.
+Genomstegning av data. Ett antal samplingspositioner väljs ut i volymen och
+används för att diskretisera volymrenderingsintegralen – den kontinuerliga mate-
+matiska funktionen som används för att räkna ut ljusegenskaperna för volymen.
+Interpolering. Samplingspositionerna skiljer sig oftast från rutnätet av voxlar.
+Därför måste ett kontinuerligt 3D-fält interpoleras från det diskreta rutnätet för att
+kunna få fram värdena i samplingspositionerna. Den vanligaste interpolationen är
+trilinjär vilket innebär linjär interpolering i alla tre dimensionerna.
+Gradientberäkning. Gradienterna till skalärfältet som voxlarna utgör används
+som normalvektor för belysningsberäkningar eftersom gränserna mellan olika delar
+oftast är där värdena förändras snabbast.
+Klassiﬁcering. Vid klassiﬁceringen sätts optiska egenskaper på olika delar av
+volymen vilket gör det möjligt att urskilja olika material eller intressanta delar.
+Baseras oftast på transferfunktioner som sätter färg och opacitet på materialet.
+Skuggning och belysning. Volymrenderingsintegralen går att utöka genom att
+lägga till en term som tar hand om global belysning såsom skuggor, reﬂektion och
+ljusspridning. Detta gör små detaljer och ytstrukturer lättare att se och ger en ökad
+djupkänsla.
+Sammansättning. Den iterativa beräkningen av volymrenderingsintegralen görs
+genom sammansättning. Beräkningen sker på olika sätt beroende på vilken ordning
+genomstegningen görs. Antingen utgår man från betraktarens ögon och beräknar
+strålar som börjar där och går genom volymen från fram- till baksida, eller så börjar
+man från baksidan av objektet och stegar framåt (Engel et al., 2006, s. 26, 27 &
+103).
+2.2.3
+Transferfunktioner
+För att särskilja vilka delar av volymen som är intressanta används transferfunk-
+tioner som sätter olika optiska egenskaper på voxlarna beroende på deras värde. I
+volymen som används i simulatorn är värdet baserat på densiteten hos det inskan-
+nade materialet.
+I den enklaste endimensionella formen tas endast hänsyn till skalärvärdet i vox-
+eln. Detta ställer till problem då volymen har en begränsad upplösning och gränser
+mellan olika material inte är tillräckligt skarpa. I den volym som används i simu-
+latorn är till exempel emalj det hårdaste materialet och luft det mjukaste, men i
+gränsen mellan luft och emalj hamnar värdena någonstans mitt emellan, vilket gör
+att tänderna verkar vara belagda med ett mjukare material över emaljen. Detta
+material skulle kunna ha en hårdhet som motsvarar det värde som tolkas som tand-
+kött, vilket blir helt fel. För att undvika sådana fel kan man ta till ﬂerdimensionella
+transferfunktioner som tar hänsyn till gradienten och om det behövs även andra-
+derivatan för att kartlägga vilka delar som är gränser mellan olika material. I de
+områden där gradienten är liten är materialet någorlunda konstant och kan därmed
+8
+2.2. GRAFIK
+Figur 2.3. Ray casting. En stråle för varje pixel på skärmen skär genom volymen och
+tar sampel vid ett visst intervall. Här visas endast en stråle i ett plan, men strålarna
+kan givetvis skära genom volymen i godtycklig riktning.
+tolkas som en homogen enhet och skiljas från de falska material som uppstod i
+gränserna mellan två material. Delarna med hög gradient får man istället välja att
+tilldela något av de material de gränsar till (Engel et al., 2006, kap. 4 & 10).
+2.2.4
+Segmentering
+Även om ﬂerdimensionella transferfunktioner förbättrar klassiﬁceringen av material
+så blir resultatet oftast ändå inte perfekt. Då ﬁnns utvägen att manuellt segmentera
+volymen, d.v.s. dela upp volymen i distinkta delar. Detta kan göras genom att ge
+varje voxel någon typ av ID som talar om vilket material det tillhör. I simulatorn
+är volymen uppdelad i emalj, dentin (tandben), käkben, pulpa och nerv.
+Enligt Pham, Xu och Prince (2000, s. 317) deﬁnieras segmentering som uppdel-
+ningen av en bild i icke-överlappande beståndsdelar som med avseende på någon typ
+av karakteristika är homogen. En ideal segmentering består av delar som motsvarar
+anatomiska strukturer eller delar som är av intresse för användaren.
+Segmenteringen kan göras i vanliga bildbehandlingsprogram genom att skiva upp
+volymen utmed någon av axlarna. Det blir dock en hel del bilder då varje voxelskikt
+blir en bild. Det kan även vara svårt att se exakt var gränserna går och att se vad
+man gjort i en tidigare bild. Därför ﬁnns det program som är specialanpassade för
+segmentering. De låter användaren se volymen från ﬂera olika vinklar och har även
+diverse hjälpmedel som interpolering mellan skikt.
+När man erhållit en segmenterad volym kan den användas som ett uppslagsverk
+för att kontrollera material och genom att kombinera med originaldata kan man
+låta varje material renderas på olika sätt för att tydliggöra olika material (Engel
+et al., 2006, kap. 16).
+2.2.5
+Ray casting
+Ray casting är den populäraste volymrenderingstekniken av de som utgår från be-
+traktaren. Idén är att beräkna volymrenderingsintegralen längs med strålar som
+9
+KAPITEL 2. TEORI
+utgår från en tänkt kamera vid betraktarens position. En stråle skickas ut för varje
+pixel på skärmen och med jämna mellanrum samplas volymen. Färgen och opaci-
+teten (genomskinligheten) i voxeln som samplas adderas till pixelns färg. Strålen
+fortsätter tills opaciteten stigit över 1, och pixeln därmed blivit helt ogenomskinlig,
+eller tills strålen lämnar volymen (Engel et al., 2006, s. 165-166).
+Ett problem som kan uppstå vid volymrendering med ray casting är under-
+sampling som innebär att inte alla voxlar som ligger i strålens väg bidrar till den
+slutgiltiga färgen på pixeln. Se ﬁgur 2.3 för ett exempel – i vissa av voxlarna som
+strålen passerar tas inget sampel. Undersampling gör att färgskiftningar uppstår i
+bilden och avhjälps genom att helt enkelt sampla oftare, vilket dock gör beräknings-
+tiden längre. Det ﬁnns avancerade tekniker för att komma runt problemet, men de
+användes inte i detta examensarbete. Jag ﬁck helt enkelt göra en avvägning mellan
+prestanda och kvalitet. (Engel et al., 2006, s. 216-218)
+Tidigare har ray casting beräknats av centralprocessorn, men på senare tid
+har graﬁkkorten blivit programmerbara och då graﬁkkorten har stöd för att utföra
+många parallella beräkningar så görs beräkningarna med fördel på graﬁkkortet.
+2.2.6
+Programmerbara graﬁkkort
+Det som har gjort det möjligt att utföra ray casting på graﬁkkortet är att de olika
+stegen i renderingspipelinen (se avsnitt 2.2.6) har blivit programmerbara. När gra-
+ﬁkkort för hårdvaruaccelerering av 3D-graﬁkberäkningar blev tillgängliga för vanliga
+konsumenter i mitten av 90-talet var beräkningsfunktionerna inbyggda i hårdvaran
+och den möjlighet som fanns att påverka resultatet var att välja bland dessa förde-
+ﬁnierade funktioner.
+På de tidiga graﬁkkorten fanns bara funktioner för rasteriseringen av bilden,
+det vill säga beräkningar för pixlarna. Mot slutet av 90-talet kom även graﬁkkort
+med funktioner för att beräkna belysning och transformationer av geometrin. De
+två olika typerna av beräkningar kallas för pixel (eller fragment) shaders och vertex
+shaders. Vertex betyder hörn och det är alltså hörnen på polygonerna som avses.
+Nästa generation graﬁkkort kom 2001 och tillät äntligen programmering av
+vertex- och pixelberäkningarna om än i liten skala. Vertexprogrammen ﬁck bestå
+av max 128 instruktioner och 96 parametrar och hade ingen tillgång till texturer.
+Pixelprogrammen var ännu simplare och hade en gräns på omkring 12 instruktioner
+där även själva instruktionerna var av enkel karaktär. Det fanns inte heller några
+möjligheter att påverka programﬂödet genom loopar eller villkorssatser.
+Dagens graﬁkkort möjliggör en betydligt mer generell programmering av både
+pixel och vertex shaders och de allra senaste korten erbjuder även ytterligare ett
+beräkningssteg kallat geometry shaders som ligger mellan de två tidigare stegen och
+ger möjligheten att lägga till nya hörn i geometrin. Tidigare har man varit låst till
+att ﬂytta runt den geometri som redan funnits i scenen. Processorerna kan användas
+för vilken som helst av de tre stegen och det går därmed att fördela beräkningarna
+beroende på vilken typ av rendering som utförs. Gränsen för antalet instruktioner
+ligger för ett modernt kort på 65536 instruktioner med 16x4096 parametrar, vilket
+10
+2.2. GRAFIK
+Figur 2.4. Programmerbar pipeline. Dagens graﬁkkort tillåter programmering av
+vissa steg. Bild från (Fitger, 2008, s. 11)
+i praktiken sällan utgör något hinder (Fitger, 2008, s. 9-10).
+Eftersom graﬁkkorten numer är så snabba och programmerbara har de även
+börjat användas för andra beräkningstunga program än bara graﬁk. Detta eftersom
+graﬁkkorten har en väl utvecklad parallellisering av beräkningar vilket går att dra
+nytta av i simuleringar eller numeriska metoder. Eftersom graﬁkkorten trots allt är
+konstruerade för just graﬁkberäkningar kan det vara svårt att anpassa beräkningar-
+na för mer generella program. Det kräver att den som implementerar programmen
+har avancerad kunskap om både ämnesområdet och graﬁkprogrammering, vilket
+gjort att användandet av graﬁkkortet för generella beräkningar ändå blivit ganska
+måttligt. (Lejdfors, 2008, s. 9-10).
+Renderingspipeline
+Renderingspipelinen (ﬁg. 2.4) har fått sitt namn eftersom data ﬂödar genom den
+precis som vatten ﬂödar genom rörledningar. Varje steg tar emot dataﬂödet, utför
+sina beräkningar och skickar data vidare till nästa steg. De efterföljande stegen
+måste alltså vänta tills data passerat de tidigare stegen innan de får tillgång till dem.
+Däremot går det ofta att parallellisera beräkningarna i de olika stegen vilket fått
+till följd att hårdvaran till största delen förbättras genom att tillföra ﬂer processorer
+snarare än att öka hastigheten hos processorerna (Fitger, 2008, s. 5).
+Vertex shader
+Vertexprogrammet körs en gång för varje hörn i geometrin. Vanligtvis används ver-
+texprogrammet för att utföra transformationer av koordinaterna för varje hörn,
+beräkna normaler, generera texturkoordinater och beräkna belysning.
+Varje hörn innehåller data om dess position och normal med mera. Dessa data
+kallas vertex attributes. Utöver dessa data har vertexprogrammet även tillgång till
+11
+KAPITEL 2. TEORI
+variabler med information om scenen, kallade uniform variables. Dessa kan innehålla
+olika transformationsmatriser och belysningsparametrar bland annat.
+När shaderprogrammet utfört sina beräkningar på hörnen kan det skicka vidare
+data till andra delar av pipelinen med hjälp av så kallade varying variables.
+Som tidigare nämnts så går det även att använda vertexprogrammet till mer
+allmänna beräkningar. I simulatorn används dock inte vertexprogrammet då allting
+kan göras i nästa steg: Pixelprogrammet (Fitger, 2008, s. 12).
+Pixel shader
+Pixelprogrammet tar vid där vertexprogrammet lämnat av och körs en gång för
+varje pixel på skärmen. Pixel shadern kallas ibland även fragment shader. Innan det
+körs har hörnen satts ihop till så kallade primitiver – enkla geometriska ﬁgurer som
+trianglar och linjer – och dessa har delats upp i pixlar.
+Pixelprogrammet tar emot varying- och uniform-variablerna och använder dessa
+för att bestämma färgen på pixeln den behandlar. De vanligaste användningsområ-
+dena är läsa färgvärden från texturer och beräkna olika typer av belysningsmodeller
+såsom Phong Shading (Fitger, 2008, s. 13).
+I simulatorn beräknas ray castingen i pixelprogrammet tillsammans med färg-
+hämtning från texturer och Phong Shading för skuggningen.
+Phong shading
+Phong Shading delar upp ljuset som reﬂekteras från ett objekt i tre delar: am-
+bient, diﬀuse och specular. Ambient är andelen allmänljus som är konstant över
+hela objektet och beror inte på riktningen till ljuskällan. Diﬀuse är andelen som
+reﬂekteras diﬀust, d.v.s. det inkommande ljuset sprids jämnt åt alla håll. Specular
+är den del som speglas perfekt, d.v.s. ljusstrålarnas infallsvinkel är lika stor som
+reﬂektionsvinkeln.
+Hur mycket som speglas avgörs av en term kallad shininess där ett högt värde
+ger en blank yta och ett lågt värde en diﬀus yta (Angel, 2006, s. 293-297).
+2.3
+Visuell perception
+Den bild vi ser av världen beror till stor del på hur vår hjärna väljer att tolka
+informationen som når den från ögonen. De bilder som fångas på näthinnan är
+tvådimensionella, komplexa mönster som ständigt förändras, men sätts sedan sam-
+man till stabila tredimensionella objekt i en tredimensionell rymd. De objekt vi så
+tydligt ser är alltså snarare tolkningar än en direkt representation av den fysiska
+omgivningen (Palmer, 1999, s. 9).
+Ett tecken på detta är att vår tolkning av objekt även innefattar de delar av
+objekten som vi inte kan se, men som vi ändå gissar oss till utifrån tidigare erfaren-
+heter. Se ﬁgur 2.5 där trekvartscirkeln tolkas som en hel cirkel där ena fjärdedelen
+är skymd av en kvadrat. De ﬂesta objekt vi ser omkring oss är till viss del skym-
+12
+2.3. VISUELL PERCEPTION
+Figur 2.5. Visuell komplettering. Figuren verkar bestå av en cirkel skymd av en
+kvadrat snarare än en trekvartscirkel bredvid en kvadrat.
+da, men vi tolkar dem ändå som hela objekt. Detta visar på att den omgivning vi
+uppfattar till stor del beror på tidigare erfarenheter, då den bild som fastnar på
+näthinnan inte innehåller någon information om de dolda delarna. Det gör också
+att vi kan sortera objekt i djupled utifrån hur de skymmer varandra (Palmer, 1999,
+s. 11).
+Något vi människor är mycket bra på är att ﬁnna konturer och dela upp synin-
+trycket i objekt. Vi är faktiskt så bra på det att vi inte inser hur svårt det egentligen
+är, men det är bara vända sig till forskningen inom datorseende för att se att det
+krävs mycket komplexa beräkningar för att särskilja olika objekt. (Solso, 1994, s. 53)
+En tydlig indikation på att vi inte ser omgivningen exakt som den är, utan tillför
+information för att förstärka konturer kan ses genom att titta på Machband. Dessa
+bilder består av jämngråa fält i olika nyanser som placerats intill varandra. När vi
+ser dem tolkar vi dem inte som jämngråa, utan som att den sida som gränsar till
+en mörkare nyans tolkas som ljusare än den sida som gränsar till en ljusare nyans
+(se ﬁg. 2.6). Detta beror på en mekanism som kallas lateral inhibition. En receptor
+på näthinnan kan förutom att stimulera den neuron den är direkt kopplad till även
+hämma kringliggande neuroner (Palmer, 1999, s. 115-116). Detta gör att konturer
+upplevs mer distinkta än de rent fysikaliskt är.
+2.3.1
+Djupseende
+Det ﬁnns ett ﬂertal olika stimuli som hjärnan använder för att uppskatta djupet
+i omgivningen. Jag kommer nedan att ta upp de som är av största vikt för detta
+examensarbete, men det ﬁnns även många andra som jag utelämnar då de inte är
+relevanta för de situationer jag undersöker.
+Ackommodation
+För att se objekt skarpt på olika avstånd måste ögat forma om linsen för att ändra
+fokus, vilket kallas ackommodation. Informationen om hur mycket linsen har ändrats
+kan användas för att avgöra på vilket avstånd objektet beﬁnner sig. Detta är ett
+sätt att utvinna djupinformation som fungerar även med bara ett öga, men fungerar
+13
+KAPITEL 2. TEORI
+Figur 2.6. Machband. Notera att varje fält verkar vara mörkare i vänsterkanten än
+i högerkanten.
+bara på avstånd upp till ungefär 3 meter. Över detta avstånd är strålarna som når
+ögonen i stort sätt att räkna som parallella och fokus ligger därmed i oändligheten
+(Palmer, 1999, s. 203).
+Stereopsis
+Då ögonen sitter en bit ifrån varandra kommer varje öga att se en lite annorlunda del
+av omgivningen. Objekt som ligger nära skiljer mycket åt mellan de båda bilderna på
+vardera näthinnan, medan objekt som ligger långt bort är nästan lika. Skillnaden
+mellan bilderna kan på så vis användas för att avgöra hur långt det är till olika
+objekt. På avstånd större än 30 meter är skillnaderna för små för att ge upphov till
+någon djupinformation (Palmer, 1999, s. 206).
+Konvergens
+Ett närliggande fenomen till stereopsis är konvergensen. När man tittar på ett objekt
+som ligger nära kommer ögonen att vridas mot objektet så att de båda bilderna av
+det objekt betraktaren fokuserar på blir så lika som möjligt. Vinkeln med vilken
+ögonen konvergerar avgör hur långt bort objektet är. På avstånd över 10-20 meter
+är vinkelskillnaden för liten för att kunna registreras och konvergensen bidrar alltså
+endast med djupinformation på kortare avstånd (Manneberg, 2006, s. 1).
+Rörelseparallax
+Ett sätt att tillgodogöra sig mer djupinformation om en omgivning är att använda
+sig av rörelseparallax. När observatören själv rör sig åt ett håll verkar objekt som
+ligger nära observatören röra sig snabbare åt motsatt håll än de som ligger längre
+bort. Testa det själv genom att ta sikte på något avlägset objekt och hålla upp
+ena pekﬁngret på armlängds avstånd och andra handens pekﬁnger på ungefär halva
+14
+2.3. VISUELL PERCEPTION
+Figur 2.7. Upplevd rörelse i stereobilder. A: I ett fall med verkligt djup i bilden
+skyms och uppenbaras nya delar när betraktaren rör sig. B: Eftersom detta inte sker
+i en platt bild så verkar istället den närmre ytan följa betraktaren. Modiﬁerad bild
+från (Palmer, 1999, s. 214).
+avståndet så att ﬁngrarna skymmer objektet. Rör sedan huvudet i sidled utan att
+ﬂytta ﬁngrarna och det närmre ﬁngret kommer se ut att fara iväg åt motsatt håll
+(Palmer, 1999, s. 255).
+Vid användning av stereobilder för att simulera djup så kan en artefakt uppstå
+då rörelseparallax inte fungerar. Hjärnan är van vid att om man ﬂyttar huvudet så
+borde delar av objekt som var skymda av mer närliggande objekt bli synliga, men
+eftersom alla delar av stereobilden ligger i samma bildplan så kan man inte se in
+bakom objekt genom att byta betraktningsvinkel. Hjärnan tolkar då informationen
+som att de mer närliggande objekten då rör sig åt samma håll som betraktaren i
+en hastighet som precis skulle uppväga rörelseparallaxen. Detta gör att hela scenen
+ser ut att följa betraktaren. Se ﬁgur 2.7 för ett enkelt exempel.
+Skuggning
+När ett objekt belyses av en ljuskälla kan sättet det skuggas på användas för att
+utvinna information om objektets form. De delar av ytan där normalerna pekar mot
+ljuskällan blir ljusast och delar där normalerna pekar bort från ljuskällan får mindre
+ljus och blir mörkare. Skillnaden mellan skuggning och skuggor är att skuggning
+kan beräknas för enskilda objekt utan att ta hänsyn till andra omgivande objekt. Se
+ﬁgur 2.8. Den del där klotet skymmer ljuskällan för underlaget kastas en skugga på
+underlaget. Skuggningen på själva klotet påverkas dock bara av ytans orientering
+15
+KAPITEL 2. TEORI
+Figur 2.8. Skuggning av objekt. De delar där normalen pekar mot ljuskällan blir ljusa
+och de delar där den pekar bort blir mörkare. Därmed kan objektets form avgöras.
+relativt ljuskällan och underlaget behöver därmed inte tas med i beräkningen.
+Skuggning är därför ett mycket eﬀektivt sätt att detektera djup i en tvådimen-
+sionell bild. Det verkar även ha uppstått tidigt i evolutionen då många arter har
+utvecklat sin färgteckning för att motverka den naturliga skuggningen: deras un-
+dersidor är ljusare än ovansidan för att neutralisera eﬀekten av en sol som skiner
+ovanifrån. På så sätt blir det svårare för rovdjur att urskilja deras konturer.
+Att tolkningen av skuggning utvecklades när solen var den dominerande ljuskäl-
+lan går även att se i de experiment som Kleﬀner och Ramachandran (1992, s. 18-21)
+utförde med olikskuggade cirklar. De påvisade att hjärnans tolkning av djup från
+skuggning verkar förutsätta en enda dominerande ljuskälla som i det optimala fal-
+let kommer ovanifrån. Betrakta cirklarna i ﬁgur 2.9. De cirklar som är ljusa överst
+tolkas som utbuktningar och de andra som inbuktningar. Det är nästan omöjligt
+att reversera eﬀekten och tolka bilden som om ljuset kom nedifrån. Vrids bilden
+uppochner byter dock in- och utbuktningarna plats. Om bilden endast vrids ett
+kvarts varv kan betraktaren däremot välja om ljuset skall komma från vänster eller
+höger och därmed påverka hur cirklarna buktar. Så fort man byter tolkning för en
+cirkel så byts den även för alla andra cirklarna i bilden. Det går inte att tolka alla
+samtidigt som enbart inbuktningar ljussatta från olika håll.
+Vidare visar Kleﬀner och Ramachandran (1992, s. 35) på att en mask av ett
+ansikte ser ut att vara vänt mot betraktaren även om det är insidan av masken som
+betraktas, vilket betyder att stereoinformationen helt bortses från och skuggningen
+är det som bestämmer hur djupet tolkas. Detta blev än mer tydligt när de vände
+näsan utochin så att den alltså var åt rätt håll, medan resten av masken var in-
+verterad. Resultatet tolkades som ett helt normalt ansikte, vilket betyder att den
+djupreverserande eﬀekten inte är global utan bara appliceras på de delar där det är
+nödvändigt.
+16
+2.3. VISUELL PERCEPTION
+Figur 2.9. In- och utbuktningar. Hjärnan förutsätter att ljuset kommer ovanifrån
+och tolkar utifrån detta cirklar som är ljusa upptill som utbuktningar och de som är
+ljusa nertill som inbuktningar. Testa att vända bilden uppochner och se att in- och
+utbuktningarna byter plats.
+17
+Kapitel 3
+Projekt Forssim
+I detta kapitel beskriver jag simulatorn som ligger till grund för mitt examensarbete.
+Projekt Forssim är ett samarbetsprojekt mellan HiQ och Forsslund Systems som
+syftar till att framställa en simulator för extraktion av visdomständer. Projektet
+använder sig av öppen källkod vilket gör att den som vill får använda sig av koden
+samt vidareutveckla den.
+Teamet jag arbetar med på HiQ varierar i storlek, men ligger oftast runt fyra
+utvecklare utöver mig. Jag har av naturliga skäl fokuserat på de graﬁska delarna av
+utvecklingen, men har även bidragit till att hålla kontinuitet i projektet då det har
+varit viss omsättning av utvecklare.
+Tanken är att simulatorn ska användas i utbildningen av nya tandläkare så att
+de kan öva på olika typer av operationer innan de utför dem i verkligheten.
+3.1
+Simulatorn
+3.1.1
+Hårdvara
+Simulatorn är utrustad med en så kallad haptisk enhet (se ﬁg. 3.1) som kan ge
+kraftåterkoppling i tre frihetsgrader, vilket alltså medför att användaren kan känna
+på virtuella objekt. Den haptiska enheten är utformad som en penna som sitter fast
+i en arm. De tre frihetsgrader som kan ge kraftåterkoppling är de tre rumsdimen-
+sionerna. Sedan kan pennan även roteras i ytterligare tre frihetsgrader, men utan
+kraftåterkoppling. Enheten agerar alltså som en 3D-mus och pennan liknar till stor
+del den borr som tandläkarna opererar med, vilket är en fördel.
+Vidare består uppställningen av en CRT-skärm med hög upplösning och uppda-
+teringsfrekvens för att det ska gå att köra stereograﬁk, vilket möjliggör djupseende.
+Detta görs genom att låta skärmen visa varannan bild ur lite olika perspektiv,
+motsvarande vad vartdera ögat skulle se. Ett par glasögon med LCD-ﬁlter skärmar
+sedan bort ett öga i taget i samma frekvens som skärmuppdateringen vilket gör
+att varje öga endast ser sin bild och en 3D-eﬀekt uppnås. Bilden speglas i en halv-
+18
+3.1. SIMULATORN
+Figur 3.1. Haptikenheten Phantom Omni.
+genomskinlig spegel så att användaren kan ha sin hand och haptikenheten inne i
+bilden för att uppnå samlokalisering mellan känsel- och synintryck.
+För att förenkla transport av simulatorn, och för att inte ta uppmärksamhet
+från själva huvudfunktionen vid användning så är all hårdvara inbyggd i en träkon-
+struktion (se ﬁg. 3.2).
+Som stöd för handen under användandet av simulatorn används ett dockhuvud
+i naturlig storlek. Kirurgerna vilar ofta handloven eller lillﬁngret mot kinden på
+patienten för att stabilisera handen vid borrningen och därmed öka precisionen i de
+små rörelser som krävs.
+3.1.2
+Mjukvara
+Mjukvaran bygger på de öppna API:erna X3D, H3D och MedX3D.
+X3D
+X3D är en standard för 3D-graﬁk på webben som utvecklades för att ersätta VRML.
+X3D är uppbyggt enligt XML-standarden och är relativt enkelt att förstå och redi-
+gera även för den som inte är så van att programmera. Varje X3D-ﬁl är uppbyggd
+av noder i en hierarkisk trädstruktur kallad scengrafen. Scengrafen är riktad och
+acyklisk, vilket innebär att den har tydlig början och slut samt att det inte ﬁnns
+några loopar (Brutzman och Daly, 2007, s. 1-3). Exempel på noder är <Transfor-
+mation> som används för att ﬂytta och rotera objekt i 3D-miljön och <Sphere>
+som ritar ut en sfär. Varje nod kan även ha attribut som påverkar deras egenskaper.
+Med hjälp av olika noder byggs sedan hela 3D-miljön upp.
+19
+KAPITEL 3. PROJEKT FORSSIM
+Figur 3.2. Simulatorn testas av två erfarna tandläkare.
+H3DAPI och HAPI
+H3DAPI bygger på X3D-standarden och kopplar samman det med rutiner för haptik
+– därav h:et i namnet. För att använda beﬁntlig funktionalitet används XML-taggar
+precis som i X3D, men för att skapa nya funktioner programmerar man i C++ och
+skapar därmed nya taggar eller noder som de kallas. Då all källkod är öppen är
+det lätt att se hur de beﬁntliga noderna är uppbyggda och därmed enklare kun-
+na bygga vidare på dem när man ska skapa egna noder. För enklare funktioner
+som kommunikation mellan olika noder kan även programmeringsspråket Python
+användas (SenseGraphics AB, 2008, s. 5-7).
+MedX3D
+MedX3D är ett API för visualisering av volymdata av olika format som även det är
+en utökning av X3D. Funktioner för ray casting, transferfunktioner och olika typer
+av renderingsmetoder ﬁnns redan implementerade. Det är till största delen detta
+API jag har använt mig av för att göra visualiseringen av tänderna. För skapandet
+av nya noder används även här C++, men för att påverka graﬁkberäkningarna
+används OpenGL:s shader-språk GLSL (MedX3D, 2009).
+20
+Kapitel 4
+Metoder
+I detta kapitel går jag igenom de olika metoder jag använt och förklarar varför jag
+använt dem.
+4.1
+Litteraturstudie
+För att ta reda på vad som redan gjorts inom området gjordes en litteraturstudie.
+Till att börja med läste jag övervägande om volymrendering. Boken Real-Time
+Volume Graphics av Engel et al. (2006) gav en bra överblick inom området.
+Jag studerade också böcker som används i tandläkarutbildningen för att få en
+bild av hur ingreppet går till och hur själva anatomin i käken ser ut. För ingreppet
+läste jag Contemporary Oral and Maxillofacial Surgery av Hupp, Ellis och Tucker
+(2008) och för anatomin Clinically Oriented Anatomy av Moore och Dalley (1999).
+Efter ett tag insåg jag att mitt arbete till stor del skulle komma att handla
+om själva uppfattningen av visualiseringen än implementationen. Därför övergick
+jag till att läsa mer om visuell perception. De två viktigaste källorna var artikeln
+On the perception of shape from shading av Kleﬀner och Ramachandran (1992) och
+boken Vision Science: Photons to Phenomenology av Palmer (1999).
+Jag läste även metodlitteratur om kooperativ utvärdering för att förbereda mig
+inför utvärderingstillfällena. I boken Improving your Human-Computer Interface: A
+practical technique av Monk et al. (1993) fanns en bra guide för att göra utvärde-
+ringar med tekniken.
+4.2
+Omvärldsanalys
+Eftersom datorgraﬁk är ett ämne under snabb utveckling är det inte säkert att den
+senaste informationen ﬁnns att läsa i böcker eller rapporter. Därför gjordes även en
+omvärldsanalys där jag letade upp program med liknande användningsområden för
+att se om jag kunde få någon ytterligare information därifrån.
+Då simulatorn bygger på öppna API:er där volymrendering redan ﬁnns imple-
+menterad så började jag med att titta på hur jag skulle kunna använda mig av
+21
+KAPITEL 4. METODER
+redan beﬁntlig kod för att utföra den visualisering jag eftersträvar. Framför allt
+är det API:et MedX3D jag använt och plöjt igenom källkoden på. Det visade sig
+att det mesta jag behövde redan fanns där, men några modiﬁeringar behövde ändå
+göras. Eftersom API:et bygger på öppen källkod under GPL (GNU General Public
+License) så var det inga problem att ändra koden efter våra behov.
+Som en del av omvärldsanalysen testade jag även olika segmenteringsprogram
+och undersökte hur segmentering kunde användas tillsammans med MedX3D för
+att förbättra visualiseringen. Vissa av dessa var även dem skrivna med öppen käll-
+kod och en tanke var att undersöka hur de hade implementerat volymrendering. Då
+MedX3D visade sig fungera tillräckligt bra för mina behov så lades den undersök-
+ningen emellertid på is.
+Ett studiebesök gjordes på Linköpings Universitet i Norrköping där jag och
+Jonas Forsslund träﬀade Karl-Johan Palmerius Lundin och diskuterade volymren-
+dering i allmänhet. Karl-Johan tog upp viktiga koncept och trick och tipsade om
+litteratur. Jag och Jonas gjorde även en övningsuppgift för att sätta oss in i hur ray
+casting vid volymrendering kan utföras på graﬁkkortet.
+4.3
+En första utvärdering med experter
+Jag medverkade vid en kooperativ utvärdering av simulatorn tillsammans med fy-
+ra käkkirurger. Kooperativ utvärdering är en teknik för att samla in synpunkter
+på en prototyps design så att den kan göras mer användbar. Tekniken går ut på
+att designern av prototypen är med under utvärderingen och tillåts diskutera med
+användaren till skillnad från “tänka högt”-metoden som förespråkas av Preece, Ro-
+gers och Sharp (2002, s. 365-368) där utvärderaren inte får hjälpa användaren.
+Även i kooperativ utvärdering uppmanas användaren att “tänka högt” och hela ti-
+den berätta vad han/hon försöker uträtta, men med den väsentliga skillnaden att
+utvärderaren, som ju också är designern och har kunskap om systemet, får svara på
+frågor från användaren. Det går att ha en utvärderare som inte själv har varit med
+och designat systemet, men en grundtanke med metoden är att den ska vara enkel
+nog för att kunna utföras av någon med ringa erfarenhet av utvärderingar, just för
+att kunna låta designern själv utföra utvärderingen (Monk et al., 1993, s. 1). Även
+om jag själv har fått en del erfarenhet av att genomföra utvärderingar genom min
+utbildning, så tilltalades jag av enkelheten i metoden och att den ger upphov till
+en naturligare dialog med användaren. Jag valde den även för att Jonas Forsslund
+i sitt examensarbete använt metoden med framgång (Forsslund, 2008, s. 66).
+Utvärderingen gick ut på att de ﬁck använda sig av simulatorn en och en och
+samtala med mig och Jonas under testets gång. Utvärderingen dokumenterades med
+ﬁlmkamera för att kunna kontrolleras i efterhand. Tanken var att utvärderingen
+skulle föregås av ett pilottest med en annan käkkirurg, men detta hanns inte med.
+Detta ﬁck förstås negativa konsekvenser för utvärderingen, men vi ﬁck i alla fall en
+hel del intressanta kommentarer att bygga vidare på.
+22
+4.4. UTVÄRDERING MED STUDENTER
+Figur 4.1. Tänder renderade med distinkta färger.
+Vid detta tillfälle renderades käkpartiet med distinkta enfärgade delar (se ﬁg.
+4.1). Emaljen var vit, dentinet gult, käkbenet grått och nerven/pulpan var röd.
+Tanken var att detta skulle förenkla arbetet för kirurgerna då de olika delarna
+förtydligades.
+Varje kirurg ﬁck prova på att känna på tänderna för att vänja sig vid haptiken.
+När de kände sig nöjda ﬁck de börja borra i de olika delarna av tanden och försöka
+kalibrera hur fort olika material skulle avverkas. När de kände sig nöjda med hård-
+heten hos de olika materialen ﬁck de försöka genomföra en visdomstandsoperation.
+Vid det här tillfället fanns det inget färdigt scenario för hur användaren skulle
+utföra operationen, så varje kirurg ﬁck göra som han/hon ville. Sedan diskuterades
+vilka olika steg som borde vara med i simulatorn och hur de skulle fungera.
+Det här tillfället var till för att ta reda på generella förbättringar av simulatorn
+och var inte speciﬁkt inriktat på själva visualiseringen, men jag tyckte det kun-
+de fungera som ett bra introduktionstillfälle för att ta reda på hur vana kirurger
+arbetade och vad de tyckte var viktigast att visualisera.
+4.4
+Utvärdering med studenter
+Utvärderingen utfördes på Karolinska universitetssjukhuset i Huddinge tillsammans
+med lärare och sistaårsstudenter på den odontologiska utbildningen. Utvärdering-
+en var uppdelad i två tillfällen med ca 30 studenter per tillfälle och ingick i en
+undersökning hos Karolinska Institutet om användandet av simulatorer i utbild-
+ningen. Därför var min egen utvärdering underordnad och jag var tvungna att följa
+de riktlinjer som KI tillämpar, vilket gjorde att jag inte ﬁck dokumentera med ﬁlm-
+eller ljudinspelning. Jag var därmed tvungen att förlita mig på muntliga frågor till
+studenterna.
+Studenterna samlades två och två, eller i undantagsfall tre och tre, vid simu-
+latorerna (se ﬁg. 4.3). De började med att känna på tänderna med haptikenheten
+utan att borra. Sedan borrades delar av käkbenet bort för att komma åt att dela
+23
+KAPITEL 4. METODER
+Figur 4.2. Tänder renderade med texturerad yta.
+tanden. När läraren bedömde att tillräckligt mycket ben tagits bort gick studenten
+vidare till nästa steg som var att ta bort kronan. Tanden borrades ca två tredje-
+delar igenom vid övergången mellan emalj och dentin. Därefter byttes borren mot
+en hävel när läraren tyckte att studenten kommit tillräckligt långt genom tanden
+och kronan bändes bort. Sedan borrade studenterna på roten och till viss del i det
+omgivande käkbenet för att frilägga roten. Slutligen användes häveln för att ta bort
+roten.
+När som helst under operationen kunde studenten eller läraren välja att endast
+visa de volymrenderade tänderna och rotera dessa för att se hur studenten hade
+borrat, eller för att kontrollera själva anatomin.
+Vid dessa tillfällen hade tänderna fått en mer texturerad yta, men ännu sakna-
+des äkta skuggning (se ﬁg. 4.2). Istället baserades ljusheten för varje voxel på det
+hårdhetsvärde orginalbilden hade. Ju hårdare material, desto ljusare färg. Grund-
+färgerna var de samma som i testfallet med kirurgerna.
+Vid båda tillfällena fanns två uppställningar av simulatorn som skiljde sig något
+åt rent fysiskt. Skillnaden var störst vid det första tillfället, mer om detta nedan.
+Studenterna ﬁck därför testa på båda versionerna av simulatorn.
+4.4.1
+Första tillfället
+Det första tillfället utfördes i slutet av januari 2009. Vid detta tillfälle var den ena
+simulatorn inbyggd i ett trächassi samt hade ett dockhuvud som studenterna kunde
+stödja handen mot samt öva på att hålla i en sårhake för att hålla patientens mun
+öppen. Vid den andra simulatorn var datorskärmen uppfäst i en metallställning
+och själva datorlådan stod synlig bredvid. Båda simulatorerna bestod egentligen av
+samma beståndsdelar, men det var mer uppenbart i det ena fallet vilka dessa delar
+var.
+Tyvärr kunde jag inte närvara vid detta tillfälle utan ﬁck förlita mig på feedback
+från de delar av teamet som varit där.
+24
+4.5. UTVÄRDERING AV SKUGGNING
+Figur 4.3. Två studenter testar simulatorn tillsammans med en lärare.
+4.4.2
+Andra tillfället
+Det andra tillfället utfördes i slutet av februari. Simulatorprogrammet var i stort
+sett identiskt med det förra tillfället, med den största skillnaden att det fanns ett
+graﬁskt gränssnitt för inloggning och enkel manipulering av kameravinkeln vid det
+andra tillfället. Vid detta tillfälle hade även den andra simulatorn byggts in i en
+trälåda, men den saknade fortfarande docka med sårhake.
+Vid detta tillfälle var jag med och observerade studenterna i deras arbete och
+intervjuade dem kort efter att de utfört operationen. Jag ﬁck dock inte tillåtelse att
+ﬁlma eller på annat sätt dokumentera studenternas genomförande av operationen.
+Jag ﬁck däremot tillfälle att samtala med studenterna efter övningen och kunde då
+ställa ett antal informella frågor.
+Det var ändå tydligt att det skulle behövas ett tillfälle till där jag ﬁck full kontroll
+över genomförandet. Därför bestämde jag mig för att hålla en prototyputvärdering
+med externa tandläkare.
+4.5
+Utvärdering av skuggning
+För att ta reda på hur viktig skuggningen var för djupkänslan valde jag att låta ett
+antal erfarna tandläkare testa ett antal olika fall med olika typer av volymrendering.
+De första två var de tidigare nämnda fallen med tänder med distinkta färger (Fall A
+i ﬁg. 4.4), tänder med mer struktur (Fall B i ﬁg. 4.4) samt den nya renderingen med
+skuggning (Fall C i ﬁg. 4.4). Vissa av tandläkarna hann även med att testa ett fall
+med skuggning där jag överdrivit färgerna på de olika delarna för att skapa större
+kontrast mellan dem (Fall D i ﬁg. 4.4).
+Tyvärr visade sig skuggningen kräva mycket hög beräkningskapacitet av graﬁk-
+kortet och trots försök till optimering av beräkningarna lyckades jag inte få till en
+25
+KAPITEL 4. METODER
+Figur 4.4. De fyra olika testfallen. Fall A: Enfärgade segment. Fall B: Segment
+med struktur genom nyanser. Fall C: Segment med skuggning. Fall D: Segment med
+skuggning och överdrivna färger.
+acceptabel bilduppdateringsfrekvens innan testen utfördes. Men jag ﬁck helt enkelt
+instruera tandläkarna att borra långsamt och försiktigt, samtidigt som jag ökade
+borrstorleken och borrhastigheten så att ﬂer voxlar togs bort för varje bilduppda-
+tering.
+Även under dessa tillfällen användes kooperativ utvärdering och tandläkarna
+uppmanades att “tänka högt” och jag ställde frågor när jag tyckte det blev för tyst.
+Jag hade förberett en del frågor, men höll mig inte till något fast formulär utan
+fokuserade på att få en fungerande dialog.
+Utvärderingen var på grund av svårigheter att få till en tid som passade för alla
+tvungen att delas upp i tre olika sessioner.
+4.5.1
+Första sessionen
+Detta tillfälle gick till på följande sätt: Tandläkaren (hädanefter Tandläkare A) ﬁck
+lite tid med att bara prova på simulatorn och vänja sig vid att använda den. Jag
+förklarade de olika stegen i operationen och visade hur man använde haptikenheten.
+Tandläkare A ﬁck sedan genomföra samma operation tre gånger med olika rende-
+ringar av tänderna och berätta hur djupet i bilden upplevdes och hur väl han tyckte
+sig kunna se detaljer på tänderna och det borrade området.
+Tandläkare A genomförde Fall A, B och C och efteråt följde en kort diskussion
+om hur de olika renderingarna upplevdes och vilken som var att föredra.
+Detta tillfälle dokumenterades med ljudinspelning.
+26
+4.5. UTVÄRDERING AV SKUGGNING
+Figur 4.5. Tänder renderade med skuggning.
+4.5.2
+Andra sessionen
+Det andra tillfället var i mångt och mycket samma som det första, med följande
+skillnader:
+Den största skillnaden var att testet utfördes med två tandläkare (B och C)
+samtidigt. På grund av tidsbrist hann de inte köra varje fall själva utan endast
+vartannat. Därför ﬁck den ena observera medan den andra borrade. De bytte sedan
+av mellan varje fall. Eftersom de var två uppmuntrades de även att diskutera med
+varandra. Tandläkare B körde Fall A och C och Tandläkare C körde Fall B.
+Ytterligare två fall lades till. Dessa fall var en modiﬁering av Fall C. Det ena var
+där stereograﬁken tagits bort och en vanlig platt tvådimensionell bild visades. Detta
+fall kallar jag Fall C2 i fortsättningen. I det andra fallet var färgerna på käkbenet
+och dentinet överdrivna, för att det lättare skulle gå att se skillnad på dem. Detta
+kallar jag Fall D (se ﬁg. 4.6).
+Bilduppdateringen med skuggningen var vid detta tillfälle något bättre, men
+fortfarande inte i samma frekvens som utan skuggning. Jag bad därför även här
+tandläkarna att borra försiktigare och med långsammare rörelser för att låta simu-
+latorn hänga med.
+Då simulatorn krånglade lite drog testet ut på tiden och för att hinna med att
+ställa frågor om Fall C2 och D så borrade jag upp ett spår och tandläkarna ﬁck
+känna lite på tänderna, men mest fokusera på att kommentera på det visuella.
+Detta tillfälle dokumenterades med videokamera.
+4.5.3
+Tredje sessionen
+Den tredje sessionen utfördes med ett antal tandläkare som en del av ett annat
+undervisningstillfälle där bland annat borrning i griskäke ingick. Tandläkarna var
+alltså där för att lära sig oralkirurgi och även fast de var erfarna tandläkare hade
+de ingen stor erfarenhet av just oralkirurgi. De som ville ﬁck komma in en i taget
+och prova simulatorn, men tiden för varje tandläkare var knapp då det var mycket
+27
+KAPITEL 4. METODER
+Figur 4.6. Tänder renderade med skuggning och överdrivna färger.
+annat som skulle hinnas med för dem.
+Fem tandläkare, hädanefter kallade X1-5 för att särskilja dem från de mer er-
+farna tandläkarna, provade simulatorn i cirka 10 minuter var.
+Två mer erfarna tandläkare, hädanefter kallade D och E, som höll i undervis-
+ningstillfället tog sig mer tid och var inte lika stressade som kursdeltagarna. Det
+var med D och E som den egentliga utvärderingen gjordes. Kursdeltagarna X1-5
+var ju mest där för att lära sig operera, men kom ändå med en del intressanta
+kommentarer.
+På grund av den knappa tiden testades endast två fall: Fall B med struktur (ﬁg.
+4.2) samt Fall C med skuggning (ﬁg. 4.5). I båda fallen användes stereoglasögonen.
+Jag ﬁck själv prova på att borra i en griskäke och under den tiden skötte Jonas
+Forsslund simulatorn och lät ett ytterligare antal kursdeltagare prova den. Jag har
+valt att inte ta med deras testomgångar i rapporten då jag inte kunde vara där och
+ställa de frågor jag ville.
+Tandläkare E hann även han börja sin omgång medan jag var borta, men körde
+om Fall B igen efter Fall C för att tydligare jämföra och även så att jag kunde vara
+med och diskutera. Han testade efter det även Fall D en kort stund. Därefter följde
+en kort diskussion.
+Precis som vid tidigare tillfällen uppmanades tandläkarna att berätta vad de
+gjorde under själva operationen och efteråt diskuterades de två fallen och även
+skillnaden mellan synintrycken från simulatorn och från borrandet i griskäken.
+Även detta tillfälle dokumenterades med videokamera.
+4.6
+Reliabilitet och validitet
+Vid en vetenskaplig undersökning måste man alltid fundera över hur tillförlitliga
+de svar man fått fram egentligen är. Ett mått på detta är reliabilitet. För att en
+undersökning ska anses ha hög reliabilitet måste resultatet gå att återuppnå om
+undersökningen görs om under i stort sett samma omständigheter.
+28
+4.6. RELIABILITET OCH VALIDITET
+Validitet är ett annat mått som ger svar på huruvida undersökningen verkligen
+mäter det den var tänkt att mäta. Det går att få ett resultat som blir exakt samma
+varje gång undersökningen utförs och som därmed har mycket hög reliabilitet även
+fast man mäter helt fel sak och därmed har låg validitet (Bell, 2007, s.117-118).
+Det är inte helt lätt att mäta dessa storheter, särskilt inte i ett arbete som detta
+som fokuserar på kvalitativa aspekter, det vill säga vad användarna tycker och
+tänker. Därför får man som utvärderare helt enkelt försöka uppskatta dem genom
+att se över vad som skulle kunna leda till att reliabiliteten och/eller validiteten blir
+låg och se till att försöka undvika de situationerna.
+För att säkerställa att jag varit på rätt väg har jag med jämna mellanrum haft
+möten med min handledare, särskilt när det har gällt förändringar i upplägget. Jag
+har även låtit min handledare ta del av de frågor jag haft till grund för utvärdering-
+arna för att se till så att de höll hög standard.
+Den största risken jag ser är att jag hade lite för lite kontroll över vissa av
+utvärderingstillfällena. Studenterna på Karolinska och tandläkarna kallade X1-5
+var inte där i första hand för att utvärdera min frågeställning utan för att prova
+på simulatorn. Jag tror ändå att de tillförde något till examensarbetet, men den
+största vikten lägger jag vid tandläkarna A-E som jag hade mer tid att diskutera
+med.
+Det ﬁnns också en fara i att som intervjuare lägga orden i munnen på använ-
+daren, vilket är ett av skälen till att den traditionella “tänka högt”-metoden inte
+tillåter kommunikation mellan användare och utvärderare. Jag tror att den typen
+av metoder kan ha sina användningsområden, men att det hade varit svårt att an-
+vända det under mitt examensarbete. Jag var ofta tvungen att styra in diskussionen
+på ämnet djupkänsla och synintryck då det var så mycket annat som var nytt för
+användarna och som de gärna kommenterade.
+De ﬂesta av användarna var överens om att skuggningen gav en bättre djup-
+känsla, även om några föredrog den andra modellen rent estetiskt. Då det var just
+upplevd djupkänsla jag ville undersöka och nästan alla gav samma svar, så tror jag
+mig kunna säga att detta examensarbete har både hög validitet och reliabilitet.
+29
+Kapitel 5
+Resultat
+I detta kapitel presenteras de resultat jag kommit fram till i de olika delarna i den
+ordning de genomfördes.
+5.1
+Resultat från utvärdering med experter
+Vid detta tillfälle hade jag precis fått segmenteringen av tänderna att fungera och
+kunde därmed tilldela varje segment en egen färg. Tidigare hade tänderna renderats
+i gråskala där endast voxlar med en hårdhet mellan två speciﬁka värden visades.
+Tanken var att detta skulle medföra att användaren enklare kunde skilja på tandens
+olika delar. Något som borde underlätta operationen då den dels går ut på att
+borra bort ben för att frilägga roten och dels på att dela tanden jämns med emalj-
+dentingränsen.
+I verkligheten är den visuella skillnaden inte lika stor, men en tränad kirurg kan
+se skillnad på emalj och dentin och därmed följa gränsen. Kirurg A sade vid tillfället
+angående färgen på dentinet:
+“Den avviker ju från emaljen, den är lite mera gul.”
+– Kirurg A
+Vidare fortsatte han med följande kommentar angående käkbenet:
+“Sen har du ju benet som är gulvitt [...] så ska det ju vara en tunn, tunn
+liten fåra här precis där roten går över i benet.”
+– Kirurg A
+Det går alltså för ett tränat öga att skilja på de olika delarna, men simulatorn
+är i första hand inriktad mot studenter som kanske ännu inte lärt sig de subtila
+skillnaderna.
+30
+5.1. RESULTAT FRÅN UTVÄRDERING MED EXPERTER
+Tanken med de överdrivna färgerna var alltså att förenkla för användaren. Det
+visade sig dock snabbt att vi hade tänkt fel. I och med att varje segment var enfärgat
+betydde det att när en voxel i en viss färg borrades bort, så hade den bakomliggande
+voxeln som då frilades exakt samma färg så länge man borrade i ett och samma
+segment. Detta medförde att det blev svårt för kirurgerna att avgöra om de borrat
+bort något över huvud taget. Trots att de via haptiken kände att de sjönk längre
+in i tanden visade det sig att när de presenterades för dessa motstridiga uppgifter
+från synen och känseln så litade de helt på det visuella. Detta var mycket tydligt
+då Kirurg B utförde operationen och sade:
+“Det här med att jag hamnar bakom fragmentet – här händer ingenting
+nu och sen så – ser du att jag hamnar bakom? Jag hamnar inunder där
+– ser ni det? Det ska man ju inte göra. För att jag vill ju bara ta bort
+det gråa benet, men då händer det ingenting här nu – ser ni det?”
+– Kirurg B
+Kirurgen hade alltså borrat sig in en bit i tanden vilket gjorde att vissa voxlar
+började skymma själva borren. Vid en vanlig operation används en penslande rö-
+relse, men eftersom djupinformationen var bristfällig insåg inte kirurgen att denne
+hade borrat ett djupt hål rätt in i tanden.
+Det var här målet för examensarbetet utkristalliserades från att ha varit en
+rätt allmän idé om visualisering till att handla om betydelsen av skuggning som
+djupinformation.
+Uppenbarligen så fungerade det inte med jämnfärgade segment och det var tyd-
+ligt att skuggning var en viktig del att implementera. Då examensarbetet skulle vara
+klart först i april och det första testet med studenter låg redan i slutet av januari
+stod det klart att det skulle vara svårt att ha riktig skuggning klar tills dess. Jag
+var alltså tvungen att ta fram något som skulle fungera hjälpligt så länge.
+5.1.1
+Tänder med textur
+Det var alltså tydligt att jämnfärgade ytor inte skulle fungera. I den första proto-
+typen av simulatorn användes en typ av transferfunktion som kallas fönstertrans-
+ferfunktion. Där speciﬁceras ett medelvärde och bredden på fönstret som centreras
+på medelvärdet. Färgen på voxlar som ligger inom fönstret sätts till att gå från
+helt genomskinliga vid den undre gränsen till att vara fullt opakt vitt vid den övre
+gränsen. Då går det att rätt enkelt ställa in värden som ungefärligen motsvarar de
+områden man är intresserad av, men som tidigare nämnts i avsnitt 2.2.3 så är det
+svårt ringa in exakta områden. Däremot hade jag noterat lite i förbifarten att man
+faktiskt ﬁck en förvånansvärt bra känsla av hur strukturen på tänderna såg ut, även
+fast nyanserna egentligen inte motsvarade någon struktur utan bara hårdheten på
+olika voxlar.
+Därifrån kom tanken att på något sätt kombinera dessa två sätt och få en ren-
+dering som hade tydligt deﬁnierade områden, men som ändå hade någon struktur
+31
+KAPITEL 5. RESULTAT
+inom varje område. Detta löstes genom att modiﬁera den textur som användes till
+de jämnfärgade områdena så att varje område ﬁck en liten gradient från mörkt till
+ljust medan volymdata modiﬁerades så att varje segment visserligen innehöll ett
+omfång av värden, men de olika omfången överlappade inte varandra.
+På så sätt gjorde jag tänder som visserligen fortfarande behövde förbättras, men
+som för stunden i alla fall gick att använda.
+5.2
+Resultat från utvärdering med studenter
+Då jag inte medverkade vid första tillfället bygger detta avsnitt till största delen på
+det andra tillfället, då informationen från första tillfället nådde mig sekundärt.
+Två av studenterna vid det andra tillfället kommenterade att de hade svårt med
+stereoseende och att de därmed inte ﬁck något djup i bilden. Det var något de själva
+var medvetna om sedan tidigare, men det är en viktig aspekt att tänka på att alla
+inte upplever ett djupseende när de exponeras för stereobilder.
+Intressant att notera var att många av studenterna tenderade att försöka ﬂytta
+huvudet från sida till sida för att på så sätt få en bättre bild av djupet i bilden.
+De försökte alltså använda sig av rörelseparallax när de inte ﬁck tillräckligt bra
+djupseende i bilden.
+I övrigt var studenterna i allmänhet positiva till simulatorn och hävdade att
+de inte hade några problem med att se var de borrade, vilket även gällde de två
+som sade sig inte uppleva någon form av djupseende. Möjligheten ﬁnns dock att
+de helt enkelt inte ville tala illa om simulatorn för att undvika att såra oss som
+utvecklat den. Vidare hade de vid detta tillfälle tyvärr ingenting att jämföra med
+då versionen med skuggning var alldeles för beräkningsintensiv. Bilduppdateringen
+sjönk till under en bild per sekund vilket är långt under gränsen för vad som upplevs
+som interaktiv bilduppdatering. Som en jämförelse kan nämnas att bioﬁlm har en
+uppdateringsfrekvens på 24 bilder per sekund.
+Studenterna lyckades alla genomföra proceduren med hjälp av handledaren, men
+vissa av dem råkade borra för långt och till och med borra igenom hela käkbenet
+så att borren kom ut på tungsidan. Detta tyder på att de inte riktigt visste var de
+befann sig i djupled.
+5.3
+Resultat från utvärdering av skuggning
+5.3.1
+Första sessionen
+Tandläkare A upplevde ingen stor skillnad mellan Fall A och B, men hävdade ändå
+att han till största delen använde sig av synen. Värt att notera var dock kommen-
+taren så fort jag startade Fall C:
+“Den är sabbad, kronan.”
+– Tandläkare A
+32
+5.3. RESULTAT FRÅN UTVÄRDERING AV SKUGGNING
+Observera att det var samma modell av tänderna som används, men först när
+skuggningen räknades ut ordentligt syntes det att kronan på visdomstanden faktiskt
+är kapad rakt av. Detta berodde på att patienten vid datortomograﬁn bet ihop
+(som man ska göra), men eftersom endast underkäken skulle användas i simulatorn
+var de övre tänderna tvungna att kapas bort. Detta hade gjorts redan innan jag
+påbörjade mitt examensarbete, men ingen hade lagt märke till att även överdelen
+på visdomstanden kapats av då den stack upp högre än de närliggande tänderna. I
+varje fall var det inte särskilt tydligt förrän skuggningen hade implementerats och
+när den väl hade det fanns det ingen tid att börja om med att segmentera en bättre
+beskuren volym. Men det visade ju sig vara rätt bra för mitt examensarbete.
+Tandläkare A upptäckte alltså direkt när han såg Fall C att tanden var miss-
+formad, något han inte alls lagt märke till under hela operationen vid Fall A och
+B.
+Däremot tyckte Tandläkare A att det var svårt att se att roten försvunnit, då
+han blev förvirrad av att den bara försvann då voxlarna tillhörande roten helt enkelt
+tas bort och man inte får se roten plockas ut som i verkligheten.
+Vid den efterföljande diskussionen framkom att Tandläkare A tyckte att Fall C
+var klart att föredra, även då jag i efterhand förklarat att detta fall var betydligt
+mer resurskrävande.
+5.3.2
+Andra sessionen
+Fall A
+Tandläkare B startade med Fall A och började med att borra bort käkben för att
+frilägga tanden. Ett tecken på att det inte går att se någon struktur i Fall A var
+kommentaren
+“Går det att få bort ben här? Det känns som att det inte händer så
+mycket.”
+– Tandläkare B
+Tandläkare B fortsatte att borra och jag såg att han precis som Kirurg B vid
+den första utvärderingen sjönk in i benet utan att borra bort ovanliggande ben så
+att borrkulan försvann in under det överliggande benet. På frågan om han tyckte
+att han såg vad han höll på med svarade han
+“Jag tycker att det är lite svårt att se djupet när man kommer innanför
+benet sådär, då stör ju det där benet som ligger ovanpå.”
+– Tandläkare B
+Tanken är att inte borra ner sig i benet, utan mer hyvla bort det. Det är emel-
+lertid så svårt att se om någonting borras bort eller inte när det inte ﬁnns någon
+33
+KAPITEL 5. RESULTAT
+struktur på tänderna, så att användarna inte upptäcker att de borrat sig ner genom
+benet. Tandläkare B lyckades dock borra sig upp igen och på så sätt få bort det ben
+som skymde. Efter att ha borrat bort den mängd ben han ansåg vara tillräckligt
+stannade han upp och betraktade tänderna och förklarade
+“Jag har lite svårt att se här om jag har borrat bort en massa emalj här,
+eller om jag har hållt mig i benkanten som jag vill. Om det är ett stort
+hål in här i tanden nu eller inte, det ser man inte riktigt.”
+– Tandläkare B
+Det är alltså viktigt att se huruvida man har borrat någonting i själva tanden
+eller inte, vilket var mycket svårt i det här fallet. Det var lätt att se när man kom
+ner till tanden då den hade en annan färg än benet, men när tanden väl framträtt
+uppträder ånyo problemet att alla voxlar för segmentet har samma färg. Efter att
+ha utfört hela operationen frågade jag om helhetsintrycket och om han skulle vilja
+förändra något i visualiseringen.
+“Det var väl kanske egentligen det där med spåret lite granna, att man
+ser hur mycket ben man tagit bort egentligen, det var lite svårt att se
+och få en uppfattning om. Om man kan få till några skuggor där eller
+nåt så man ser den där viken som man gör då.”
+– Tandläkare B
+Fall B
+Efter detta var det dags för Tandläkare C att köra Fall B. Tandläkare B var mer
+aktiv som observatör än vad Tandläkare C varit och kommenterade direkt angående
+skillnaden i utseendet.
+“Här ser man ju lite mer spår. –paus– Det här var ju faktiskt bättre.”
+– Tandläkare B
+Tandläkare C fokuserade mer på skillnaden mellan simulatorn och verkligheten
+angående själva känslan och inte så mycket på det rent visuella medan han testade.
+Han kommenterade att det i verkligheten inte går att borra kontinuerligt som man
+kan i simulatorn då borren blir alldeles för varm och måste kylas, samt att man
+måste spola rent lite då och då för att se vad det är man gör. Dels blöder patienten
+och dels blir det en massa spån från bortborrat ben.
+“Skulle man börja låta studenterna se bara 20 sekunder åt gången och
+börja duscha dem med blod, och patienten börjar hosta, så skulle man
+ju börja gråta innan man ens...”
+34
+5.3. RESULTAT FRÅN UTVÄRDERING AV SKUGGNING
+– Tandläkare C
+Tandläkare B ﬂikar in med en kort sammanfattning:
+“Det är ju alltid lite grisigare i verkligheten.”
+– Tandläkare B
+Fall C
+Därefter startade jag Fall C och Tandläkare B tog över borren igen. Precis som i
+den förra sessionen var det först här som tandläkarna såg hur tanden egentligen såg
+ut.
+“Den ligger alltså helt i horisontellt läge här, eller?”
+– Tandläkare B
+Tanden ligger visserligen inte helt horisontellt, utan det var en tolkning utifrån
+det faktum att den var helt platt på ovansidan. Det visar ändå att tandläkarna inte
+lyckats uppfatta formen på tanden i de tidigare fallen. Tandläkare C insåg att det
+faktiskt var samma modell, bara med en annan visualisering.
+“Är det samma liksom position och rent kosmetiskt det du har gjort?”
+– Tandläkare C
+När Tandläkare B började borra kommenterade Tandläkare C det visuella in-
+trycket och djupkänslan i bilden.
+“Det blir ju mer djupkänsla alltså med skuggor.”
+“Synintrycket blir ju mycket mer detaljerat, det är en väldigt stor skill-
+nad. Här får man verkligen en känsla för hur det [ser ut]”
+– Tandläkare C
+Vad som däremot visade sig vara svårare i det här fallet var att se skillnad på
+de olika delarna av tanden. Framför allt skillnaden mellan tanden och käkbenet.
+“Här har jag svårt att se vad själva tandanatomin – vad som är vad.”
+“Det är svårt att orientera sig riktigt. På den andra såg man bättre när
+man hade tagit bort den.”
+– Tandläkare B
+35
+KAPITEL 5. RESULTAT
+“Här ser det ut som roten, ja vad är vad?”
+– Tandläkare C
+Trots att det var svårare att urskilja de olika delarna tyckte de båda tandläkarna
+att skuggningen tillförde mycket och Tandläkare C kom med ett viktigt inlägg.
+“... just det där första kändes ju inte så där jätte..., eller man är ju van
+vid bra graﬁk när man spelar spel och sådär ...”
+– Tandläkare C
+De ﬂesta av de som studerar på tandläkarhögskolan är unga människor som
+är uppvuxna med datorer och vet vilken standard graﬁken i dagens datorspel och
+datoranimerade ﬁlmer når upp till. Därför kan inte graﬁken i simulatorn inte ligga
+för långt efter innan den tolkas som omodern och ger ett dåligt första intryck.
+Vi diskuterade lite hur tänderna borde se ut och kom fram till att tandroten
+skulle vara betydligt gulare och käkbenet något gulare. Jag hade tidigare skapat
+ett fall (Fall D) med mer överdrivna färger liknande de tidigare fallen A och B. De
+färgerna var dock inte särskilt verklighetstrogna, utan var till för att verkligen öka
+kontrasten mellan de olika delarna.
+Då Fall C redan var laddat valde jag att först testa att bara stänga av stere-
+orenderingen så att endast en vanlig tvådimensionell bild visades då jag ville se
+om skuggningen i sig gav tillräckligt mycket djupinformation. För att spara tid ut-
+förde jag det mesta av borrningen och lät tandläkarna sedan känna på tänderna
+och kommentera. Det visade sig att upplevelsen blev i stort sett samma även utan
+stereoinformation.
+Fall C2
+“Jag tycker skuggningen nästan är viktigare än 3D, för att... där känns
+det som där börjar man närma sig som det ser ut.”
+“Jag tycker att det var ett himla lyft att få skuggningen, då helt plötsligt
+känns det som man känner igen sig... Det gör nog ganska mycket... jag
+tror att vinsten är större för studenterna då att man får igenkännings-
+eﬀekt när man väl sitter i en operationssal. Det tror jag blir svårare om
+man har den där första enklare.”
+– Tandläkare C
+Tandläkare B kom med en viktig kommentar som vi som utvecklar simulatorn
+inte riktigt hade tänkt på. Vi var så inställda på att stereobilden var en så viktig
+del när det gäller att orientera sig i en tredimensionell miljö eftersom det är så de
+ﬂesta andra simulatorerna fungerar.
+36
+5.3. RESULTAT FRÅN UTVÄRDERING AV SKUGGNING
+“Det här med 3D, att man har djupeﬀekt i svalget och så där, det tänker
+man ju inte så mycket på ändå, utan man fokuserar ju på det där lilla
+området.”
+– Tandläkare B
+Området tandläkaren fokuserar på är ju naturligtvis den tand som ska extra-
+heras, samt dess omedelbara närområde. Ett område på under 2 cm i utsträckning
+i djupled med den allra viktigaste informationen på mellan 0.5 till 1 cm. En så
+liten skillnad i djupled på ett betraktningsavstånd på 25 cm – som är ett medelav-
+stånd vi mätt upp vid tidigare tester – gör skillnaden i stereoinformationen närapå
+försumbar.
+“Jag tror också det där med skuggningen är viktigare.”
+– Tandläkare B
+Fall D
+Det sista fallet jag testade var Fall D med distinkta färger och skuggning och jag
+borrade precis som i Fall C2 upp ett spår och lät sedan tandläkarna känna och
+kommentera. Båda tandläkarna verkade uppskatta att det nu var enklare att urskilja
+de olika delarna.
+“Det kanske ﬁnns ett värde i att ha distinkta färger, så att man vet vad
+det är man tar bort.”
+– Tandläkare C
+“Här ser man ju ännu bättre faktiskt, när det skiljer färgerna sådär.”
+– Tandläkare B
+Vi kom återigen in på det faktum att simuleringen ändå inte återspeglar verk-
+ligheten exakt då det under en riktig operation tillkommer blod, saliv, benrester
+och sköljvatten som försvårar sikten. I en riktig situation borrar tandläkaren bara i
+10-20 sekunder åt gången för att sedan spola rent och se över vad som borrats bort.
+Då simulatorn är till för att lära sig hur ingreppet ska utföras kan det vara en fördel
+att åtminstone i början göra det så enkelt som möjligt för studenterna och låta dem
+se ordentligt vad de gör. Dels genom att inte införa de försvårande eﬀekterna och
+dels genom att förstärka kontrasten mellan de olika tanddelarna.
+“Det är ingen mening att försvåra det heller för de som ska göra det,
+alltså det är ju nästan bättre att dela upp färgerna sådär så ser man ju
+tydligare.”
+37
+KAPITEL 5. RESULTAT
+“För att förbereda sig för en operation, då är det ju kanonbra för då
+kan man ju på det här sättet då bedöma lite grann hur mycket ben ska
+jag ta bort, var ska jag dela den och så vidare. Då har man ju inte så
+mycket nytta av att lägga till de där försvårande eﬀekterna. Så ur den
+synpunkten är det ju bättre så här tycker jag.”
+– Tandläkare B
+Tandläkare C får avsluta den här sessionen med ett inspirerande citat:
+“Det skulle man ju vilja ha provat på själv första gången.”
+– Tandläkare C
+5.3.3
+Tredje sessionen
+Tandläkare X1
+Tandläkare X1 började med Fall B och tryckte så hårt att haptiken inte orkade
+hålla emot och borren trycktes genom hela tanden. Efter att ha borrat runt lite
+överallt påpekade X1:
+“Det blir lite lustig anatomi. Det stämmer inte med verkligheten.”
+– Tandläkare X1
+När jag bad honom förklara hur visade han med haptiken att det var ett stort hål
+i tanden framför visdomstanden och jag talade om att det berodde på att han hade
+borrat ett stort hål där. Först tänkte jag att det gjorde hans kommentar oanvändbar
+men insåg snabbt att det var tvärt om. Skälet till att han tyckte det var konstig
+anatomi var att han inte hade sett när han råkade borra i tanden. Jag frågar om
+han har någonting han vill förändra.
+“Jag skulle gärna vilja ha tydligare konturer på framför allt det som är
+näst sista tanden.”
+– Tandläkare X1
+Tandläkare X1 fortsatte borra, men stannade upp då och då och kände sig
+omkring med haptiken, vilket visar på att han hade svårt att se anatomin. Jag
+bytte till Fall C för att se om han tyckte det var bättre.
+“Den borrar väldigt djupt på en gång.”
+– Tandläkare X1
+38
+5.3. RESULTAT FRÅN UTVÄRDERING AV SKUGGNING
+I Fall C går borrandet mycket långsammare då skuggberäkningen tar längre tid,
+men Tandläkare X1 tyckte ändå att det kändes som att det går fortare. Jag tolkar
+detta som att han först då såg hur djupt han borrade och därmed tyckte att det
+gick fortare. Tandläkare X1 nämnde att han skulle vilja ha tänderna ljusare och
+med högre upplösning, men sedan måste han tyvärr gå eftersom en föreläsning han
+skulle lyssna på startade i rummet bredvid.
+Tandläkare X2
+Tandläkare X2 tyckte att det var lite svårt att se i Fall B, men att det gick ganska
+bra ändå. När hon skulle genomföra operationen borrade hon dock rätt igenom
+hela käken utan att se det. Instruktören som kommit in och bevittnat operationen
+frågade Tandläkare X2 om hon såg hur djupt hon var.
+“Jag ser inte att jag är så djupt. Jag ser bara en vit sörja.”
+– Tandläkare X2
+Efter bytet till Fall C tyckte Tandläkare X2 att det blev lättare att se med
+skuggningen, men sade att det berodde på att färgerna hade ändrats. Hon ville
+därefter inte vara med och testa längre så hon borrade ingenting i Fall C.
+Tandläkare X3
+Tandläkare X3 hade till en början svårt att kontrollera borren, men blev snabbt
+bättre på det. Hon tyckte att det var svårt att se djupet i Fall B, men tyckte att
+färgerna där var bättre. I Fall C var djupet bättre, men tänderna för mörka.
+“Den var bättre lite med att man kunde se djup liksom, men den första
+var bättre när det gällde färg.”
+– Tandläkare X3
+Tandläkare X3 föredrog Fall B eftersom färgerna där var bättre även om djup-
+känslan saknades. Hon tyckte att det var viktigt att efterlikna verkligheten så myc-
+ket som möjligt för att det inte ska bli en så stor kontrast i övergången mellan
+simulator och det riktiga ingreppet.
+Tandläkare X4
+Tandläkare X4 tyckte att färgerna i Fall B var bra, men var besviken över avsak-
+naden av blod. Hon genomförde ingreppet ganska bra, men även hon hade problem
+med att se vad hon gjort.
+“Det är svårt att se hur mycket man har borrat.”
+39
+KAPITEL 5. RESULTAT
+– Tandläkare X4
+Bytet till Fall C ledde till en oväntad kommentar.
+“Det här ser ut som gipständer. De förra var ju bra. De här ser ut som
+gips.”
+– Tandläkare X4
+Tandläkare X4 tyckte bättre om Fall B då hon tyckte att de tänderna såg verk-
+ligare ut, samt att det var lättare att särskilja de olika delarna där. Hon medgav
+att hon tydligare såg var hon borrade i Fall C, men att hon i Fall B såg tillräckligt
+bra.
+“Det är ju inte lättare att se i verkligheten, man ska ju inte se för bra
+för så är det inte.”
+– Tandläkare X4
+Tandläkare X5
+Tandläkare X5 tyckte att Fall B såg nästan verkligt ut och att han såg vad han höll
+på med. När jag bytt till Fall C och bad honom jämföra så nämnde han att han
+tyckte att tänderna såg metalliska ut.
+“Det här känns lite mer skuggor och lite annorlunda. Så den första
+kändes lite mer normal.”
+– Tandläkare X5
+Även han tyckte Fall B såg bättre ut och att han såg tillräckligt bra vad han
+gjorde. När jag ställde en direkt fråga om djupintrycket i de olika fallen så svarade
+han att Fall C var bättre i den aspekten.
+“Det känns bättre hur långt in man har borrat.”
+– Tandläkare X5
+Tandläkare X5 tyckte dock att Fall C såg onaturligt ut och föreslog att skugg-
+ningen kanske skulle lättas upp så att tänderna blev ljusare och kontrasten mellan
+de ljusa och mörka partierna skulle minska. Även han tyckte att det var svårare att
+se skillnad på de olika delarna i Fall C.
+40
+5.3. RESULTAT FRÅN UTVÄRDERING AV SKUGGNING
+Tandläkare D
+Tandläkare D började med Fall B och gillade upplägget med att simulatorn har en
+modell av en patient med öppen mun som gör att sikten till tänderna blir avgränsad.
+“Det är väldigt likt en verklig situation det här. Det är det – med hur
+läpparna faller och åtkomligheten.”
+– Tandläkare D
+Tandläkare D påpekade att färgerna inte stämde överens med verkligheten och
+kom med förslag på hur det borde se ut istället. Tänderna i Fall B var dock inte
+menade att se verkliga ut utan var istället färgade för att öka kontrasten mellan
+delarna.
+Tandläkare D var sedan tvungen att gå ut och undervisa, men han återvände
+en stund senare för att genomföra Fall C.
+Benet har en bättre färg i Fall C enligt Tandläkare D, men dentinet borde skilja
+sig mer från de övriga delarna och ha en något gulare färg. Även Tandläkare D
+tyckte att det var svårare att se skillnad på de olika delarna i Fall C.
+“Gula upp dentinet lite granna så att man ser skillnaden när man borrar
+bort den yttre benkompaktan att man ser ‘ojdå, nu har jag borrat i
+tanden’ och det får jag ingen riktig känsla av.”
+– Tandläkare D
+Benkompakta är för övrigt det hårda kalkstensliknande yttre skalet på ben till
+skillnad från märgbenet som är mjukare och uppbyggt som av fackverksliknade
+benlameller.
+Han tyckte ändå inte att färgskillnaderna mellan tanddelarna borde överdrivas
+såsom i Fall D.
+“Jag tycker man ska försöka efterlikna verkligheten.”
+– Tandläkare D
+Djupkänslan var enligt Tandläkare D bättre i Fall C och det visuella stämde
+bättre med vad han kände genom haptiken. Han föreslog även att vi borde ha med
+det tunna ligamentet mellan tandroten och käkbenet då den hjälper till att särskilja
+delarna visuellt.
+Tandläkare E
+Då jag inte var närvarande under den första halvan av omgången med Tandläkare
+E har jag helt förlitat mig på det videoinspelade materialet för den delen.
+41
+KAPITEL 5. RESULTAT
+Tandläkare E delade i Fall B på grund av ett missförstånd kronan rätt långt ner
+vilket enligt simulatorn inte är korrekt förfarande. Detta gjorde att Tandläkare E
+inte kunde hävla av kronan även om det borde ha gått i verkligheten om man borrat
+så långt in i tanden. Han visade sig ändå ha mycket bra koll på hur djupt han var
+då han när han blev ombedd att borra lite till protesterade och sade att han i så
+fall riskerade att borra helt igenom tanden. Vilket han strax därefter gjorde.
+Tandläkare E testade sedan Fall C, men tyckte att det var alldeles för svårstyrt
+då bilduppdateringen är mycket lägre i det fallet. Därför ﬁck han inte till något
+riktigt spår utan borren hoppade istället runt och gjorde små gropar här och var.
+Efter Fall C diskuterades hur han upplevde djupet och något förvånande hävdade
+han att han hade haft svårt att se djupet även fast han hade verkat ha rätt bra
+kontroll på var han var och sade angående Fall B:
+“Jag har lite svårt att se djupet och var jag är någonstans.”
+– Tandläkare E
+Ungefär här kom jag tillbaka och då han tidigare haft problem med Fall B gick
+Tandläkare E tillbaka till det fallet för att försöka genomföra proceduren på nytt.
+Nu uppdagades även hur han hade gjort för att avgöra hur djupt han var, vilket
+förklarade det något motsägelsefulla citatet tidigare.
+“Vad jag mäter nu det är djupet så att säga på själva borren, men jag
+ser ju inte riktigt vad det är här.”
+– Tandläkare E
+Tandläkare E använde borrskaftet för att avgöra hur djupt in i tanden han
+hade borrat då tanden naturligtvis skymde mer av skaftet när borren var längre in.
+Detta var en anpassning till den dåliga djupkänslan i Fall B och inte någonting som
+Tandläkare E brukade använda sig av i verkligheten. Han tyckte att det var svårt
+att avgöra hur djupt han var genom att bara titta på tänderna.
+“Jag ser inte riktigt ordentligt som jag gör på en människa, jag skulle
+vilja ha en annan färg då eller en annan graﬁk på det som jag plockat
+bort här när jag kommit igenom ner.”
+– Tandläkare E
+För att testa om han hade lättare att se hur han borrade i olika delar så provade
+Tandläkare E att borra på lite olika ställen, men hade svårt att se hur djupt han
+var förrän han var helt igenom och han kunde se tungan genom hålet han gjort.
+När han bara borrade en liten bit så hade han svårt att se att han gjort något alls.
+42
+5.3. RESULTAT FRÅN UTVÄRDERING AV SKUGGNING
+“Det är lite svårt om man nu tänker sig att du borrar här nere, så borde
+jag ju kunna se var jag är någonstans om jag går rätt in i käkbenet där,
+men det blir ju liksom inget riktigt hål i käkbenet där tycker jag. Förstår
+du vad jag menar? Nu har jag borrat tvärs igenom och först då så ser
+jag egentligen att det är någonting.”
+– Tandläkare E
+Då jag ﬁck veta att han hade tyckt att det var för svårt att borra i Fall C så
+gjorde jag som med Tandläkare B och C och borrade själv och lät Tandläkare E
+kommentera. Direkt så såg han då var jag borrat.
+“Men du ser ju att du får ju liksom markeringar där du har borrat och
+det får jag ju inte på den andra.”
+– Tandläkare E
+Även Tandläkare E kom in på att de olika delarna var svårare att särskilja i
+Fall C och skulle vilja att det var lite större skillnad så att man ser tydligare. Vi
+diskuterade därefter lite angående djupkänslan i de två olika fallen.
+“Den där djupkänslan känner jag ju är ju bättre eftersom jag ser var
+jag varit någonstans, det andra ser jag inte var jag varit utan då går jag
+ju bara på hur mycket borren har gått in i benet. Jag ser inte var jag
+borrat någonstans.”
+– Tandläkare E
+Avslutningsvis berättade Tandläkare E att han använde sig till största delen av
+det visuella intrycket och vetskapen om hur långt han borde kunna borra under an-
+vändandet av simulatorn. Han tyckte att känselåterkopplingen skiljde sig för mycket
+från verkligheten för att han skulle kunna känna var i tanden han befann sig.
+43
+Kapitel 6
+Analys och diskussion
+I detta kapitel analyserar jag de resultat jag fått under intervjuerna och diskuterar
+vad de har för konsekvenser för mitt examensarbete.
+Det var tydligt under det första testet med kirurgerna att den graﬁska representa-
+tionen som då användes inte var tillräckligt bra. Om det inte ﬁnns någon struktur
+eller färgskiftningar i materialet så går det inte att avgöra om man har borrat bort
+något eller inte förrän man borrat helt genom materialet. Det mest intressanta med
+Fall A var att en del av tandläkarna tolkade det som att det var fel på borren istället
+för graﬁken. Synen verkar alltså vara överordnad känseln.
+Vid tillfällena med studenterna visade sig den temporära lösningen med att
+ge tänderna struktur genom att låta färgerna variera något inom varje segment
+fungera förvånansvärt bra. De tyckte själva att det såg bra ut och de klarade av
+att genomföra själva operationen. Det är intressant att nyanserna egentligen visade
+hårdheten på materialet och inte tillhörde någon riktig textur, men det var ändå
+tillräckligt att få lite färgskiftningar för att tolka modellen som en tredimensionell
+sådan. Att det inte var helt tillfredställande trots att studenterna sade att de såg
+vad de höll på med, märktes genom att de försökte röra på huvudet för att få en
+bättre uppfattning om djupet i bilden.
+Detta fungerade naturligtvis inte då bilden på skärmen är densamma var du än
+har huvudet. Istället ser bilden ut att förvrängas och vridas åt det håll betraktaren
+rör huvudet. Detta beror på att de delar som sett ut att ligga längre bakåt i bilden
+och som skymts av framförliggande objekt borde ha blivit synliga när huvudet
+ﬂyttades, men eftersom alla objekt egentligen ligger i samma plan och inte kan ge
+upphov till någon rörelseparallax, så tolkar hjärnan det som att de framförliggande
+objekten rör sig relativt de bakomliggande. Se avsnitt 2.3.1 om rörelseparallax för
+mer information.
+Rörs huvudet dessutom i djupled, eller långt i sidled blir även perspektivet fel
+eftersom avståndet till skärmen ändras och perspektivet beräknas utifrån en betrak-
+tare som sitter ett visst avstånd från en viss skärmstorlek. Just perspektivföränd-
+ringen är inte så allvarlig då arbetsställningen vid simulatorn gör att användaren
+44
+6.1. BEHOVET AV SKUGGNING SOM DJUPINFORMATION
+inte förﬂyttar sig särskilt mycket i djupled. Den lilla skillnaden i perspektiv som
+ändå uppstår även vid dessa små rörelser stör inte användaren så mycket då män-
+niskor är vana att se bilder och ﬁlm tagna med både vidvinkel- och teleobjektiv där
+perspektivet även där på så vis blir förvrängt.
+Detta bör ändå has i åtanke för fortsatt arbete på simulatorn. Om så kallad
+head-tracking används för att följa huvudets rörelser, så kan bilden räknas om för
+att motsvara den nya huvudpositionen. Detta fungerar visserligen endast för en
+person i taget, men det är ju ändå så simulatorn är tänkt att användas.
+6.1
+Behovet av skuggning som djupinformation
+De ﬂesta av de som ﬁck testa någon av varianterna med skuggning tyckte att det gav
+dem en ökad djupkänsla och att det var lättare att se var de hade borrat någonstans.
+Även de som tyckte att de såg vad de gjorde i fallen utan skuggning borrade ofta
+igenom hela tanden vilket tyder på att de inte såg så bra som de hävdade. På direkt
+fråga om i vilket av fallen de ﬁck bäst djupkänsla svarade alla att de skuggade
+varianterna var bättre. Däremot var det tydligt att många rent utseendemässigt
+föredrog varianterna utan skuggning vilket jag tror beror på att tänderna i de fallen
+är betydligt ljusare även om jag själv tycker att de är alldeles för ljusa.
+Det var också tydligt att det var mycket svårare att skilja på de olika delarna
+av tänderna och käken i Fall C. Därför bör skillnaden mellan de olika delarna
+förstärkas, men då de ﬂesta ville att simulatorn skulle efterlikna verkligheten så bör
+skillnaderna inte överdrivas.
+6.1.1
+Urskiljande av små detaljer
+Just det faktum att ingen upptäckte att visdomstanden var missformad innan de
+ﬁck se en version med skuggning tycker jag talar tydligt för skuggning som bärare
+av djupinformation, framför allt i små detaljer.
+Ett av de mest intressanta påpekandena när det gäller djupseendet var det
+att man som tandläkare under en operation koncentrerar sig på ett mycket litet
+område över huvud taget. 3D-glasögonen hjälper mest till att särskilja djupet i den
+omgivande scenen med patientens ansikte och rummet däromkring, men det är ju
+ingenting som är viktigt att kunna urskilja under en operation. Det är istället det
+lilla område där tandläkaren borrar som är intressant och där är stereoeﬀekten liten
+och uppfattades av tandläkarna som försumbar. Där blir det istället skuggningen
+som gör att man kan urskilja djupskillnader och små detaljer.
+Det gör även att jag är glad att jag bestämde mig för att utföra testerna i ett
+simulerat operationsfall som liknar de fall som simulatorn kommer att användas till
+när den är färdig. Jag hade funderingar på att göra testfall som var mer abstrakta
+och bortkopplade från en verklig operation, så att jag kunde vara säker på att det
+var just djupseendet jag testade och att användarna inte skulle se det som någon
+generell utvärdering av simulatorn. Hade jag gjort mer abstrakta modeller som klot
+eller kuber så är jag inte säker på att jag hade gjort dem så små att den här frågan
+45
+KAPITEL 6. ANALYS OCH DISKUSSION
+hade uppkommit. Visserligen ﬁnns en risk att vissa av testpersonerna ändå såg det
+som just ett test av själva simulatorn, men jag tror att jag genom att ställa relevanta
+frågor under utvärderingen ändå ﬁck in dem på rätt spår.
+När jag tidigare i utbildningen medverkade i ett grupparbete om 3D-tv var ett av
+de skäl vi hittade till att 3D inte slagit tidigare det faktum att användaren behövde
+ta på sig ett par glasögon för att kunna uppleva djupkänslan och att de ﬂesta
+helst skulle vilja slippa detta (Areskär et al., 2008). När det gäller tv-tittande i en
+avslappnad situation i hemmet kan jag hålla med om att det skulle kunna upplevas
+som negativt att behöva ta på sig ett tillbehör. Det blir en för aktiv handling och
+ett ställningstagande. När det gäller simulatorn kan detta dock vara en fördel. Även
+om 3D-eﬀekten kanske inte hjälper användaren att borra bättre, så kan den ändå
+tillföra känslan av att det här inte bara är något vanligt datorprogram utan en
+avancerad maskin som kräver speciella tillbehör för att utnyttjas fullt ut. Det tror
+jag i det här fallet kan vara positivt.
+Stereograﬁken är dock beräkningskrävande då dubbelt så många bilder måste
+renderas varje sekund och graﬁkkort med stöd för stereorendering är dyra. Därför är
+det viktigt att överväga om man bör ha kvar den eller inte. Ett avskaﬀande skulle ge
+mer tid till andra beräkningar, till exempel en mer avancerad skuggning, och skulle
+göra det möjligt att använda graﬁkkort riktade till vanliga konsumenter. Det krävs
+emellertid en noggrannare utredning för att helt kunna förkasta stereograﬁken.
+6.1.2
+Intermittent arbete
+Några av tandläkarna tog upp att de arbetar intermittent när de borrar, det vill
+säga de borrar en kort stund och stannar sedan upp för att rengöra och kontrollera
+vad de gjort. Till viss del är det en fråga som de som kommer använda simulatorn
+i utbildningssyfte måste ta ställning till – om de tycker att det är viktigt att efter-
+likna en riktig operation så mycket som möjligt eller om det viktiga är att lära ut
+de olika stegen i operationen. De tandkirurger jag talade med i förundersökningen
+var eniga om att blod, kylvatten och andra försvårande eﬀekter gick att vara utan
+särskilt om de var svåra att simulera. Det ﬁnns dock en möjlighet att de skulle gö-
+ra simuleringen enklare. Själva volymrenderingen och beräkningen av normaler är
+rätt beräkningskrävande och skulle kunna underlättas genom att skymma den del
+av tänderna man borrat i med någon mer lättberäknad graﬁk som skulle motsvara
+slaggprodukterna. När användaren sedan väljer att “spola rent” så räknas volym-
+renderingen om och den skymmande graﬁken tas bort. Detta kräver givetvis att den
+skymmande graﬁken är enklare att beräkna, men kan vara värt att undersöka.
+46
+Kapitel 7
+Slutsats
+Detta kapitel innehåller de slutsatser och rekommendationer jag kommit fram till.
+Jag tar även upp vad jag hade gjort annorlunda om jag hade gjort om examensar-
+betet.
+Skuggning har i detta examensarbete visat sig spela en betydande roll för använ-
+darens djupuppfattning. Särskilt när det gäller små detaljer och det är ju på den
+nivån som tandläkare arbetar. Det djupseende användaren får via stereograﬁken i
+de situationerna verkar vara försumbar och går heller inte att förlita sig på då det
+inte är alla som kan se djup över huvud taget med stereobilder.
+Användandet av haptik tillför visserligen en möjlighet att få en uppfattning om
+djupet i scenen genom att känna sig för, men vid konﬂikt med synintrycken så verkar
+synen ta överhanden. Den haptik som används i simulatorn idag klarar heller inte
+allför stora påfrestningar och orkar inte hålla emot om användaren trycker för hårt.
+Det medför att känslan inte riktigt motsvarar verkligheten och kan vara en anledning
+till att användarna istället fokuserar på synintrycken. Åtminstone uttryckte sig en
+av testpersonerna (Tandläkare E) så.
+Simulatorn utvecklas dessutom som ett projekt med öppen källkod med för-
+hoppningen om att andra intresserade ska kunna vara med och bidra till projektet.
+Då haptikhårdvara är någonting relativt nytt och fortfarande förhållandevis dyrt
+måste man anta att de ﬂesta inte har tillgång till sådan hårdvara och därmed inte
+kan utnyttja känselintrycken som djupinformation över huvud taget. Det ﬁnns en
+möjlighet att styra borren med musen, men då blir det ännu viktigare att graﬁken
+tydligt visar var man har borrat, så att användaren märker att det händer något.
+De tänkta användarna är relativt unga tandläkarstudenter och kan därmed antas
+vara vana vid dagens dataspel och datoranimerade ﬁlmer där graﬁken börjar närma
+sig fotorealism. För att simulatorn inte ska kännas omodern bör graﬁken därför hålla
+en standard som inte ligger alltför långt ifrån detta. Naturligtvis har både datorspel
+och datoranimerade ﬁlmer en betydligt större budget än simulatorprojektet, men
+det är viktigt att påpeka att en del resurser trots allt bör läggas på att få graﬁken
+att se bra ut.
+47
+KAPITEL 7. SLUTSATS
+Frågorna jag ville besvara var:
+1. Hur viktig är skuggning som djupinformationsbärare?
+2. Bör skuggning implementeras i simulatorn?
+Som svar på den första frågan har det visat sig att skuggning är mycket viktig,
+samt att skuggningen verkar vara överordnad de andra källorna till djupinformation
+som stereograﬁk och haptik.
+Därmed blir svaret på den andra frågan att skuggning deﬁnitivt är värd att im-
+plementeras, trots att det kommer att kräva extra resurser antingen genom optime-
+ring eller genom att helt enkelt köpa kraftigare hårdvara. Optimering är antagligen
+det bästa sättet då det gör så att det inte krävs alltför dyr hårdvara för externa
+utvecklare att kunna medverka i projektet. Då några trots allt rent visuellt föredrog
+fall B utan skuggning, bör det närmare undersökas hur den skuggade varianten kan
+förbättras så att den ser verkligare ut.
+7.1
+Rekommendationer
+• Satsa på den skuggade varianten och utveckla den. Förbättra renderingen
+enligt de förslag som kommit in under intervjuerna i examensarbetet.
+• Behåll 3D-glasögonen för tillfället men gör mer omfattande tester om hur
+mycket 3D egentligen tillför.
+• Implementera head-tracking och utred om det gör det enklare att tolka djupet
+i scenen.
+• Undersök om det går att utnyttja att borrandet i verkligheten är intermittent
+och att området man fokuserar på ofta är skymt.
+7.2
+Vad kunde gjorts annorlunda
+7.2.1
+Utvärderingstillfällena
+Det som framför allt borde ha gjorts annorlunda och som jag skulle ändra på om
+jag skulle göra om examensarbetet på nytt var upplägget med användartesterna.
+Jag hade en förhoppning om att kunna utnyttja de utvärderingstillfällen som redan
+var inplanerade för simulatorn. Det visade sig tyvärr att det vid vissa tillfällen var
+väldiga restriktioner på vad jag ﬁck göra och vid det sista tillfället var studenterna
+inte där för att utvärdera simulatorn och hade därför inte möjlighet eller vilja att
+lägga så mycket tid på den.
+Jag tycker att jag lyckades utnyttja tillfällena rätt bra ändå och ﬁck en hel del
+intressanta kommentarer och uppslag, men de bästa tillfällena var helt klart dem
+där användarna enbart var där för att utvärdera mitt arbete.
+48
+7.2. VAD KUNDE GJORTS ANNORLUNDA
+Det är heller inte helt säkert att det hade gått att göra så mycket bättre ändå,
+för något av det svåraste med hela examensarbetet har helt klart varit att få tag på
+tandläkare som hade tid att ställa upp.
+7.2.2
+Testfallen
+Något som kunde ha gjorts annorlunda, men som då hade gett en annan vinkel
+på examensarbetet hade varit att utvärdera mer abstrakta modeller. Då hade jag
+emellertid kunnat missa en av de viktigaste kommentarerna i hela arbetet. Det
+är även möjligt att tandläkarna hade haft svårare att relatera till de abstrakta
+modellerna. Nu ﬁck de arbeta i en miljö de kände igen och var vana vid. Jag är nöjd
+med mitt val av fall, men inser att det skulle kunna ﬁnnas värdefull information att
+få fram ur mer avskalade fall också.
+49
+Kapitel 8
+Förslag på fortsatt arbete
+I detta kapitel listar jag en hel del intressanta uppslag som har framkommit under
+arbetets gång. De ﬂesta av dem skiljer sig en hel del från mitt eget examensarbete
+men baseras på problem jag stött på på vägen.
+8.1
+Automatisk segmentering
+Segmentering av data är en mycket tidskrävande process. Även om hjälpmedel ﬁnns
+att tillgå är det ändå en hel del manuellt arbete som måste göras.
+En automatisk segmentering skulle kunna dela upp volymen i intressanta delar
+som användaren sedan kan kombinera och namnge. Vidare borde någon typ av
+ﬁlter se till att små störningar i bilden fångas upp och utesluts ur den färdiga
+segmenteringen.
+Det är alltså någon typ av avancerad bildbehandling som ska till, något som är
+svårt nog i tvådimensionella bilder. Nu ska det alltså utföras i tre dimensioner. Med
+den senare tidens uppsving för volymrendering i medicinska sammanhang är det
+något som skulle kunna spara en hel del tid. Det skulle också göra det enklare för
+vårdpersonal att själva skapa visualiseringar utifrån nytagna röntgenbilder vilket
+skulle låta dem använda tekniken i det dagliga arbetet.
+8.2
+Integrering av vanliga ritverktyg vid segmentering
+De segmenteringsprogram jag stött på under examensarbetet har alla fungerat som
+någon typ av ritprogram som arbetar på en skiva av volymen. De har ofta haft få
+verktyg att tillgå. Vissa har även haft verktyg som varit allt annat än intuitiva.
+När de nu fungerar precis som ritprogram är frågan varför de inte använder sam-
+ma verktyg som ﬁnns att tillgå i dessa. I sitt enklaste utförande bör de åtminstone
+ha någon typ av pensel och sudd så att användaren helt enkelt målar de delar denne
+vill segmentera. Ungefär som när att måla en mask i Photoshop.
+Ett examensarbete skulle kunna gå ut på att ta de verktyg som ﬁnns i olika
+bildbehandlingsprogram och ser hur de skulle gå att applicera på segmenteringspro-
+50
+8.3. INVERKAN AV SKUGGOR SOM DJUPINFORMATION
+gram.
+8.3
+Inverkan av skuggor som djupinformation
+Jag har i mitt examensarbete undersökt hur skuggning påverkar djupuppfattningen,
+men även skuggor kan användas för att avgöra objekts positioner i en tredimensionell
+scen. Skuggning påverkar nyansen på objekt beroende på från vilket håll ljuset faller,
+medan skuggor betyder att objekt skymmer ljuskällan för andra objekt.
+I mitt arbete har jag helt bortsett från skuggor, men de skulle kunna underlätta
+djupuppfattningen, särskilt i de fall där användaren inte har tillgång till stereograﬁk.
+Självskuggning – att delar av ett objekt kan kasta skuggor på andra delar av
+samma objekt – är en än mer avancerad typ av skuggberäkning som ger ytterligare
+realism och ännu mer djupinformation. Hur mycket påverkar dessa olika typer av
+skuggor djupseendet?
+8.4
+Integrering av haptik i modelleringsprogram
+Ett problem i många 3D-modelleringsprogram är att det är svårt att navigera i tre
+dimensioner med en mus som bara går att röra i två. Därför borde en haptikenhet
+kunna användas för att styra pekaren i 3D-scenen då den kan röras i alla tre di-
+mensionerna. Det borde inte vara ett så stort problem att få till, men skulle ändå
+vara mycket användbart.
+Vad som vore riktigt intressant är att även använda sig av haptikfunktionali-
+teten, det vill säga att under arbetet med 3D-modellen även känna vad man gör.
+Då skulle arbetet mer efterlikna att skulptera med lera. Hur skulle det påverka en
+3D-graﬁkers arbetssätt?
+51
+Litteraturförteckning
+Akenine-Möller, T., Haines, E. och Hoﬀman, N. (2008) Real-Time Rendering, 4:e
+utg., Wellesley: A.K. Peters, Ltd.
+Angel, E. (2006) Interactive Computer Graphics: A Top-Down Approach Using Opel-
+GL, 4:e utg., Pearson Education, Inc.
+Areskär, C., Gasinski, D., Backström, J., Huldt, J., Eklund, R., Meiton, O., Flodin,
+M. och Stålenbring, D. (2008) ‘Bortom HD-tv’, i Otlu, A. (red.), Innehåll och
+uttryck i media 2008: Framtidens Television, ss. 95–112, Stockholm: Kungliga
+Tekniska Högskolan.
+Bell, J. (2007) Introduktion till forskningsmetodik, 4:e utg., Danmark: Studentlitte-
+ratur.
+Brutzman, D. och Daly, L. (2007) X3D: Extensible 3D Graphics for Web Authors,
+San Francisco: Elsevier Inc.
+Engel, K., Hadwiger, M., Kniss, J., Rezk-Salama, C. och Weiskopf, D. (2006) Real-
+Time Volume Graphics, Wellesley: A.K. Peters, Ltd.
+Fitger, M. (2008) Visual Shader Programming, Examensarbete, School of Computer
+Science and Communication, Kungliga Tekniska Högskolan, Sverige.
+Forsslund, J. (2008) Simulator för operativ extraktion av visdomständer, Examens-
+arbete, School of Computer Science and Communication, Kungliga Tekniska Hög-
+skolan, Sverige.
+Hupp, J., Ellis, E., III och Tucker, M. (2008) Contemporary Oral and Maxillofacial
+Surgery, 5:e utg., St. Louis: Mosby Inc.
+Kaufman, A. och Mueller, K. (2005) ‘Overview of Volume Rendering’, i Hansen,
+C. och Johnson, C. (red.), The Visualization Handbook, ss. 127–174, Elsevier:
+Butterworth-Heinemann.
+Kleﬀner, D.A. och Ramachandran, V.S. (1992) ‘On the perception of shape from
+shading’, Perception & Psychophysics, vol. 52, nr. 1, ss. 18–36.
+52
+Lejdfors, C. (2008) High-level GPU programming: Domain-speciﬁc optimization and
+inference, Doktorsavhandling, Department of Computer Science, Lund University,
+Sverige.
+Manneberg, G. (2006) ‘3D-seende och 3D-visualisering’, Online: tillgänglig 2009-05-
+26.
+URL: http://www.biox.kth.se/education/gm/Media_hk/3dseende.pdf
+MedX3D (2009) ‘MedX3D - H3D.org’, Online: tillgänglig 2009-05-18.
+URL: http://www.h3dapi.org/modules/mediawiki/index.php/MedX3D
+Monk, A., Wright, P., Haber, J. och Davenport, L. (1993) Improving your Human-
+Computer Interface: A practical technique, Hemel Hempstead: Prentice Hall.
+Moore, K. och Dalley, A. (1999) Clinically Oriented Anatomy, 4:e utg., Baltimo-
+re/Philadelphia: Lippincott Williams & Wilkins.
+Palmer, S.E. (1999) Vision Science: Photons to Phenomenology, Cambridge: The
+MIT Press.
+Pham, D.L., Xu, C. och Prince, J.L. (2000) ‘Current Methods in Medical Image
+Segmentation’, Annual Review of Biomedical Engineering, vol. 2, ss. 315–337.
+Preece, J., Rogers, Y. och Sharp, H. (2002) Interaction Design: Beyond human
+computer interaction, New York: John Wiley & Sons, Inc.
+SenseGraphics AB (2008) ‘H3D API Manual: For version 2.0’, Online: tillgänglig
+2009-05-18.
+URL: http://www.h3dapi.org/uploads/api/H3DAPI_20/docs/H3D%20API%20
+Manual.pdf
+Solso, R. (1994) Cognition and the Visual Arts, Cambridge: MIT Press.
+Toverud, K.C. (2005) ‘1177 Sjukvårdsrådgivningen - Kroppen’, Online: tillgänglig
+2009-05-26.
+URL: http://www.sjukvardsradgivningen.se/allakapitel.asp?CategoryID=17646
+53
+TRITA-CSC-E 2009:096 
+ISRN-KTH/CSC/E--09/096--SE 
+ISSN-1653-5715 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+www.kth.se 

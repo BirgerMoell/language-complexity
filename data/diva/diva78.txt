@@ -1,0 +1,3492 @@
+ 
+ 
+ 
+Design av styrsystem till rotationsstol och 
+utveckling av numerisk modell av 
+otolitmembran 
+ 
+ 
+ 
+ 
+ 
+PATRIK ÖSTERLIND 
+ 
+ 
+ 
+ 
+ 
+Examensarbete 
+Stockholm, Sverige 2007 
+ 
+ 
+ 
+ 
+ 
+ 
+Design av styrsystem till rotationsstol och 
+utveckling av numerisk modell av 
+otolitmembran 
+ 
+av 
+ 
+Patrik Österlind 
+ 
+ 
+ 
+ 
+ 
+Examensarbete MMK 2007:58 MDA306 
+KTH  Industriell teknik och management 
+Maskinkonstruktion 
+SE-100 44  STOCKHOLM 
+ 
+3
+Förord 
+Jag skulle vilja tacka Tony Pansell för att ha startat ett mycket intressant projekt och för att 
+han låtit mig ta del av det. Det har varit roligt och jag har lärt mig mycket. 
+ 
+Vidare skulle jag också vilja tacka några personer utan vilka jag inte hade haft möjlighet att 
+uträtta något arbete på projektet. 
+  
+(F.d.) Studenterna Bernt Lindholm och Fredrik Rubensson för att ha byggt utrustningen som 
+jag har arbetat vidare på. 
+ 
+Olle Hjort på Epsilon AB, för att ha byggt elektronikskåpet men också kommit med flera 
+värdefulla åsikter. 
+ 
+Leif Hemmingson och Christer Bjerke på Östergrens Motor. 
+ 
+4
+ 
+ 
+ 
+ 
+ 
+Examensarbete  MMK 2007:58 MDA306 
+ 
+Design av styrsystem till rotationsstol och 
+utveckling av numerisk modell av otolitmembran
+ 
+ 
+ 
+ 
+ 
+Patrik Österlind 
+ 
+Godkänt 
+2007-06-15 
+Examinator 
+Mats Hanson 
+Handledare 
+Mats Hanson 
+ 
+Uppdragsgivare 
+T Pansell, Karolinska institutet
+Kontaktperson 
+Tony Pansell 
+ 
+Sammanfattning 
+Den här rapporten består av två delar. Den ena delen behandlar skapandet av ett styrsystem 
+till en testutrustning som ska användas till forskning på ögonrörelser. I den andra delen görs 
+en datormodell över en del av balansorganet i örat. Arbetet har gjorts på Bernadotte 
+laboratoriet vid S:t Eriks ögonsjukhus. 
+ 
+Testutrustningen som styrsystemet görs till är en så kallad rotationsstol. Det är en utrustning 
+med vilken man genom att fysiskt translatera och rotera en testperson kan stimulera hjärnan 
+hos denna person. Med ett avancerat videosystem avläses det hur rörelserna påverkar 
+ögonmotoriken. Styrsystemet består av ett användargränssnitt på en PC, en styrenhet, 
+servomotorer och sensorer. Arbetets första del innebar att ta reda på hur motorerna ska styras 
+för att orsaka önskad stimulering av testpersonen samt att sedan realisera detta genom att göra 
+program till PC och styrenhet. En stor del av arbetet har lagts ner på att säkerställa att de olika 
+delarna i systemet samspelar på ett väl fungerande sätt.  
+ 
+Datormodellen ska simulera dynamiken hos de så kallade otoliterna som finns i balansorganet 
+i innerörat. Otoliterna kan liknas vid mycket små gelémembran. Dessa använder kroppen för 
+att detektera linjära accelerationer. Ett krav på modellen var att den skulle kunna 
+implementeras i det användargränssnitt som används för att styra testutrustningen. Först 
+undersöktes tidigare arbete gjord på området och data samlades in. En numerisk metod 
+användes för att göra datormodellen. Tyvärr tar simuleringarna allt för lång tid att utföra för 
+att de realistiskt sett ska kunna användas. Ingen lösning som undviker detta problem har 
+hittats. 
+ 
+ 
+ 
+5
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2007:58 MDA306
+ 
+Design of control system for rotationchair and 
+development of  numerical model of otholitic 
+membrane 
+ 
+ 
+ 
+ 
+ 
+Patrik Österlind 
+ 
+Approved 
+2007-06-15 
+Examiner 
+Mats Hanson 
+Supervisor 
+Mats Hanson 
+ 
+Commissioner 
+T Pansell, Karolinska institutet 
+Contact person 
+Tony Pansell 
+ 
+Abstract 
+This master thesis is made of two parts. The first part concerns the method and results of 
+designing a motion control system for a piece of research-equipment called BIRGIT. The 
+equipment is made to be used for research on eyemovements. In the second part, a computer 
+model of a part of the balance organ in the inner-ear is developed. The work has been done at 
+the Bernadotte laboratory at S:t Erik Eye Hospital. 
+ 
+The equipment the control system is made for is a so-called rotationchair. A rotationchair is a 
+piece of eqiupment with wich it is possible to physically translate and/or rotate a person. 
+Doing this will stimulate the balance-senses of the person and thus causing eye movement 
+responses. These responses are measured by an advanced video system. 
+The control system consists of a user interface on a PC, a motion control unit, servo motors 
+and sensors. The first part of creating the control system was to find out how to control the 
+motors to create the desired stimuli to the test-person. This was then done by programming 
+the PC interface and a motion control program on the motion control unit. A large part of the 
+work has been spent on making sure that the different parts of the system works together in a 
+correct and well controlled way. 
+ 
+The computer model shall simulate the dynamics of the so-called otoliths that are part of the 
+balance organs located in the inner ears. The otoliths resembles tiny gel membranes. In the 
+membranes there are motion sensitive receptors, detecting linear accelerations of the head. A 
+requirement of the model was to make it so that it could be implemented in the user interface. 
+The work started by examining previous articles concerning this field of study and data was 
+collected. A model was made by using numerical methods. Unfortunatelly the simulations 
+made with this model takes to long time to execute. The model is not practically usable. No 
+way has been found to work around this problem. 
+ 
+ 
+ 
+ 
+ 
+ 
+6
+ Innehållsförteckning 
+Terminologi............................................................................................................................ 9 
+Medicinsk terminologi ....................................................................................................... 9 
+1. 
+Inledning........................................................................................................................... 10 
+1.1. 
+Bakgrund .................................................................................................................. 10 
+1.1.1. 
+Problembeskrivning ......................................................................................... 10 
+1.1.2. 
+Forskningsbakgrund......................................................................................... 11 
+1.1.3. 
+Nytta med forskningen..................................................................................... 11 
+1.1.4. 
+Rotationsstolen BIRGIT................................................................................... 11 
+1.1.5. 
+Användning av utrustningen ............................................................................ 12 
+1.1.6. 
+Tidigare använd testutrustning och testscenario .............................................. 13 
+1.1.7. 
+Testscenario med rotationsstolen BIRGIT....................................................... 13 
+2. 
+Inledande arbete ............................................................................................................... 14 
+2.1. 
+Kravspecifikation ..................................................................................................... 14 
+2.2. 
+Modellering av rotationsstolen................................................................................. 15 
+2.2.1. 
+Metod ............................................................................................................... 15 
+2.2.2. 
+Verifiering och ekvationer ............................................................................... 16 
+2.2.3. 
+Resultat............................................................................................................. 17 
+3. 
+Rotationsstolen BIRGIT................................................................................................... 18 
+3.1. 
+Koppling mellan delsystemen .................................................................................. 18 
+3.2. 
+Ramkonstruktion...................................................................................................... 18 
+3.2.1. 
+Motorer............................................................................................................. 18 
+3.2.2. 
+Givare............................................................................................................... 19 
+3.3. 
+Elektronikskåpet....................................................................................................... 20 
+3.3.1. 
+Drivsteg............................................................................................................ 20 
+3.4. 
+PC............................................................................................................................. 21 
+3.5. 
+Eyetracking system .................................................................................................. 21 
+4. 
+Styrsystemet ..................................................................................................................... 22 
+4.1. 
+PC Användarinterface .............................................................................................. 23 
+4.1.1. 
+Rörelseparametrar ............................................................................................ 25 
+4.1.2. 
+Animation......................................................................................................... 25 
+4.1.3. 
+Kontakt med styrenheten.................................................................................. 26 
+4.1.4. 
+Rörelsestyrning................................................................................................. 26 
+4.2. 
+Styrenheten............................................................................................................... 27 
+4.2.1. 
+Utvecklingsmiljö .............................................................................................. 27 
+4.2.2. 
+Rörelsestyrning................................................................................................. 28 
+4.3. 
+Säkerhet.................................................................................................................... 29 
+4.4. 
+Resultat..................................................................................................................... 30 
+4.4.1. 
+Fortsatt arbete................................................................................................... 30 
+5. 
+Modell av balanscentra..................................................................................................... 31 
+5.1. 
+Bakgrundsmaterial ................................................................................................... 31 
+5.2. 
+Beskrivning av balansorganet .................................................................................. 32 
+5.2.1. 
+Semicirkulära kanaler....................................................................................... 32 
+5.2.2. 
+De otolitiska membranen ................................................................................. 32 
+5.2.3. 
+Otoliternas geometri......................................................................................... 32 
+5.2.4. 
+Otolitmembranets uppbyggnad ........................................................................ 33 
+5.3. 
+Numerisk modell...................................................................................................... 34 
+5.3.1. 
+Numerisk behandling ....................................................................................... 35 
+5.3.2. 
+Explicit metod .................................................................................................. 36 
+5.3.3. 
+Implicit metod .................................................................................................. 37 
+5.3.4. 
+Förenklad metod............................................................................................... 37 
+5.4. 
+Slutsats ..................................................................................................................... 39 
+ 
+7
+5.4.1. 
+Fortsatt arbete................................................................................................... 39 
+6. 
+Referenser......................................................................................................................... 40 
+7. 
+Bilagor.............................................................................................................................. 41 
+A. Lista över använda I/O-portar på styrenheten.............................................................. 41 
+B. 
+Materialparametrar....................................................................................................... 42 
+C. 
+Analytisk lösning av PDE ............................................................................................ 43 
+D. Matlabkod för förenklad simulering av otolitmembran ............................................... 45 
+ 
+ 
+8
+Bildförteckning 
+ 
+ 
+Figur 1. 
+Rotationsstolen BIRGIT 
+Figur 2. 
+Utrustning för att möta ögonrörelser 
+Figur 3. 
+Rotationer med olika rotationscentrum 
+Figur 4. 
+Koppling mellan olika delsystem 
+Figur 5. 
+Servomotor 
+Figur 6. 
+Mekanisk ändlägesgivare 
+Figur 7. 
+Induktiv hemlägesgivare 
+Figur 8. 
+Montering av givare 
+Figur 9. 
+Elektronikskåpet med dess innehåll 
+Figur 10. 
+Mask för mätning av ögonrörelser 
+Figur 11. 
+Informationsflöde i styrsystemet 
+Figur 12. 
+BIRGIT Software, användarinterface för att styra utrustningen 
+Figur 13. 
+Inskrivning av parametrar i excel 
+Figur 14. 
+Animering av stolsaxeln 
+Figur 15. 
+Styrenheten 
+Figur 16. 
+Utvecklingsmiljön Workbech 
+Figur 17. 
+Balansorganet i örat[18] 
+Figur 18. 
+Otoliternas positioner i huvudet 
+Figur 19. 
+Genomskärning av ett otolitmembran 
+ 
+9
+Terminologi 
+Styrsystem:  Styrsystemet är den delen av utrustningen som utgörs av styrenheten, motorerna 
+samt de sensorer som är kopplade till ovanstående. Systemet gör det möjligt att 
+styra utrustningen. 
+ 
+Styrenhet: 
+Styrenheten är synonym med mikrokontrollerna. Den innehåller den 
+utrustningen som möjliggör beräkningar och kommunikation med alla externa 
+enheter så som sensorer och PC datorer. 
+ 
+Modell: 
+Modell syftar i denna rapport på en uppsättning av matematiska ekvationer som 
+beskriver ett förlopp. Datormodell innefattar dessa ekvationer implementerade i 
+ett beräkningsprogram på en PC. 
+ 
+Rotationsstol: Detta syftar på hela den mekaniska utrustningen med stol, motorer och 
+balkkonstruktion. 
+ 
+Stol:  
+Stol syftar i denna rapport på den delen av rotationsstolen i vilken testpersonen 
+är fastspänd.  
+ 
+Stolaxel: 
+Den imaginära axel som går längs med stolsryggen. 
+ 
+Medicinsk terminologi 
+Utriculus:  Ett geléliknande horisontalt beläget membran som är en del av örats balansorgan. 
+Organet detekterar huvudets sidolinjära accelerationer och förser hjärnan med 
+denna information. 
+ 
+Sacculus:  Ett geléliknande vertikalt beläget membran som är en del av örats balansorgan. 
+Sacculus detekterar främst vertikala huvudförflyttningar. 
+ 
+VOR:  
+Vestibulo-okulära reflexer. Ögonrörelser som induceras av balansorganet för att 
+stabilisera synen vid huvudrörelser. 
+ 
+10
+1. Inledning 
+1.1. Bakgrund 
+ 
+Detta examensarbete har gjorts på Bernadotte laboratoriet på S:t Eriks Ögonsjukhus. 
+Laboratoriet är en del av Karolinska Institutet. På laboratoriet sker forskning främst inom 
+synfysiologi och ögonrörelsekontroll. Den forskning som är intressant för detta 
+examensarbete är den forskning som görs på ögonmotorik. Fokus ligger på de ögonrörelser 
+som uppstår på grund av stimulering av balansorganet i innerörat.  
+1.1.1. 
+Problembeskrivning 
+Detta examensarbete går ut på att utveckla ett styrsystem till en testutrustning som ska 
+användas för att stimulera balansorganen i öronen och avläsa hur detta påverkar patienten. 
+Den mekaniska konstruktionen är till stor del redan byggd. Styrsystemet ska automatisera 
+testförloppet och se till så att upprepade identiska testförlopp ska stimulera testpersoner lika 
+vid varje test. En del av styrsystemet ska vara ett PC användargränssnitt med vilket man ska 
+kunna styra utrustningen. Resultatet av arbetet kommer användas som medel för att utföra 
+undersökningar som tillhandahåller data till framtida forskning. 
+Parallellt med utvecklingen av styrsystemet görs också en datormodell av en del av 
+balansorganet i innerörat. Modellen görs över den delen som detekterar translatoriska 
+accelerationer. Modellen ska simulera dynamiken som finns i dessa organ. Detta på grund av 
+att dynamiken i organen är vad som ger upphov till de neurologiska signalerna som skickas 
+till hjärnan. Modellen ska vara implementerbar i det användargränssnitt som görs till 
+styrsystemet. 
+ 
+ 
+11
+1.1.2. 
+Forskningsbakgrund  
+Skrivet av projektägaren Tony Pansell (Leg. Optiker) 
+När man lutar huvudet åt sidan (öra mot axel) kommer ögat att rotera i motsatt riktning runt 
+synaxeln s.k. okulär torsion. Vi vet idag att okulär torsion är en icke viljemässigt styrd 
+motorisk respons. Man kan inte bestämma sig för att ”göra” torsion utan denna ögonrörelse 
+kommer som ett svar på stimulering av balansorganet, synsinnet eller muskel-led-sinnet. I 
+innerörat finns ett organ som känner av huvudrotationer (båggångarna) och ett organ som är 
+känsligt för gravitation och linjär huvudförflyttning (otolitorganet). 
+I tidigare studier har vi visat att en huvudlutning mot axel inducerar okulär torsion som 
+motsvarar ca 10-20% av huvudlutningen. Denna kompensatoriska ögonrörelse föregås dock 
+av en snabb övergående torsionsrörelse (torsionsspik) i samma riktning som huvudrörelsen. 
+Den bakomliggande mekanismen till torsionsspiken tror vi är otolitorganet i innerörat. 
+Genom den accelerationströghet som en massa uppvisar vid en translation tror vi att 
+otolitorganet initialt stimuleras i motsatt riktning jämfört med den dragningskraft som 
+gravitationen påverkar organet med vid en stationär huvudlutning. 
+Efter att ögat har förflyttat sig till sin nya roterade position i ögonhålan har vi nyligen visat att 
+ögat sakta driver tillbaka mot sitt ursprungsläge (dvs mot 0-linjen som vid upprätt 
+huvudhållning). Om denna drift beror på en adaption i innerörats sensorer eller centralt i 
+hjärnan vet vi idag inte. 
+Beroende på vilka rörelsekrafter huvudet utsätts för så kommer torsionsresponsen att variera 
+och eventuellt återgången till 0-linjen likaså. Detta ger oss en bra ingång till varför vi vill 
+utveckla en rotationsstol där vi mycket exakt kan kontrollera hur huvudet har rört sig och 
+därigenom förstå vilken del av innerörat som stimulerats. 
+ 
+1.1.3. 
+Nytta med forskningen 
+Skrivet av projektägaren Tony Pansell (Leg. Optiker) 
+Denna basala experimentella forskning kommer att ge oss ny kunskap om hur hjärnan 
+kontrollerar ögonrörelser, hur informationen från innerörat behandlas och upprätthålls 
+centralt i hjärnan genom s.k. neural integrator och i kortvarigt minnesfunktion. Denna 
+kunskap kommer att kunna appliceras på patienter med symptom såsom yrsel, dubbelseende 
+och andra neurologiska symptom som härrör från de strukturer som är involverande inom 
+närliggande hjärnstrukturer. 
+ 
+1.1.4. 
+Rotationsstolen BIRGIT 
+Utrustningen till vilken styrsystemet görs kallas för BIRGIT (se figur 1). Namnet kommer 
+från en bidragsgivare till Bernadottelaboratioriet men är också en förkortning av ”Best In 
+Rotation, Great In Translation”. 
+ 
+Den mekaniska konstruktionen av rotationsstolen har gjorts av två studenter på KTH Kista. 
+Dessa studenter gjorde dimensioneringen och konstruktionen av rotationsstolen som deras 
+examensarbete [1] i mekatronik. Ett tidigare projektarbete [2] på mekatronik-inriktningen på 
+KTH Kista hade tagit fram ett lämpligt koncept på design av utrustningen. Detta koncept 
+användes som basis för konstruktionen. Design och verifiering av rotationsstolen gjordes med 
+hjälp av ett CAD program. Konstruktionen gjordes i skolans verkstad samt med hjälp av 
+arbete beställt från externa verkstäder. Rotationsstolens stomme är baserad på ett balksystem 
+från Bosch Rexroth [2]. Utöver design av den mekaniska konstruktionen har motorer samt ett 
+styrsystem valts. Detta gjordes i samarbete med motorleverantören Östergrens Elmotor [3]. 
+ 
+ 
+12
+Figur 1 Rotationsstolen BIRGIT. Sits för testperson är inte monterad 
+ 
+Som syns i figur 1 består rotationsstolen av en balkkonstruktion. På vardera av de två 
+horisontella balkarna har en i sidled flyttbar länkpunkt monterats. Länkpunkterna är 
+ihopkopplade av en mindre, rörlig, vertikalt monterad ramkonstruktion. På denna 
+ramkonstruktion ska en stol för testpersoner monteras. Länkpunkterna kan med hjälp av 
+motorerna köras i sidled. Beroende på hur man kör länkpunkterna relativt varandra så kan 
+man skapa olika rotationer och translationer som påverkar den testperson som sitter i stolen. 
+1.1.5. 
+Användning av utrustningen 
+Utrustningen BIRGIT kommer endast att användas i forskningssyfte.  För att tillhandahålla 
+underlag till forskning så kan man med hjälp av utrustningen utföra många olika typer av 
+undersökningar i vilka balansorganens påverkning ögonrörelserna är centrala. Olika delar av 
+balansorganen i innerörat detekterar olika typer av rörelse. Med BIRGIT kan undersökningar 
+utföras på sådant sätt att de isolerar de för forskaren intressanta egenskaperna hos en rörelse 
+eller delar av balansorganen. Man kan sedan med väl utformade test avläsa hur just dessa 
+rörelser eller organ påverkar ögonen. Det går till exempel att göra en helt translatorisk rörelse 
+som bara stimulerar de organ som detekterar translation. En av de första undersökningarna 
+som kommer att göras med BIRGIT är att ta reda på hur människan särskiljer 
+gravitationsaccelerationen och övriga translatoriska accelerationer. 
+1.1.6. 
+Användning av datormodellen 
+Datormodellen kan användas till att spåra hur de translatoriska accelerationer som 
+balansorganet utsätts för påverkar själva organet. Man kan med detta undersöka om det finns 
+samband mellan de dynamiska egenskaperna hos organet och de ögonrörelser som sker som 
+svar på en viss acceleration. T.ex. skulle man kunna undersöka om ögonrörelsernas storlek 
+eller hastighet direkt svarar mot den deformation som balansorganet utsätts för vid en viss typ 
+av acceleration. 
+ 
+13
+Figur 2 Utrustning för att mäta ögonrörelser. 
+1.1.7. 
+Tidigare använd testutrustning 
+Den befintliga utrustningen som har använts för att utföra undersökningar kring 
+ögonmotoriken är ett enkelt system. Test har gått till så att en testperson har suttit på en pall i 
+en burkonstruktion (se figur 2). Burkonstruktionen är byggd för att kunna generera växlande 
+elektromagnetiska fält inom sina ramar. 
+Testpersonen har fått använt ögonlinser 
+med en inlagd kopparlindning. Lindningen 
+är kopplad till en apparat som mäter den 
+inducerade strömmen i koppartråden. 
+Utifrån detta kan ögonens placering 
+relativt 
+det 
+elektromagnetiska 
+fältet 
+bestämmas. Testpersonen har placerat sitt 
+huvud på ett roterbart hakstöd och bitit i 
+en bettskena. Vid hakstödet har en 
+gradskiva suttit så att man kunnat avläsa 
+vid vilken vinkel huvudet är lutat. Man har 
+sedan lutat huvudet en viss vinkel och 
+registrerat hur det har påverkat ögonen. 
+Med detta system är det svårt att utföra en 
+serie 
+av 
+identiska 
+test 
+på 
+olika 
+testpersonen. Pga. att huvudet lutas 
+manuellt 
+kan 
+man 
+inte 
+med 
+god 
+noggrannhet 
+fastställa 
+sådana 
+rörelseparametrar som rotationshastighet 
+och slutvinkel. Utrustningen har främst 
+använts till underökningar relaterade till 
+slutvärdet på vinkeln, dvs testen har varit 
+oberoende 
+av 
+vinkelhastigheten 
+på 
+huvudet. För att kompensera för dessa 
+brister och för att kunna utöka mängden 
+möjliga 
+testscenarios 
+så 
+framtas 
+rotationsstolen BIRIGT. 
+ 
+1.1.8. 
+Testscenario med rotationsstolen BIRGIT 
+När ett test ska utföras med BIRGIT så skapar testutföraren först en datafil på sin PC. 
+Datafilen innehåller information om de rörelser som ska utföras. Testpersonen sätts sedan fast 
+i stolen. Huvuded låses i en upprätt position relativt kroppen. Detta görs så kroppens, och 
+därmed huvudets, rörelse i förhållande till själva stolen minimeras. Istället för linserna med 
+kopparlindning används ett videobaserat ögonmätningssystem, en så kallad eye-tracker. 
+Utföraren av testet kopplar via USB-kabel ihop sin Pc med testutrustningen och kan sedan 
+starta testet. 
+ 
+ 
+ 
+14
+2. Inledande arbete 
+ 
+2.1. Kravspecifikation 
+ 
+Datormodellen av balansorganet ska… 
+• överensstämma med verkligheten. 
+• använda de accelerationer som rotationsstolen orsakar på balansorganen som 
+inparametrar. Accelerationerna ska vara horisontella och vertikala. 
+• överensstämma med resultat från tidigare rön. Det finns viss experimentella och 
+beräknade data att jämföra resultatet med. 
+• bestå av fyra strukturer (membran), två utriculus och två sacculus. En utriculus och 
+sacculus sitter i varje balansorgan i örat. Balansorganen i båda öronen ska simuleras 
+samtidigt. 
+• vara gjord på ett sätt så att den är implementerbar i programvaran. En numerisk metod 
+krävs. 
+ 
+Styrsystemet ska… 
+• styra rotationsstolen utifrån följande parametrar 
+o Rotation 
+ Vinkelacceleration 
+ Vinkelhastighet 
+ Rotationscentrum 
+o Translation 
+ Acceleration 
+ Hastighet 
+• kompensera för varierande kroppsfysik hos tespersonerna. Oberoende av t.ex. vikt så 
+ska alla testpersoner som används i samma test utsättas för lika stimuli. 
+• synkroniseras med ett externt mätsystem för ögonrörelser. Mätsystemet ska starta sin 
+mätning samtidigt som rörelserna startar. 
+• kunna överföra positions data till mätsystemet. 
+ 
+Användarprogrammet till Pc ska… 
+• kontrollera styrsystemet. 
+• kunna läsa in en serie av rörelser specificerade i en fil. 
+• överföra inläst data till styrenheten. 
+• se till så att inkorrekt eller konflikterande data inte överförs till styrenheten. 
+• vara lättanvänt. Ett grafiskt användarinterface ska användas. 
+ 
+ 
+15
+2.2. Modellering av rotationsstolen 
+I början av projektet gjordes en enkel datormodell av rotationsstolen. Modellen gjordes i 
+programmet Matlab/Simulink [5] och den beskriver hur stolens länkpunkter rör sig vid olika 
+önskade rotationer. Translatoriska rörelser har inte tagits i beaktning då dessa ansågs ha ett 
+enkelt och intuitivt rörelsemönster. 
+Modellen gjordes för att få större insikt i hur stolramens länkpunkter rör sig vid rotation. 
+Utformningen av rotationsstolen gör att de linjära rörelsemönstren hos dessa länkpunkter inte 
+är helt uppenbara. 
+2.2.1. 
+Metod 
+För att göra modellen togs först en geometrisk beskrivning av rotationsstolen fram. 
+Matematiska uttryck för länkpunkternas rörelser beräknades sedan utifrån dessa. Själva 
+modellen använder inte alla uttryck då det finns inbyggda funktioner i Simulink som gör vissa 
+av dem överflödiga. Istället används dessa ekvationer för verifiering av modellen. Som indata 
+till modellen används stolens önskade vinkelacceleration, vinkelförflyttning samt läget på det 
+virtuella rotationscentrumet. Rotationscentrumet sägs vara virtuellt då det för majoriteten av 
+rotationerna flyttar sig relativt rummet. Rotationscentrumet är dock hela tiden på samma 
+position relativt testpersonen. Den övre och den undre länkpunkten benämns L1 respektive 
+L2. 
+ 
+Om det virtuella rotationscentrumet sätts under eller över L1 så kommer detta pga. 
+konstruktionens utformning göra att rotationscentrumet under rörelsens gång kommer flytta 
+sig vertikalt relativt marken. Det är detta som gör rörelserna hos länkpunkterna komplicerade. 
+I figur 3 visas en schematisk skiss över två olika rotationer. Till vänster visas en rotation kring 
+ett rotationscentrum placerat mellan länkpunkterna. Till höger visar en rotation där 
+rotationscentrum är placerat ovanför den övre länkpunkten. 
+ 
+16
+ 
+I simuleringen i simulink startar länkpunkerna alltid med stolsaxeln i vertikalt läge. Det vill 
+säga att vinkeln är 0° vid start av simuleringen. Utifrån denna vinkel och pålagd 
+vinkelacceleration integreras successivt vinkeln fram och positionerna för länkpunkterna 
+beräknas utifrån de geometriska sambanden. Rotationscentrum är under rotationen 
+horisontellt fixerat men dess vertikala position beror på vinkeln. Från kännedom om vinkeln, 
+rotationscentrums position relativt konstruktionen och de geometriska begränsningarna (se 
+ekv 1 och 4 nedan) konstruktionen har på de rörliga delarna så kan länkpunkternas positioner 
+beräknas. Informationen om länkpunkternas positioner kan med Simulink användas för att 
+beräkna länkpunkternas hastigheter och acceleration. Detta görs genom Simulinks inbyggda 
+funktioner för derivering. 
+ 
+ 
+2.2.2. 
+Verifiering och ekvationer 
+För att verifiera simulinkmodellen tas ekvationer fram för länkpunkternas positioner, 
+hastigheter och accelerationer. Dessa ekvationer kommer även senare till användning vid 
+programmering av rörelsemönstret som generas av styrenheten. 
+ 
+De geometriska sambanden mellan länkpunkterna och rotationscentrumet ger följande 
+ekvationer. Alla positioner och hastigheter beräknas utifrån 0-läget. 
+ 
+Positionen xL1 för länkpunkt L1 beroende på vinkeln θ (se figur 3).   
+ 
+ 
+)
+sin(
+1
+θ
+A
+xL =
+ 
+(1) 
+ 
+Med hjälp av derivering med avseende på tiden så erhålls hastigheten (2) och accelerationen 
+(3) för L1. 
+ 
+X
+X 
+A 
+A 
+L2 
+L1: Övre länkpunkt 
+L2: Undre Länkpunkt 
+X: Virtuellt rotationscentrum 
+A: Avstånd från L1 till X 
+0.8m 
+θ 
+X
+L1 
+L2 
+L1 
+y 
+x 
+Figur 3 Rotationer med olika rotationscentrum. 
+ 
+17
+ 
+)
+cos(
+1
+θ
+θ&
+&
+A
+xL =
+ 
+(2) 
+ 
+ 
+))
+sin(
+)
+cos(
+(
+2
+1
+θ
+θ
+θ
+θ
+−
+=
+&&
+&&
+A
+xL
+ 
+(3) 
+ 
+Positionen xL2 för den nedre länkpunkten L2. 
+ 
+ 
+)
+sin(
+)
+tan(
+8.0
+)
+tan(
+))
+cos(
+8.0
+(
+2
+θ
+θ
+θ
+θ
+A
+A
+xL
++
+=
++
+=
+ 
+(4) 
+ 
+Hastigheten och accelerationen erhölls på samma sätt som för L1. 
+ 
+ 
+))
+cos(
+)
+tan(
+8.0
+8.0
+(
+2
+2
+θ
+θ
+θ
+A
+xL
++
++
+= &
+&
+ 
+(5) 
+ 
+ 
+))
+sin(
+)
+tan(
+)
+tan(
+6.1(
+))
+cos(
+)
+tan(
+8.0
+8.0
+(
+3
+2
+2
+2
+θ
+θ
+θ
+θ
+θ
+θ
+θ
+A
+A
+xL
+−
++
++
++
++
+=
+&
+&&
+&&
+ 
+(6) 
+2.2.3. 
+Resultat 
+För att se att modellen stämmer överens med de ekvationer som ställts upp så plottades 
+simulationsresultaten som funktion av tiden. Detta gjordes för ett antal olika rotationer. Både 
+rotationsaccelerationen och placering av rotationscentrum varierades för att se hur dessa 
+variabler påverkar länkpunkternas positioner, hastigheter och accelerationer. Dessa resultat 
+jämfördes med plottar gjorda med de framtagna ekvationerna. Detta visade att resultatet från 
+simuleringarna gav samma resultat som ekvationerna. 
+ 
+Med hjälp av modellen erhölls en bättre insikt i hur länkpunkterna rör sig relativt varandra vid 
+olika typer av rotationer. 
+ 
+18
+3. Rotationsstolen BIRGIT 
+Rotationsstolen består av i huvudsak fyra olika fysiska system. Dessa delsystem är 
+ramkonstruktion, elektronikskåp, PC och ett eyetracking system. Ramkonstruktionen består 
+av de delar som utför den fysiska rörelsen. Elektronikskåpet innehåller all drivelektronik. PCn 
+används till att styra systemet genom ett användargränsnitt. Eyetracking systemet mäter 
+ögonrörelser på den patient som sitter i rotationsstolen.  
+3.1. Koppling mellan delsystemen 
+De olika delsystemen är ihopkopplade enligt figur 4. Pilarna representerar informationsflöde. 
+ 
+ 
+3.2. Ramkonstruktion 
+Ramkonstruktionen är den delen som innefattar alla rörliga och fasta delar med vilka önskade 
+rörelser uträttas, dvs. ramverket, stolkontruktionen och remdriften med motorer (se figur 1). 
+På ramverket sitter också olika typer av givare. Ramkonstruktionen designades och byggdes i 
+ett tidigare examensarbete [1], så detta diskuteras inte i den här rapporten. 
+3.2.1. 
+Motorer 
+De motorerna som används till systemet är två stycken trefas 
+servomotorer av modellen Baldor BSM90C 2150AA. Motorerna sitter 
+monterade vid sidan av varje horisontell balk. Motorerna är valda för 
+att med stor marginal kunna utföra önskad rörelse oavsett 
+testpersonens fysik. På motorerna sitter en växel som växlar ner 
+hastigheten 7 gånger. 
+ 
+Elektronikskåp 
+Styrenhet 
+    Drivsteg 
+Övrig 
+elektronik 
+PC
+Användargränssnitt 
+Utvecklingsmiljöer 
+Ramkonstruktion 
+Motorer 
+Sensorer 
+Eyetracking system 
+Figur 4 Koppling mellan olika delsystem. 
+Figur 5 Servomotor.
+ 
+19
+3.2.2. 
+Givare 
+Systemet 
+har 
+två 
+hemlägessensorer 
+samt 
+fyra 
+stycken 
+ändlägessensorer. I vardera motorn sitter det en enkoder. Dessa 
+används för att tillhandahålla styrenheten med information om var 
+länkpunkterna befinner sig. 
+ 
+Ändlägesgivare 
+Ändlägesgivarna (figur 6) är mekaniska brytare som ger utslag när en 
+länkpunkt har förflyttats förbi sitt yttersta tillåtna läge. Brytarna är 
+gjorda av Telemecanique [9] (modellkod: XCKP2118P16). 
+ 
+Dessa brytare är monterade på tvärbalkarna så att deras armar sticker 
+upp och roteras när länkpunkten kör förbi. De är monterade i ändarna 
+av de horisontella balkarna på ramkonstruktionen. De används som en 
+säkerhetsåtgärd för att förhindra att länkpunkterna krockar med 
+ramkonstruktionens kanter. Styrenhetens ingångar kopplade till 
+brytarna är kant-triggade. Dvs de registrerar bara övergångar mellan 
+av- och påläge. 
+ 
+Hemlägesgivare 
+Hemlägesgivarna (figur 7) används vid nollställning av länkpunkternas 
+positioner. Detta görs före varje testserie så att länkpunkternas 
+positioner relativt ramkonstruktionen kan fastslås. Dessa sensorer är 
+gjorda av Balluff [11] (modellkod: BES M12MF1-POC10F-S04G). 
+ 
+Hemlägessensorerna är inte mekaniska brytare utan induktiva givare 
+som ger utslag då metall passerar framför sensorn.  Eftersom 
+länkpunkternas fästen på tvärskenorna är av metall så kommer sensorn 
+ge utslag då en länkpunkt passerar framför givaren. Sensorerna är 
+monterade vid de högra ändarna på tvärskenorna, innanför 
+ändlägesbrytarna. Dvs. hemlägesgivarna kommer att ge utslag före 
+ändlägesgivarna. Utslag från hemlägesgivarna tas bara till hänsyn då 
+systemet utför nollställning av länkpunkternas posititioner. Ingångarna 
+kopplade till hemlägesgivarna är nivå-
+triggade, dvs utslag registreras hela tiden 
+länkpunkten finns framför givaren. Detta 
+är 
+nödvändigt 
+för 
+att 
+nollställningssekvensen 
+ska 
+fungera 
+korrekt.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figur 6 Mekanisk 
+ändlägesgivare 
+Å Länkpunkt
+Figur 7 Induktiv 
+Hemlägesgivare
+Figur 8 Montering av givare 
+ 
+20
+3.3. Elektronikskåpet 
+Elektronikskåpet innehåller all elektronik som krävs för att utrustningen ska fungera korrekt 
+(se figur 9). Drivelektroniken till motorerna består av ett drivsteg till vardera motor samt en 
+styrenhet som innehåller två mikrokontrollers. Utöver drivelektronik finns också övrig 
+elektronik i form av kraftelektronik och reläer. Ut från skåpet går ström till motorerna, två 
+analoga och en digital signal till eyetrackingsystemet. In till skåpet går signaler från givare. 
+Kopplade till elektronikskåpet finns även två nödstop. Elektronikskåpet har gjorts av Epsilon 
+[8]. 
+ 
+ 
+Figur 9 Elektronikskåpet med dess innehåll. 
+3.3.1. 
+Drivsteg 
+Styrsignalerna ut från styrenheten går till varsitt drivsteg. Drivstegen är av modellen Metronix 
+ARS2305. Styrsignalen in till varje drivsteg är en analog spänningssignal som varierar inom 
+intervallet ±10V. Drivsteget sköter strömreglering samt förstärkningen av styrsignalen från 
+styrenheten. När drivstegen fungerar korrekt skickar de en ”Ready”-signal till styrenheten. 
+Om ”Ready”-signalen bortkopplas tas styrsignalen bort. Drivstegen är konfigurerade med 
+programvaran Metronix Servocommander [7]. Drivstegen konfigureras utifrån vilken typ av 
+motor de ska användas till. Merparten av konfigurationen görs automatiskt av programmet 
+men vissa elektriska data för motorn matas in manuellt. 
+ 
+Styrenhet
+Drivsteg 
+Nödstopp 
+Reläer 
+ 
+21
+3.4. PC 
+PC:n används för att styra utrustningen. Ett användarinterface kommunicerar med styrenheten 
+med hjälp av en USB kabel. På PC:n finns också utvecklingsmiljöer till både styrenheten och 
+drivstegen. Dessa används inte då test ska genomföras. Mint Workbench [6] används för att 
+konfigurera och programmera styrenheten. Under konfigureringen har regulatorn och 
+funktionerna på alla portar ställts in. Drivstegen har kommissionerats med hjälp av Metronix 
+ServoCommander.  
+3.5. Eyetracking system 
+Eyetracking systemet (Chronos Vision) 
+används för att mäta ögonens rörelser 
+under testets gång. Systemet består av 
+en mask som testpersonen har på sig. 
+På masken är kameror monterade som 
+spelar in ögonens rörelser med en 
+frekvens på 200Hz. Kamerorna är 
+kopplade 
+till 
+en 
+dator 
+som 
+gör 
+bildanalys och skapar en logfil med 
+koordinater över ögonens position. Till 
+eyetracking systemet skickas det en 
+synkroniseringssignal från styrenheten 
+som ser till så att mätningen startar 
+samtidigt som rörelsen på stolen startar. 
+Synkroniseringssignalen skickar värden 
+digitalt. Även två analoga signaler 
+skickas till mätsystemet. De används 
+för att överföra datavärden som också 
+ska hamna i logfilen. Värden som 
+överförs är vinkeln mellan stolsaxeln 
+och vertikallinjen samt positionen på den övre länkpunkten. Det finns ingen möjlighet att 
+överföra ytterligare variabeler via analog signal. Det är styrenheten som begränsar antalet 
+variabler som kan överföras analogt eftersom den bara har fyra stycken analoga utgångar. 
+Två av utgångarna används för att styra motorerna. Det finns möjlighet att överföra data 
+digitalt, men för detta behövs ett protokoll. 
+ 
+ 
+Figur 10 Mask för mätning av ögonrörelser 
+ 
+22
+4. Styrsystemet 
+ 
+Styrsystemet för rotationsstolen utgörs av fyra delar. Dessa är motorerna, drivsteg till 
+motorerna, styrenheten och Pc användarinterfacet. De olika delarna interagerar enligt figur 11. 
+Figuren visar informationsflödet av styrsignaler för den ena motorn med tillhörande delar. 
+Processen är lika för den andra motorn. 
+ 
+Från PC:n skickas data som styrenheten använder för att generera en banprofil. Dvs en profil 
+över var motorerna, och därmed länkpunkterna, ska befinna sig vid olika tidpunkter samt 
+vilken hastighet de ska ha vid dessa tidpunkter. Utifrån banprofilen och uppmätt position på 
+länkpunkterna så ger positionsregulatorn en styrsignal till drivsteget. Positionsregulatorn är en 
+så kallad PID-regulator (Proportionell, Integrerande, Deriverande). Drivsteget förstärker den 
+signalen och skickar den vidare till motorn. Drivsteget sköter också strömreglering av den 
+signal som går till motorn. Den roterade vinkeln på motoraxeln mäts och drivsteget emulerar 
+utifrån det en enkodersignal. Enkodersignalen skickas till styrenheten som använder signalen 
+för att mäta var länkpunkten befinner sig. 
+PC 
+Styrenhet 
+Drivsteg 1 
+Motor 1 
+Strömregulator 
+Enkoder 
+emulering 
+Positions-
+regulator 
+Generering av 
+börvärden 
+Figur 11 Informationsflöde i styrsystemet. 
+ 
+23
+4.1. PC Användarinterface 
+Ett PC användarinterface (figur 12) har gjorts i Visual Basic 2005 (.Net). Användarinterfacet 
+till styrsystemet används för att läsa in de rörelser som rotationsstolen ska utföra. Data laddas 
+från en excelfil (se 4.1.1). De inlästa datavärdena kontrolleras och kan sedan överföras till 
+styrenheten. I användarinterfacet kan man även öppna en animation som visar hur 
+rotationsstolen kommer att röra sig. 
+ 
+ 
+Figur 12 BIRGIT Software, användarinterface för att styra utrustningen. 
+I bilden syns tre stycken inlästa delrörelser. Varje rad respresenterar en rörelse i serien. I 
+kolumnerna specificeras rörelsernas egenskaper (se 4.1.1), som tex. acceleration eller 
+hastighet. De två översta är baserade på rotation och den understa är baserad på translation. 
+Rörelserna kommer utföras i serie och startar med den översta. 
+Ned till vänster i användarinterfacet finns manuella kontroller för att styra motorerna. Dessa 
+kommer troligtvis inte användas så ofta men de kan vara bra att ha.  
+I mitten syns de kontroller med vilka man använder den automatiska styrningen. I bilden syns 
+att vissa knappar är gråade. Detta beror på att systemet inte än har utfört vissa moment. Först 
+när dessa moment är utförda tillåts användaren att fortsätta. I bilden så har filen lästs in men 
+någon nollställning av systemet har inte gjorts än. Alltså tillåts man inte starta rörelserna. Man 
+måste utföra momenten i nedanstående ordning. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+24
+1. Laddning av fil 
+För att ladda en fil öppnas ett vanligt dialog-fönster när man klickar på knappen ”Load File”. 
+Man letar upp sin fil och klickar på ”Ok”. Användaren frågas sedan om den önskade primära 
+egenskapen av rörelsen är slutvinkel eller acceleration. Detta påverkar hur rörelsen kommer 
+avslutas. Olika avslutningar behövs för olika typer av test. 
+ 
+• Acceleration: Om acceleration väljs så kommer rörelsen att sakta bromsas in 
+efter att den nått den önskade vinkel. Detta görs för att inbromsningen inte ska 
+påverka accelerationen under det tids/vinkel-intervall som specificerats i 
+excelarket. Rörelserna kommer alltså bli längre än vad de är specificerade. 
+ 
+• Slutvinkel: Om slutvinkel väljs så kommer inbromsningen att ske så att 
+utrustningen stannar vid den specificerade slutvinkeln. 
+ 
+Programmet undersöker om all data är korrekt inskriven och om det finns data som är i 
+konflikt med varandra. T.ex. om både hastighet och acceleration är inskriven för en och 
+samma rörelse. Detta utgör en rörelse som inte går att utföra.  
+Programmet undersöker även om de inskrivna rörelserna är praktiskt genomförbara med 
+avseende på rotationsstolen dimensioner samt om rörelserna uppfyller de föreskrivna 
+säkerhetskraven.  
+Om inga fel upptäcks tillåts användaren nu att nollställa länkpunkternas positioner. Om fel 
+upptäcks kräver programmet att parametrarna korrigeras.  
+ 
+ 
+2. Nollställning av position 
+När man klickar på knappen ”Reset Position”Under startar nollställningssekvensen. Under 
+nollställningssekvensen kommer båda motorerna köras så att länkpunkterna flyttas mot de 
+högra ändarna där hemlägesgivarna sitter. Då en givare ger utslag bromsas rörelsen på den 
+länkpunkt som var orsaken till utslaget. På grund av att systemet inte kan stoppa abrupt så 
+kommer länkpunkten flyttas lite längre åt höger från den punkt då givaren började ge utslag än 
+vad som är önskvärt. För att kompensera för detta körs länkpunkten sedan sakta åt andra hållet 
+och stannar när givaren inte längre ger utslag. Efter att båda länkpunkterna har flyttats så att de 
+inte längre ger utslag kommer de sedan att köras en förbestämd sträcka in mot mitten. Därefter 
+nollställs positionerna. Användaren tillåts nu starta de inlästa rörelserna. 
+ 
+3. Starta rörelserna 
+När man klickar på knappen ”Start Motion(s)” startar de inlästa rörelserna. En digital utgång 
+på styrenheten sätts till låg-nivå. Detta gör att eyetrackingsystemet börjar spara mätdata. 
+ 
+4. (Ev.) Stoppa rörelserna 
+Om användaren vill kan han/hon stoppa den pågående rörelsen genom att klicka på knappen 
+”Stop Motion” 
+ 
+25
+4.1.1. 
+Rörelseparametrar 
+Det rörelsemönster som rotationsstolen ska utföra definieras som en serie av rörelser. 
+Specificering av rörelsernas parametrar görs i ett excelark. Varje individuell rörelse utgörs av 
+en kombination av ett antal parametrar. Dessa parametrar samt förklaring av dem listas nedan.  
+ 
+• Rotation 
+o Rotationscentrum: Vid rotation måste den vertikala positionen för ett virtuellt 
+rotationscentrum definieras. Rotationscentrumet sätts i förhållande till den övre 
+länkpunkten 
+o Amplitud: Hur många grader som stolen ska rotera. 
+o Duration: Tiden en rotation ska göras på. 
+o Hastighet: Vilken vinkelhastighet rotationen ska ha. 
+o Acceleration: Istället för hastighet kan vinkelacceleration definiera rörelsen. 
+o Riktning: Bestämmer åt vilket håll stolen ska rotera. 
+• Translation 
+o Distans: Hur lång förflyttning en translation ska utföra. 
+o Duration: Tiden en viss förflyttning tar. 
+o Hastighet: Rörelsens hastighet. 
+o Acceleration: Accelerationen en förflyttning har. 
+o Riktning: Bestämmer åt vilket håll stolen ska röra sig. 
+• Paus: Hur lång tid efter en utförd rörelse som utrustningen väntar tills nästa rörelse 
+påbörjas. 
+ 
+ 
+ 
+Figur 13 Inskrivning av parametrar i excel 
+4.1.2. 
+Animation 
+En enkel animation baserad på de inlästa värdena finns att tillgå. Animationen visar hur 
+stolaxeln kommer att röra sig under förloppet. Detta för att användaren enkelt ska få en 
+översikt över hur stolen kommer att röra sig. Vissa parameterkombinationer ger upphov till 
+komplicerade rörelser som är svåra att intuitivt föreställa sig. 
+ 
+26
+ 
+Figur 14  Animeringen av stolsaxeln 
+ 
+4.1.3. 
+Kontakt med styrenheten 
+Datorn är kopplad till styrenheten via en usb-kabel. Med hjälp av en ActiveX kontroll skapas 
+en instans av styrenheten i PC-programmet. ActiceX kontrollen tillhandahas av Baldor [10]. 
+Detta förenklar avsevärt överföringen av data mellan PC:n och styrenheten. ActiveX 
+kontrollen sköter automatiskt kommunikationsprotokollet och programmet får direkt tillgång 
+till alla funktioner som används i styrenheten. 
+ 
+Styrenheten har utöver USB-porten också en COM-port vilken möjliggör koppling till Pc:n 
+med seriell kabel. Detta stöds dock inte av PC programmet. Endast koppling via USB är 
+möjlig. 
+4.1.4. 
+Rörelsestyrning 
+PC-programmet sköter den överliggande hanteringen av rörelsestyrningen. Styrenheten är 
+programmerat till att använda en så kallad PVT-spline (Position-Velocity-Time) för att 
+generera börvärden för positionerna. För varje rörelse som ska utföras matas styrenheten med 
+positions, hastighets och tidsvektorer. Dessa vektorer beräknas för varje rörelse utifrån de data 
+som specificerats i excelarket. Beräkning görs med de ekvationer givna i avsnitt (2.2.2).  En 
+uppsättning av vektorer krävs för varje motor. Varje element i en vektor motsvarar till ett 
+element i de andra vektorerna. Alltså gör programmet en diskretisering av den givna rörelsen 
+där varje diskretiserad punkt består av ett element från vardera vektor (dvs. information om 
+position, hastighet och tid i den aktuella punkten). Disktretiseringen görs med ett tidsintervall 
+på 100ms. Vid start och slut på rörelserna görs diskretiseringen med 20ms intervall. ActiveX 
+kontrollen i programmet används för att skicka vektorerna till styrenheten. 
+ 
+27
+4.2. Styrenheten 
+Styrenheten är av modell Baldor NextMove ESB och 
+den innehåller två mikrokontrollers och olika typer av 
+I/O-portar kopplade till mikrokontrolerna. Den ena 
+mikrokontrollern sköter kommunikation med externa 
+enheter via USB, seriell eller CAN-nätverk. Den 
+andra sköter resten av funktionerna. Den används för 
+att sköta regleringen av motorstyrningen så att 
+länkpunkterna rör sig enligt önskade rörelsebanor. En 
+rad digitala och analoga in- och utgångar finns för att 
+ta in och skicka signaler till externa enheter. 
+Styrenheten har en FPGA (Field Programmable 
+Gateas Array) som används för att göra inställningar 
+till in- och utgångarna. Programmeringen av FPGA:n 
+görs när styrenhetens firmware laddas ner. Program 
+till styrenheten behövs inte läggas i firmware. 
+4.2.1. 
+Utvecklingsmiljö 
+Programmet på styrenheten är skrivet i programmeringsspråket Mint (Motion Intelligence), 
+vilket är en modifierad version av Basic. Mint är speciellt designat av Baldor [10] för att 
+användas till rörelsestyrning. 
+För konfiguration och debugging av kod till styrenheten används programmet Workbench 5.5 
+[6]. I detta definieras de olika in och utgångar som ska användas. Se bilaga A för en lista på 
+de använda I/O portarna. Workbench används också för att ladda ner firmware i styrenheten. 
+För att styrenheten ska kunna reglera utrustningen med god noggrannhet så behövdes en 
+parameteridentifikation för systemet genomföras. Det vill säga värdena på de parametrar som 
+används i styrenhetens regleralgoritm för att styra motorerna måste identifieras. Identifiering 
+gjordes för en parameter i taget och sedan justerades alla för att förbättra noggrannheten. 
+I Workbench finns även funktioner för att övervaka och lagra data under testkörning. 
+ 
+Figur 16 Utvecklingsmiljön Workbench 
+Figur 15 Styrenheten 
+ 
+28
+4.2.2. 
+Rörelsestyrning 
+Då rörelsemönstren för länkpunkterna kan vara komplicerade används en så kallad PVT-
+spline för att generera rörelsemönster. Som beskrivits i avsnitt 4.1.4 så matas styrenheten med 
+vektorer som innehåller information om tid, position och hastighet för motoraxlarna. Utifrån 
+dessa vektorer interpolerar mikrokontrollern fram börvärden för axlarnas positioner. Då en 
+rörelse startas sköter styrenheten automatiskt regleringen av styrsignalerna utifrån de 
+beräknade börvärdena och de kontinuerligt uppmäta positioner motoreraxlarna. När en rörelse 
+har utförts skickas en signal till PC-programmet och eventuellt laddas sedan en ny rörelse. 
+Rörelserna laddas en i taget för att användarinterfacet ska ha större kontroll på förloppet.  
+ 
+Programmet i styrenheten sköter också all information som kommer från givarna. Se avsnitt 
+3.1.2. 
+ 
+29
+4.3. Säkerhet 
+Rotationsstolen BIRGIT har säkerhetscertifierats av Epsilon AB [8]. Utöver de delar av 
+säkerheten som innefattas i styrsystemet så kommer externa säkerhetsfunktioner att läggas till 
+i form av klämskydd mm. I denna rapport diskuteras begreppet säkerhet endast med avseende 
+på att själva styrsystemet inte ska ge upphov till skada på testperson eller utrustning. 
+ 
+För att minimera de potentiella skadorna av ett fel mitt i drift så begränsas den högsta tillåtna 
+hastigheten på någon av länkpunkterna till 1,2 m/s.  Användarinterfacet godkänner alltså inte 
+inmatade parametrar som resulterar i en hastighet över 1,2 m/s. 
+ 
+Styrsystemet har ett flertal funktioner i mjukvaran som automatiskt stoppar den pågående 
+rörelsen om den avviker från vad som är normalt. Vid ett stop stannas båda länkpunkterna. 
+Även om det inte är nödvändigt i alla stanna båda motorerna så görs det för att ta bort risken 
+för fortsatta fel orsakade av att den ena länkpunkten står still.  
+ 
+• Positionsfel: Om en länkpunkts börvärde (dvs dess önskade position) skiljer sig för 
+mycket från den uppmätta positionen. Detta skulle t.ex. kunna uppstå om en länkpunkt 
+fastnar. 
+• Vinkelfel: Om vinkeln mellan stolaxeln och vertikallinjen överstiger 45°. 
+• Ändlägesfel: Om en länkpunkt förflyttas för nära de yttre kanterna på tvärbalken. 
+ 
+Ändlägesbrytare 
+Utöver de säkerhetskontroller inbyggda i mjukvaran finns de mekaniska ändlägesbrytarna. 
+Ingångarna som ändlägessensorerna är kopplade till är flank-triggade, dvs givaren kommer 
+inte ge upphov till en ihållande signal då den är nedtryckt utan endast en signal ges då 
+länkpunkten kommer i kontakt med brytaren. Vid utslag från en ändlägessensor kommer den 
+pågående rörelsen att avbrytas. Länkpunkten som motsvarar till den givare som gav utslaget 
+kommer snabbt bromsas in medan den andra länkpunkten utför ett vanligt stop med mjukare 
+inbromsning. Då båda motorerna stannat avlägsnas ”på”-signalen till motorernas drivsteg. 
+Ändlägesbrytarna är placerade så att länkpunkterna har 7,5 cm utrymme att retardera på innan 
+de slår i kanterna. Vid felfri drift ska ändlägessensorerna aldrig ge något utslag. 
+ 
+30
+4.4. Resultat 
+Då själva stolen som testpersonen ska sitta i inte är konstruerad än så har inga riktiga tester 
+utförts. Någon accelerometer har inte använts för att undersöka om de rotationer som utförs 
+verkligen sker med rätta rotationshastigheter och accelerationer. Endast mätning på 
+linjärskenorna har gjorts. Mätningarna har gjorts med hjälp av utvecklingsmiljön 
+Workbench:s inbyggda funktioner. Jämfört med de ekvationer som tagits fram i avsnitt 2.2.3 
+så visar mätningarna att utrustningen skapar rätt rörelsebanor. 
+ 
+Rörelser som består av en kombination av translation och rotation kan ge upphov till en kort 
+period av ojämn körning. Detta uppstår om tex. translationsdelen av rörelsen avslutas innan 
+rotationsdelen gör det. Eftersom translationen och rotationen är superponerade kan 
+avslutandet av en av dessa orsaka stora hastighetsskillnader, ibland även ändringar av 
+rörelseriktning, hos en länkpunkt. Vid sådana fall kan en kort stund av hackigt beteende 
+uppstå. Detta har varit mycket svårt att ta bort pga. att det finns så många olika kombinationer 
+av translationer, rotationer och riktningar som kan uppstå. För rörelser där den translaterande 
+delrörelsen är tidsmässigt lika lång som den roterade delrörelsen så uppstår inte detta 
+beteende.  Det uppstår heller inte vid låga hastigheter. För optimal funktion skulle det vara bra 
+att ta bort detta beteende. Mängden arbete för att göra detta uppskattades dock vara relativt 
+mycket och andra saker prioriterades istället. 
+ 
+Testning av utrustningen har gjorts för att hitta fel. Ett fåtal små buggar har påträffats under 
+testningen. Dessa har åtgärdats. Någon form av testning under längre tid har inte gjorts. 
+ 
+4.4.1. 
+Fortsatt arbete 
+Arbetet på rotationsstolen BIRGIT är inte klart än. En stol i vilken testpersonen ska sitta i ska 
+designas, konstrueras och monteras. Ett externt säkerhetssystem med säkerhetsgrind mm ska 
+byggas. Dessa extra delar kan göra att styrsystemet behöver modifieras och/eller 
+kompletteras. Vad dessa ändringar kan vara är i dagsläget svårt att förutsäga. 
+ 
+Borttagning av det hackiga beteendet som kan uppstå vid en kombination av rotation och 
+translation skulle kunnas ta bort genom att utveckla en funktion som undersöker hur rörelsen 
+ser ut innan och efter avslutandet av en delrörelse (rotation eller translation). Utifrån detta 
+skulle övergången kunna modifieras så att den blir jämnare. Detta uppskattas till att vara rätt 
+mycket arbete för att få det att fungera bra. 
+ 
+Under arbetet på styrsystemet har parameteriseringen för regleralgoritmen bara gjorts 
+tillräckligt bra för att motorerna ska följa börvärdena utan stora fel. Regulatorns parametrar 
+skulle kunna optimeras för att ytterligare förbättra utrustningens förmåga att följa de 
+genererade banprofilerna. Parametrarna bör finskjusteras då hela systemet är monterat. 
+ 
+ 
+31
+5. Modell av balanscentra 
+En modell av en del av balanscentrat i innerörat görs för att undersöka hur rotationsstolens 
+rörelser påverkar människan. Modellen ska visa dynamiken hos de så kallade otoliterna som 
+sitter i balansorganet innerörat. Modellen ska bestå av otoliterna i båda öronen,. 
+ 
+Det är intressant att modellera otoliterna för att dessa endast svarar på linjära accelerationer. 
+Otoliterna i höger öra är spegelvända mot dem i vänster öra. Detta gör att otoliterna i höger 
+och vänster öra påverkas olika under samma rörelse. De så kallade semicirkulära kanalerna 
+som också sitter i innerörat detekterar rotation. Kanalerna i höger och vänster öra påverkas 
+lika mycket under samma rörelse. Då höger och vänster balanscentra är kopplat till höger 
+respektive vänster öga kommer det ha följden att då balansorganen påverkas olika kommer de 
+neurologiska signalerna till ögonen skilja sig åt, och därmed ögonrörelserna. 
+5.1. Bakgrundsmaterial 
+Bakgrundsmaterial som är direkt kopplat till modellering av balansorganet är knapphändigt. 
+Det finns ett fåtal rapporter som behandlar ämnet. Modellering av otolitmembran och 
+diskussion kring materialegenskaper har publicerats i några rapporter i olika vetenskapliga 
+tidsskrifter.  
+ 
+Otoliths as biomechanical gravisensors [12] 
+Den här rapporten fokuserar på att undersöka vissa antaganden om materialbeskrivningen av 
+de otolitiska membranen. När membranet utsätts för mekaniska krafter (accelerationer) 
+deformeras otolitmembranet vilket genererar neurologiska signaler till hjärnan. Tester har 
+gjorts på detta och rapporten diskuterar hur vissa materialegenskaper spelar in i överföringen 
+av acceleration till neurologisk signal. Bland dessa är membranets struktur och dess 
+inhomogenitet viktiga. 
+ 
+Models of the dynamics of otolithic membrane and hair cell bundle mechanics [13] 
+I denna rapport görs en enkel viskoelastisk modell av ett otolitmembran. Membranet betraktas 
+som en tvådimensionell tunn platta. En tidsoberoende och en tidsberoende modell görs. 
+Resultaten studeras och jämförs med kända experimentella data för att uppskatta 
+materialparametrar hos membranet. Diskussion för även kring modellering av de hårceller 
+som registrerar deformering av otolitmembranet. 
+ 
+Modelling the relation between head orientation and otolith responses in humans [14] 
+I rapporten görs en modell av otoliterna i ett finit element simuleringsprogram. Modellen kan 
+bara använda sig av statiska linjära accelerationer så den kan inte simulera den dynamik som 
+finns i otoliterna. I rapporten finns resultat som kan användas för att jämföras med de resultat 
+som ges av den modell som ska göras i detta examensarbete. Dessa resultat består av 
+förskjutningar av de otolitiska membranen vi statiska accelerationer. Den här rapporten står 
+för merparten av det underlag som använts för att göra den dynamiska modellen av otoliterna. 
+ 
+32
+5.2. Beskrivning av balansorganet 
+Vid varje öra, ungefär rakt bakom ögonen, sitter ett balanscentra. Dessa balanscentrum är lika 
+uppbyggda men vertikalt spegelvända. Den delen i innerörat som behandlar balans kan delas 
+upp i två delar. Dessa delar är de semicirkulära kanalerna och otoliterna. De semicirkulära 
+kanalerna registrerar rotation medan otoliterna registrerar translation. 
+ 
+5.2.1. 
+Semicirkulära kanaler 
+Det finns tre stycken semicirkulära kanaler i varje 
+balanscentrum. Varje kanal registrerar rotation 
+kring en axel. Tillsammans kan de då detektera 
+alla 
+typer 
+av 
+rotationer. 
+Någon 
+närmare 
+beskrivning av dessa kanaler görs inte i denna 
+rapport då de inte är av intresse för modelleringen. 
+5.2.2. 
+De otolitiska 
+membranen 
+I varje balanscentrum finns två otolitiska 
+membran. Dessa kallas för sacculus och utriculus. 
+Sacculus registrerar främst vertikal acceleration 
+och utriculus horisontell acceleration. Detta beror 
+på deras inbördes positionering i örat. Sacculus 
+och utriculus sitter på ett vertikalt respektive 
+horisontellt plan. 
+ 
+Ett otolitiskt membran kan beskrivas som ett gelémembran som sitter på en yta av fästvävnad.  
+I membranen finns det små hår som sitter fast i vävnaden. Dessa hår följer membranets 
+rörelse då det påverkas av tröghetskrafter. Vid böjning av håren registreras detta och neurala 
+signaler skickas till hjärnan [13]. 
+ 
+5.2.3. 
+Otoliternas geometri 
+Ytorna som de otolitiska membranen är fästa på är inte helt plana utan är lätt skålformade. 
+Exakta data på membranens geometri finns inte att tillgå i dagsläget. Membranen är för små 
+för att de ska gå att undersöka med en operation. En geometrisk modell har tagits fram 
+baserad på tidigare rekonstruerade data av den underliggande temporala benstrukturen [14].  
+Den generella geometrin för utriculus är dock någorlunda välkänd. Ett väl använt värde är att 
+utriculus lutar ca 30° bakåt i huvudet. I den ovan nämnda modellen uppskattas lutningen utåt 
+vara ca 6°. Sacculus övre del är i stort sett parallell med det mediala planet (se figur 18). Den 
+undre delen lutar utåt. Utförligare data på otoliternas storlekar och former skulle vara bra för 
+att ge bättre resultat från modellen. 
+ 
+Figur 17 Balansorganet i örat [19] 
+ 
+33
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+5.2.4. 
+Otolitmembranets uppbyggnad 
+Otolitmembranet är uppdelat i tre lager [13]. Det består av ett gel lager, ett mesh-lager och ett 
+otoconia lager. Dessa tre olika 
+lager har olika funktioner och 
+mekaniska egenskaper. Membranet 
+ligger 
+på 
+en 
+fästvävnad. 
+Information 
+om 
+människans 
+otoliter är mycket knapp. 
+Det finns noterbara felmarginaler i 
+de 
+materialparametrar 
+som 
+används. 
+Inga 
+medicinska 
+undersökningar har gjorts på mänskliga otolitmembran. De data som finns är experimentellt 
+framtagna eller baserade på data från djur. Se bilaga B för värden på materialparametrarna. 
+ 
+Otoconia lagret är styvt och innehåller karbonkristaller. Kristallerna gör att otoconia lagret har 
+relativ hög densitet. Detta gör att otoconia lagret är det lagret som bidrar mest till att skapa 
+förskjutningar i membranet. Mesh-lagret är också det styvt men har inte lika hög densitet och 
+man tror att det har uppgiften att fördela krafterna inom membranet. Det undre gel-lagret är 
+mer elastiskt och är den delen av membranet där de huvudsakliga deformationerna uppstår.  
+ 
+På fästvävnaden sitter det en mängd små hårstrån. Dessa sticker in i gel-lagret. Ett fåtal 
+hårstrån går ända in i mesh-lagret. Dessa hårstrån fungerar som sensorer som detekterar 
+riktning och storlek på de accelerationer som membranet påverkas av. När huvudet rör på sig 
+påverkas membranet av tröghetskrafter som ger upphov till deformationer i membranen. Vid 
+deformation av otolitmembranet böjs hårstråna vilket ger upphov till en elektrisk polarisering 
+i hårcellerna. Beroende på en hårcells position i membranet polariseras den olika mycket för 
+böjningar i olika riktningar. Det vill säga att alla hårstrån inte är lika känsliga för böjningar i 
+samma riktning. Det har visats att riktningskänsligheten bildar ett mönster [14]. För utriculus 
+visar mönstret att hårcellerna generellt sett polariseras mest för böjningar in mot mitten av 
+membranet. För sacculus gäller ungefär det motsatta. Det har störst känslighet för böjningar ut 
+från mitten. 
+Sacculus 
+6° 
+Utriculus 
+Framifrån 
+30° 
+Från sidan 
+Sacculus 
+Utriculus 
+Figur 18 Otoliternas positioner i huvudet
+Figur 19 Genomskärning av ett otolitmembran 
+Fästvävnad
+otoconia
+gel mesh 
+ 
+34
+5.3. Numerisk modell 
+ 
+För att göra modellen av otolitmembranen används en numerisk metod. Detta för att göra det 
+möjligt att implementera modellen i användargränssnittet. I enlighet med en rapport [14] på 
+området så används Naviers rörelse ekvation för att beskriva förskjutningar i materialet 
+(ekvation 7 och 8). 
+ 
+ 
+∑∂
+∂
++
+∂
+∂
++
++
+=
+∂
+∂
+j
+j
+i
+i
+i
+i
+x
+u
+x
+e
+B
+t
+u
+2
+2
+2
+2
+)
+(
+μ
+μ
+λ
+ρ
+ρ
+ 
+(7) 
+ 
+ 
+∑∂
+∂
+=
+j
+j
+j
+x
+u
+e
+ 
+(8) 
+ 
+u är förskjutningen längs i-axeln. ρ är den effektiva densiteten. Bi är yttre krafter per 
+volymenhet som t ex gravitation och tröghetskrafter längs med i-axeln. xj är koordinater längs 
+j-axeln. λ och μ är lamés konstanter. 
+För ett kartesiskt koordinatsystem motsvarar i,j = 1,2,3 riktningarna x,y,z. 
+ 
+Då rotationsstolen endast utsätter membranen för påverkning i x och y-led så bortses från 
+deformationer i z-led. Detta ger ett ekvationssystem (ekv. 9) bestående av två 
+multidimensionella 
+hyperboliska 
+partiella 
+differentialekvationer 
+som 
+beskriver 
+förskjutningarna i x och y-led [17]. 
+ 
+(7) och (8) ger (9). Koordinaterna ∂xx och ∂xy betecknas här ∂x respektive ∂y. 
+ 
+ 
+ 
+⎪
+⎪
+⎩
+⎪⎪
+⎨
+⎧
+∂
+∂
+∂
++
++
+∂
+∂
++
+∂
+∂
++
++
+=
+∂
+∂
+∂
+∂
+∂
++
++
+∂
+∂
++
+∂
+∂
++
++
+=
+∂
+∂
+)
+(
+)
+(
+)
+)
+2
+(
+)
+(
+)
+(
+)
+)
+2
+(
+2
+2
+2
+2
+2
+2
+2
+2
+2
+2
+2
+2
+2
+2
+b
+y
+x
+u
+x
+u
+y
+u
+B
+t
+u
+a
+y
+x
+u
+y
+u
+x
+u
+B
+t
+u
+x
+y
+y
+y
+y
+y
+x
+x
+x
+x
+μ
+λ
+μ
+μ
+λ
+ρ
+ρ
+μ
+λ
+μ
+μ
+λ
+ρ
+ρ
+ 
+(9) 
+ 
+Initialvilkor: 
+Stilla system ger följande initialvilkor. 
+ 
+ 
+0
+0
+)
+0
+,
+,
+(
+)
+0
+,
+,
+(
+0
+0
+=
+∂
+∂
+=
+∂
+∂
+=
+=
+=
+=
+=
+=
+t
+y
+t
+x
+y
+x
+t
+u
+t
+u
+t
+x
+y
+u
+t
+x
+y
+u
+ 
+(10) 
+ 
+ 
+Randvilkor: 
+Vid y=0 sitter membranet fast i fästvävnaden och där kommer inga förskjutningar uppstå. 
+Detta ger det första randvilkoret. Det andra randvillkoret ges av att den övre ytan är en fri yta 
+[13].  
+ 
+0
+0
+)
+,0
+,
+(
+)
+,0
+,
+(
+=
+∂
+∂
+=
+=
+=
+=
+=H
+y
+x
+y
+x
+y
+u
+t
+y
+x
+u
+t
+y
+x
+u
+ 
+(11) 
+ 
+35
+5.3.1. 
+Numerisk behandling 
+ 
+För att använda en numerisk metod så måste ovanstående differentialekvationer diskreteras i 
+både x och y-led. Detta görs med central differanskvot [16]. Metoden visas här bara för 
+förskjutningen i x-led. Samma tillvägagångssätt har gjorts för förskjutningar i y-led.  
+ 
+Centraldifferens kvot ger för den generella andraderivatan: 
+ 
+ 
+)
+2
+(
+1
+)
+(
+1
+1
+2
+−
++
++
+−
+=
+′′
+i
+i
+i
+i
+y
+y
+y
+h
+x
+y
+ 
+(12) 
+ 
+där h är avståndet mellan två punkter yi och yi+1. i är indexering i x-led. 
+ 
+För att beskriva koordinater för en förskjutning u införs även indexet k som indexerar en 
+förskjutnings placering i y-led. Dvs en godtycklig förskjutning i det 2-dimensionella rummet 
+benämns ui,k. Avstånden hx och hy mellan punkterna i x och y-led sätts båda lika med h. 
+ 
+I detta avsnitt betecknas förskjutningen i x-led (ux) och förskjutningen i y-led (uy) med          
+xu  resp. 
+yu för att lämna rum för indexering. 
+Centraldifferanskvoter ger andraderivator för förskjutningen 
+xu  enligt nedan. 
+ 
+ 
+)
+2
+(
+1
+,1
+,
+,1
+2
+2
+2
+k
+i
+x
+k
+i
+x
+k
+i
+x
+x
+u
+u
+u
+h
+x
+u
+−
++
++
+−
+=
+∂
+∂
+ 
+(13) 
+ 
+ 
+)
+2
+(
+1
+1
+,
+,
+1
+,
+2
+2
+2
++
++
++
+−
+=
+∂
+∂
+k
+i
+x
+k
+i
+x
+k
+i
+x
+x
+u
+u
+u
+h
+y
+u
+ 
+(14) 
+ 
+Termen innehållandes förskjutning i y-led approximeras enligt nedan. 
+ 
+ 
+⎥⎦
+⎤
+⎢⎣
+⎡
+−
+−
+−
+=
+∂
+∂
+∂
+−
+−
+−
++
++
+−
++
++
+)
+u
+u
+(
+)
+u
+u
+(
+4
+1
+1
+,1
+1
+,1
+1
+,1
+1
+,1
+2
+2
+k
+i
+y
+k
+i
+y
+k
+i
+y
+k
+i
+y
+y
+h
+y
+x
+u
+ 
+(15) 
+ 
+Även tidsderivatan approximeras. j är indexering i tid. 
+ 
+ 
+)
+2
+(
+1
+1
+,
+,
+1
+,
+2
+2
+2
+−
++
++
+−
+Δ
+=
+∂
+∂
+j
+k
+i
+x
+j
+k
+i
+x
+j
+k
+i
+x
+x
+u
+u
+u
+t
+t
+u
+ 
+(16) 
+ 
+ 
+ 
+Om membranet betraktas lokalt i x-led så kommer termerna från ekv. 13 och ekv. 15 ge ett 
+bidrag till förskjutningen som är mycket mindre än ekv.14. Ekvation 9 kan då approximeras 
+till ekvation 17. Diskretisering av denna ekvation har använts för att undersöka hur lång tid 
+beräkningsförloppet tar att utföra. 
+ 
+ 
+2
+2
+2
+2
+y
+u
+B
+t
+u
+x
+x
+x
+∂
+∂
++
+=
+∂
+∂
+μ
+ρ
+ρ
+ 
+(17) 
+ 
+36
+5.3.2. 
+Explicit metod 
+ 
+Med eulers metod så kan differentialekvationerna ställas upp på diskretiserad form och de nya 
+förskjutningsvärdena i varje punkt kan för varje tidssteg explicit beräknas utifrån de kända 
+värdena vid tidssteget innan. Dvs uj+1 beräknas utifrån de kända värdena i uj. 
+ 
+Ekvation (13-16) sätts in i den differentialekvationen som beskriver förskjutningen i x-led 
+(ekv. 9a). Detta ger. 
+ 
+ 
+⎥⎦
+⎤
+⎢⎣
+⎡
+−
+−
+−
++
++
++
++
+−
++
++
+−
++
++
+=
++
+−
+Δ
+−
+−
+−
++
++
+−
++
++
++
++
+−
++
+−
++
+)
+u
+u
+(
+)
+u
+u
+(
+4
+)
+2
+(
+)
+2
+(
+2
+)
+2
+(
+1
+,1
+1
+,1
+1
+,1
+1
+,1
+2
+1
+,
+,
+1
+,
+2
+,1
+,
+,1
+2
+1
+,
+,
+1
+,
+2
+k
+i
+y
+k
+i
+y
+k
+i
+y
+k
+i
+y
+k
+i
+x
+k
+i
+x
+k
+i
+x
+k
+i
+x
+k
+i
+x
+k
+i
+x
+x
+j
+k
+i
+x
+j
+k
+i
+x
+j
+k
+i
+x
+h
+u
+u
+u
+h
+u
+u
+u
+h
+B
+u
+u
+u
+t
+μ
+λ
+μ
+μ
+λ
+ρ
+ρ
+(18) 
+ 
+Omskrivning för explicit beräkning av uj+1ger: 
+ 
+ 
+⎟
+⎠
+⎞
+⎥⎦
+⎤
+⎢⎣
+⎡
+−
+−
+−
++
++
+⎜
+⎝
+⎛
++
++
+−
++
++
+−
++
+Δ
++
+Δ
++
+−
+=
+−
+−
+−
++
++
+−
++
++
++
++
+−
++
+−
++
+)
+u
+u
+(
+)
+u
+u
+(
+4
+)
+2
+(
+)
+2
+(
+2
+2
+1
+,1
+1
+,1
+1
+,1
+1
+,1
+2
+1
+,
+,
+1
+,
+2
+,1
+,
+,1
+2
+2
+2
+1
+,
+,
+1
+,
+k
+i
+y
+k
+i
+y
+k
+i
+y
+k
+i
+y
+k
+i
+x
+k
+i
+x
+k
+i
+x
+k
+i
+x
+k
+i
+x
+k
+i
+x
+x
+j
+k
+i
+x
+j
+k
+i
+x
+j
+k
+i
+x
+h
+u
+u
+u
+h
+u
+u
+u
+h
+t
+B
+t
+u
+u
+u
+μ
+λ
+μ
+μ
+λ
+ρ
+(18) 
+ 
+För alla explicita formler finns ett krav på valet av tidssteg för att numerisk stabilitet ska 
+garanteras. Ekvationen måste uppfylla CFL-villkoret [16]. För det enkla generella fallet 
+(ekvation 19) är kravet formulerat enligt ekvation 20. 
+ 
+ 
+2
+2
+2
+2
+2
+x
+u
+a
+t
+u
+∂
+∂
+=
+∂
+∂
+ 
+(19) 
+ 
+ 
+a
+h
+t ≤
+Δ
+ 
+(20) 
+ 
+Detta ställer då ett krav på ∆t för en given geometrisk diskretisering h. 
+ 
+För ekvation 9a som består av tre termer fås tre villkor. 
+ 
+ 
+ρ
+μ
+λ
+2
++
+≤
+Δ
+h
+t
+ 
+(21) 
+ 
+ρ
+μ
+h
+t ≤
+Δ
+ 
+(22) 
+ 
+ρ
+μ
+λ +
+≤
+Δ
+h
+t
+ 
+(23) 
+ 
+Ekvation (22) ställer här det hårdaste kravet på ∆t. Med kända värden på ρ, λ och μ (se bilaga 
+B) insatta fås det största tillåtna tidssteget till ∆t = 84.6 μs. Detta värde är beräknat med ett 
+ 
+37
+maximalt dimensionssteg på 35 μm. Det motsvarar endast två punkter i y-led. Om maximal 
+dimensionsindelning används ger det upphov till mycket stora numeriska fel. En finare 
+indelning behövs för att modellen ska fungera. Med en finare indelning så minskas det 
+maximalt tillåtna tidssteget. Med h valt till 1 μm (36 punkter i vertikalled) fås ett största 
+tillåtna tidssteg ∆t = 2.4 μs. Detta gör att simulering av otolitmembranen blir mycket 
+tidskrävande då simulering av en sekund ger upphov till ungefär 4.2*105 iterationer per 
+membran och riktning. (Se bilaga D för Matlabkod.) Eftersom hela systemet består av fyra 
+membran som ska simuleras i två riktningar kommer detta kräva mycket av den dator som ska 
+simulera systemet.  
+ 
+En annan lösning behövs för att modellen ska kunna implementeras i programvaran. 
+ 
+5.3.3. 
+Implicit metod 
+Till skillnad från en explicit metod så kan man med en implicit välja godtyckligt tidssteg och 
+ändå ha numerisk stabilitet. Olika implicita numeriska metoder fungerar olika bra på olika 
+typer av partiella differentialekvationer (PDE). Tex är Crank-Nicolsons metod mycket 
+användbar för PDE:s av parabolisk typ. Ekvation 9 är dock en hyperbolisk PDE och ingen 
+framgångsrik implicit metod har funnits för denna typ av PDE. 
+ 
+5.3.4. 
+Förenklad metod 
+En mycket förenklad metod som inte tar lång tid för en dator att beräkna är att använda en i 
+tiden stationär ekvation. Det vill säga att man betraktar accelerationen vid en viss tidpunkt 
+som konstant och utifrån denna beräknar förskjutningen. Sedan beräknar man i nästa tidpunkt 
+förskjutningen för den nu ändrade accelerationen, även nu sedd som konstant. Om man 
+betraktar förskjutningen lokalt i x-led så kan man även försumma termerna som innehåller 
+partiella derivator i x-led. Detta då dessa inte kommer att ha mycket liten påverkan på 
+resultatet. Den förenklade ekvationen bli då enligt nedan. 
+ 
+ 
+2
+2
+0
+dy
+u
+d
+B
+x
+x
+μ
+ρ
++
+=
+ 
+(24) 
+Med följande randvilkor 
+ 
+0
+0
+)
+0
+(
+=
+=
+=
+=H
+y
+dy
+du
+y
+u
+ 
+(25) 
+ 
+Integreras ekvation 24 med avseende på y fås ekvation 26. 
+ 
+ 
+2
+1
+2
+2
+C
+y
+C
+y
+B
+u
+x
+x
++
++
+−
+=
+μ
+ρ
+ 
+(26) 
+ 
+Med randvillkoren ger konstanterna C1 = 
+x
+hB
+μ
+ρ
+och C2 = 0. 
+ 
+ 
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
+−
+=
+y
+h
+y
+B
+u
+x
+x
+2
+1
+μ
+ρ
+ 
+(27) 
+ 
+ 
+38
+Ekvationen kan sedan enkelt användas för att beräkna förskjutningen parallellt med 
+underlaget för en viss punkt. 
+För förskjutningen längs y-axeln, vilken har samma randvillkor, fås ekvation 28. 
+ 
+ 
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
+−
++
+=
+y
+h
+y
+B
+u
+y
+y
+2
+1
+2μ
+λ
+ρ
+ 
+(28) 
+ 
+Resultat med denna ekvation går fort att beräkna men saknar den dynamik som sker under 
+förändringen av accelerationer. Ekvationen är inte tillräcklig bra för att kunna användas men 
+kan ge en visning av hur resultatet kan bli för förlopp med långa konstanta accelerationer. 
+ 
+ 
+39
+5.4. Slutsats 
+För den typen av partiell differentialekvation (PDE) som beskriver otolitmembranens 
+dynamik kan en explicit lösningsformel användas, dvs en formel som direkt använder 
+otoliternas tillstånd i en tidpunkt för att explicit beräkna deras tillstånd i nästa närliggande 
+tidpunkt. Beräkningarna görs iterativt tills önskad tid från starttillståndet har förflutit.  Detta är 
+dock ingen bra metod för att simulera otoliterna. Problemet kommer från att de små 
+dimensionerna hos otolitmembranen ger upphov till att väldigt små tidssteg mellan de 
+närliggande tillstånden måste användas. Detta krävs för att behålla numerisk stabilitet när 
+beräkningarna utförs. Den explicita lösningsmetoden ställer alltså ett stort krav på tidssteget 
+för att en lösning ska kunna beräknas. Om man väljer ett för stort tidssteg så kommer det 
+beräknade resultatet att stort avvika från börvärdet. Numerisk instabilitet uppstår.  
+De små dimensionerna hos otoliterna ger upphov till att tidssteget måste vara i 
+storleksordningen kring 2μm. För att simulera en sekund krävs då runt 4.2*10^5 iterationer 
+per membran och riktning. Med fyra membran och två riktningar per membran (horisontell 
+och vertikal) ger det upphov till ca 3.4*10^6 iterationer per sekund. Detta är mycket 
+tidskrävande och inte lämpligt att implementera i PC-programmet. Simulering gjord på en 
+hemdator med den approximerade ekvationen (17) visade att ett förlopp på en sekund tar ca 6 
+minuter att beräkna för ett membran i en riktning. Dvs det skulle ta upp emot 48 minuter att 
+simulera hela systemet. 
+Matlab kod för simulering finns i bilaga D. 
+ 
+För implicita lösningsformler ställs inga krav på storleken på tidssteget. Det finns dock inga 
+implicita lösningsformler som framgångsrikt går att använda för den typ av PDE som 
+beskriver dynamiken hos otolitmembranen.  
+ 
+Om man bortser från svårigheterna att beräkna ett resultat inom rimlig tid så finns det ett 
+flertal saker som behövs förbättras för att få bra resultat. De underlag som finns för att göra en 
+korrekt modell över otoliterna är knappa. Materialparametrar och dimensioner är inte säkert 
+fastställda.  
+5.4.1. 
+Fortsatt arbete 
+För fortsatt arbete på modellen av otolitmembranet rekommenderas att från det tidsberoende 
+PDE systemet ta fram en ekvation som beskriver förskjutningarna i membranet. En möjlighet 
+skulle kunna vara att analytiskt lösa det partiella differentialekvationssystemet och sedan 
+överföra den lösningen till en numerisk form som går att implementera i PC-programmet. I 
+bilaga C visas försök till att lösa en förenklad version av den partiella differentialekvationen 
+som beskriver förskjutningar i x-led. Dessa försök har dock inte givit något resultat pga att de 
+approximationer orsakar fel i lösningen. 
+ 
+ 
+ 
+40
+6. Referenser 
+ 
+1. 
+Konstruktion av neurotestrigg, Examensarbete, KTH Ingenjörsskolan Kista. 2006 
+ 
+2. 
+Projektrapport Rotationsstol, Projektkurs (6b2264), KTH Ingenjörsskolan Kista. 2006  
+ 
+3. 
+Bosch Rexroth http://www.boschrexroth.com, Maj 07 
+ 
+4. 
+Östergrens Elmotor AB, http://www.ostergrens.se, Jan 07 
+ 
+5. 
+Matlab 7, Copyright: The Mathworks (1984-2004)  
+ 
+6. 
+Mint Workbench, Build number 5555, Copyright:  Baldor Motion (1993 – 2006) 
+http://www.baldormotion.com/products/mint/workbench.asp  
+ 
+7. 
+ServoComander v2.7 Copyright: Metronix http://www.metronix.de  
+ 
+8. 
+Epsilon http://www.epsilon.nu/, maj 07 
+ 
+9. 
+Telemecanique http://www.telemecanique.com/en/index.htm, April 07 
+ 
+10. 
+Baldor http://www.baldormotion.com, Dec 06 
+ 
+11. 
+Balluff http://www.balluff.com/Balluff, April 07 
+ 
+12. 
+A. V. Kondrachuk, Otoliths as biomechanical gravisensors 
+Advanced Space Research Volume. 30 No4 (2002) 
+ 
+13. 
+A. V. Kondrachuk, Models of the dynamics of otholitic membrane and hair cell bundle 
+mechanics 
+Journal of Vestibular Research 11 (2001) 
+ 
+14. 
+T. Haslwanter, R. Jaeger, A. Tagaki 
+Modeling the relation between head orientations and responses in humans 
+Hearing Research 173 (2002) 
+ 
+15. 
+T. Pansell, Ocular Counter-rolling during headtilt, Karolinska Institutet (2003) 
+ 
+16. 
+G. Eriksson, Kompendium i tillämpade numeriska metoder, KTH, CSC (2006) 
+ 
+17. 
+R. J. LeVeque, Finite volume methods for hyperbolic problems, Cambridge University 
+(2002) 
+ 
+18. 
+D. G. Zill, M. R. Cullen, Differential equations with boundary-value problems (2001) 
+ 
+19. 
+  http://www.wikipedia.org 
+ 
+ 
+ 
+41
+7. Bilagor 
+ 
+A. Lista över använda I/O-portar på styrenheten 
+Ingångar 
+Hemlägesgivare: 
+B1 (Uppe) 
+ 
+ 
+DIN4 (X9.8) 
+B2 (Nere) 
+ 
+ 
+DIN5 (X9.7) 
+ 
+Ändlägesgivare: 
+B3 (Uppe, motsatt motorn)  
+DIN6 (X9.6) 
+B4 (Uppe, vid motorn) 
+ 
+DIN7 (X9.5) 
+B5 (Nere, motsatt motorn)  
+DIN8 (X9.4) 
+B6 (Nere, vid motorn) 
+ 
+DIN9 (X9.3) 
+B8 (Stolramen) 
+ 
+DIN14 (X8.6) 
+ 
+Drivsteg: 
+T1-Ready 
+ 
+ 
+DIN10 (X9.2) 
+T2-Ready 
+ 
+ 
+DIN11 (X9.1) 
+ 
+Utgångar 
+Eyetracker systemet: 
+Triggersignal  
+ 
+DOUT0 (X11.1) 
+Vinkelsignal  
+ 
+AOUT3/Demand3/(X13.10) 
+Extra datasignal 
+ 
+AOUT2/Denand2/(X13.7) 
+ 
+Drivsteg: 
+Analog Styrsignal (övre motorn) 
+Demand0/AOUT0 (X13.1) 
+Analog Styrsignal (undre motorn) 
+Demand1/AOUT1 (X13.4) 
+ 
+ 
+ 
+42
+B. Materialparametrar 
+Lager 
+ρ [g/cm3] 
+h [μm] 
+λ 
+E 
+μ [Pa] 
+Otoconia 
+2 
+15 
+3288.6 
+200 
+67.11 
+Mesh 
+1 
+10 
+3288.6 
+200 
+67.11 
+Gel 
+1 
+10 
+164.4 
+10 
+3.35 
+ 
+43
+C. Analytisk lösning av PDE 
+Analytisk lösning till problemet görs för ekvation 29. 
+ 
+ 
+2
+2
+2
+2
+y
+u
+B
+t
+u
+x
+x
+x
+∂
+∂
++
+=
+∂
+∂
+μ
+ρ
+ρ
+ 
+(29) 
+Initialvilkor: 
+ 
+0
+0
+)
+0
+,
+,
+(
+)
+0
+,
+,
+(
+0
+0
+=
+∂
+∂
+=
+∂
+∂
+=
+=
+=
+=
+=
+=
+t
+y
+t
+x
+y
+x
+t
+u
+t
+u
+t
+x
+y
+u
+t
+x
+y
+u
+ 
+(30) 
+Randvilkor: 
+ 
+0
+0
+)
+,0
+(
+=
+∂
+∂
+=
+=
+=H
+y
+x
+x
+y
+u
+t
+y
+u
+ 
+(31) 
+Ortogonalserier 
+En metod som undersöktes för att lösa ekvation 29 var att göra det med ortogonalserier. 
+Problemets initialvilkor gör det dock omöjligt att använda ortogonalserier [18]. 
+ 
+Laplacetransformering 
+Laplace-transformering med avseende på tiden av ekvation 29 ger följande: 
+ 
+2
+2
+2
+)
+(
+)
+,
+(
+dy
+U
+d
+s
+B
+s
+y
+U
+s
+x
+x
+x
+μ
+ρ
+ρ
++
+=
+ 
+ 
+Detta ger en ordinär differential ekvation. 
+ 
+)
+(
+1
+2
+2
+2
+s
+B
+k
+U
+k
+s
+dy
+U
+d
+x
+x
+x
+−
+=
+−
+ 
+k = ρ
+μ  
+ 
+ 
+Lösning av den homogena delen av differentialekvationen ger: 
+y
+k
+s
+y
+k
+s
+h
+e
+c
+e
+c
+U
+2
+1
++
+=
+−
+ 
+Den partiella delen ger: 
+2
+)
+(
+s
+s
+B
+U p =
+ 
+ 
+Detta ger den generella lösningen: 
+ 
+2
+2
+1
+)
+(
+)
+,
+(
+s
+s
+B
+e
+c
+e
+c
+U
+U
+y
+s
+U
+y
+k
+s
+y
+k
+s
+p
+h
++
++
+=
++
+=
+−
+ 
+Bestämning av konstanterna c1 och c2 görs med hjälp av randvärden och randvillkor. 
+ 
+s
+k
+H
+s
+k
+H
+s
+k
+H
+H
+y
+H
+y
+x
+e
+c
+c
+e
+c
+e
+c
+dy
+dU
+y
+u
+2
+2
+1
+2
+1
+0
+0
+0
+=
+⇒
+=
++
+−
+⇒
+=
+⇒
+=
+∂
+∂
+−
+=
+=
+ 
+ 
+ 
+44
+2
+)
+2
+(
+2
+)
+(
+)
+,
+(
+s
+s
+B
+e
+e
+c
+y
+s
+U
+y
+k
+s
+y
+H
+k
+s
++
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
++
+=
+−
+−
+ 
+ 
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
++
+−
+=
+⇒
+=
+=
+⇒
+=
+=
+s
+k
+H
+x
+x
+e
+s
+s
+B
+c
+s
+y
+U
+t
+y
+u
+2
+2
+2
+1
+)
+(
+0
+)
+,0
+(
+0
+)
+,0
+(
+ 
+ 
+⎟⎟
+⎟
+⎟
+⎟
+⎟
+⎠
+⎞
+⎜⎜
+⎜
+⎜
+⎜
+⎜
+⎝
+⎛
++
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
++
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
++
+−
+=
+−
+1
+1
+1
+)
+(
+)
+,
+(
+)
+2
+(
+2
+2
+y
+k
+s
+y
+H
+k
+s
+s
+k
+H
+e
+e
+e
+s
+s
+B
+y
+s
+U
+ 
+ 
+Laplaceinversen av ovanstående uttryck ger förskjutningen uttryckt i y och t. 
+ 
+För flera av termerna i ovanstående ekvation finns inte någon laplace-invers tabellerad.  
+ 
+Det kan lösas genom att vända på koordinatsystemet. Dvs sätt H = -h = -35e-6 och y = -x. 
+Detta ger: 
+ 
+⎟⎟
+⎟
+⎟
+⎟
+⎟
+⎠
+⎞
+⎜⎜
+⎜
+⎜
+⎜
+⎜
+⎝
+⎛
++
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
++
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
++
+−
+=
+−
+−
+−
+−
+1
+1
+1
+)
+(
+)
+,
+(
+)
+2
+(
+2
+2
+x
+k
+s
+x
+h
+k
+s
+s
+k
+h
+e
+e
+e
+s
+s
+B
+x
+s
+U
+ 
+Termen 
+s
+k
+h
+e
+2
+−
+inte är beroende av x och mycket nära värdet ett för alla s som inte är stora. För 
+stora s går termen mot noll. Bråket approximeras till ½. 
+ 
+⎟
+⎟
+⎠
+⎞
+⎜
+⎜
+⎝
+⎛
++
+⎟
+⎟
+⎠
+⎞
+⎜
+⎜
+⎝
+⎛
++
+−
+=
+−
+−
+−
+1
+2
+1
+)
+(
+)
+,
+(
+)
+2
+(
+2
+x
+k
+s
+x
+h
+k
+s
+e
+e
+s
+s
+B
+x
+s
+U
+ 
+ 
+Laplace invertering av ovanstående ekvation ger följande: 
+ 
+k
+x
+h
+T
+k
+x
+T
+d
+B
+t
+T
+t
+d
+B
+T
+t
+T
+t
+d
+B
+T
+t
+x
+t
+u
+t
+T
+t
+T
+t
+/)
+2
+(
+/
+)
+(
+)
+(
+)
+(
+*
+)
+(
+)
+(
+)
+(
+*
+)
+(
+)
+(
+2
+1
+)
+,
+(
+2
+1
+0
+2
+0
+2
+2
+0
+1
+1
+1
+−
+=
+=
+−
++
+⎟⎟
+⎠
+⎞
+−
+−
+−
+⎜⎜
+⎝
+⎛
++
+−
+−
+−
+−
+=
+∫
+∫
+∫
+−
+−
+τ
+τ
+τ
+θ
+τ
+τ
+τ
+θ
+τ
+τ
+τ
+ 
+Denna ekvation är dock inte en korrekt lösning till differentialekvationen (29). Den 
+ovanstående ekvationen resulterar i att förskjutningen går mot oändligheten då tiden går mot 
+oändligheten. Detta är inte realistiskt. Man kan anta att de förenklingar som gjorts inte är 
+tillåtna om man ska erhålla ett korrekt resultat. 
+ 
+ 
+ 
+ 
+ 
+45
+D. Matlabkod för förenklad simulering av otolitmembran 
+clc 
+clear all 
+  
+%Set data 
+h = 0.5e-6;             %dimension step 
+x = 0:h:35e-6;          %x-koordinates 
+B = 9.82;               %Body force on element (gravity)  
+rho_vec = [2 1]*1e3;    %Density of the [otoconia mesh&gel] [kg/m^3] 
+lambda_vec = [328.8 164.4];   %Lambda [otoconia&mesh gel] 
+my_vec = [6.7 3.35];     %[Pa] %my [otoconia&mesh gel] 
+  
+%Create material matrix 
+model_rows = round(35e-6/h);    %calculate nr of rows in material matrix 
+row_gel = round(10e-6/h);       %Row nr where gel layer ends 
+row_mesh = round(20e-6/h);      %Row nr where mesh layer ends 
+model_columns = 1;              %set to 1 column (calculate locally) 
+  
+U = zeros(model_rows+2,model_columns); 
+U_old = U; 
+Res = U(2:end,1); 
+  
+dt = h/sqrt((lambda_vec(1)+2*my_vec(1))/rho_vec(1)); %Calculate timestep 
+q = dt^2/(rho_vec(1)*h^2); 
+col = 1;         %Column index 
+t_vek = 0; 
+n = 0; 
+  
+for t=0:dt:0.2 
+    n = n + 1; 
+    V = U; 
+    for row=2:(model_rows+1)    %Update values for one row at a time 
+         
+        %Set material parameter depending on x-coordinate 
+        if row <row_mesh   %mesh or gel 
+            q = dt^2/(rho_vec(2)*h^2); 
+        else        %otoconia 
+            q = dt^2/(rho_vec(1)*h^2); 
+        end 
+             
+        if row<row_gel    %Gel layer 
+            lambda = lambda_vec(2); 
+            my = my_vec(2); 
+        else        %otoconia or mesh layer 
+            lambda = lambda_vec(1); 
+            my = my_vec(1); 
+        end 
+         
+        %Update value 
+        V(row,col) = 2*U(row,col) - U_old(row,col) + dt^2*B... 
+            +q*my*( U(row+1,col)-2*U(row,col)+U(row-1,col) ); 
+    end 
+     
+    U_old = U; 
+    U=V; 
+  
+    U(1) = U(3); %Boundary condition on surface 
+  
+    if n == 1000 %For each 1000*dt, update vectors 
+        Res = [Res U(2:end,1)]; %Positions in time 
+        t_vek = [t_vek t];      %time vector 
+        n = 0; 
+    end 
+end 
+U   %Print positions at end time 
+    %Res matrix contains position through time 
+ 
+ 

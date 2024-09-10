@@ -1,0 +1,2497 @@
+ 
+ 
+ 
+Analysis and design for streaming 
+media in DySCAS 
+ 
+ 
+ 
+ 
+ 
+RASMUSS GRAAF 
+ 
+ 
+ 
+ 
+Master of Science Thesis 
+Stockholm, Sweden 2007 
+ 
+ 
+ 
+ 
+ 
+Analysis and design for streaming media in 
+DySCAS 
+ 
+by 
+ 
+Rasmuss Graaf 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2007:59 MDA 305 
+KTH Industrial Engineering and Management 
+Machine Design 
+SE-100 44  STOCKHOLM 
+ 
+ 
+ 
+ 
+ 
+Examensarbete  MMK 2007:59 MDA 305 
+ 
+Analys och design för strömmande media i 
+DySCAS 
+ 
+ 
+ 
+ 
+ 
+Rasmuss Graaf 
+ 
+Godkänt 
+2007-06-15 
+Examinator 
+Martin Törngren 
+Handledare 
+De-Jiu Chen 
+ 
+Uppdragsgivare 
+ENEA 
+Kontaktperson 
+Barbro Claesson 
+ 
+Sammanfattning 
+Detta examensarbete är en del av DySCAS projektet på ENEA. Syftet är att tillföra stöd för 
+strömmande media och USB till den befintliga DySCAS experiment plattformen. 
+ 
+För att göra detta undersöktes några av de kända mellanvaror som finns idag. Den som var av 
+mest intresse var CORBA. Även om CORBAs lösning inte kunde användas då den byggde på 
+objektorienterad programmering så innehöll den en hel del intressanta uppslag om hur 
+hantering av USB enheter kan utföras, med avseende på CORBAs ”resource inspector” och 
+”trading service”. 
+ 
+Ethernet valdes som hårdvara bas för strömmande media. För att enkelt kunna hantera media 
+strömmar uppkom behov att bygga ett specifikt protokoll, Innan detta byggdes undersöktes ett 
+antal befintliga protokoll. Den resulterande lösningen är mycket influerad av RTP och sänds 
+över UDP. 
+ 
+USB undersöktes grundligt i examensarbetets tidiga skede. Mycket kraft lades på att förstå 
+hur USB fungerar och hur drivrutiner byggs. Men på grund av komplexiteten hos USB var 
+detta inte realistiskt. 
+ 
+Behovet av host controller stack i plattformen och drivrutiner ledde till att OSE inte kunde 
+användas då dessa inte fanns tillgängliga. Detta fick till följd att en avskalad version av Linux 
+användes istället. DySCAS mellanvaran som i tidigt skede var nära bundet till OSE Epsilon 
+var då tvunget att portas till Linux. För att lyckas med detta ”lyftes” mellanvaran så alla 
+systemanrop länkades om till ett motsvarande anrop eller funktion i DySCAS ”instantation” 
+lager. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2007:59 MDA 305
+ 
+Analysis and design for streaming media in 
+DySCAS 
+ 
+ 
+ 
+ 
+ 
+Rasmuss Graaf 
+ 
+Approved 
+2007-06-15 
+Examiner 
+Martin Törngren 
+Supervisor 
+De-Jiu Chen 
+ 
+Commissioner 
+ENEA 
+Contact person 
+Barbro Claesson 
+ 
+Abstract 
+This master thesis is a part of the DySCAS project at ENEA. The purpose of this thesis 
+project is to add support for streaming media and USB support to the DySCAS demonstrator 
+platform.  
+ 
+To achieve this, some of the widely used middlewares available today were studied. The one 
+that proved to be of most interest is CORBA. Although CORBA’s solution to streaming 
+media couldn’t be used due to their use of object programming, the CORBA solution did 
+provide some interesting thoughts regarding how the USB devices should be handled, in this 
+case their “resource inspector” and “trading service”. 
+ 
+Ethernet was the chosen network to support streaming media. To allow easy handling of 
+stream there was a need to build a specific protocol. To achieve this, a number of the 
+protocols used today were studied. The final solution is much influenced by RTP and is sent 
+on top of UDP. 
+ 
+Extensive studies of USB were made, in the early stages of the master thesis much effort was 
+made to understand the concept of USB and how drivers were built. Due to the complexity of 
+USB, building drivers were not an option. 
+ 
+The need for host control stack and drivers led to that OSE had to be discarded and be 
+replaced by a slimmed version of Linux. This led to that the DySCAS middleware that was 
+heavily connected to features available in OSE Epsilon had to be migrated to Linux. To 
+achieve this, the middleware was “lifted” and all the system calls were mapped to an 
+equivalent call or function located in an instantiation layer. 
+ 
+Preface 
+ 
+To begin with I want to thank Barbro Claesson, Detlef Scholle and Erik Netz at ENEA for 
+giving me this chance to work with exciting technology and inspiring co-workers. And to 
+other employees at ENEA that have shown a great will to provide help solving different 
+issues. 
+ 
+I would also like to address my supervisor De-Jiu Chen, thank you for all your support and 
+thoughts. 
+ 
+And finally, a big thanks to my fellow master thesis workers, in no particular order, Malin 
+Grudeholm, Jacob Olsson and Martin Pettersson. It’s been a real pleasure working with you! 
+Table of contents 
+1 
+Introduction ..................................................................................................................................13 
+1.1 
+Objective..................................................................................................................................13 
+1.2 
+Background..............................................................................................................................13 
+1.3 
+Method.....................................................................................................................................13 
+1.4 
+Outline.....................................................................................................................................14 
+1.5 
+Limitations...............................................................................................................................14 
+1.6 
+The DySCAS project...............................................................................................................15 
+1.6.1 
+Objective ..........................................................................................................................15 
+Associates.........................................................................................................................16 
+1.6.2 
+Requirements and use cases .............................................................................................16 
+2 
+Pre-study........................................................................................................................................17 
+2.1 
+Introduction .............................................................................................................................17 
+2.2 
+Analysis of the dynamic middleware platform and related technology...................................17 
+2.2.1 
+Introduction ......................................................................................................................17 
+The concept ......................................................................................................................17 
+Existing technology..........................................................................................................17 
+2.2.2 
+DySCAS architecture in the ENEA demonstrator system................................................18 
+Introduction ......................................................................................................................18 
+DySCAS architecture .......................................................................................................18 
+Communication handling .................................................................................................19 
+2.2.3 
+CORBA/TAO...................................................................................................................20 
+Introduction ......................................................................................................................20 
+CORBA/TAO real time application management............................................................20 
+2.2.4 
+Conclusion........................................................................................................................21 
+2.3 
+Survey of related infrastructure technologies ..........................................................................22 
+2.3.1 
+Introduction ......................................................................................................................22 
+2.3.2 
+MOST...............................................................................................................................22 
+Introduction ......................................................................................................................22 
+Main Characteristics.........................................................................................................22 
+Services ............................................................................................................................23 
+Summary ..........................................................................................................................24 
+2.3.3 
+Ethernet ............................................................................................................................24 
+Introduction ......................................................................................................................24 
+Characteristics ..................................................................................................................24 
+Support for higher level communication protocol............................................................25 
+2.3.4 
+Conclusion........................................................................................................................28 
+2.4 
+Technical study of USB...........................................................................................................29 
+2.4.1 
+Introduction ......................................................................................................................29 
+Standards ..........................................................................................................................29 
+Stacks ...............................................................................................................................29 
+2.4.2 
+Characteristics ..................................................................................................................30 
+Topology ..........................................................................................................................30 
+USB Device descriptors ...................................................................................................31 
+2.4.3 
+Protocol / Services............................................................................................................32 
+Audio................................................................................................................................32 
+Mass-storage.....................................................................................................................32 
+Hub...................................................................................................................................33 
+Video ................................................................................................................................33 
+2.4.4 
+Summary / Conclusion .....................................................................................................33 
+3 
+Design.............................................................................................................................................34 
+3.1 
+Hardware setup, limitations and use........................................................................................34 
+3.1.1 
+Demonstrator design.........................................................................................................34 
+Introduction ......................................................................................................................34 
+Added and tested hardware...............................................................................................35 
+3.2 
+Operating system and constraints ............................................................................................35 
+3.2.1 
+Choosing Operating system..............................................................................................35 
+3.2.2 
+Problems due to heterogeneous operating systems...........................................................36 
+Demonstrator software demands ......................................................................................36 
+Porting OSE calls to Linux...............................................................................................36 
+3.3 
+Middleware architecture..........................................................................................................37 
+3.4 
+DySCAS process addressing limitations .................................................................................39 
+3.5 
+Communication .......................................................................................................................39 
+3.5.1 
+Message handling.............................................................................................................39 
+Pre-process of data before sending...................................................................................39 
+CAN .................................................................................................................................42 
+Communication over Ethernet..........................................................................................43 
+3.6 
+Device Inspector......................................................................................................................44 
+Detecting new devices......................................................................................................44 
+Conclusions ......................................................................................................................45 
+4 
+Implementation.............................................................................................................................47 
+4.1 
+Porting DySCAS to Linux.......................................................................................................47 
+4.1.1 
+Emulating OSE signal in Linux........................................................................................47 
+Building signals................................................................................................................47 
+Emulating OSE send/receive in Linux .............................................................................47 
+Conclusions ......................................................................................................................49 
+4.2 
+Communication .......................................................................................................................49 
+4.2.1 
+Protocol ............................................................................................................................49 
+Protocol design.................................................................................................................49 
+4.2.2 
+Address handling..............................................................................................................50 
+4.2.3 
+Signal handling.................................................................................................................51 
+Sending the signal.............................................................................................................51 
+Sending master heartbeat..................................................................................................51 
+Attaining the destination node’s IP address......................................................................51 
+Receiving the signal .........................................................................................................51 
+Inbox handler....................................................................................................................51 
+4.2.4 
+Stream handling................................................................................................................51 
+Translator..........................................................................................................................52 
+File transfer initialization .................................................................................................52 
+4.3 
+Device Inspector......................................................................................................................54 
+4.3.1 
+Detection of USB devices.................................................................................................54 
+Limitations........................................................................................................................55 
+5 
+Results............................................................................................................................................57 
+6 
+Future work...................................................................................................................................59 
+7 
+References......................................................................................................................................61 
+8 
+Acronyms.......................................................................................................................................63 
+ 
+ 
+Analysis and design for  
+13 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+1 Introduction 
+The DySCAS (Dynamic Self Configuring Automotive Systems) project of EU is a large 
+undertaking that involves ENEA and several major companies from the automotive industry. 
+Since 2006, ENEA has organized several master theses that each has a part in the ENEA 
+DySCAS demonstrator platform. This thesis is one of four that have been started in January 
+2007. 
+ 
+The theses have different scopes but coincide in some aspects. These will be commented 
+during the report. The scope of this thesis is mainly on the analysis and development of 
+bandwidth consuming streaming media applications and on the middleware design. 
+ 
+The goals are to continue the previously done work and to enhance the current demonstration 
+platform by adding an Ethernet network and to build support for this within the middleware. 
+The Ethernet is to provide a means for transporting streaming media from USB applications. 
+ 
+1.1 Objective 
+The objective of this master thesis project is to analyze and design streaming media support 
+for the DySCAS middleware system and later implement this in the DySCAS demonstrator 
+platform.  
+1.2 Background 
+The number of devices within vehicles infotainment domain has grown steadily during the 
+last decade and the vast variety of third party products makes it difficult to handle these 
+effectively. In recent years, efforts have been made to make a common base on which these 
+devices are connected to and controlled. DySCAS is a middleware based approach to 
+autonomic and self management of complex automotive embedded systems, were 
+communication between ECUs are able to cross the barriers of the vehicles information 
+layers. With this in mind it makes the complexity of combining networks and devices in a 
+controlled manner a big challenge that DySCAS has taken on. 
+ 
+The current DySCAS demonstration system operates mainly on a platform and infrastructure 
+that are compatible with the body electronics layer, though with Bluetooth capabilities. The 
+DySCAS system however provides a suitable solution for disarming the problems regarding 
+connecting the different information layers within automotive (under the hood, body 
+electronics, and infotainment) while still allowing control of third party products. This thesis 
+project is raised by ENEA to investigate and design infotainment layer support.. 
+ 
+1.3 Method 
+The master thesis was divided up into three phases, pre-study, design and implementation. 
+The pre-study consisted of literature study, hardware testing and studies of the previous code 
+for the DySCAS platform. During the design phase the results from the pre-study were used 
+to form the concept of the parts that would later be implemented. The last phase was 
+implementation, all coding were done during this phase. Throughout the master thesis there 
+were weekly meetings to monitor the progress and to discuss problems encountered. 
+ 
+Analysis and design for  
+14 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+1.4 Outline 
+This report is divided up into three main areas according to their respective stages during the 
+work progression. These areas and related issues are shortly described below.  
+• Pre-study: 
+o Analysis of the existing middleware in the ENEA demonstrator platform and 
+other related solutions: Existing middleware solutions are analyzed to find 
+open issues and a possible solution for how to achieve support for streaming 
+media. 
+o Survey of information technologies: Some of the information technologies that 
+are available today are investigated in regards of their demands and 
+performance. Much weight is put on Ethernet since this will be the used 
+technology. 
+o Study of USB technology. 
+• Design 
+o Hardware constraints and use: A brief introduction to the inherited system and 
+the hardware that is to be added to the DySCAS demonstrator platform. 
+o Operating system constraints: Description of available operating systems and 
+their limitations. Design of how to deal with these limitations. 
+o Communication: Introduction of how data is transmitted within DySCAS and 
+design of how to introduce streaming media to DySCAS using Ethernet. 
+Design of how to bridge over the two networks. 
+o Device inspector: Detection and handling of new devices. 
+• Implementation 
+o Porting DySCAS to Linux: The solution of how to emulate signal for DySCAS 
+on Linux. 
+o Communication: The build up and handling of DySCAS Ethernet 
+communication. 
+o Device Inspector: How USB devices are detected and handled. 
+1.5 Limitations 
+This thesis is closely connected to three other theses in varying extent. Each aspect must be 
+taken in close consideration due to possible overlapping issues before a decisive decision can 
+be made. 
+ 
+The available architecture and design are the result of earlier theses and the new system must 
+be compatible with this. 
+ 
+ 
+Analysis and design for  
+15 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+1.6 The DySCAS project 
+1.6.1 Objective 
+The objective of the DySCAS [1], [2] project is to develop a middleware system which hides 
+the complexity of the underlying infrastructure while providing a very open interface for third 
+parties application developers. 
+ 
+The system’s architecture will in itself be generic and transferable into other environments; 
+the generic part includes self-configuration, self-healing, self-optimization and self protection. 
+ 
+ 
+Figure 1, The vision of DySCAS 
+ 
+DySCAS is a project sponsored by EU that was started June 2006 and will end November 
+2008. The objective of DySCAS as described in [1]: “The main objective of the DySCAS 
+project is the elaboration of fundamental concepts and architectural guidelines, as well as 
+methods and tools for the development of self-configurable systems in the context of 
+embedded vehicle electronic systems”. Figure 1 illustrates services and functionalities being 
+able to migrate between different resources within the cars’ information systems. 
+ 
+Analysis and design for  
+16 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+Associates 
+The DySCAS project is a joint effort undertaking with participants from both industry and 
+university [1]. The participants from respective group are: 
+• Industries:  
+o VOLVO 
+o Daimler Chrysler  
+o ENEA  
+o BOSCH.  
+• Universities:  
+o Royal institute of technology  
+o University of Greenwich  
+o University of Paderborn. 
+1.6.2 Requirements and use cases 
+The DySCAS consortium has set up a number of requirements on the future system, of which 
+some are already implemented in today’s demonstration platform. This thesis work isn’t 
+affected by all requirements, but some have to be taken into consideration when designing the 
+new streaming media implementation. 
+ 
+# 
+Generic functionalities 
+How it applies 
+1 
+Detection of new devices by the 
+vehicle 
+Requirement affects the detection and 
+handling when USB-devices are connected. 
+2 
+Attachment of detected new 
+devices 
+When 
+USB-devices 
+are 
+detected 
+and 
+recognized they must be made available to 
+the system. 
+3 
+Check authorization of new 
+device and authenticate 
+Only known USB-devices shall be able to be 
+advertised. 
+ 
+ 
+# 
+Functional Requirement 
+How it applies 
+1 
+The driver must not be aware of 
+any details of the reconfiguration 
+process 
+If a USB-device connects, this must not 
+require the drivers attention 
+2 
+The reconfiguration should not 
+have any audible influence on 
+the output of the sound system, 
+e.g. short interruptions of the 
+audio signal 
+Data streams from USB-devices must flow 
+continuously over the network and must not 
+be interrupted. 
+9 
+The mobile devices connected to 
+the vehicle must to some extent 
+be controllable by the vehicle 
+The services/applications that provides/uses 
+USB-devices must be controllable by the 
+system. 
+10 
+The output of safety critical 
+visual and acoustic messages 
+(e.g. warning messages) shall not 
+be suppressed 
+Since Ethernet doesn’t allow this kind 
+control, this can’t be guaranteed. Steps can 
+however be taken with to prioritize certain 
+messages within nodes before sending them. 
+ 
+ 
+Analysis and design for  
+17 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+2 Pre-study  
+2.1 Introduction 
+During the upstart phase of this master thesis project, much information regarding 
+middleware was examined to better understand the concepts and problems of what DySCAS 
+is trying to achieve. The existing DySCAS architecture is briefly described to introduce the 
+system and to be able to identify missing parts when compared with other systems. In the later 
+stage the pre-study came to focus more on the subjects more closely related to information 
+transport, to form the base of the later design and implementation stages. 
+2.2 Analysis of the dynamic middleware platform and related 
+technology 
+2.2.1 Introduction 
+This section aims to give an overview of the current middleware architecture implemented in 
+the ENEA demonstrator for DySCAS. The reason to this is to provide a basis for the study on 
+how to implement a streaming media channel in the current platform. One implementation of 
+the CORBA/TAO (Common Object Request Broker Architecture / The ACE Orb) will also 
+be briefly studied; the reason to this is that it gives valuable input on how to connect 
+multifunction devices. 
+The concept 
+A dynamic middleware must to some extent “know” the connected components and external 
+devices, their resources and how to control them, preferably in a way that allows 
+optimization. The middleware must also be able to change its components configuration, 
+adjusting to cope with changes in the environment. 
+ 
+Reliability and safety are major issues when it comes to dynamic middleware. It must also 
+recognize and conduct appropriate actions when errors occur. When the middleware works 
+within an open environment it must have capabilities to protect itself from attacks. 
+ 
+Existing technology 
+The DySCAS middleware [4] is currently under development, but it shares some concepts 
+with other dynamic middlewares like CORBA/TAO and 2K. There are however differences 
+between these middlewares regarding their strong points, these will be mentioned later on in 
+their respective sections. 
+ 
+Analysis and design for  
+18 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+2.2.2 DySCAS architecture in the ENEA demonstrator system 
+Introduction 
+There is a number of dynamic middleware available today in varying complexity. The more 
+complex ones are however limited to powerful CPUs and require a lot of memory to operate. 
+DySCAS strives to develop a dynamic middleware that works on ECUs with limited 
+resources available, yet provide a very capable environment for end designers to work with.  
+ 
+A short summary of DySCAS strong points in respect to automotive embedded systems can 
+be summarized into the following. 
+• Low demands on the hardware’s memory and CPU capacity. 
+• Strong focus on real-time and safety. 
+• Written in C (i.e. it runs on most ECUs). 
+• OS independent. 
+• Provide a broad support and interface for third party developers.  
+DySCAS architecture 
+ 
+Figure 2, DySCAS system architecture 
+One implementation of DySCAS architecture is shown in Figure 2. Almost all of the 
+interactions between applications and system services have to go through the DySCAS 
+middleware and register themselves in a master node. This gives the middleware complete 
+control and management of the system so that properties like QoS (Quality of Service), 
+configuration, flexibility and portability can be achieved. A limited explanation of the 
+abbreviations in Figure 2 will be given in the next section, communication handling. For more 
+information seeLarsson [4]. 
+ 
+ 
+Analysis and design for  
+19 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+Communication handling 
+ 
+ 
+Figure 3, DySCAS communication 
+There is a predefined procedure that each new application and service must undertake to make 
+themselves available, Figure 3 provides an overview of how these connections are made. 
+Further information regarding this can be found in [4], [5]. 
+ 
+Three cases can be identified from Figure 3: 
+Case 
+Applies to 
+Description 
+Reregistering 
+Application 
+and service, 
+(solid line) 
+When these are initiated they both register themselves 
+to the NS (Name Service), this is done by a call to 
+“register service” located within the local LRM (local 
+resource manager), The LRM thereafter forwards this 
+request to the NS through the link handler. 
+Locate 
+and 
+subscribe Service 
+Application, 
+(solid line) 
+When the application has registered itself it can ask 
+the NS if a service fulfilling its demands exists. This is 
+done by a call to “locate service” located within the 
+local LRM, which thereafter forwards the request to 
+the NS.  
+The NS returns the address of the service to the LRM, 
+which in its turn forwards the address to the 
+application. (Note: The GRM (global resource 
+manager) stores all this information in order to obtain 
+a resource overview of the network). 
+Communication 
+between 
+application 
+and 
+service 
+(Broken 
+line) 
+When the application has received the address of the 
+service they will form a “direct” link and start to 
+operate. (Note: If the service and application are 
+located on the same node this process must still take 
+place in order to obtain resource overview) 
+ 
+Analysis and design for  
+20 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+2.2.3 CORBA/TAO 
+Introduction 
+CORBA [3] is a middleware technology for distributed object-oriented software systems on 
+client-server (or peer-to-peer) networks. It provides support for design, development and 
+runtime framework for cross-platform, cross-language applications, thus allowing a very 
+flexible, though complex, environment for the end designer. The CORBA solution strives to 
+offer “everything to everyone” making it very hardware demanding (memory, CPU, etc.). 
+ 
+TAO is an open-source C++ implementation of CORBA which provides an efficient and 
+scalable QoS (Quality of Service) for the end designer. A key difference between CORBA 
+and CORBA/TAO is that challenges associated with real-time couldn’t be dealt with by 
+CORBA, due to the boundaries of its layered design. CORBA/TAO transcends this by 
+integrating a number of CORBA’s interfaces, subsystems and services [6]. 
+CORBA/TAO real time application management 
+There are a number of different implementations of CORBA/TAO. The one being addressed 
+here deals with the architecture for real time application management, [9], [10], [11]. 
+ 
+ 
+Figure 4, Application management in heterogeneous middleware 
+ 
+Figure 4 illustrates the handling of resources, e.g. a printer, and how connection between this 
+and the application using it is made. The different parts are explained below. 
+ 
+• The Naming Service serves about the same function as in DySCAS. It provides a 
+means for other parts to communicate by “name” instead of object references. 
+ 
+• The Trading Service holds a very important role in the system. This is where 
+suppliers (Resource Inspectors) advertise their services and consumers (Node 
+Inspectors) obtain the needed service by matchmaking. E.g. a printer is advertised 
+with its printing capabilities, colour and A4. An application enquires the trading 
+ 
+Analysis and design for  
+21 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+service there is a colour printer available and is responded to with the address to the 
+printer. 
+ 
+• The Event Service uses push technology, if there are events being generated (e.g. 
+media stream) all subscribing processes will get it. 
+ 
+• The Node Inspector is in charge of management issues for its domain, therefore if an 
+application wishes to obtain a service it must consult the Node Inspector, which in 
+turn consults the Trading Service for information (e.g. specific characteristics, 
+specific capabilities) about suitable services offered by the Resource Inspectors. 
+ 
+• The Resource inspector corresponds to a certain type of resource (e.g. cameras, 
+scanners, network bandwidth) and holds the specific parameters of this type. It also 
+handles information regarding in which state it’s in, (e.g. available, busy).  
+ 
+Both CORBA and CORBA/TAO media streaming architecture provides important 
+inspirations for the design of DySCAS architecture. Direct adoptions of them were discarded 
+due to implementation constraints. The main gaps are; they are object based, to complex and 
+to demanding. For more information see [7], [8]. 
+ 
+2.2.4 Conclusion 
+The current DySCAS demonstrator provides a means for services to advertise themselves and 
+for applications to subscribe of the services. This feature is in its current state very limited 
+regarding information about application/service specific information. It is only capable to 
+handle process addresses. To allow an efficient matchmaking more information regarding 
+application/service specific information needs to be stored, e.g. files supported by a media 
+player and media files available on a flash memory. In the CORBA/TAO case, this is done by 
+the “Trading service” and a service like this could be very useful in DySCAS. This is outside 
+this master-thesis project’s scope, but it will be proposed to the system design project.   
+ 
+DySCAS provide a means for the applications to subscribe on services that aren’t available at 
+the time of subscription. This feature makes it possible to build controllable applications that 
+are “up-and-running” when the requested services are made available. This feature could be 
+useful when the support and handling for USB-devices are implemented. 
+ 
+CORBA/Tao has a feature they call “Resource Inspector”, this could provide a base for 
+identifying and handling connected USB-devices. E.g. when the USB-device is initially 
+connected, a “Resource Inspector” feature could identify whether this device is supported. If 
+this is the case it will initiate an appropriate service to advertise itself, making it possible for 
+subscribing applications to obtain its services. 
+ 
+To separate applications using USB-devices by using “Resource inspectors” could also 
+enhance the middleware’s control of data handling. If an application malfunctions, e.g. fails to 
+decrease its output from a USB device, the “Resource inspectors” could terminate the transfer 
+through its admission control. This could in turn promote security. 
+ 
+ 
+Analysis and design for  
+22 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+2.3 Survey of related infrastructure technologies 
+2.3.1 Introduction 
+There are a few different technologies capable for streaming media today. This section 
+describes two approaches. One of these is MOST (Media Oriented Systems Transport), 
+MOST a relatively new technology and its use is very limited but is likely to grown within 
+automotive in the future. The other technology is Ethernet, which is in common use today, 
+and since it is the technology that will be used it will be subjected to extensive research while 
+MOST is limited to a brief explanation. 
+2.3.2 MOST 
+Introduction 
+MOST [12] provides a reliable and high bandwidth information channel for the user. MOST 
+has been in development since 1998 and is a joint venture undertaking that has grown from 
+the original four members to 17 international carmakers and over 50 key component 
+suppliers. 
+ 
+The main idea of MOST is to provide a flexible, low cost and high bandwidth information 
+system that allows much freedom of design for developers. The MOST network aims to be a 
+highly standardized “information highway” that enables devices to be easily connected and 
+upgraded without rebuilding or reconfiguring the whole system as well as to decrease the 
+amount of wires. The connected devices could thereafter use or be used by the already 
+connected devices, such as a human-machine interface. 
+Main Characteristics 
+The MOST provides one of the highest bandwidth available in a format that is suitable for 
+automotive systems. It has a maximum speed of 50 Mbit/s. This was at first only offered 
+when using optical fibres (oPhy) but recently it has also been made available for cupper wires 
+(ePhy). The introduction of ePhy has increased MOST’s potential for carmakers since cupper 
+wiring is less fragile then the optical fibres and the cost and complexity of connection points 
+is much lower  
+ 
+The MOST system provides the possibility to connect other communication technologies to it, 
+this is done via certain nodes that allow e.g. Ethernet communication over the MOST ring as 
+if it didn’t exist. 
+ 
+One main characteristic of MOST is the layout of the “information highway”. It uses a token 
+ring topology that allows connection of up to 64 devices, with one timing master. The slave 
+devices are at all time dependent on the timing master, who provides generation and 
+transportation of the system clock, frames and blocks. These will be explained further on. 
+ 
+Analysis and design for  
+23 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+Quality of service 
+The token ring topology MOST uses, shown in Figure 5, provides a number of interesting 
+features such as determinism, good level of throughput, and response time in proportion to the 
+increase in traffic. The disadvantages are that the hardware cost increases due to that special 
+circuitry must be used to handle token ring management duties. Another cost is that by 
+design, all MOST networks interfaces have capabilities that may exceed their needs, which is 
+used to allow any device to become a timing master. If the ring breaks the MOST system has 
+capabilities to detect this and try to correct it. 
+ 
+Figure 5, Illustration of a MOST ring 
+ 
+Services 
+ 
+ 
+Figure 6, MOST device layout 
+This section will provide a brief overview of the content in a MOST device, see Figure 6 
+ 
+• MOST Network Interface Controller: This contains a transceiver and the low level 
+system services. It allows the device to communicate and provides some basic 
+functions for ensuring secure communication that the network master uses via the 
+network management feature. 
+ 
+ 
+Analysis and design for  
+24 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+• Network Service: The MOST Network Service provides a basic framework for a 
+MOST device. It is the first layer above the MOST Network Interface Controller. The 
+Network Service provides all the basic functions required to operate a MOST system 
+and API functions that makes it possible for applications to interact with the hardware. 
+ 
+ 
+• Function block: Function blocks group functions that are specific to a certain 
+application, e.g. audio amplifier and radio. There are two different types of function 
+blocks, NetBlock and FBlock. A device can have a number of FBlocks for its 
+applications, but only one NetBlock that provides functions that relate to the entire 
+device. 
+Summary 
+The MOST communication system provides a very good base for a system with demands on 
+determinism while still providing supports for infotainment type of communication. It has an 
+inbuilt capability of device identification and classification. The network master has control 
+over the slave devices, e.g. such devices can be remotely shut down if necessary. It has a 
+number of automatic functions, such as node position and delay detection, error reporting, 
+automatic channel allocation and automatic wake up. 
+2.3.3 Ethernet 
+Introduction 
+Ethernet is a widely known and used technology with high capacity regarding bandwidth and 
+offers a number of protocols. It saw the first light for more then 30 years ago and has evolved 
+greatly since then in speed, today’s capacity overreaches that of what computers can handle. 
+The name itself has an interesting story, it derives from “ether” which comes from the 19th 
+century theory that space consisted of this non-existing medium to allow light to propagate. 
+Characteristics 
+Introduction 
+Ethernet is commonly used in combination with IP (Internet Protocol) to handle 
+communication. There are a few IP standards, the most dominant one is IPv4 (Internet 
+Protocol version 4) [13], [14]. There is a later version, IPv6, this is not applicable in all cases 
+and since the technology in itself is backwards compatible only IPv4 will be studied. The 
+headers of the protocols will be displayed in their respective section; this is to illustrate their 
+differences and to allow a quick overview of what features that particular protocol offers. 
+Topology 
+Ethernet provides a few different types of connection, though with different hardware 
+demands on the link. It is possible to directly connect two devices with a cable (twisted pair), 
+thus providing a very high speed connection between them. But a more regular topology is 
+when several devices are connected to a central point, e.g. hub or switch. In large networks 
+operating with IP standards these are in their turn controlled by routers. 
+ 
+ 
+Analysis and design for  
+25 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+The protocol topology is layered; this means that if IPv4 is the base protocol, any other 
+protocol in use will be sent in the data section, such as TCP and UDP. These protocols 
+themselves allow additional protocols to be sent on top of them. This is illustrated in Figure 7 
+ 
+ 
+Figure 7, Communication layers 
+ 
+The packet structure [14] of IPv4 is divided in two sections, header and data. The header 
+contains information regarding version and content of what is sent. This is however at a very 
+deep level and is handled by the IPv4 stack within the OS so further investigation will not be 
+subjected, the IPv4 header can be seen below. 
+ 
+IPv4 header 
+ 
+Bits 0-3 
+4-7 
+8-15 
+16-18 
+19-31 
+0 
+Version 
+Header 
+Type of service 
+Total length 
+32 
+Identification 
+Flags 
+Fragment 
+offset 
+64 
+Time to live 
+Protocol 
+Header Checksum 
+96 
+Source Address 
+128 
+Destination Address 
+160 
+Options 
+160 or 192+ 
+Data (TCP or UDP header + payload) 
+ 
+Quality of Service (QoS) 
+The design of Ethernet prohibits prioritizing a sender in a network consisting of multiple 
+senders. The reason for this is that it uses CSMA/CD (Carrier sense multiple access with 
+collision detection) to avoid senders from disturbing each others transfers. If two senders 
+attempting to send notices the other sender, both will pull back and wait for a random time 
+before trying again. This is not a problem in normal cases, but could be worth noting. 
+ 
+Support for higher level communication protocol 
+Introduction 
+There are a number of protocols available when it comes to application layer protocol for IP. 
+Those who have been thoroughly investigated are TCP, UDP and RTP. SCTP was also taken 
+into consideration, but since this protocol doesn’t provide support for real time no further 
+investigations have been made regarding it. 
+ 
+TCP 
+TCP (Transmission Control Protocol) [15] is a connection-oriented protocol, meaning that 
+there must be a link between the supplier and the consumer before any transmissions can be 
+ 
+Analysis and design for  
+26 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+initiated. This protocol is the most commonly used protocol today; it provides a reliable, byte-
+steam packet delivery.  
+ 
+The protocol itself is very demanding on the system due to its many features. Although this 
+saves a lot of time designing own features since they are already there, it also prohibits the 
+user from controlling those aspects that could be necessary to achieve efficiency. 
+ 
+The reliability guarantees TCP provides means complete data integrity; the delivered data 
+don’t get corrupted. This is achieved by lost packages are re-requested and the packages 
+always comes in the right order. This does however make TCP heavy, since if a single packet 
+comes in the wrong order all the out of sequence parts must be rearranged. There is a later 
+development, SACK (selective acknowledgment), that allows resending of single packets. 
+SACK is however not mandatory and can only be used if both parties support it. If SACK 
+isn’t available, a small number of lost packets can seriously lower the effective throughput. 
+ 
+The byte-stream TCP provides only allows the receiver to see the received data as a flat file, 
+with no marked end where the beginning or end of the received packages. 
+ 
+TCP header 
+ 
+Bits 0-3 
+4-7 
+8-15 
+16-32 
+0 
+Source address 
+32 
+Destination address 
+64 
+Zeroes 
+Protocol 
+TCP length 
+96 
+Source port 
+Destination port 
+128 
+Sequence number 
+160 
+Acknowledgement 
+192 
+Data 
+offset 
+Reserved 
+Flags 
+Window 
+224 
+Checksum 
+Urgent pointer 
+256 
+Options (optional) 
+256/288+ 
+Data (payload) 
+ 
+UDP 
+UDP (User Datagram Protocol) [16] is a simple message based connectionless protocol with 
+minimal overhead, it is often used for data streams were performance in time is more critical 
+then reliability and to broadcast messages. This protocol is the most commonly used after 
+TCP.  
+ 
+The fact that it is connectionless makes it a very fast and direct way to send datagram over an 
+IP network, i.e. the sender sends its data regardless of the receiver’s state. UDP preserves 
+block boundaries, allowing more control for the designer. 
+ 
+The protocol is very slim and doesn’t inflict much work on the OS to handle, it doesn’t 
+provide any native stream-control or reliability support if packages are correctly received in 
+regards to loss, duplication, order or content. If stream-control or any of these error-detection 
+features are desired they have to be handled by the application itself. Although this implies 
+that more considerations must be taken when designing the application, it also means that the 
+developers have much larger freedom in designing a solution that is well suited for the 
+application.  
+ 
+Analysis and design for  
+27 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+UDP header 
+ 
+Bits 0-7 
+8-15 
+16-23 
+23-31 
+0 
+Source address 
+32 
+Destination address 
+64 
+Zeroes 
+Protocol 
+UDP length 
+96 
+Source port 
+Destination port 
+128 
+Length 
+Checksum 
+160 
+Data (payload) 
+ 
+RTP 
+RTP (Real-time Transport Protocol) [16] is a well suited protocol for transmission of real-
+time data, such as video or audio streams, that can be used on top of UDP. The RTP header 
+includes timing information and sequence number; this allows the receiver to rebuild the data, 
+e.g. audio, so the output at the receiver is the same as the input at the source. 
+ 
+If the source transmits both audio and video, they will be sent using two different UDP ports. 
+This allows the receivers to choose which stream to listen to. If the receiver wished to listen to 
+both, the time stamp will serve as a mean to achieve synchronization of these.  
+ 
+The protocol provides three very interesting features [17]: PT (payload type), sequence 
+numbering and timestamp. There are a large number of payload types available as standard 
+and an additional unassigned number that are available as user specific. 
+ 
+The sequence numbering increases by one with each packet, the starting number is however a 
+random number, this is to prohibit “known-plaintext attack” on encryption. 
+ 
+The Timestamp derives from the sampling clock and not from the system clock. This means if 
+an application reads blocks covering 160 sampling periods, the timestamp will increase with 
+160 for each such block, regardless if the block is transmitted or dropped. The clock 
+resolution must be sufficient enough to fulfil the desired resolution and to measure packet 
+arrival jitter. 
+ 
+Noteworthy is also the SSRC field, it identifies the synchronization source and is a random 
+number; this is done with the intent that two sources within an RTP session won’t have the 
+same SSRC, thus more then one source can be within one session. The CC (CSRC count) will 
+contain information about this and CSRC fields contain the contributing sources’ SSRC, e.g. 
+multiple audio streams. 
+ 
+RTP comes with an integrated control protocol RTCP (RTP Control Protocol) [17], [18]. This 
+is a vital feature that increases the quality of service. It is sent periodically by both senders 
+and receivers, with different content though.  
+ 
+RTP header 
+ 
+0-1 
+2 
+3 
+4-7 
+8 
+9-15 
+16-31 
+0 
+Ver. 
+P 
+X 
+CC 
+M 
+PT 
+Sequence Number 
+32 
+Time stamp 
+64 
+SSRC identifier (Synchronization source) 
+96+(CCx32) 
+CSRS identifier (Contributing source) 
+96+(CCx32)+ 
+(X+(AHL+16)) 
+Data (payload) 
+ 
+ 
+Analysis and design for  
+28 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+2.3.4 Conclusion 
+Ethernet is the chosen technology for this project, though the technology itself isn’t the best 
+suited when it comes to real time handling but due to the high bandwidth it provides this 
+shouldn’t prove to be a problem in this case. A problem could arise with determinism, but 
+since this is within the infotainment layer of the vehicle it might not be critical. 
+ 
+TCP is in this case not a feasible option due to its rigidity and lack of means for the user to 
+self change parameters regarding data transfer. One of the main characteristics of TCP is that 
+it keeps increasing the speed of which it sends in order to find a max speed. When it 
+eventually floods the bus it will cut back 50% and start the procedure again. This makes TCP 
+inadvisable for a system with any demands on real time or determinism. 
+ 
+UDP is a very light protocol with hardly any inbuilt features. This makes UDP formable and 
+allows the user to implement any desired features. Given the fact that this and TCP are the 
+two stream protocol OSE supports it would be most advisable to use UDP but enhance it with 
+some extra features. 
+ 
+RTP has inbuilt support that would solve many of the problems regarding streaming real time 
+data over Ethernet while providing a very good control over the network. Some RTP source 
+code is free and might be possible to port to the new system but this might prove very time 
+consuming. It must be taken into consideration whether if it is worth doing this to implement 
+feature that might not be necessary for the demonstration system. 
+ 
+Another approach is to build an own protocol using UDP as base, and implementing some of 
+the components from RTP. It might not be necessary to implement a check for lost packets, 
+jitter or the advanced time slicing feature that RTP provides since the target system is small 
+and uses point to point connections. A miniature implementation for audio/video streams 
+could consist of: 
+.● Sequence number 
+● 
+Timestamp for session 
+● 
+Identifier 
+ 
+Payload type shouldn’t be necessary if this information could be saved elsewhere within the 
+system and is handed out when the sink starts its subscription. It could however prove useful 
+if the stream is dynamically changed during the service, e.g. change of frames or 
+compression. This change is most likely to be initiated by other parts of the system, e.g. a 
+request from the master to reduce bandwidth usage. 
+ 
+The handling and set up of streams must be supported by some other control 
+mechanism/protocol that allows initiation/termination of the stream by either the sender or 
+receiver. This control mechanism should also be capable of synchronizing the participants, 
+preferably done by a system clock reference. 
+ 
+The inbuilt checksum redundancy check (CRC) in UDP could be used to detect if the data 
+within the stream has become corrupt. When streaming data from a camera or audio device 
+this might not be necessary if real-time is more important then correctness, but is crucial when 
+sending a file. 
+ 
+ 
+Analysis and design for  
+29 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+In contrast of the stream protocol, the control protocol must be followed by an 
+acknowledgement when received. A minimum implementation of a control protocol could 
+consist of these features 
+● 
+Clock synchronisation (e.g. when video and audio is transmitted from different nodes, 
+this is needed to avoid timing issues by the receiver) 
+● 
+Request retransmission of lost/corrupted sequences 
+● 
+Initiate/terminate/adjust stream 
+● 
+QoS report 
+● 
+Acknowledgement 
+ 
+2.4 Technical study of USB 
+2.4.1 Introduction 
+USB (Universal Serial Bus) is a very versatile standard that allows devices to be connected 
+without powering down or rebooting the computer. The variety of devices that uses this 
+standard makes it an interesting feature to implement in DySCAS. To illustrate the 
+opportunities that the available bandwidth in the infotainment layer offer, a source for 
+streaming media is needed. USB offers a variety of opportunities, e.g. cameras or audio 
+devices.  
+Standards 
+USB is a highly standardized format [19], though it has evolved greatly since it was first 
+introduced, it still provides full backwards compatibility. The most common versions in use 
+today are USB 1.1 and 2.0; the main difference between these is the transfer speed [20]. 
+ 
+Name 
+Max speed 
+Information 
+Low speed 
+1.5 Mbit/s 
+Mostly used by HID (Human Interface Device) 
+Full speed 
+12 Mbit/s 
+Top speed until USB 2.0, supported by all USB hubs 
+Hi-speed 
+480 Mbit/s 
+USB 2.0 theoretical top speed 
+ 
+The physical interfaces of USB comes in different standards, the original ones are series A 
+and B. When USB 2.0 and USB OTG (On-The-Go) [21] were launched, new smaller 
+standards was introduced known as Mini-A and Mini-B [20]. 
+Stacks 
+In order to handle communication over a single bus USB [20] uses a central host who is in 
+charge of deciding which device is to speak. This is the reason to the development of the host- 
+and device-stack. There can only be one host per system. 
+ 
+Later development has brought a new standard, USB OTG. This eliminates the need for a 
+predefined host by making it possible for the devices to negotiate who will be host. USB OTG 
+is an implementation of USB 2.0 (or USB 1.0) and provides full backward compatibility. This 
+makes it possible to connect devices such as cell-phones directly.  
+ 
+Analysis and design for  
+30 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+2.4.2 Characteristics 
+Topology 
+USB system is built up in a tree like fashion as a multi-level star topology (also know as a 
+daisy-chain) with up to five tiers [20], [22], [23]. Peripheral functions are found at the end of 
+each branch. To allow a highly flexible system the USB solution has a very specific layout 
+that consists of three different types of components. 
+ 
+Component 
+Description 
+Host 
+This component refers to the host built into the motherboard (or adapter 
+card). It controls all the traffic on the bus and serves as a hub. (also 
+known as root, root tier and root hub) 
+Hub 
+This component provides additional ports for devices and provides 
+detection of attached/detached devices to the host. Thus vastly 
+improving the number of possible connections up to 127 devices. The 
+hub itself though occupies one of these connections (i.e. it registers as a 
+device itself). 
+Function 
+Function can be described as a USB-device that provides a capability to 
+the host, e.g. USB speakers (one function) or multi-card readers (several 
+functions). 
+ 
+All transfers are initiated by the host polling the devices. The devices cannot call upon the 
+host’s attention in a common interrupt fashion, the only way to ensure some sort of interrupt 
+handling is to increase the amount of polling this device is subjected to. The speed of the 
+transfer depends on its type. All types support full speed/hi-speed with exception for control 
+transfers that only works with low speed. 
+ 
+Type 
+Description 
+Control transfers 
+Typically used by the host, sent in burst packets and used for 
+short, simple commands to the devices. 
+Isochronous 
+transfers 
+Typically used for devices with real-time demands, e.g. audio or 
+video streams. At some guaranteed speed but with possible data 
+loss. 
+Interrupt transfers 
+Typically used by devices with low latency demands, e.g. 
+keyboard. These devices are polled more often by the host. 
+Bulk transfers 
+Typically used for transfers with error detection demands, e.g. 
+file transfers. Sends data in large bursts but has no guarantee of 
+bandwidth or latency. 
+ 
+ 
+Analysis and design for  
+31 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+USB Device descriptors 
+The USB descriptors are not of a flat structure, it consists of several layers with predefined 
+data formats and rules for USB device classes [22], [23], thus providing the flexibility that is 
+the essence of an USB system. The system is very complex; however, the lower layers are 
+often dealt with by the USB controller’s integrated circuits, hiding some of the complexity 
+from the end designer.  
+ 
+ 
+Figure 8, Descriptor hierarchy 
+ 
+The bNum values refer to how many of the lower level descriptor type the higher one owns. 
+ 
+Type 
+Description 
+Device 
+descriptor 
+Only one device descriptor exists per device. Its purpose is to represent 
+the entire device for the host and contains vital information about USB 
+version, maximum packet size, vendor and product IDs and the number 
+of possible configurations the device can have. 
+Configuration 
+descriptor 
+There can be several configuration descriptors per device. These provide 
+information about how the device is powered, maximal power 
+consumption and number of interfaces (it also bears information 
+whether there is a string descriptor or not). 
+Interface 
+descriptor 
+This descriptor could be seen as a header to its endpoints, it contains 
+information. It provides information about interface class, subclass and 
+protocol. It also provides whether or not this device can be dynamically 
+altered (e.g. speed). 
+Endpoint 
+descriptor 
+This is the lowest layer in the hierarchy, it contains information about its 
+address, which speed it works at, maximum payload size and polling 
+interval. 
+String 
+descriptor 
+This descriptor is optional; its only purpose is to provide a readable 
+string to humans. 
+ 
+ 
+ 
+Analysis and design for  
+32 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+2.4.3 Protocol / Services 
+The USB standard offers a broad support for various devices, to allow easy handling and 
+setting a standard, these devices’ functions are sorted into base class subclass and protocol 
+[24], [25]. This is done to identify the device’s functionality, thus providing sufficient 
+information for loading appropriate drivers.  
+ 
+Base Class 
+Sub Class 
+Protocol 
+0xXX 
+0xXX 
+0xXX 
+ 
+Given the nature of this thesis’ design phase, only a few base classes are of interest: 
+ 
+Base Class 
+Descriptor usage 
+Description 
+0x01 
+Interface 
+Audio 
+0x08 
+Interface 
+Mass-storage 
+0x09 
+Device 
+Hub 
+0x0E 
+Interface 
+Video 
+ 
+Descriptor explanations: 
+• Interface descriptor; interface class, subclass and protocol if applicable, number of 
+alternate settings for the interface and the number of endpoints. 
+• Device descriptors; General information about the device, like vendor, product and 
+revision ID, supported device class, subclass and protocol if applicable, maximum 
+packet size for the default endpoint.  
+ 
+Audio 
+This class handles all devices/functions that are in any way connected to handling or 
+controlling audio, e.g. soundcard and volume/tone control [26]. In many cases the audio 
+functionality isn’t a stand-alone device. It is often in conjunction with other functions that 
+together form a composite device e.g. camera with an inbuilt microphone. It only supports 
+isochronous transfer mode. 
+ 
+The sub classes can be broken down into interface protocols, though this is not yet available 
+for the audio interface class. Additional information that might prove valuable can be found in 
+the descriptors.  
+ 
+The descriptor hierarchy for a USB microphone has at minimum 12 levels. 
+Mass-storage 
+The Mass storage class [27] differs from the other classes. It isn’t built in the same way as 
+other investigated classes, the communication from and to it resembles more to an ordinary 
+protocol based communication rather then a layered outfit. 
+ 
+USB mass storage class commonly uses control, bulk and interrupt transfer modes, though 
+some only uses bulk. 
+ 
+Analysis and design for  
+33 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+Hub 
+Hubs are used to increase the number of available connections to the USB host, this device 
+doesn’t come with an interface as other functions/devices. The hub only uses three layers, 
+base, Subclass and protocol as seen below. If a hub only has one TT (transaction translators) it 
+will lower its speed to the slowest device connected to it. If the hub has multiple TTs it is able 
+to adjust the speed according to the device’s specification. 
+   
+Base Class  
+Sub Class  
+Protocol  
+Description 
+00h  
+Full speed Hub  
+01h  
+Hi-speed hub with single TT  
+09h  
+00h  
+02h  
+Hi-speed hub with multiple TTs  
+Video 
+This class handles all functions that can interact with USB-compliant video data stream [28]. 
+Even analogue video functions controlled through USB belong to this class. USB video 
+devices use isochronous transfer to stream video, though if the device also provides a feature 
+for still images it might support bulk transfers. 
+ 
+The descriptor hierarchy for a USB microphone has at minimum 20 levels. 
+  
+2.4.4 Summary / Conclusion 
+The USB communication is very complex and the header for each function/device could grow 
+to very large proportions. Though big, it allows an easy trace back to each device. This header 
+contains all information necessary to identify supported hardware upon connection. How this 
+information is obtained depends on the operating system in use.  
+ 
+However, the provided information might contain more information then the middleware 
+needs to store for an effective matchmaking. E.g. it might be enough to store type of service. 
+ 
+Analysis and design for  
+34 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+3 Design 
+3.1 Hardware setup, limitations and use 
+3.1.1 Demonstrator design 
+Introduction 
+The predefined DySCAS demonstrator platform uses only CAN network and consists only of 
+nodes that are of the same type. There are also two connected microcontrollers over serial 
+interface for use of Bluetooth, although these are not DySCAS nodes. The purpose of this 
+demonstrator was to handle lights and report changes in node connections over Bluetooth. 
+The predefined parts can be seen connected to the CAN network with exception for HMI 
+(human machine interface) in Figure 9. 
+ 
+The added parts to the demonstrator platform are seen connected to the Ethernet network in 
+Figure 9. The difference between these two setups mainly includes: introduction of Ethernet, 
+additional microcontrollers and one PC. In addition to this there are also additional USB 
+devices that are to be connected and handled. 
+ 
+ 
+Figure 9, The DySCAS Demonstrator 
+ 
+ 
+Analysis and design for  
+35 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+Added and tested hardware 
+The available microcontrollers in the predefined demonstrator are not able to fulfil the 
+demands that high bandwidth streaming media have on CPU and memory. In addition, the 
+C167CR microcontroller doesn’t have any USB capabilities or Ethernet connections. This 
+calls for more powerful microcontrollers that have these features.  
+ 
+The preliminary demonstrator platform contained two additional MPC5554 microcontrollers 
+[30] that would use OSE ck as operating system. These had to be discarded later due to lack 
+of drivers for Ethernet and CAN from OSE ck. In search for a microcontroller with USB 
+capability RPX lite MPC850 [31] were also investigated but had to be discarded due to 
+insufficient CPU and memory. 
+ 
+Intrinsyc Cerfboard 255 
+The Cerfboard 255 [29] has USB capability and enough memory and processing power to 
+handle the demands of audio/video streaming media. In addition to USB it also supports 
+Ethernet and RS232 communication. If the Cerfboard 255 is used without any add on cards it 
+only supports USB device stack. 
+Intrinsyc CerfComm 250 
+The Intrinsyc CerfComm 250 [29] is an expansion card for the Cerfboard 255. It is mandatory 
+if a USB host controller is required. In addition to the USB host controller, it provides one 
+additional Ethernet port and one RS232 connection. This had to be added to allow connection 
+of USB devices such as USB speakers, microphones and webcams. 
+ 
+3.2 Operating system and constraints 
+3.2.1 Choosing Operating system 
+All the nodes in the original demonstrator platform use OSE Epsilon as operating system and 
+the DySCAS demonstrator middleware is to some extent bound to features that OSE Epsilon 
+provides. This operating system option doesn’t exist for Cerfboard 255 but there are other 
+available operating systems. The systems available that were two versions of ENEA’s OSE 
+and Intrinsyc’s I-Linux. 
+ 
+OSE Delta 
+The two versions of OSE that were tested on Cerfboard 255 were OSE 4.5.2 and OSE 5.2. 
+These performed well on the hardware. But due to the nature of this project, the lack of USB 
+support was a major drawback that made OSE unfit for the task. Developing a USB stack for 
+OSE was not an option due to the complexity of a USB host controller for a USB OTG chip. 
+ 
+ 
+Analysis and design for  
+36 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+I-Linux 
+I-Linux is a Linux operating system for Cerfboard 255 developed by Intrinsyc. It is a very 
+slim Linux kernel that in its native state supports most of the features available on the 
+Cerfboard 255. The functionality is good in overall but in some cases the functionality that 
+has been left out to slim the kernel can be limiting, e.g. some commonly used bash commands 
+are not supported. 
+ 
+To add additional support, the kernel can be rebuilt. If USB host control is required this has to 
+be done. The rebuilding of the kernel also allows adding additional drivers such as USB 
+device specific drivers.  
+ 
+There are different versions of I-Linux available but the choice was limited by the fact that the 
+latest release that provided USB support was I-Linux 4.4 with 2.4.19 kernel. 
+ 
+I-Linux lacks an on-board compiler, although this is not a problem for regular programs that 
+can be compiled using a PC with a cross-compiler, it makes it difficult to add drivers after 
+installation. This can however be solved by rebuilding and reinstalling the kernel. 
+ 
+Given the requirements of USB compatibility there were only one option left, I-Linux 4.4. 
+ 
+3.2.2 Problems due to heterogeneous operating systems 
+Demonstrator software demands 
+The previous DySCAS demonstrator software is closely bound to OSE Epsilon. To allow the 
+DySCAS software to execute on a Linux system without major changes in code, the system 
+calls have to be done through a system call API providing the necessary portability support. 
+ 
+All the system calls done by the system have to be transformed into a corresponding Linux 
+call or equivalent function.  
+Porting OSE calls to Linux 
+Incompatibilities/Gaps between OSE and Linux 
+The major issue that have to be solved is how to port OSE memory handling to Linux. OSE 
+uses a shared memory pool where IPC (inter process communication) can be done in a very 
+fast and controlled manner. Information is sent as signals (a signal consist of a union struct) 
+through the system were nothing is changed except the ownership of the allocated memory.  
+ 
+Linux doesn’t provide this feature in the way OSE does. Memory owned by processes in 
+Linux can be dealt with as wished within the process but Linux prevents processes to change 
+ownership of allocated memory.  
+ 
+Another major difference that can not be solved but is worth noting is that OSE is capable of 
+having a deterministic control of the order processes execute, Linux lacks this control and the 
+order processes execute is nondeterministic. 
+ 
+ 
+Analysis and design for  
+37 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+Emulating OSE in Linux 
+Many of the OSE system calls used by the DySCAS demonstrator have a similar counterpart 
+in Linux and can be easily ported. The major problem is to enable transport of signals in 
+Linux in a way that resembles to that in OSE. I.e. the process boundary must be overcome. 
+Linux provides a few options to achieve this: 
+• Shared Memory: This allows processes to share allocated memory. The memory is 
+accessed with a key and secured with a semaphore. 
+• Named pipes: These create a memory based FIFO queue that can be accessed by 
+multiple processes for reading and writing. The calls can be made blocking or non-
+blocking. 
+• Sockets: These are network sockets that can be used to send data between processes 
+over local host. 
+ 
+The option that mirrors the behaviour of OSE memory handling the most is the shared 
+memory. This is the fastest and most memory efficient option available. The drawback of 
+shared memory is its use of semaphores that might cause processes to be caught in a deadlock, 
+e.g. process X owns a memory segment that is needed by process Y to finish, process Y in its 
+turn owns a memory segment needed by process X to finish, hence neither of these processes 
+will ever finish since both is waiting for the other one to release the needed memory. 
+ 
+The simplicity and security of named pipes makes them very attractive to emulate signal 
+transport within Linux. There is no risk of getting caught in a deadlock. The drawback of 
+these is that the data is literally being copied from the sender to the receiver through a file. 
+This makes them not the fastest or memory efficient option but there is no risk of deadlocks. 
+ 
+Sockets are used as ordinary network sockets and when used over local host it is an excellent 
+option to inter-process communication. Each process has a specific port number that can 
+either be used by a UDP or a TCP socket depending on which special features that is wished. 
+For more information, see section 2.3.3. 
+Notes 
+Porting the DySCAS demonstrator middleware to I-Linux wasn’t within the scope of this 
+master-thesis. The need did however arise when I-Linux had to take OSE Delta’s place as OS 
+on the Cerfboard 255. Porting the system is a time consuming task and that time has to be 
+taken from the time planned for implementation of others parts.  
+ 
+3.3 Middleware architecture 
+The previous DySCAS middleware architecture described in section 2.2.2 will been changed 
+to some extent, and the parts that affect issues that correlates with this master thesis will be 
+explained. For more information specific information regarding the system architecture see 
+Olsson [32] and for information about the trading service see Grudeholm [33]. 
+ 
+ 
+Analysis and design for  
+38 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+ 
+Figure 10, DySCAS architecture 
+ 
+As seen in Figure 10, the DySCAS architecture consists of different layers. The most 
+noticeable difference between this and the previous architecture seen in Figure 2 is the 
+introduction of the instantiation layer. The instantiation layer contain all platform dependent 
+functions and allows the functions in the middleware layer to be fully independent regarding 
+which platform it is operating on. 
+ 
+The parts that will be created or modified in this master thesis are: 
+• Ethernet controller: this will provide an Ethernet link for DySCAS. This part will be 
+built from scratch. 
+• Comm. portability module: this part is to translate DySCAS system calls to calls 
+supported by the current platform. This will be heavily modified. 
+• Communication management service: This part contains an inbox for messages 
+received from the Linkhandler, this exists today but will be modified to handle 
+Ethernet transmissions. It also contains a communication manager that will be slightly 
+modified to handle specific Ethernet address updates. 
+• QoS service: this will handle and allow data streams to be transmitted to and from an 
+application or service. This part will be built from scratch. 
+• Device Inspector: This part will monitor and handle connections of USB devices. This 
+part will be built from scratch. 
+ 
+Analysis and design for  
+39 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+3.4 DySCAS process addressing limitations 
+The DySCAS middleware is as mentioned in 3.2.2 closely bound to OSE Epsilon. This bound 
+will be broken in some extent when all system calls is directed via a system API. The process 
+addressing in DySCAS is however limited to only eight bits, this is described below. 
+Process address content 
+0 
+1-3 
+4-7 
+External 
+node flag 
+Node ID 
+Process ID 
+ 
+This address limits the number of nodes to seven and the number of processes running per 
+node to 16. The number of processes for DySCAS requires quickly reduces the number of 
+available process IDs. If all the processes in DySCAS are used there will be no one left. Some 
+processes can be shut down without any risk, all nodes doesn’t have the features available that 
+some processes requires. The number of free process IDs is dependent of which features the 
+application/service requires from the middleware. 
+ 
+3.5 Communication 
+Why Ethernet 
+When this master thesis was first drafted, the intended information system to use was MOST. 
+This had to be exchanged for Ethernet due to practical problems of getting a MOST 
+development kit. 
+3.5.1 Message handling 
+Pre-process of data before sending 
+Introduction 
+To obtain predictability and reliability from the system, all data flows have to be planned and 
+controlled. The control and scheduling of dataflow isn’t within this master thesis scope but as 
+it is in direct correlation it has to be taken in consideration. 
+Inter-node signals handling 
+All data flow within the DySCAS system consists of signals with varying contents being sent 
+between processes. When these signals are to be transmitted between nodes in the predefined 
+system they are given a header containing information about their signal ID, their source and 
+destination process and node. Since this header provides all the information necessary for 
+inter-node communication and it is mandatory for CAN communication, this will be 
+implemented in the Ethernet header. 
+ 
+The DySCAS system consists of several nodes although the signals are handled in such way 
+that the system can be seen as one node from above. In the CAN network the sender 
+information in the signal contains all the information needed to respond to the source node. 
+The IP address is to large to be able to store in this way, this means that the IP address has to 
+be stored locally within the send and receive process. 
+ 
+Analysis and design for  
+40 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+Intra-node signal handling with QoS 
+The amount of signals and size of data that will be transmitted within a node containing 
+demanding applications and services, such as streaming media, will increase dramatically.  
+This increase in messages must be able to be controlled so the system doesn’t suffer from 
+signal flooding, the QoS manager is to monitor and handle the data stream from and to a 
+streaming media application or service, see Figure 11. 
+ 
+The QoS manager retrieves information about an applications type of media stream by its 
+payload type. Depending on its payload type, the stream should be given a priority according 
+to that. E.g. a real time audio stream is given higher priority then bulk transfer of a file. If the 
+DySCAS system detects a need to lower the signal output or to lighten the load on the CPU 
+the QoS service should be able to be influenced by a policy manager and take actions 
+according to the set policy. 
+ 
+If the application using it is for file transferring, the QoS manager on the sending side will 
+have to store all the data being transmitted between each QoS report from the receiver, this is 
+to be able to retransmit lost packets if this would occur. To be able to do this the packets need 
+to be given a unique sequence number.  
+ 
+The sequence number can be used both for retrieving lost packets but also to determine the 
+quality of the link. If many packets are lost this will be show as missing sequences, the 
+receiver can send a report of this to the sender and if it seems possible that the receiver isn’t 
+capable of processing the data in the amount it is being sent the QoS should be able to instruct 
+the application to take measures to lower the data output. 
+ 
+When transferring a file the transmitted data buffer must be set with the amount of memory 
+available on the node in mind. One approach to lower the needed buffer size is to decrease the 
+time between each QoS report back from the receiver, though a too short time will only result 
+in many unnecessary signals being sent. Another approach is to lower the transfer rate of the 
+file. The transfer will take more time but is likely to consume less CPU time and memory. 
+ 
+If the QoS is pushed with the policy to lower the output, it would be most preferably to lower 
+the bulk transfer output to minimum before any real time stream is affected. 
+ 
+Analysis and design for  
+41 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+ 
+Figure 11, Intra-node signal handling 
+ 
+The communication from an application to the Ethernet link must be controlled, a design to 
+solve this is shown in Figure 11. To control the data flow, the signal containing the data must 
+pass a few management processes before reaching the link. These are described below. 
+1. 
+The application, e.g. a microphone or bulk transfer application wants to send a 
+stream of data. It passes the information along with its payload type to a translator 
+within the QoS manager. This translator breaks down the input and stores the data 
+in a signal, specifying the payload type, source process, destination process, 
+length and sequence number 
+2. 
+When the translator is done it passes the signal to the Link handler. The signals 
+are arranged according to their priority before they are sent to the Ethernet 
+outbox. 
+ 
+3. 
+When the Ethernet outbox receives a signal from the Link handler it translates the 
+destination node to its IP address, builds the packet header according to its 
+payload type and sends it. 
+4. 
+When data is received by the Ethernet inbox it converts the data into the original 
+signal, and extracts the IP address and source node ID. 
+5. 
+When inbox is done, it passes the signal on to the Link handler, or if specified, the 
+destination process. 
+6. 
+E.g. a response signal from the receiver of the microphone’s data stream, in this 
+case the inbox sends the signal to the QoS manager. 
+7. 
+The translator demuxes the signal according to its payload type and converts it to 
+a signal understandable for the application. It could also consist of instructions 
+from the sending application/service 
+8. 
+In case the node needs to change the output rate the policy manager within the 
+DySCAS middleware pushes new instructions to the QoS manager. 
+ 
+Analysis and design for  
+42 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+ 
+CAN 
+DySCAS CAN network header 
+The CAN network uses a 29 bit header [5] that contains information regarding: 
+• Sender process 
+• Sender node 
+• Destination process 
+• Destination node 
+• Signal ID 
+Network Bridge 
+To connect the two networks one of the two Cerfboard 255 cards will serve as a bridge, see 
+Figure 12. Unfortunately the Cerfboard 255 doesn’t provide native support for CAN so this 
+has to be solved using a RS232 to CAN converter. The major purpose of the bridge node with 
+exception for connecting the two networks will be to filter the traffic between them.  
+ 
+Figure 12, Communication over network bridge 
+ 
+The bridge node will have to act as a fake node for all the nodes that is beyond any of its 
+network connection, i.e. if a node on the Ethernet-network search for a node on the CAN-
+network the bridge node will have to respond in its case.  
+ 
+Due to the difference in speed of the two networks the bridge node will also need to be able to 
+queue messages if they come in a greater speed then the bridge can send.  
+ 
+The need for filtering becomes obvious when analyzing the unfiltered option, i.e. all signals to 
+the CAN network is forwarded regardless the traffic on the CAN bus. This is not a good 
+option, especially not when taking in consideration the event of an Ethernet node by accident 
+ 
+Analysis and design for  
+43 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+starts to send a real-time stream to a CAN node. This could result in bus overload. This calls 
+for a filter between the networks. 
+ 
+An easy filtering would be to sort by the transmissions’ MTU (maximum transmission unit) 
+type. This would prevent any payload exceeding this limit from ever reaching the limited 
+network. This could serve as a rough filter but must be used in combination with other 
+techniques. 
+ 
+There are a number of approaches to solve this, the easiest is to make a FIFO (first-in-first-
+out) queue. However, this does have two mayor drawbacks, in case of messages are 
+continuously being received in a rate that exceeds the send rate this will quickly overflow the 
+queue and result in messages lost. With this solution there is also no way to promote 
+prioritized messages. 
+ 
+To achieve promoting of prioritized messages multiple FIFO queues could be used. E.g. one 
+queue for prioritized messages and one queue for non-prioritized. 
+ 
+The next issue is how these are to be sent on the bus. There are two options available: 
+1. 
+Let the bridge node be fully transparent and send the messages as they came from the 
+source node. 
+2. 
+Let the bridge combine the messages into a larger message and save bus bandwidth 
+but increasing the complexity. 
+The most reasonable choice depends on the demands on the system, in this case option 1 
+would be sufficient. 
+Communication over Ethernet 
+Choosing socket 
+The demands for control over message size and sending calls for a socket that provides this 
+controllability. The most suitable in this case is UDP see section 2.3.4. 
+ 
+Send and receive over UDP 
+The UDP socket has an internal buffer that stores messages that has not yet been taken care of 
+by the socket owner. This can vary in size but in this case it won’t be necessary to increase the 
+amount of buffer memory at the receiver given that the sender hardware and software are to 
+mirror the one of the receiver, with exception for the stream source and the stream endpoint 
+application/service. 
+Protocol 
+The DySCAS Ethernet protocol is to be able to initiate and handle data streams, see 2.3.4. To 
+make filtering and translation of received datagram easy the common protocol header will 
+contain a payload identifier, MTU, length, sequence number and the DySCAS CAN header. 
+In later stages this header can be expanded to include information about timestamp from real-
+time streams and different fields regarding QoS reports, e.g. sequences lost, latency and 
+stream control 
+ 
+Analysis and design for  
+44 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+Signal handling and addressing 
+When transmitting signals between DySCAS nodes the nodes need to be aware of the 
+destination node’s ID, in the case of Ethernet communication they also need to know the 
+destination node’s IP-address. The sending node’s IP-address can be extracted when receiving 
+and stored with its node ID. In order to make the send and receive functions efficient they 
+need to be in different processes. The receive process needs to update the sending process of 
+these addresses. Figure 13 shows how this can be solved. 
+ 
+ 
+Figure 13, Communication and address handling 
+ 
+1 
+If a new node or a change in address is detected, the receiver immediately updates the 
+communication manager of this which in its turn updates the send function 
+2 
+In any other case the receiver builds a common receive signal and sends it to the inbox 
+handler 
+3/4 Depending on the signal it is either sent to the destination process or to the 
+communication manager 
+5 
+When signals are to be sent they have to pass through the communication manager, the 
+send function is not a stand alone process like receive from Ethernet, it is included in the 
+comm. manager and should only be called from there 
+ 
+3.6 Device Inspector 
+Detecting new devices 
+Introduction 
+When new hardware is connected to a node the middleware needs to be advertised and be able 
+to control this addition. The DI (Device Inspector) is meant to provide this functionality. The 
+functions included in a DI is detecting if a device is added or removed, determine if the 
+device’s features is supported by the system, and if that is the case, advertise them. In theory 
+there could be one DI for each possible connection port of a node, e.g. RS232, CAN, USB etc. 
+In this case the DI will only detect and handle USB devices. 
+ 
+ 
+Analysis and design for  
+45 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+Handling of new devices 
+The procedure of advertising a newly connected USB device is show in Figure 14. The 
+optimal option regarding security would be to have DySCAS drivers for the connected 
+devices. Building drivers is complex and time consuming so in this case the drivers available 
+in Linux will be used. 
+ 
+Figure 14,  Device inspector detects and advertises new device 
+ 
+1. 
+A USB device is connected to the system, the DI detects the new device and 
+gathers information regarding its features. 
+2. 
+The DI knows which kind of devices there are drivers available for and if the new 
+device is supported it will load the drivers. If unknown, the device will stay 
+unmounted. 
+3. 
+When the drivers are successfully loaded the DI will advertise to the middleware 
+that the device is available for use. 
+4. 
+An application or service that has requested or requests to use this device is 
+notified that the drivers are loaded and ready for use. 
+5. 
+The application / service uses the loaded driver to interact with the device. 
+ 
+Conclusions 
+Although there can be some gains in security if drivers are made to fit the DySCAS 
+middleware it might not be a good option for all types of devices, a USB flash memory is 
+generic and needs no device specific drivers to work. For more demanding devices, e.g. 
+cameras, the development is steadily ongoing and the supported hardware will eventually no 
+longer be available on the market. 
+ 
+Analysis and design for  
+47 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+ 
+4 Implementation 
+4.1 Porting DySCAS to Linux 
+4.1.1 Emulating OSE signal in Linux 
+Building signals 
+ 
+Figure 15, DySCAS with Linux message 
+ 
+A signal in OSE contains more information then just the payload data it carries. These signals 
+have to be built for Linux to allow easy porting of various OSE system calls to Linux. To do 
+this additional information regarding the signal’s size, owner, receiver and sender were added 
+to the signal, see Figure 15. These fields are larger in Linux then those used in OSE Epsilon, 
+each field contains four bytes instead of one. This is due to if the operating system uses 8-, 
+16- or 32-bits. The user doesn’t need to be aware of these fields, and normally shouldn’t be. If 
+the information they contain is needed they can be accessed by system calls. The payload is 
+the signal content. 
+ 
+Emulating OSE send/receive in Linux 
+Problems encountered 
+As described in section 3.2.2 named pipes seemed to be a good option to emulate OSE inter-
+process signal handling in Linux. Initially these were chosen to solve this problem. The 
+characteristics of named pipes are that any non-blocking send call will fail to write to the 
+FIFO unless there is a listener on the other end. A blocking send will lie dormant locking the 
+process in a wait state until there is a listener, when a listener arrives, all senders will send. 
+ 
+A solution using named pipes to emulate OSE signals were made. The design was to create a 
+FIFO file for each process. Upon send call from a process, make a non-blocking send to the 
+target FIFO and if there wasn’t any receiver, fork a child making a blocking send that 
+terminated when the data had been transmitted. 
+ 
+This solution worked when it was used in a limited amount, when it was used with the 
+DySCAS middleware it caused memory failure. Much time was spent trying to correct this 
+problem. In the end they had to be discarded in favour for sockets. The fact that named pipes 
+for this compiler and Linux version in one occasion differed from the POSIX standard raises 
+the question if they can be used with confidence. 
+ 
+Analysis and design for  
+48 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+ 
+Figure 16, Solving IPC problem 
+Solution 
+Sending UDP messages over local host requires that the socket has been opened. In order to 
+make the IPC (inter-process communication) work from the start, these sockets have to be 
+opened upon system initiation. The inbuilt UDP buffer is capable of handling sent signals 
+until they are received by the other end. The solution to this can be seen in Figure 16. The 
+sender makes UDP transmission (non-blocking), this is stored in the UDP buffer until the 
+receiver makes a receive call. When the receiver reads the buffer in search for the signal it 
+wants, it stores the unwanted signals in a linked list for later receive calls to check. When the 
+correct signal is found it is returned. Receive can either be blocking or used with timeout. 
+ 
+The need for a socket opened for a unique port number for each process must be taken into 
+consideration when adding new applications or services. If they are to communicate over the 
+process boundary they need to be assigned with their own port number. The port numbers 
+currently in use are high and according to [36] unassigned. 
+ 
+Possible problem 
+In case the buffer overflows it will prevent any more signals being received. With UDP 
+sockets the sender will not be aware of its signal have been lost. In worst case, this could be a 
+source for a deadlock. The alternative is using TCP, this will however cause much more work 
+for the OS, see section 2.3.3. TCP would also require the send call to fork a child given the 
+nature of the send call being non-blocking. 
+ 
+ 
+Analysis and design for  
+49 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+This is unlikely to be any problem, and if it occurs the problem is probably located elsewhere. 
+There can be different causes for this but they all come down to if the socket receives signals 
+in a greater speed then the receiver can handle, this is more likely to happen if very large 
+signals are being transmitted. 
+ 
+Conclusions 
+Sockets are by far the easiest and most reliable way to establish IPC and break the process 
+boundaries of Linux. Named pipes are not a reliable solution and the use of them are not 
+recommended, in this case they even differed from the POSIX standard. 
+ 
+Although the risk is very low that the internal UDP buffer would overflow it is worth noting 
+that the risk does exist. This would cause any signal sent after the buffer overflow being lost. 
+The alternative of using TCP would cause much more CPU work and transmission delay. It 
+would also require the send process to fork a child given the nature of the send call being non-
+blocking. If the receiver is caught in a deadlock and never empties its buffer it will eventually 
+cause the system to break down due to a constant increase in running processes. TCP is 
+thereby not advisable. 
+Notes 
+As mentioned in 3.2.2 the Linux porting wasn’t within the initial scope of this master-thesis. 
+Porting the system proved to be much more time consuming then initially anticipated due to 
+problems with named pipes. The produced named pipes solution of emulating OSE signals 
+works with limited use but not when used with the DySCAS middleware. 
+ 
+4.2 Communication 
+4.2.1 Protocol 
+Protocol design 
+The inherited DySCAS communication system already has a working protocol header for 
+CAN [5]. Since this contains all the information the system needs for signal transport it will 
+be included in the DySCAS Ethernet header. 
+ 
+The Ethernet header needs to contain additional information to handle streaming data. 
+Considering how RTP is built with protocols for stream and stream control it seems feasible 
+that the best option is to make a small common header that is followed by the payload or more 
+specific header information. 
+DySCAS common header 
+ 
+0-2 
+3-5 
+6-15 
+16-31 
+0 
+PT 
+Length 
+Sequence number 
+32 
+MTU 
+CAN header 
+64+ 
+Additional header / payload 
+ 
+Analysis and design for  
+50 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+Header content explanation 
+Name 
+Description 
+PT 
+The different types of messages that are sent over the network need to be 
+specified in advance so the receivers know how to rebuild the contents. 
+The numbers of payloads are limited to 64. 
+Length 
+The length of the payload (in octets). The limitation is 1024. 
+Sequence 
+number 
+If the message is divided up in more than one package, each message 
+will be given a unique sequence number.  
+MTU 
+The difference in MTU (Maximum transmission unit) between Ethernet 
+and CAN must be taken into consideration. Since there is a possibility 
+that even more networks will be connected to DySCAS the MTU will be 
+specified in the DySCAS Ethernet header. Current limitation is eight 
+different MTU 
+CAN header 
+The DySCAS 29 bit CAN header 
+ 
+CAN header (29 bit) 
+P Signal ID 
+Source node 
+Source proc 
+Dest. node 
+Dest. proc 
+LE
+ 
+4.2.2 Address handling 
+Since the node’s IP address is to large to transmit in the way they are transmitted within the 
+DySCAS process ID they need to be extracted by the receiver process and transmitted to the 
+sending function within the linkhandler. The flowchart in Figure 17 illustrates this. 
+ 
+Figure 17, Flowchart of IP address handling 
+ 
+Analysis and design for  
+51 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+4.2.3 Signal handling 
+Sending the signal 
+The sending function is called upon by the link handler and is to be capable to receive any 
+signal. Initially the sending function retrieves all the information needed to fill the CAN 
+header. MTU and PT are set according to the signal type. The signal is thereafter converted to 
+a char buffer and is put as a whole in the payload part of the header. The length of the payload 
+is limited to 1024 octets by the header, or if common UDP buffer length of 1024 octets is 
+used, the payload length limit is reduced to 1016 octets due to the header size. 
+Sending master heartbeat 
+The master node, or the bridge node that have access to the master node, must be able to send 
+a broadcast signal that all slaves will receive and be able to respond to. To broadcast a 
+message over Ethernet the subnet mask must be set to allow this, in this case it was set to 
+allow broadcast over the last section of the IP address, this allows a maximum of 256 nodes 
+receiving this message which far over reaches the current node limit of eight in DySCAS.  
+Attaining the destination node’s IP address 
+As the system is built up now, the nodes can be given any address in a specific address 
+family, currently 169.254.220.X. When the nodes tries to locate a node that the have no 
+previous information regarding IP address they will send out a broadcast, to avoid 
+unnecessary signals within the middleware, only the target node will respond. The IP address 
+of the target node will be updated by the broadcasting node upon response. 
+Receiving the signal 
+The receiver is a stand alone process that is making a blocking receive on a port specified for 
+external connections. When a packet is received the receiver process extracts the message 
+header and builds a specific signal containing the header information and the transmitted 
+signal as payload. The signal is thereafter sent to the inbox handler. If the senders IP address 
+is unregistered by the receiver it will pass on this information to the sending process so the 
+information is present when the response is to be sent. 
+Inbox handler 
+When the message is received from the receiver process it is converted into its original shape, 
+the inbox is a transparent relay of received messages. It sets the signals sender to the true 
+sender from which the signal origins, the only difference is a flag set to mark that its origin is 
+located on an external node. Most of the signals are small and a small multiple of MTU for 
+CAN, these needs no more pre-processing before reaching their destination. Depending on 
+their content, larger signals might need continuing processing before they are ready to be sent 
+to their destination. This is done in a later stage in the translator within the QoS service. 
+4.2.4 Stream handling 
+The current state of the translator within the QoS service is currently limited to file transfers 
+without check. The reason to this is time shortage and that the available applications were 
+based on the existence of a specific file. 
+ 
+Analysis and design for  
+52 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+Translator 
+The translator within the QoS service is used by applications/services that streams data of 
+various kinds through files. Upon stream initialization the application informs the translator 
+about the payload it wants to transmit or receive along with its target process 
+ 
+The current translator consists only of one process but should consist of two, one for 
+incoming transmissions and one for outgoing. The reason for that only one process is used is 
+the process number limitation, see section 3.4.  
+ 
+The capability of the implemented translator is currently limited to be able to transfer a file 
+from one process to another without package check. It is in its current state untested due to 
+application problems. 
+ 
+File transfer initialization 
+File transfer initialization must be perceived by a mutual matchmaking by the application and 
+the service. The matchmaking is done by the configuration resolver, see Grudeholm [33]. This 
+provides the stream participants of each others process ID. Due to the nature of the service in 
+this case, a USB speaker, this transfer will be considered as a real time stream where the 
+service plays the sounds upon receive. The stream source is a USB flash memory with music 
+files, see Pettersson [34]. 
+ 
+Initialization parameters: 
+Target process ID 
+This is the process ID connected to the enquiring process. 
+Payload type 
+The type of stream that will be sent / received. 
+MTU 
+Information regarding which type of net the stream will be built for. 
+Resolution 
+This is the time between each transfer x10µs. 
+Settings 
+Currently only used to flag stream source/sink. 
+Length 
+How many bytes each transfer is to consist of. 
+File address 
+The destination of the file connected to the process. 
+ 
+ 
+Analysis and design for  
+53 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+ 
+Figure 18, Steam transmission 
+ 
+Figure 18 illustrates how the current implementation is thought to handle a file transfer of a 
+music file from one process to another. The application is in this case a USB flash memory 
+acting as a media source, the service is a media player using USB speakers. The different 
+stages in Figure 18 takes place after the service and application has been matched together 
+using the configuration resolver, see Grudeholm [33]. 
+1. 
+The USB flash memory media application sends a stream initialization signal to the 
+translator within the QoS manager to initialize stream send. 
+2. 
+The USB speaker service sends a stream initialization signal to the translator within 
+the QoS manager to initialize stream receive. 
+3. 
+The QoS translator reads form the file specified by the application according to the 
+settings provided by the initialization. 
+4. 
+The stream is sent as signals through the middleware and over the network link. 
+5. 
+When the signal is received by the targets node’s translator the data is written to the 
+file specified in the service initialization signal. 
+6. 
+The USB speaker application service reads from the file and plays the content. 
+ 
+ 
+ 
+Analysis and design for  
+54 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+4.3 Device Inspector 
+4.3.1 Detection of USB devices 
+I-Linux 4.4 provides one option to access USB devices from user space, this is USBFS. 
+USBFS is a virtual file system where all USB devices are seen as files that dynamically keep 
+track of the changes of connected devices and all information regarding them. To detect USB 
+devices with a USB DI, these files can be read and information regarding the connected 
+devices can be interpreted, if this device is supported appropriate actions are made, see Figure 
+19. 
+ 
+ 
+Figure 19, DI flow chart 
+To detect new devices in Linux, the device number can be read from the file “devices” located 
+in “/proc/bus/usb”. Each device is provided with a unique device number that increase 
+constantly for each device added. If it reaches 127 it will restart and use the lowest free 
+number. The device class can thereafter be interpreted and this device’s driver can be loaded 
+if it is present. To do this the kernel has to be rebuilt to contain load-modules of these drivers. 
+ 
+As described in 2.4 the device class itself isn’t a guarantee for that the driver can handle the 
+device, the only way to ensure that is to check the vendor and device ID and compare it with 
+the driver’s supported products list. In some cases with less complex USB devices, the drivers 
+can act generic and support products of later date then the driver itself. In this case the audio 
+devices that were purchased were checked for compatibility. All USB audio devices contains 
+a soundcard, Cerfboard 255 has OSS (Open Sound System) available as sound card driver 
+[37]. 
+ 
+Analysis and design for  
+55 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+ 
+Figure 20, Detection and handling of USB devices 
+ 
+The model of the DI presented in section 3.6 has been changed during implementation, the 
+overall concept is mainly the same but the actions upon detection of a new device has 
+changed, see Figure 20. The reason for these changes is that the matchmaking of processes by 
+the configuration resolver wasn’t available at the time of implementation. 
+ 
+The different stages in Figure 20 are described below. 
+1. 
+A USB device is connected to the system. The DI detects the new device and 
+gathers information regarding its features. 
+2. 
+The DI forwards the detected device to DI Actions. 
+3. 
+DI Actions knows which kind of devices there are drivers available for and if 
+there is an application/service capable of using this device present. If the new 
+device is supported it will load the drivers 
+4. 
+When the drivers are successfully loaded DI Actions will awake the 
+application/service using this type of device. 
+5. 
+The application or service will thereafter register itself to the middleware. 
+ 
+The reason for these changes are mainly due to time limitations, it is a working concept but 
+the designed solution would still be the most favourable to avoid bypassing the middleware  
+ 
+Limitations 
+The USB device drivers available for I-Linux 4.4 are limited, they are old and in the case of 
+the camera driver, the hardware they support isn’t longer available for purchase. The USB 
+audio driver was also outdated but still works with basic USB microphones and speakers. For 
+USB flash memory the mounting procedure is slightly different but generic so there is no 
+problem with outdated versions.  
+ 
+ 
+Analysis and design for  
+57 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+5 Results 
+The results of this thesis have shifted somewhat compared to the goals that initially were set 
+up. Since a dire need arose to migrate the DySCAS middleware to Linux, the project’s content 
+and timetable had to change.  
+ 
+The migration of DySCAS from the OSE environment it solemnly existed in before to Linux 
+was a success and, seen in perspective, worth the time spent on solving the problems that 
+followed. The middleware is now OS independent. 
+ 
+During the migration of the DySCAS middleware to Linux some lessons were learned 
+regarding named pipes. Much time was lost using these since they differed from the POSIX 
+standard and proved to be unreliable. The final solution of IPC in Linux used sockets. 
+ 
+If the DySCAS middleware is to be migrated to yet another platform, the use of sockets would 
+be the recommended approach. 
+ 
+The Ethernet communication platform developed for DySCAS is fully functional and allows 
+freedom in IP address setting for nodes. The protocol developed for DySCAS is very slim and 
+is in its currents state used on top of the UDP protocol. It produces a minimal overhead while 
+allowing all the information required for node and process addressing. The protocol also 
+allows easy filtering and provides the basic fields needed for stream handling. 
+ 
+The stream handling is a part of the DySCAS QoS manager. A slim version of this has been 
+built, but is in its current state untested. The support it currently provides is transfer of files 
+without check for packet loss. 
+ 
+The device inspector (DI) is capable of detecting and handling USB devices. It handles USB 
+devices in two stages, were the DI detects connection and removal of devices and DI Actions 
+takes the appropriate actions. If the device class is supported, DI Actions sends an 
+initialization signal to the corresponding USB application / service where the USB driver for 
+this device is loaded. 
+ 
+Analysis and design for  
+59 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+6 Future work 
+ 
+As time neared the end of this master thesis, the amount of possibilities escalated as the 
+understanding of the system grew. There wasn’t time to implement all ideas so these are left 
+for the future. 
+ 
+One big obstacle is the process limitation in DySCAS, the number of processes that DySCAS 
+requires to function consumes most of the 16 available process IDs per node. The reason of 
+this is the use of 8-bit addressing. If this was to increase it would allow more nodes and 
+processes per node. 
+ 
+As the DySCAS IP protocol currently is constructed it doesn’t allow multiple receivers of one 
+sender unless it is broadcast. Multicast hasn’t been implemented as it didn’t seem to be 
+necessary for this system. If the need would arise of having multiple receivers of a stream this 
+could be an interesting feature to implement. 
+ 
+The translator within the QoS manager isn’t fully implemented. It needs to be complemented 
+to allow full control of data streams. If the number of available process IDs increases, the 
+translator should consist of two processes, one for each stream direction. 
+ 
+The USB device inspector should not be directly connected to the application / service, this 
+approach had to be taken due to implementation issues. The most favourable approach would 
+be according to the designed solution. This would provide the middleware with more control 
+and make the choice of the application / service using the device more dynamic. 
+ 
+There wasn’t time to build the link between the two networks, the only option in the current 
+state of the DySCAS demonstrator platform is to use an RS232 to CAN converter and let one 
+of the Cerfboards serve as a bridge. The implementation of this must include a filter to avoid 
+flooding of the limited network. 
+ 
+Analysis and design for  
+61 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+7 References 
+[1]. 
+http://www.dyscas.org 
+[2]. 
+DySCAS, “Sixth framework programme priority 2” 
+[3]. 
+Common Object Request Broker Architecture (CORBA), v3.0 
+[4]. 
+Björn Larsson, DySCAS master-thesis project, “Middleware for self-managing automotive 
+systems” 
+[5]. 
+Dung Vi, DySCAS master-thesis project, “Middleware for Dynamically Self-Configuring 
+Automotive Systems” 
+[6]. 
+http://www.cs.wustl.edu/~schmidt/TAO-scope.html, 2007-02-08 
+[7]. 
+Sumedh Mungee, Nagarajan Surendran Yamuna Krishnamorthy, Douglas C. Schmidt, “The 
+Design and Performance of a CORBA Audio/Video Streaming Service”, IEEE 6182390 
+[8]. 
+Kyu C. Cho, Yeong-Tae Song, “Layered Design of CORBA Audio/Video Streaming Service in a 
+Distributed Java ORB Middleware Multimedia Platform” IEEE 01434889 
+[9]. 
+Y. Tian, S. Frank, V. Tsaoussidis, H. Badr “Middleware Design Issues for Application 
+Management in Heterogenous Networks”, IEEE 00875779 
+[10]. 
+V. Tsaoussidis, H. Badr,G.Sazaklis, “An Application-oriented Cross-Domain Resource 
+Management Schema using CORBA”, IEEE 00810978 
+[11]. 
+S. Kaniyar, V. Tsaoussidis, H. Badr, ”REAL-TIME APPLICATION MANAGEMENT BASED 
+ON CORBA EVENT SERVICE” 
+[12]. 
+MOST Cooperation, “MOST Specification rev 2.5 10/2006” 
+[13]. 
+Information Sciences Institute University of Southern California, “INTERNET PROTOCOL 
+DARPA INTERNET PROTOCOL SPECIFICATION”, rfc791 
+[14]. 
+http://en.wikipedia.org/wiki/IPV4, 2007-02-28 
+[15]. 
+Information Sciences Institute University of Southern California, “TRANSMISSION CONTROL 
+PROTOCOL DARPA INTERNET PROTOCOL SPECIFICATION”, rfc793 
+[16]. 
+J. Postel, “User Datagram Protocol”, rfc768 
+[17]. 
+Audio-Video Transport Working Group, H. Schulzrinne, S. Casner, R. Frederick, V. Jacobson, 
+“RTP: A Transport Protocol for Real-Time Applications”, rfc1889 
+[18]. 
+Audio-Video Transport Working Group, H. Schulzrinne, “RTP Profile for Audio and Video 
+Conferences with Minimal Control”, rfc1890 
+[19]. 
+http://www.usb.org/developers/docs, 2007-02-20 
+[20]. 
+http://en.wikipedia.org/wiki/USB, 2007-02-20 
+[21]. 
+http://www.usb.org/developers/onthego, 2007-02-28 
+[22]. 
+http://www.beyondlogic.org/usbnutshell/, 2007-02-20 
+[23]. 
+http://www.tech-pro.net/intro_usb.html, 2007-02-20 
+[24]. 
+http://www.usb.org/developers/defined_class, 2007-02-20 
+[25]. 
+Universal Serial Bus Class Definitions for Communication Devices Version 1.1, January 19, 1999 
+[26]. 
+Universal Serial Bus Device Class Definition for Audio Devices Release 1.0 March 18, 1998  
+[27]. 
+Universal Serial Bus Mass Storage Class Bulk-Only Transport Revision 1.0, September 31, 1999 
+[28]. 
+Device Class Definition for Video Devices, Revision 1.1, June 1, 2005 
+[29]. 
+http://www.intrinsyc.com/pdfs/productsheets/spec_cerfboard255linuxdevkit_web.pdf, 2007-05-23 
+[30]. 
+http://www.hitex.co.uk/phytec/32bits/MPC5554.htm, 2007-05-23 
+[31]. 
+http://www.embeddedplanet.com/products/lite.asp , 2007-05-23 
+[32]. 
+Jacob Olsson, “Real time analysis and optimization for automotive purpose” 
+[33]. 
+Malin Grudeholm, “analysis and design of the real time database Polyhedra in the DySCAS 
+architecture platform” 
+[34]. 
+Martin Pettersson, ”Adding multimedia- and storage-support to the DySCAS platform” 
+[35]. 
+http://www.cs.indiana.edu/~bpisupat/work/usb/node14.html, 2007-04-10 
+[36]. 
+http://www.unixcities.com/tcp-ip-port-numbers/index.html, 2007-05-26 
+[37]. 
+http://www.4front-tech.com/osshw.html, 2007-05-26 
+ 
+Analysis and design for  
+63 (63) 
+v. 1.0 
+streaming media in DySCAS 
+ 
+ 
+8 Acronyms 
+ACE 
+- 
+Adaptive Communication Environment 
+API 
+- 
+Application Program Interface 
+CORBA 
+- 
+Common Object Request Broker Architecture 
+DI 
+- 
+Device Inspector 
+DySCAS 
+- 
+Dynamic Self Configuring Automotive Systems 
+ECU 
+- 
+Electronic Control Unit 
+IPC 
+- 
+Inter Process Communication 
+MOST 
+- 
+Media Oriented Systems Transport 
+MTU 
+- 
+Maximum Transmission Unit 
+POSIX 
+- 
+Portable Operating System Interface 
+PT 
+- 
+Payload Type 
+QoS 
+- 
+Quality of Service 
+RTCP 
+- 
+Real Time Control Protocol 
+RTP 
+- 
+Real Time Protocol 
+TAO 
+- 
+The ACE Orb 
+TCP 
+- 
+Transmission Control Protocol 
+UDP 
+- 
+User Datagram Protocol 
+USB 
+- 
+Universal Serial Bus 

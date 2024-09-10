@@ -1,0 +1,3180 @@
+ 
+ 
+ 
+Analysis and Design of  
+Embedded GPS Applications for 
+Automotive Environment 
+ 
+ 
+ 
+ 
+ 
+JOAKIM LÖVQVIST 
+ 
+ 
+ 
+ 
+Master of Science Thesis 
+Stockholm, Sweden 2007 
+ 
+ 
+ 
+.
+Master Thesis Report
+Analysis and Design of Embedded
+GPS Applications for Automotive
+Environment
+Author:
+Joakim L¨ovqvist
+Supervisors:
+Martin T¨orngren
+Barbro Claesson
+Magnus Persson
+January 17, 2008
+.
+2
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+3
+.
+Examensarbete MMK 2007:77 MDA 309
+Analys och utveckling av inbyggda GPS-applikationer f¨or
+anv¨andning inom fordonsindustrin
+Joakim L¨ovqvist
+Godk¨ant:
+Examinator:
+Handledare:
+2007-12-18
+Martin T¨orngren
+Magnus Persson
+Uppdragsgivare:
+Kontaktperson:
+Enea
+Barbro Claesson
+.
+Sammanfattning
+Detta examensarbete ¨ar en del av projektet DySCAS(Dynamically Self-Conﬁguring Auto-
+motive System) som har det ¨overgripande syftet att skapa en mellanvara f¨or elektroniken
+inom f¨or fordon. Examensarbetet har gjorts i samarbete med ENEA AB som ¨ar en av
+deltagarna i DySCAS projektet. ENEA AB har utvecklat en demonstrationsplattform f¨or
+att testa de id´eer som DySCAS projektet bygger p˚a. Demonstrationsplattformen best˚ar
+av ett dynamiskt n¨atverk av noder som utbyter information och tj¨anster mellan sig.
+Syftet med examensarbetet var att utforma och implementera en GPS-applikation till
+demonstrationsplattformen. F¨or att kunna g¨ora detta s˚a adderades en GPS-mottagare
+till demonstrationsplattformens h˚ardvara och en applikation f¨or att f˚a fram informationen
+fr˚an GPS-mottagaren utformades och konstruerades. Den resulterande applikationen kan
+presentera nuvarande position och aktuell tid till DySCAS-n¨atverket som tj¨anster inom
+systemet.
+Tj¨ansterna kan anv¨andas b˚ade av andra applikationer samt n¨atverket i sig
+sj¨alvt.
+F¨or att kunna klara av uppgiften utformades och konstruerades mjukvarumodulen De-
+vice Handler. En Device Handler hanterar inkopplandet av externa enheter i DySCAS
+systemet. Utformningen av Device Handler:n baserades p˚a ett tidigare s¨att att hantera en-
+heter i DySCAS-mellanvaran som kallas f¨or Device Inspector. D˚a Device Inspectorn hade
+brister utformades tv˚a nya s¨att att hantera enheter i DySCAS systemet, Device Manager
+och Device Handler. Device Handler:n valdes som det b¨asta s¨attet, d˚a den har b¨attre
+prestanda i den resurssn˚ala milj¨on i demonstrationsplattformen f¨or DySCAS som den im-
+plementerades i. Utformningen av Device Handler:n gjordes p˚a ett s˚adant s¨att s˚a att den
+kan anv¨andas som en mall f¨or framtida enheter som ska kopplas in i DySCAS-mellanvaran.
+Den GPS-applikation som implementerades i DySCAS demonstrationsplattform ¨ar av
+en rudiment¨ar karakt¨ar f¨or att testa de grundl¨aggande funktionaliteterna i systemet. En
+analys av de framtida m¨ojligheterna av GPS-applikationer i ett DySCAS fordon har ¨aven
+gjorts och presenterats.
+Slutsatsen av detta examensarbete ¨ar att det ¨ar m¨ojligt att skapa en n˚agorlunda avancerad
+applikation till DySCAS-systemet utan att ha speciﬁka kunskaper om funktionaliteten av
+modulerna inom DySCAS-mellanvaran.
+Det har ¨aven visats att informationen fr˚an en GPS-mottagare kan anv¨andas av en m¨angd
+applikationer inom ett fordon f¨or att skapa nya funktioner f¨or fordonet.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+4
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+5
+.
+.
+Master of Science Thesis MMK2007:77 MDA 309
+Analysis and Design of Embedded GPS Applications for
+Automotive Environment
+Joakim L¨ovqvist
+Approved:
+Examiner:
+Supervisor:
+2007-12-18
+Martin T¨orngren
+Magnus Persson
+Commissioner:
+Contact Person:
+Enea
+Barbro Claesson
+.
+Abstract
+This thesis is a part of the DySCAS (Dynamically Self-Conﬁguring Automotive System)
+project which has the overall purpose of creating a middleware for the electronics in an
+automotive environment. The thesis has been made with collaboration with ENEA AB
+who is a member of the DySCAS project. ENEA AB has developed a demonstration
+platform to test the fundamental ideas which the DySCAS project is built on.
+The purpose of this thesis was to design and implement a GPS application to be added
+to the demonstration platform. This was done by adding a GPS receiver to the original
+DySCAS demonstration platform and designing and implementing an application to be
+able to extract the information from it. The resulting application is able to present cur-
+rent position and absolute time to the DySCAS networks as services to be used by other
+applications or by the network it self. The implemented GPS application follows the re-
+quirements and speciﬁcation use cases of the DySCAS project and delivers a time and
+position service to other parts of the dynamical network of nodes in the demonstration
+platform.
+To be able to complete the task a Device Handler was designed and implemented. A
+Device Handler handles the in and output data between external devices and the DySCAS
+system. The Device Handler was based on a previous design for adding devices to the
+DySCAS middleware, called Device Inspector. Since the Device Inspector had ﬂaws two
+new ways of handling devices were designed, Device Manager and Device Handler. The
+Device Handler design were the preferred one from the viewpoint of performance in the
+resource limited environment of the DySCAS demonstration platform which it was im-
+plemented to. The intention of the design of the Device Handler was that it should be a
+general one that could be used as a template for all new devices added to the DySCAS
+middleware in the future.
+The GPS application implementation on the DySCAS demonstration platform is a prim-
+itive one to test the basic functionality of the system. An analysis of the possibilities of
+GPS applications in a DySCAS vehicle was made to be able to see what could be done in
+the future in this area.
+The conclusion of the master thesis is that it is possible to create a fairly sophisticated
+application to the DySCAS system without signiﬁcant knowledge about the functionality
+of each module within the DySCAS middleware.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+6
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+In the master thesis it has been shown that the basic information that can be extracted
+from a GPS receiver could be used by many applications within a vehicle to create a
+variety of new functionality.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+7
+Preface
+This report is marking the end of my master of science in electrical engineering at KTH
+in Stockholm. The education has been a long path from start to end and have given me
+many insights and friendships along the way.
+I give my thanks to the persons and institutions that have helped me complete this master
+thesis. ENEA AB has with great generosity given me a working station at the company
+and included me in their company community. A warmer welcome is hard to ﬁnd as a
+master thesis student. At ENEA the supervisors Barbro Claesson and Detlef Scholle have
+continuously helped me to form and develop this master thesis. Alf ¨Onnestam at ENEA
+has with great expertise helped me with my OSE problems when programming the thesis
+implementation. At KTH the supervisor Magnus Persson gave me great support with the
+academic content of this report. Magnus has also helped me with my written English
+which I have discovered to be very ill. I will also thank my fellow master thesis students
+which have done their theses parallel to mine in diﬀerent areas of the DySCAS. They have
+given me both friendships and technical help during the thesis work period.
+I will also thank my friends that have supported me and helped me to peer review this
+report.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+8
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CONTENTS
+9
+Contents
+1
+Introduction
+15
+1.1
+Objective
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+15
+1.2
+Method and outline
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+15
+2
+Background Information About the DySCAS Project
+17
+2.1
+The Project . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+17
+2.2
+Purpose of the DySCAS Project
+. . . . . . . . . . . . . . . . . . . . . . .
+18
+2.3
+Automotive Electronical Equipment Architecture . . . . . . . . . . . . . .
+19
+2.4
+Project Use Cases
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+20
+2.4.1
+Generic Use Cases . . . . . . . . . . . . . . . . . . . . . . . . . . .
+20
+2.4.2
+Speciﬁc Use Cases . . . . . . . . . . . . . . . . . . . . . . . . . . .
+21
+2.4.3
+Other deﬁnitions . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+22
+3
+Setting the Frame for the Master Thesis
+23
+3.1
+Purpose . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+23
+3.2
+Analytical approach
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+23
+3.3
+Technical/Practical approach . . . . . . . . . . . . . . . . . . . . . . . . .
+24
+3.4
+Goal of the Thesis
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+24
+3.5
+Delimitations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+24
+3.6
+Relevant Use Cases . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+24
+3.6.1
+”GUC1 New device attached to Vehicle” . . . . . . . . . . . . . .
+25
+3.6.2
+”SUC1/1 Using navigation systems on mobile devices”
+. . . . . .
+26
+4
+Analysis of the Field of Interest
+27
+4.1
+DySCAS Demonstration Platform
+. . . . . . . . . . . . . . . . . . . . . .
+27
+4.1.1
+Purpose . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+27
+4.1.2
+Previous Work . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+27
+4.1.3
+The System Architecture
+. . . . . . . . . . . . . . . . . . . . . . .
+29
+4.1.4
+The DySCAS Node . . . . . . . . . . . . . . . . . . . . . . . . . . .
+30
+4.1.5
+The DySCAS Application . . . . . . . . . . . . . . . . . . . . . . .
+30
+4.1.6
+The DySCAS Signals . . . . . . . . . . . . . . . . . . . . . . . . . .
+30
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+10
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CONTENTS
+4.2
+Global Positioning System . . . . . . . . . . . . . . . . . . . . . . . . . . .
+31
+4.2.1
+Introduction to GPS . . . . . . . . . . . . . . . . . . . . . . . . . .
+31
+4.2.2
+The GPS Satellites . . . . . . . . . . . . . . . . . . . . . . . . . . .
+32
+4.2.3
+Positioning
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+32
+4.2.4
+GPS transfer protocols . . . . . . . . . . . . . . . . . . . . . . . . .
+32
+4.2.5
+Improving position accuracy . . . . . . . . . . . . . . . . . . . . . .
+34
+4.2.6
+Automotive usage
+. . . . . . . . . . . . . . . . . . . . . . . . . . .
+36
+4.3
+Policies in DySCAS
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+38
+4.3.1
+Purpose . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+39
+4.3.2
+Policies and GPS . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+39
+4.4
+Clock Synchronisation with an external clock . . . . . . . . . . . . . . . .
+39
+4.4.1
+Purpose . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+40
+4.4.2
+Demands
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+40
+4.4.3
+Conﬂict Handling . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+40
+4.4.4
+Relative Time . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+40
+4.4.5
+Absolute Time . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+41
+4.4.6
+Internal and External Synchronization . . . . . . . . . . . . . . . .
+41
+4.5
+GPS and DySCAS Applications . . . . . . . . . . . . . . . . . . . . . . . .
+41
+4.5.1
+Active/passive velocity delimiter according to current road limits .
+42
+4.5.2
+Start of Journey Notiﬁcation
+. . . . . . . . . . . . . . . . . . . . .
+43
+4.5.3
+Fuel Consumption . . . . . . . . . . . . . . . . . . . . . . . . . . .
+43
+4.5.4
+Usage of handheld GPS . . . . . . . . . . . . . . . . . . . . . . . .
+43
+4.5.5
+Multidevice usage of the GPS point screen
+. . . . . . . . . . . . .
+43
+4.5.6
+Parking remembrance
+. . . . . . . . . . . . . . . . . . . . . . . . .
+43
+4.5.7
+Active Intervention of Vehicle using DGPS
+. . . . . . . . . . . . .
+44
+4.5.8
+SOS message by Cell Phone Communication
+. . . . . . . . . . . .
+44
+4.5.9
+Adding Maps to the Local Area . . . . . . . . . . . . . . . . . . . .
+44
+4.6
+Summary and Conclusion . . . . . . . . . . . . . . . . . . . . . . . . . . .
+44
+5
+Designing the Needed DySCAS Components
+45
+5.1
+Use of DySCAS . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+45
+5.2
+Adding devices to a DySCAS system . . . . . . . . . . . . . . . . . . . . .
+45
+5.2.1
+Previous design, the Device Inspector
+. . . . . . . . . . . . . . . .
+45
+5.2.2
+First design approach, the Device Manager
+. . . . . . . . . . . . .
+46
+5.2.3
+Improved Design, the Device Handler
+. . . . . . . . . . . . . . . .
+48
+5.2.4
+Conclusion - Device Handling . . . . . . . . . . . . . . . . . . . . .
+50
+5.3
+The applications
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+50
+5.3.1
+The Time and Position Service . . . . . . . . . . . . . . . . . . . .
+51
+5.4
+Correlation of Relevant Use Cases to the Presented Design
+. . . . . . . .
+52
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CONTENTS
+11
+5.4.1
+GUC1 for GPS . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+53
+5.4.2
+SUC1/1 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+54
+5.4.3
+Conclusion
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+55
+6
+Implementation to the DySCAS Demonstration Platform
+57
+6.1
+The Hardware used . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+57
+6.1.1
+BR 355
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+57
+6.1.2
+Phytech Board . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+58
+6.1.3
+LCD . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+58
+6.1.4
+Keypad . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+59
+6.1.5
+Hardware Setup
+. . . . . . . . . . . . . . . . . . . . . . . . . . . .
+59
+6.2
+The Implemented Device Handlers . . . . . . . . . . . . . . . . . . . . . .
+60
+6.2.1
+COM Handler
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+61
+6.2.2
+LCD Handler . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+62
+6.2.3
+Keypad Handler
+. . . . . . . . . . . . . . . . . . . . . . . . . . . .
+63
+6.3
+The Implemented Applications
+. . . . . . . . . . . . . . . . . . . . . . . .
+64
+6.3.1
+GPS Parser Application . . . . . . . . . . . . . . . . . . . . . . . .
+65
+6.3.2
+GPS Position/Time Application
+. . . . . . . . . . . . . . . . . . .
+66
+7
+Results
+67
+7.1
+Obstacles and Learning Experiences
+. . . . . . . . . . . . . . . . . . . . .
+68
+8
+Future Work
+71
+8.1
+Future Development of the DySCAS Demonstration Platform . . . . . . .
+71
+8.2
+Future Development of the Suggested Designs . . . . . . . . . . . . . . . .
+71
+8.3
+Future Development of DySCAS Project . . . . . . . . . . . . . . . . . . .
+72
+8.4
+Conclusion of Future Work
+. . . . . . . . . . . . . . . . . . . . . . . . . .
+72
+A Acronyms
+75
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+12
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CONTENTS
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+LIST OF FIGURES
+13
+List of Figures
+2.1
+The DySCAS project logo. . . . . . . . . . . . . . . . . . . . . . . . . . . .
+17
+2.2
+The services and functionalities can be distributed between the diﬀerent
+resources of a vehicle.
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+18
+2.3
+Diagnostics and updates can be done from external sources
+. . . . . . . .
+18
+2.4
+The layers of electronics within a vehicle . . . . . . . . . . . . . . . . . . .
+19
+2.5
+The structure of use cases within the DySCAS project . . . . . . . . . . .
+20
+4.1
+The previous demonstration setup
+. . . . . . . . . . . . . . . . . . . . . .
+28
+4.2
+The previous DySCAS middleware architecture. . . . . . . . . . . . . . . .
+29
+4.3
+The EGNOS System . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+35
+4.4
+The GPS System without DySCAS has all functionality integrated in the
+same device . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+36
+4.5
+The GPS System with DySCAS has its functionalities distributed in the
+network . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+37
+4.6
+A basic example of policies
+. . . . . . . . . . . . . . . . . . . . . . . . . .
+38
+4.7
+The Synchronization in a DySCAS system . . . . . . . . . . . . . . . . . .
+42
+5.1
+The ﬂow of information and signals when using the Device Inspector. The
+arrows show the chronological order that the information is sent at start
+up of the system. When the system is up and running the ﬁrst two arrows
+are not in use. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+46
+5.2
+The ﬂow of information and signals when using the Device Manager. The
+arrows show the chronological order that the information is sent at start
+up of the system. When the system is up and running the communications
+to the Conﬁguration Resolver is very rarely used. . . . . . . . . . . . . . .
+47
+5.3
+The ﬂow of information and signals when using the Device Handler. The
+arrows show the chronological order that the information is sent at start up
+of the system. When the system is up and running the ﬁrst three arrows
+are not in use. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+49
+5.4
+The collaboration of the application processes . . . . . . . . . . . . . . . .
+51
+6.1
+The BR 355 GPS receiver . . . . . . . . . . . . . . . . . . . . . . . . . . .
+58
+6.2
+The experimental board with the CPU . . . . . . . . . . . . . . . . . . . .
+58
+6.3
+The LCD display that is used in the implementation . . . . . . . . . . . .
+59
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+14
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+LIST OF FIGURES
+6.4
+The keypad that is used in the implementation . . . . . . . . . . . . . . .
+59
+6.5
+The Hardware Demonstration Setup for the implementation. In the imple-
+mentation the information is sent from the GPS to the network of nodes
+where it is assembled and presented on the LCD Display.
+. . . . . . . . .
+60
+6.6
+This is where the Device Handlers are located in the DySCAS demonstra-
+tion platform architecture. . . . . . . . . . . . . . . . . . . . . . . . . . . .
+60
+6.7
+A ﬂow chart showing the implementation of the COM Handler
+. . . . . .
+61
+6.8
+A ﬂow chart showing the implementation of the LCD handler . . . . . . .
+62
+6.9
+A ﬂow chart showing the implementation of the keypad handler . . . . . .
+63
+6.10 This is where the applications are located in the DySCAS demonstration
+platform architecture.
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+64
+6.11 A ﬂow chart showing the GPS Parser application . . . . . . . . . . . . . .
+65
+6.12 A ﬂow chart showing the GPS Position application . . . . . . . . . . . . .
+66
+7.1
+The present DySCAS middleware architecture.
+. . . . . . . . . . . . . . .
+67
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 1.
+INTRODUCTION
+15
+Chapter 1
+Introduction
+This master thesis has been performed at Kungliga Tekniska H¨ogskolan (KTH)1 in Stock-
+holm, in cooperation with the company ENEA. The thesis has been a part of the DySCAS
+project. The name DySCAS is an acronym for Dynamically Self-Conﬁguring Automotive
+Systems. The DySCAS project is funded in part by the European Union (EU). The details
+of the project will be discussed later on.
+It is essential that the reader distinguish between DySCAS, which is a project and the
+DySCAS demonstration platform which is an implementation of DySCAS that is devel-
+oped at ENEA. The project is deﬁned by a set of requirements and use cases and the
+platform is a subset of the whole project.
+The purpose of the project is to make it
+more proﬁtable to develop and maintain applications for embedded solutions in a limited
+distributed network.
+1.1
+Objective
+The primary objective of this master thesis has been to implement a GPS application on
+the DySCAS platform. The application will provide a positioning service and an absolute
+time service to the platform. It has been an essential part that the application manages
+to fulﬁl all the system requirements and make use of DySCAS functionalities.
+1.2
+Method and outline
+This thesis report is divided into four parts. The ﬁrst part is an introduction and back-
+ground information about DySCAS and GPS. The reason for this is to make the reader
+familiar with the system used and the background of the thesis.
+The second part contains a theory chapter where the basic knowledge to this thesis is
+analyzed in theory. To be able to implement the resulting GPS application it is essential
+to have knowledge about the DySCAS demonstration platform and the GPS. Beside these
+areas the theory chapter contains a discussion on how the GPS application can beneﬁt
+from the implementation of clock synchronization and policies to a DySCAS equipped
+vehicle. Some suggestions for future DySCAS GPS applications are also presented.
+The third part presents the design of the GPS applications. To be able to implement the
+GPS application to the DySCAS demonstration platform some new functionality had to
+be designed. Some design of software for new hardware is also presented and designed in
+1Translated as the Royal Institute of Technology
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+16
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 1.
+INTRODUCTION
+this chapter. The connection of the thesis to the DySCAS project’s use case is presented
+last in this chapter. Last there is an implementation chapter where the practical part of
+the thesis is described. Since ENEA emphasises that the thesis will result in a practical
+demonstration, much work will be done to create a stable application. The results and
+future work will be discussed last in the report, but since it is derived from the earlier
+parts it is not counted as a main part of the thesis.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 2.
+BACKGROUND INFORMATION ABOUT THE DYSCAS PROJECT
+17
+Chapter 2
+Background Information About
+the DySCAS Project
+Figure 2.1: The DySCAS project logo.
+In recent years the automotive vehicles have become more advanced as the number of
+systems installed in them has increased. The demands for entertainment and diﬀerent
+electronic products within a vehicle have increased drastically and the need for system
+collaboration is imminent. The initiators of the project want DySCAS to be a standard
+of connecting new equipment to a vehicle. The DySCAS projects aim is to implement
+a middleware that translates the signals from external devices 1 to the platform. The
+middleware is installed on diﬀerent Electrical Control Units (ECU ), which are connected
+as nodes in the DySCAS network. The applications are divided into application services,
+who deliver services to the network and applications that retrieve and use the services
+from the network. The services will be distributed to diﬀerent parts within the vehicle as
+shown schematically in ﬁgure 2.2.
+2.1
+The Project
+The Dynamically Self-Conﬁguring Automotive Systems project is a combined project
+between several diﬀerent companies and universities. According to the DySCAS oﬃcial
+website[4] the members of the project consist of four companies and three universities.
+The project is funded in part by the European Union (EU). The project start was 1st June
+2006 and it will end in November 2008. Enea AB’s contribution to the project is to design
+1e.g. display, cell phone, speakers etc.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+18
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 2.
+BACKGROUND INFORMATION ABOUT THE DYSCAS PROJECT
+Figure 2.2: The services and functionalities can be distributed between the diﬀerent re-
+sources of a vehicle.
+and build a demonstration platform based on the ideas of functionality and architecture
+of the DySCAS project. The conceptual architecture for DySCAS has been developed at
+KTH, which also is a member to the project.
+2.2
+Purpose of the DySCAS Project
+Figure 2.3: Diagnostics and updates can be done from external sources
+The purpose of DySCAS is to make development and implementations of new infotain-
+ment products to an automotive environment easier and thus more eﬃcient for a third
+part company that manufactures equipment for a vehicle. This company should not have
+to be concerned about what platform its application is running on as long as it transmits
+the information according to the DySCAS standard.
+An Original Equipment Manufacturer (OEM ) 2 that produce vehicles is obligated to keep
+spare parts for the vehicles long after the vehicles have ended in production. The reason
+for this is to be able to repair used vehicles within the warranty of the vehicle, which are
+longer than the production period of the speciﬁc vehicle. This is an expensive activity
+2Such as Volvo and Daimler
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 2.
+BACKGROUND INFORMATION ABOUT THE DYSCAS PROJECT
+19
+when every vehicle has its own set of system that was developed by the vehicles manufac-
+turer speciﬁcally for that vehicle. This makes it very diﬃcult to add new functionality to
+an existing vehicle that has not been there when the vehicle was constructed.
+Another purpose of the DySCAS project is that when all vehicles use the same system3
+the OEM can just make updates to the previous products which are backwards compatible
+to the previous series of vehicles. Then the OEM can cut costs as they won’t need to keep
+stocks of their products for every model of a vehicle.
+If all applications run on the same network it would be considerably easier for service
+workshops to run diagnostics and install updates to every separate part of the system.
+This will make the maintenance of the vehicle signiﬁcantly cheaper and if any electronic
+part in the vehicle malfunctions the detection of the exact part could be done in an in-
+stant. This will increase the durability of the vehicle’s overall performance since the life
+span of the electronics is greatly shorter than that of the vehicle.
+An interesting functionality is that vehicles that pass each other would be able to dis-
+tribute updates between each other using Bluetooth or Wi-Fi technology. A schematic
+ﬁgure of this can be seen in ﬁgure 2.3. Wireless communication between vehicles could
+however be very vulnerable to attacks by malicious software.
+The results of the project will be a self-managing middleware containing a number of
+services that are able to provide a series of functionalities that are required by a set of
+use cases, see section 2.4[3].
+2.3
+Automotive Electronical Equipment Architecture
+Figure 2.4: The layers of electronics within a vehicle
+An automotive vehicle has several diﬀerent layers of systems and functions, see ﬁgure 2.4.
+The most fundamental functions are the safety functions that control the driving of the
+vehicle and are required to work for the user to be able to use the vehicle at all. These
+functions could be e.g. brakes or steering. Above that layer is the body electronics layer
+where the devices that aren’t so critical are placed, e.g. the windscreen wiper and direc-
+tional lights. These devices still need to function to be able to use the vehicle comfortably.
+At the top is the infotainment layer where the devices that are optional for each vehicle
+reside. This is where the DySCAS project is focusing its functionality. The main reason
+to have separate buses for the in-vehicle information is for safety reasons. The lower layers
+3For example in a DySCAS system
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+20
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 2.
+BACKGROUND INFORMATION ABOUT THE DYSCAS PROJECT
+have higher demands on timing4 and stability and should not compete with the upper
+layers to send information in the system. It is critical that the brakes always work, but if
+the speakers glitch it will not aﬀect the passengers safety.
+To give the lower layers the same dynamic functionality as the DySCAS project intends
+to do to the top layer, another project called FRAMES has been started to meet these
+layer’s demands. FRAMES is built on basically the same ideas and structure as DySCAS
+but since it targets more safety functions within the vehicle it required that information
+always get to the right place in the right time. The information traﬃc on the safety layer
+bus is signiﬁcantly smaller since there is no information heavy function, as for example a
+sound device, on it.
+2.4
+Project Use Cases
+The DySCAS project is deﬁned by several use cases. The deﬁnition of the use cases has
+been made by the members of the DySCAS project at an early stage of the project. The
+purpose of the use cases is to give a description of how a DySCAS equipped vehicle would
+perform in diﬀerent situations. The deﬁnitions are at a very high level and the technical
+interpretation of the use cases are yet to present. A few of them in this thesis.
+The use cases are structured as Generic Use Cases (GUC) and Speciﬁc Use Cases (SUC).
+As the names suggest the GUC are more general and describe the system functionality in
+a broader perspective and the SUC describe detailed functions. For a schematic view of
+the structure of use cases see ﬁgure 2.5.
+Figure 2.5: The structure of use cases within the DySCAS project
+2.4.1
+Generic Use Cases
+In the project document Scenario and System Requirements[2] four diﬀerent generic use
+cases are presented. Each of them describes a major function of the system. They are
+shown in table 2.1.
+GUC1 has been the most relevant use case for this thesis and will be described in detail
+4The safety function layer needs to react within a millisecond, while the upper layers are not as critical
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 2.
+BACKGROUND INFORMATION ABOUT THE DYSCAS PROJECT
+21
+GUC1 : New device attached to Vehicle
+GUC2 : Integrating new software functionality
+GUC3 : Closed reconﬁguration
+GUC4 : Resource optimization
+Table 2.1: The Generic Use Cases
+in chapter 3. GUC2 to 4 describes functionality within the DySCAS middleware.
+2.4.2
+Speciﬁc Use Cases
+The Scenario and System Requirements document deﬁnes several speciﬁc use cases that
+deﬁne a subset of the generic use cases. The SUCs are functional application examples
+of the GUC, which are more detailed. Table 2.2 shows the names of some SUCs. There
+are however many more SUCs than are presented in the table. The SUCs functions are
+self-explanatory and will not be described in detail.
+SUC1/1 : Using Navigation Systems on Mobile Devices
+SUC1/2 : Sending/Receiving Traﬃc Data via Attached Mobile Phone
+SUC1/4 : Using Processor on External Device for Computations
+SUC1/8 : Extracting the Destination from the Calendar Application of the Mobile
+Device
+SUC2/1 : Diagnosis and System Maintenance
+SUC2/3 : Software Update and Upgrade
+SUC3/5 : Graceful Degradation
+SUC4/1 : Exploiting Sensor Redundancy
+SUC4/3 : Redundant ECU
+Table 2.2: The Speciﬁc Use Cases
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+22
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 2.
+BACKGROUND INFORMATION ABOUT THE DYSCAS PROJECT
+2.4.3
+Other deﬁnitions
+The use cases are considered the major deﬁnitions for DySCAS, but this is not completely
+accurate.
+Each use case is deﬁned by several functions and these functions result in
+requirements. The functions and requirements are however too many and too detailed to
+be listed here. Some of the major requirement deﬁnitions can be seen in table 2.3.
+Scalability
+The system consists of several layers
+Dependability
+The system is reliable and fault tolerant
+Portability
+The system is independable of platform
+Interoperability
+Diﬀerent platforms should be able to interact with each other
+Table 2.3: The main requirements of DySCAS
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 3.
+SETTING THE FRAME FOR THE MASTER THESIS
+23
+Chapter 3
+Setting the Frame for the
+Master Thesis
+In this chapter, the outline of the thesis will be described. It will be presented why the
+thesis has been done and how the work process has been structured. A presentation in
+detail about the use cases in the DySCAS project which the thesis has been built on, will
+also be included in this chapter.
+3.1
+Purpose
+The purpose of the thesis is to implement a GPS application and investigate what beneﬁts
+and eﬀects will aﬀect the DySCAS system.
+This thesis work is part of the DySCAS
+demonstration platform that has been developed at ENEA. Parallel to this thesis, ﬁve
+other students will do their theses to further extend the DySCAS platform. The purpose
+of the DySCAS middleware is to make it easier to integrate consumer electronic devices to
+automotive environments in the area of infotainment. The GPS is one of many applications
+that will be made to interact with the DySCAS middleware.
+3.2
+Analytical approach
+The DySCAS project is designed to be implemented in an automotive environment. The
+GPS application relevancy to the DySCAS project is obvious and will be an important
+part of the demonstration platform. Parallel to the work of this master thesis a policy
+based structure will be implemented to the platform. The study will investigate how the
+introduction of policies to the DySCAS system aﬀects and can be used by this application.
+Since this thesis focuses on how to design and implement an application to the DySCAS
+middleware, not much emphasis will be put on the internal architecture of the middleware.
+The basis of this thesis has been that the middleware functions and behaves as stated in
+the use cases that this thesis focuses on.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+24
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 3.
+SETTING THE FRAME FOR THE MASTER THESIS
+3.3
+Technical/Practical approach
+Even though the GPS is a well documented system, some work will be done to analyze the
+functionality of GPS to be able to merge it to the DySCAS platform. New hardware will
+be added to the platform and will be connected to an existing node. Application software
+has been needed to make the node communicate with the GPS and deliver its services to
+the DySCAS system.
+To be able to present the results of the GPS application, additional new hardware will
+be implemented. With lots of new hardware there is question of how devices should be
+managed by the DySCAS platform.
+By using a GPS it is possible to deliver an accurate time service to the system. This will
+also be implemented on the demonstration platform as a system service.
+There are diﬀerent ways to attach new hardware to the DySCAS demonstration platform.
+The GPS device has the option to connect via several diﬀerent communication protocols
+to the DySCAS demonstration platform. The communication protocols will be described
+in section 4.2.4.
+3.4
+Goal of the Thesis
+The goal has been to take a working consumer product GPS device and design and
+implement a working GPS application that contributes to the DySCAS demonstration
+platform. The application should relate and work according to the preset DySCAS use
+case that has been relevant to the thesis.
+3.5
+Delimitations
+The work period has been limited to twenty weeks, which has inﬂuenced the amount of
+software that can be implemented to the DySCAS demonstration platform. Since the
+implementation will be applied on an existing platform made by earlier theses any lim-
+itations that have been built into the system has also aﬀected the work of this thesis.
+The application has been be implemented on an embedded hardware, with limited per-
+formance. This environment is realistic with the limitations that exist in an automotive
+environment, and will also aﬀect the application design.
+3.6
+Relevant Use Cases
+As mentioned in section 2.4 the DySCAS project is deﬁned by a series of use cases. This
+thesis will focus on the use cases
+GUC1 : New device attached to Vehicle
+SUC1/1 : Using Navigation Systems on Mobile Devices
+which are the most relevant ones. Both use cases are relevant to the scenarios where the
+GPS is a mobile device or when the GPS information is presented on a mobile device.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 3.
+SETTING THE FRAME FOR THE MASTER THESIS
+25
+Generic functionalities
+G1
+Detection of new devices in the vehicle
+G2
+Attachment of detected devices
+G3
+Check authorization of new device and authenticate
+G4
+Evaluate stakeholders’ preferences
+G5
+Detach functionalities
+G6
+Announcement of services of new device to in-vehicle information
+systems
+G7
+Check data and software of new device for malicious code
+G8
+Monitor communication link (if wireless)
+Speciﬁc functionalities
+S1
+Detection of vehicle by the new device
+S2
+Negotiation and Contracting of functionalities
+S3
+Modify in-vehicle HMI according to the services of new device
+S4
+Encrypt communication link (if wireless)
+Table 3.1: The functionalities of GUC1
+Non-Functional Requirements
+NF1
+The integration must be as transparent as possible for the user.
+(As long as no user interaction is desired.)
+NF2
+It must not be possible to corrupt the vehicle information sys-
+tem (VIS) using the interface for external devices or the external
+devices themselves.
+NF3
+Only authorized devices may connect to the vehicle information
+system.
+NF4
+If conﬁdential data are transferred between the device and the
+VIS these data must be protected against unauthorised access.
+Table 3.2: The Non-Functional Requirements of GUC1
+3.6.1
+”GUC1 New device attached to Vehicle”
+This use case is the most fundamental to the DySCAS project.
+It describes how the
+DySCAS middleware should handle new devices that are connected to the vehicles. Ex-
+amples of devices that can be attached are mobile phones, laptops or PDAs. Through
+the introduction of GPS receivers in handheld devices it is relevant to this thesis that
+the GPS service can be delivered from devices not installed in the car. The devices can
+both be attached wirelessly (e.g. Bluetooth or WLAN) or through connectors in the ve-
+hicle (e.g. RS232 or USB). Regardless of what way to connect the devices, this use case
+is intended for the temporarily connected devices. Permanently mounted devices in the
+vehicle aren’t considered in this use case. When attaching a new device to the vehicle
+the device is inspected and veriﬁed as a DySCAS node. The device identiﬁes itself and
+registers the services it can provide or requires to the master node. The master node
+decides if any connections between nodes should be made and makes the appropriate
+connections. If the device is detached the master unregisters the services. To the GUC1
+there are several functionalities attached. The functionalities are divided between generic
+functionalities(1-8) and speciﬁc functionalities(S1-S4). It also exists non-functional re-
+quirements in the GUC1. They are numbered NF1-NF4. All functionalities are shown in
+table 3.1 and the non-functional requirements are shown in table 3.2.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+26
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 3.
+SETTING THE FRAME FOR THE MASTER THESIS
+3.6.2
+”SUC1/1 Using navigation systems on mobile devices”
+The Speciﬁc Use Case 1/1 describes the event where a new device is connected to the
+vehicle and is used for navigation purposes. The mobile device could be e.g. a laptop,
+mobile phone, PDA or handheld GPS. To be able to use the device within the vehicle
+the device need to be DySCAS compatible. The typical use case of SUC 1/1 is a simple
+example shown below.
+• The vehicle detects the device
+• The device announces its services to the vehicle
+• The vehicle connects wanted services to applications in the vehicle or vice versa
+• When services no longer are needed or the device is removed, the vehicle shuts down
+the connections
+The mobile device can also be used for retrieving positional data to be used in a navigation
+application. For example the driver can request the directions to a colleague whose address
+is retrieved from a mobile phone and then is sent to the GPS application.
+As in the GUC1 several predeﬁned functionalities are attached to the SUC1/1. These are
+shown in table 3.3.
+1
+Detection of mobile devices inside the vehicle
+2
+Attachment of detected mobile devices
+3
+Contracting of functionalities
+4
+Check if the driver really authorizes this device to be attached
+and used.
+5
+Send location data to the mobile device
+6
+Send RDS 1 traﬃc data to the mobile device
+7
+Send navigation tasks to mobile navigation system
+8
+Receive navigation results
+9
+Output of navigation results on vehicle’s HMI systems
+10
+Check if attached navigation system can perform navigation task
+better than an onboard navigation software
+Table 3.3: The functionalities of SUC1/1
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+27
+Chapter 4
+Analysis of the Field of Interest
+In this chapter the underlying theory of the thesis will be presented. The chapter begins
+with a description about the previously designed DySCAS platform where the GPS appli-
+cation will be implemented. To understand how a GPS receiver functions a brief review
+of the GPS system will be presented. Since policies and clock synchronisation will be
+implemented in the DySCAS demonstration platform parallel to this thesis, both these
+topics will be discussed. Finally there is a concluding section where some suggestions of
+new automotive GPS applications are presented.
+4.1
+DySCAS Demonstration Platform
+The DySCAS demonstration platform is a hardware implementation of a subset of the
+DySCAS project’s use cases.
+4.1.1
+Purpose
+The DySCAS project is at this stage of the project very theoretical. As mentioned in
+section 2.4 the project is deﬁned by several use cases that describe how the DySCAS
+middleware should work. How it will work is yet to be designed. The purpose of developing
+and designing a demonstration platform is to present how it could work; as well as testing
+the theoretical ideas on a hardware implementation.
+Also by designing a demonstration platform there is an opportunity to test if any of the
+theoretical approaches are unachievable and needs to be reformulated. It is essential that
+ﬂaws in the architectural design are discovered in an early stage of the project.
+4.1.2
+Previous Work
+The DySCAS Demonstration Platform has been developed by several master thesis work-
+ers that have made their thesis at ENEA. The state of the platform at the start of this
+thesis has been the product of seven theses [6][7][8][9][10][11][12]. Each thesis has made
+excellent contributions to the platform in several ways. Where some have focused on the
+software functionalities others have contributed with new hardware and hardware func-
+tionality. A scheme of the DySCAS demonstration platform is shown in ﬁgure 4.1.
+The DySCAS demonstration platform is divided into two realms. One where the nodes
+are connected by an Ethernet bus and one where the nodes are connected by a CAN bus.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+28
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+Figure 4.1: The previous demonstration setup
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+29
+Between the buses there will be a gateway that relays the information on one bus to the
+other. This has however not been implemented to the DySCAS demonstration platform
+yet and has been considered future work for this thesis. The GPS Device described in
+this report has been connected to a node in the CAN bus realm.
+4.1.3
+The System Architecture
+Figure 4.2: The previous DySCAS middleware architecture.
+The system architecture of the DySCAS platform has been developed and revised by
+former thesis workers of the project[10, 6, 7]. The system architecture that was designed
+by them is shown in ﬁgure 4.2. The architecture is based on four diﬀerent layers.
+• The Application layer where the applications and services reside. The application
+should be completely unaware of what platform and Operative System the middle-
+ware runs on.
+• The Middleware level which is the main part of the DySCAS implementation. This
+layer runs all DySCAS functionality and is platform independent.
+• The Instantiation layer that handles the in - and out data between the platform
+and the middleware.
+• The Platform layer which basically is the hardware that the system runs on and the
+Real Time Operative System (RTOS).
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+30
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+The diﬀerent layers are often produced by diﬀerent manufactures. The vehicle designer
+constructs the platform layer and also the instantiation layer that communicates with the
+middleware layer. The middleware layer is a platform independent layer that is exactly
+the same on every node in the DySCAS system.
+The middleware layer also handles
+the information in the system. The middleware layer is made by the DySCAS project.
+The application layer could be constructed by both the vehicle manufacturer and an
+external contractor. This thesis emphasises on the application layer and postulates that
+the underlying layers function as speciﬁed. The functions of the layers are speciﬁed in
+ﬁgure 4.2.
+Conﬁguration Resolver
+An important module for this thesis has been the Conﬁguration Resolver module in the
+system architecture of the DySCAS demonstration platform. The Conﬁguration Resolver
+receives all the service registrations and requests in the DySCAS network. It is a global
+process in the network and thus exists on only one node. In the Conﬁguration Resolver
+decisions are made to optimize the system and to give diﬀerent part of the system access
+to each other by deliver the services to the parts that request them.
+4.1.4
+The DySCAS Node
+Every application in the DySCAS network is attached to a node that connects to the
+vehicles internal network. There are two types of nodes, master and slave. The master
+node regulates all traﬃc on the buses and does all the resource handling between the other
+nodes. The slave nodes register their services or request services from the master node.
+If there are two master nodes in the network one of them will be set as a passive master.
+If the active master starts to malfunction the passive master will take over as the active
+one. All this is completely autonomous and provides more reliability to the system.
+4.1.5
+The DySCAS Application
+When an application needs a speciﬁc service, it requests the service from the master which
+has all references to services stored in a repository. If the service exists on the system,
+the master tells the application of its location in the system. The application then sends
+a request of subscription of the service to the DySCAS middleware that either accepts or
+denies the request. The requesting application waits for an acceptance signal and when
+it receives it, the application and service starts to communicate directly to each other
+without the master’s interference. A more thorough description of a DySCAS application
+is made in section 5.3.
+4.1.6
+The DySCAS Signals
+As it was earlier mentioned the applications are communicating using DySCAS signals.
+A table of the structure of the signals can be shown in table 4.1.
+The DySCAS signals contain information about the signal type, recipient, addressee and
+data. The DySCAS signal also contains information about the priority with which the
+signal should be sent. The data is signal speciﬁc and are of diﬀerent data types for dif-
+ferent DySCAS signal types. A DySCAS signal could also contain several data types for
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+31
+Signal
+Description
+sig_no
+The type of the signal.
+Each signal type has its unique signal
+number
+source_proc
+The origin process of the signal
+source_node
+The origin node of the signal
+dest_proc
+The signal destination process number
+dest_node
+The signal destination node number
+prio
+The priority that the signal will be sent with
+data
+The data that contains the information to the recipient
+Table 4.1: The structure of a DySCAS signal
+sending diﬀerent information.
+For an application in the DySCAS network all that is needed to know are what signal
+to send and a reference that is provided by the DySCAS middleware. The information
+about what node and process that the DySCAS signal will be sent to is irrelevant to the
+application. The application uses the command dyscas send(reference) that resides in the
+DySCAS API 1. The DySCAS middleware code then translates the reference and sends
+the signal to the recipient.
+The usage of signals is required for the applications in the DySCAS network to be able
+to communicate with each other.
+4.2
+Global Positioning System
+In this section an analysis of the fundamentals of the Global Positioning System (GPS)
+will be presented. The information in this section has been achieved from the works by
+Elliot D. Kaplan [18] and Hofmann-Wellenhof et al.[19]. The purpose of making an anal-
+ysis of the GPS system is to better understand the possibilities and limitations of the
+functionalities that a GPS receiver can present in an automotive environment. A basic
+understanding of GPS is also essential to be able to comprehend and translate the infor-
+mation protocol that is sent from the GPS receiver.
+4.2.1
+Introduction to GPS
+The Global Positioning System is a world wide standard for positioning. It was developed
+in 1980 by the US military for military purposes. The technology is funded and supervised
+by the US but when seeing the public good it has been made free for civilian purposes,
+but with limited precision. When ﬁrst developed, the GPS signal was intentionally dis-
+torted to prohibit foreign countries of the US to use the system for missile guidance. The
+distortion was removed in the year 2000 but is still able to be added to the GPS position
+signal at any time. This makes the GPS system to be risky to use in systems that depends
+on an accurate position.
+1API is an acronym for Application Programming Interface
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+32
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+4.2.2
+The GPS Satellites
+Round the globe there are 24 satellites that orbits the earth at the speed of approximately
+one revolution per 24 hours2. Every GPS satellite transmits information about its position,
+time and the number of the satellite.
+4.2.3
+Positioning
+For the positioning it is required that at least four satellites are used. Three satellites
+are needed to make a triangulation to get the position and one to get the altitude. The
+receiver gets the signal and compares it with its own clock. Since the speed of the signal is
+known the receiver can calculate how far it is from the satellite. When three signals have
+been received the receiver can calculate its position via simple triangulation methods.
+4.2.4
+GPS transfer protocols
+Communication to the GPS receiver is done through a serial cable with binary language.
+The binary language could either be represented as the stream of an ASCII signal or as
+communication in a speciﬁc protocol. The receiver is equipped with a SiRFstar III GPS
+chip which uses a protocol called SiRF binary protocol.
+This protocol has been used
+to setup the GPS and its output. The output from the chip could use another transfer
+protocol which is of a higher level.
+In this section three diﬀerent higher level transfer protocols will be described: NMEA
+0183, TSIP and TAIP. NMEA 0183 will be described more in detail since this is the most
+extensively used protocol.
+It has also been the protocol that was used by the chosen
+implemented hardware3. The other protocols will be very brieﬂy described since they
+have not been used in the design part of this thesis. The selection of the used protocol
+has been based on the used hardware in the implementation. The TSIP and TAIP are
+described for comparison reasons to emphasize that the selection of GPS transfer protocol
+does not inﬂict the performance of the implementation.
+SiRF Binary Protocol
+To be able to conﬁgure the receivers output and performance the SiRF binary protocol is
+used. The receiver needs to be initialized and have its output deﬁned. The protocol can
+also be used to deﬁne whether the EGNOS/WAAS should be used as well as deﬁne which
+of the NMEA protocols that will be output from the receiver.
+The protocol transport message is deﬁned by ﬁve diﬀerent parts[14].
+Start
+Payload length
+Payload
+Message Checksum
+End
+0xA0A2
+Two bytes
+Maximum 1023 bytes
+Two bytes
+0xB0B3
+.
+The start and end sequence are described in hex.
+24 minutes earlier each day[30]
+3see the implementation chapter
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+33
+GGA - Global Positioning System Fix Data
+RMC - Recommended minimum speciﬁc GPS/Transit data
+GSA - GPS Dilution Of Precision and active satellites
+GSV - Satellites in view
+Table 4.2: A selection of the protocols within the NMEA standard
+NMEA 0183
+The National Marine Electronics Association (NMEA) has deﬁned some standard proto-
+cols which have been used by GPS applications worldwide. The GPS receivers send out
+an ASCII coded transmission to e.g. PDAs, laptops or cell phones. The ASCII signal
+is sent out in a predeﬁned interval that is dependent on the GPS receiver. The signal is
+sent through a serial communication link which is received and decoded by software on
+the receiving device 4. The communication is one way since the NMEA standard doesn’t
+allow transmissions in both directions.
+Several diﬀerent standards for the transmissions have been developed to provide informa-
+tion structures for diﬀerent needs. In this report four diﬀerent protocols will be used.
+The ﬁrst two protocols in table 4.2 give information about time and position, and the
+latter two give information about the satellites from which the receiver gets the signal.
+The most interesting for this thesis is the ﬁrst protocol(GGA) which gives the position
+as coordinates in a longi- and latitudinal system. The whole ASCII coded signal with a
+symbol-by-symbol walkthrough is shown in table 4.3. The example signal is an authentic
+one that has been received at the ENEA building in Kista, Sweden.
+$GPGGA,120732.000,5924.0414,N,01757.3197,E,1,04,2.9,66.5,M,23.4,M,,0000*65
+12:07:32:000
+Time in UTC
+59’24.0414
+Latitude
+N
+Sets the geographical area to the northern hemisphere
+01757.3197
+Longitude
+E
+Eastern hemisphere
+1
+Indicate that the GPS is active
+04
+The number of satellites in use
+2.9
+Horizontal dilution of position
+66.5
+Altitude above sea level
+M
+Unit for the altitude, M => Metre
+23.4
+The diﬀerence between the WGS-84 standard for the earth’s el-
+liptic form and the mean sea level.
+M
+Unit for the diﬀerence between the ellipsoid and the mean sea
+level.
+0000*65
+Checksum
+Table 4.3: Description of the GGA transfer protocol
+4In this case a DySCAS node
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+34
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+In table 4.3 it is important to note a few things. The UTC time is a standard time setting
+which has replaced the GMT time setting. In Sweden the time diﬀers +2 hours in summer
+and +1 hour in winter. The Horizontal Dilution of Position(HDOP) tries to describe the
+error of the positioning. The ﬁgure is based on the angle between the satellites used. A
+high angle gives more accurate position and a lower value of the HDOP. A table of how to
+measure the values of the HDOP can be seen in table 4.4. The WGS 84 (World Geodetic
+System 1984) is a way to adjust to a more accurate elliptic form than the sphere based
+mean sea level model of the Earth. A positive value of the diﬀerence (as in this case)
+means that the adjusted elliptic form is below the mean sea level. In the NMEA 0183
+QUALITY
+HDOP
+Very Good
+1 −3
+Good
+4 −5
+Fair
+6
+Suspect
+> 6
+Table 4.4: How to measure the HDOP value
+there are many more protocol standards than are described here5. Every protocol has its
+own usage, but since they have not been pertinent to this thesis they will not be described
+here. For a complete list see the NMEA oﬃcial website[13].
+TSIP
+The Trimble Standard Interface Protocol(TSIP) is a binary language for communication
+in and out from a GPS. The protocol is very versatile since it is possible to request
+information from the GPS. Since the information is in binary the protocol is diﬃcult
+to interpret. The ASCII based protocols 6 are easier to understand, but they have the
+disadvantage of being output-only protocols and are unable to send data to the GPS to
+manually request the desired information.
+TAIP
+The Trimble ASCII Interface Protocol(TAIP) is an ASCII based protocol which is trans-
+mitted through a serial link. The disadvantage for this protocol is that it is only possible
+to get the position and altitude and not the velocity which makes it a less attractive choice
+in automotive GPS applications.
+4.2.5
+Improving position accuracy
+The GPS has an accuracy error depending on many diﬀerent reasons such as weather,
+position of GPS, precision of the GPS internal clock and position of satellites. The error
+from the GPS signal could be approximately 5 meters in normal conditions and worse
+in bad conditions 7. Since the introduction of civil positioning systems there have been
+several implementations to make it more accurate.
+5There are more than 80 diﬀerent NMEA standards!
+6NMEA and TAIP
+7Such as urban or forest[24] areas or bad weather conditions
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+35
+EGNOS / WAAS
+An improvement for the positioning accuracy is the introduction of EGNOS/WAAS8.
+EGNOS is the European system and WAAS is the American system that is built on the
+same technology.
+The technology is basically a set of ﬁxed land based GPS receivers
+whose position is very well known. The receivers send out correction of the GPS signal
+to geographically ﬁxed satellites that in their turn send out the position to the users who
+are in the same area. The users then know what the error is in their area and get a better
+position accuracy. See ﬁg 4.3.
+Figure 4.3: The EGNOS System
+DGPS
+The EGNOS system has replaced an old system called Diﬀerential GPS (DGPS). This
+system uses the same principle as the EGNOS system but without the secondary satel-
+lites. The receiver stations also work as transmitters in the DGPS system. Since they are
+closer to Earth they have shorter service range and need to be many more to cover the
+same area as the EGNOS system.
+Galileo
+Galileo is a project in Europe that is similar to the GPS project. The Galileo project is
+funded by the European Union. The purpose is to create a highly accurate positioning
+system for civilian use. Since the GPS system is dependent on the US military goodwill to
+transmit an accurate signal, there exist a desire to have a backup if a crisis would emerge.
+The Galileo project is able to function solely for civilian purposes and will be unable to
+send out an erroneous signal intentionally. Contrary to this the Galileo satellite sends
+8European Geostationary Navigation Overlay Service and Wide Area Augmentation System
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+36
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+out a warning signal when something is wrong with the positioning system. The Galileo
+system is planned to be fully functional in 2010. [17]
+When the Galileo project is operative it is meant to replace the GPS system for civil use
+in Europe. This will lead to a new era in reliable civilian automotive positioning and will
+be the main source of position acquisition to a DySCAS equipped vehicle.
+4.2.6
+Automotive usage
+The GPS receivers in automotive use today are very exact using the EGNOS/WAAS tech-
+nique and come with a variety of functions. The position acquired from the GPS receiver is
+used together with a Geographic Information System (GIS) that gives information about
+the nearby surroundings.
+Figure 4.4: The GPS System without DySCAS has all functionality integrated in the same
+device
+Existing GPS applications
+The primary use for GPS in a vehicle is path ﬁnding. The driver wants directions to a
+place or to navigate through an area that the driver has limited knowledge of. Modern
+GPS 9with updated GIS gives not only information about the location of roads, but also
+detailed information such as the location of road construction sites and speed cameras.
+Another aspect is the physical one. When purchasing a GPS device to a vehicle today, you
+buy an all-in-one-box device. See ﬁgure 4.4.In an all-in-one-box solution all functionality is
+implemented in the same device. The system is very static and every function is dependent
+on all the other functions working. If something crashes the whole system collapses. The
+device is ﬁxed and there is no possibility to customize functionality to the owner.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+37
+Limitations
+When using a GPS receiver as a separate device of the vehicle the only
+use of the GPS is to give information to the driver about the location. Although this
+is very useful; the potential of connecting the GPS to other systems in the automotive
+environment is substantial. If the GPS receiver could be connected through a transmitter
+(i.e. a mobile phone) an entirely new anti theft system could be developed where the
+vehicle reports to its owner when it has been stolen[20]. By introducing access to the
+distributed network within the vehicle and combining it with the GPS receiver function-
+ality more advanced automotive applications could be developed. Examples of new GPS
+applications are given in section 4.5.
+GPS in DySCAS
+Figure 4.5: The GPS System with DySCAS has its functionalities distributed in the
+network
+To a DySCAS equipped vehicle the user will be able to buy the GPS in separate units.
+That would allow customization of the GPS functions depending on need and wanted
+functionality. See ﬁgure 4.5.
+When distributing the functions to diﬀerent devices the system functionality is easier to
+troubleshoot if any malfunctions occur. The system will also be scalable. The user or
+car manufacturer can decide what speciﬁc functions to invest their money in. A complete
+device could for instance have a very accurate receiver and a low tech display or vice versa.
+9such as the Magellan Maestro 4050[15]
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+38
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+This could revolutionize the pricing of the GPS and lead to cheaper GPS systems since
+all parts do not have to be from the same provider.
+The applications that run processing tasks on the ECU’s that are seen to the right in
+ﬁgure 4.5 could be distributed to any other ECU that is able to perform the task. The
+applications could be on the same physical device as well as being distributed to diﬀerent
+parts that are shown in the ﬁgure. The more hardware speciﬁc applications, like the ones
+on the left in the ﬁgure, are however more diﬃcult to distribute, since they are dependent
+on transmissions from the position speciﬁc hardware.
+It is possible and desirable to add more units to the ﬁgure to be able to create more
+advanced functions. This is a major advantage of a DySCAS vehicle and will be discussed
+later in section 4.5.
+The repository that is being used to save data10 is either one that is linked to the GPS
+or a more general one. The repository could in fact be a more mobile one like the one in
+an mp3 player or a mobile phone; they should only be used as a temporary solution since
+they can be removed from the vehicle (and thus the vehicle’s local network) at any time.
+4.3
+Policies in DySCAS
+A system can be given intelligence to adapt itself to diﬀerent situations. One way of doing
+this is to implement policies that has been described by Richard Anthony [32]. Richard
+Anthony is a member of the DySCAS project and have done several years of research in
+the ﬁeld of policies.
+The implementation of policies can be done in several diﬀerent ways. One is to use speciﬁc
+policies that makes the system fall into diﬀerent behavioural patterns to make it adapt
+itself to the current situation. The policies can be triggered by the user or by applica-
+tions. The advantage of policies is that the functionality of the software can be changed
+at runtime and no further instructions or code needs to be implemented to the system.
+To achieve an alternate functionality in the system the policy determines the system pa-
+rameters to modify the system. The user that monitors the system can either control the
+policy directly or use a template which deﬁnes the policy. The case where the user sets
+the policy by using a template can be seen in ﬁgure 4.6. The deﬁnition of the template is
+at a higher level than the policy. The template can for instance be ”Low battery” while
+the policy deﬁnes which unnecessary functions that should be shut down to save battery
+power.
+There are many more types of policy structure than are reported here. The case in
+Figure 4.6: A basic example of policies
+ﬁgure 4.6 can be expanded to become more complex and have more advanced function-
+ality. Advanced elements such as closed loop policies and meta policies can signiﬁcantly
+increase the ﬂexibility of the system. However, the exact usage of policies in the DySCAS
+environment has not been decided at the time this report is written. The implementation
+of a policy manager is made parallel to this thesis.
+10i.e. GIS and historical positional data
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+39
+4.3.1
+Purpose
+In the distributed system of DySCAS the possibility to adapt the system to diﬀerent
+situations is very usable [1]. Internal as well as external events or states may require
+diﬀerent behaviour of the vehicle. The behaviour has an impact on how the applications
+are used or how the middleware handles information. From an internal perspective the
+vehicle resources are often limited and could trigger policies that change the internal
+states of the system to meet the new demands. Examples of limited resources changing
+internal states of the automotive vehicle could be: energy level of the battery, traﬃc on
+the CAN/Ethernet bus or fuel. The limited resources could also be within a speciﬁc node,
+e.g. internal memory and processing power.
+The scalability properties of the DySCAS system provide that diﬀerent applications can
+be transmitted from one node in the network to another. This can be used to minimize
+the CAN bus usage, by putting the applications that transmit much information to each
+other on the same node.
+This thesis will only brieﬂy describe the world of policies. For a more in depth analysis
+of policies see Richard Anthony’s work[32].
+4.3.2
+Policies and GPS
+A DySCAS vehicle that uses policies could control the GPS application to save limited re-
+sources within the vehicle. The master node could be able to select if the GPS application
+should be allowed to broadcast its information on the communication bus. If there are
+more than one GPS device in the system, the policy would decide to use the information
+from either of them or to use information from both devices to be able to gather a mean
+value of their positional or time services. Checks should be done at a scheduled basis to
+make certain that the GPS still works and that it does not starts to send out malicious
+data.
+Another policy usage for the GPS application is of course the above suggested case when
+the battery level is low in the car and the GPS needs to shut down to save power. Since
+the GPS is not a vital device for the car it should shut down to save energy for more vital
+ones.
+4.4
+Clock Synchronisation with an external clock
+Clock synchronization is a major part in the modern world. To schedule meetings, work
+time, TV shows etc; people need to have the same apprehension of time. Nodes in a
+distributed network need to have their clocks synchronised to be able to know when the
+signals needs to be sent and when received information gets so old that it is no longer
+accurate. In interhuman relations the precision seldom needs to be more than 1 minute
+but in a distributed network the precision needs to be more precise than 1 ms since the
+communication frequency in the system is far greater.
+With the introduction of a GPS to the DySCAS platform the possibility to implement
+an external clock arises. The GPS has as discussed earlier the ability to deliver time to
+a DySCAS system. The usage of implementing GPS time to real time systems has been
+discussed earlier by Peter H. Dana[31].
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+40
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+4.4.1
+Purpose
+In a distributed real time network the need for synchronisation of the time between nodes
+increases when the network grows or when the nodes performs more complicated tasks.
+The synchronisation is used to help the system to timestamp outgoing signals from nodes.
+When receiving a signal within the DySCAS network the node can estimate how old it is
+and discard it if the signal is irrelevant to the current process. The DySCAS platform is
+presently synchronised with clock ticks. With the introduction of a GPS application to
+the system there is a possibility to deliver an absolute time service. [27]
+4.4.2
+Demands
+Since the DySCAS platform is focusing on the infotainment part of a vehicles system, see
+chapter 2, the demands for exactness of the synchronisation of the distributed system is
+limited.
+4.4.3
+Conﬂict Handling
+A diﬀerentiation in time between the sync time and a node will lead to a re-synchronization
+of the node. The diﬀerence could either arise from a drift of the local clock or if a new
+external clock is introduced. The synchronization can be done in two ways, hard and
+smooth synchronization.
+Hard Synchronization The local time changes to the global time in a discontinuous
+manner.
+Smooth Synchronization The local time changes to the global time by adjusting its
+frequency. If the local time is in advance of the global clock the local clock runs
+a bit slower to the next synchronization. Vice versa applies when the local time is
+after the global ditto.
+When handling real time distributed systems any discontinuity should be avoided and
+therefore the smooth synchronization is chosen. The external clock should not have the
+ability to adjust the clock in too large time steps however. If an external clock starts to
+malfunction and sends unexpected time data, the master synchronisation does not accept
+values that diﬀer too far from a previous value. This is obviously not the case in a start
+up phase of the sync process when the initial sync time is sent from the external clock.
+4.4.4
+Relative Time
+Relative time is also called local time. The system has a relative time synchronisation
+when all nodes have the same time, but their time does not relate to other distributed
+systems. The actual time that a system with relative time could be set to is arbitrary and
+could have no correlation to an absolute time. This type of time deﬁnition works really
+well in systems that have no communication with external systems. In the start up phase
+of the system the master sets an arbitrary time which is distributed out to the system.
+In the DySCAS case it is very useful to have the real time as the distributed time since
+it can be used to relate events in the vehicle to mobile devices attached to it. To use the
+same time worldwide is called absolute time.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+41
+4.4.5
+Absolute Time
+The absolute time is deﬁned according to two diﬀerent standards, TAI11 and UTC12 [28].
+TAI is a continuous time counting where a second is deﬁned as 9192631770 oscillations
+of the radiation of a speciﬁed transition of the caesium atom 133[16]. The time is based
+on geoidal rotations of the earth. The rotation is however irregular and adjustments have
+to be made to make the time correspond to astronomical phenomena, like night and day.
+The adjusted time is the UTC time and since the start of TAI in 1958 the drift has been
+33 seconds13. Despite its discontinuity UTC is the wall clock time that is used every day.
+This is also the time that is transmitted from the GPS satellites.
+Within a distributed network there is no need for the clocks to be synchronised according
+to an absolute time standard if the information about time is meant to be kept within the
+network. If the information is to be transmitted to an external device(such as another
+network, a human etc.) the timestamp that is set by the distributed network needs to be
+understandable by the receiver. A major part in the DySCAS functionality speciﬁcations
+is communication with external systems which leads to the conclusion that a DySCAS
+compatible node should have some sense of absolute time.
+The implementation of GPS to the DySCAS platform has given the opportunity to deliver
+the absolute time in a time service. This is further described in detail in chapter 5 and 6.
+4.4.6
+Internal and External Synchronization
+The internal and external synchronization concept is in a close relation to the absolute
+and relative time concept. A system is said to be externally synchronized when there is
+an external clock that provides it with time. The time that is provided is then preferably
+of an absolute nature, but not necessarily.
+In a DySCAS system, the external time is transferred from the external source via an
+application to the middleware. The middleware is responsible for all the time handling and
+internal synchronization. The middleware propagates the external time to the platform
+layer via the instantiation layer and thus synchronizes the internal time to the external
+time. Figure 4.7 shows a schematic ﬁgure of the external and internal synchronization.
+Since time travels a long way from the external time source it is not certain that the time
+that arrives at the platform layer still is a relative one. Whether this has any impact on
+the system is unknown to the author at this time. It is fully possible that the demands
+of time are so high that the time that reaches the platform from the external time source
+is no longer an absolute, but a relative time.
+4.5
+GPS and DySCAS Applications
+The beneﬁts of adding GPS to a DySCAS equipped vehicle are many.
+The DySCAS
+approach with services that are distributed between the various devices could lead to a
+variety of new applications and functionality of the vehicle. This section will brieﬂy give
+some example applications that are possible when adding global time and positioning
+services in a DySCAS vehicle.
+11International Atomic Time, (Org. Temps Atomique Internationale)
+12Universal Time Coordinated
+13as of 2007
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+42
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+Figure 4.7: The Synchronization in a DySCAS system
+4.5.1
+Active/passive velocity delimiter according to current road
+limits
+A detailed GIS can provide maps with speed limits according to road. The positioning
+service has the ability to locate what road the vehicle is travelling on and then know
+whether the car is exceeding the speed limit or not. If the car should react actively to
+prevent the car from speeding or passively notify the driver is a question of safety matter
+and are not addressed in this thesis.
+The idea to dynamically inform the driver about the local speed limits have been tested by
+the Swedish road administration in a project called RiksISA. The project showed that the
+idea gives results of lowering speeds on highways and that the technologies are accepted
+by the public [25].
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+43
+4.5.2
+Start of Journey Notiﬁcation
+With the information from a mobile device14 and a detailed GIS with information about
+roads and speed limits as in section 4.5.1 a scheduling travelling aid application can be
+created. From the mobile device calendar data can be achieved. The application could re-
+trieve where and when a scheduled meeting is about to take place from the mobile device.
+The application plans the route to that location and with the information from the GIS
+estimates the amount of time it will take to get there. The application then suggests to
+the driver and/or puts a note in the calendar when the journey should begin to be at the
+appointed meeting in time. This functionality is described in SUC 1/8 in the DySCAS
+Scenario and System Requirements document.
+4.5.3
+Fuel Consumption
+If the DySCAS network has information about the fuel level an application that calculates
+the fuel consumption as a function of travelled distance and road type can be created. The
+advantage of knowing the fuel consumption according to road type is that the application
+can estimate the fuel consumption to the present destination.
+Will the fuel level be
+suﬃcient to reach the destination? If not, is there any fuel station in the vicinity of the
+road to the destination? The application that is suggested will be able to answer these
+questions.
+4.5.4
+Usage of handheld GPS
+The GPS consumer products distinguish between the diﬀerent areas of use for GPS de-
+vices. With the DySCAS capability any GPS product can be used as a navigational aid
+in a vehicle. The DySCAS system could use the positional service from a handheld GPS,
+mobile phone or other mobile device as well as a permanent mounted GPS in the vehicle.
+The connection between the DySCAS network and the mobile device could be done with
+either wireless or a wired connection.
+4.5.5
+Multidevice usage of the GPS point screen
+The permanently mounted GPS devices of today are equipped with a touch screen display.
+With the DySCAS distributed service system, the display of the GPS could be reached
+by other applications than the GPS. This could provide the user with an easy to handle
+access to other devices. One example is when the driver wants to make a phone call.
+Instead of using the personal mobile phone that take away much of the focusing from
+the road the driver could use the GPS touch screen to access the mobile phone. This
+will improve safety on the road since lots of accidents are caused by diverted focus of the
+driver.
+4.5.6
+Parking remembrance
+With a GPS mounted in a mobile device the user can automatically transfer the coor-
+dinates of the vehicle to the mobile device when leaving it. This is extremely useful for
+people with a bad sense of orientation that tend to displace their vehicle when parked.
+14see section 3.6.2
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+44
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 4.
+ANALYSIS OF THE FIELD OF INTEREST
+4.5.7
+Active Intervention of Vehicle using DGPS
+It has been proposed by Lee Alexander and Max Donath at the University of Minnesota[22]
+that accurate positioning could be used to take control of the vehicle in hazardous situ-
+ations. They have proven that it is possible to control a vehicle with an accurate GPS
+signal as its only sensor input. This is used only in extreme scenarios such as if a driver
+falls asleep on the motorway the proposed active intervention application takes control of
+the vehicle and safely stops at the side of the road. Even though this is outside the scope
+of the DySCAS project to control the essential functions of the vehicle, this application
+is interesting from a future work perspective15.
+4.5.8
+SOS message by Cell Phone Communication
+The two way communication with a mobile phone could be used to implement a distress
+signal application. The distress call activates when the airbag in the car activates and
+contacts the emergency service and sends the position of the vehicle that the GPS provides.
+This signiﬁcantly shortens the time for the aid to arrive, especially in rural areas. The
+idea have been presented by Max Cameron and Alison Brown in 1995[21] and should be
+easy to implement in a DySCAS equipped vehicle.
+4.5.9
+Adding Maps to the Local Area
+The GIS’s, that are used to pinpoint the GPS achieved position to a geographical location,
+are stored in an onboard repository. To save space of the repository the user would only
+store a few large scaled maps over a large area and more detailed GIS of the home town or
+the locations where the user often travels. To obtain new maps the user could download
+them, either in advance or by passing a wireless transmitter (a.k.a. a hot spot) that could
+be positioned outside the urban area which the map relates to. This could be a way for
+the city to advertise itself and point out interesting places to the visitor of the city.
+4.6
+Summary and Conclusion
+In this chapter it has been demonstrated that a vehicle equipped with the DySCAS sys-
+tem and a GPS receiver would be able to create many new and interesting functionality.
+The suggestions of the functions in this chapter are just some suggestions of applications
+that will be able to be implemented in the future development of DySCAS and GPS. The
+possibilities are practically inﬁnite when it comes to combining the information between
+diﬀerent devices within a vehicle. It is also interesting to add new hardware to the vehicles
+to be able to create new objectives. New applications that require new devices such as
+cameras and inter-vehicle communication to be able to increase safety have been proposed
+earlier by for instance Nan-Ning Zheng, et. al. [23], and Animesh Chakravarthy, et. al.
+[26].
+A new ﬁeld called Intelligent Transport Systems (ITS) has emerged and it will make
+the vehicles more autonomous and safe to use by combining existing technology using
+DySCAS.
+15especially when connecting the DySCAS Project with the FRAMES Project[5] that emphasizes on
+the more vehicle essential functions
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 5.
+DESIGNING THE NEEDED DYSCAS COMPONENTS
+45
+Chapter 5
+Designing the Needed DySCAS
+Components
+To be able to implement some of the ideas in the previous chapter a lot of work has to be
+done. As stated earlier the focus of this thesis has been to make a GPS application for
+the DySCAS demonstration platform. In this chapter the design of the GPS application
+will be described. The design is based on an earlier design mentioned in section 4.1.2.
+5.1
+Use of DySCAS
+Since the GPS is connected to the DySCAS system there is much to consider when de-
+signing an application that uses the GPS. The application is totally independent of the
+hardware and the OS and is forbidden to use any OS calls. An application uses an API
+that is provided by the DySCAS middleware to send and receive information to other
+applications or to an external device. An external device uses the DySCAS middleware
+in a similar way but have more freedom of using OS calls.
+5.2
+Adding devices to a DySCAS system
+Adding a device to the DySCAS system is not an easy process. The device has to follow
+a series of DySCAS speciﬁc instructions in order to be a functional part of DySCAS.
+In this section several diﬀerent device implementation designs will be discussed. This
+also represents the design process that this thesis has undertaken. Each design will be
+described with an example where a serial COM port is attached to the DySCAS system
+and should be used by an application.
+5.2.1
+Previous design, the Device Inspector
+The previous design for the device handling in the DySCAS demonstration platform used
+a module in the application layer that was called the Device Inspector(DI ). The DI has
+direct control over the physical IO port and registers out its services to the DySCAS
+middleware.
+An application can then subscribe to the services that it requires.
+The
+DySCAS middleware handles conﬂicts by giving access of the DI to the application that
+has the most priority to take control of the communication right to the DI. In ﬁgure 5.1
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+46
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 5.
+DESIGNING THE NEEDED DYSCAS COMPONENTS
+Figure 5.1: The ﬂow of information and signals when using the Device Inspector. The
+arrows show the chronological order that the information is sent at start up of the system.
+When the system is up and running the ﬁrst two arrows are not in use.
+a schematic view of the Device Inspector is described. The numbers in the ﬁgure indicate
+in what chronological order the DySCAS signals are sent. When the system is properly
+set up, the signals don’t go through the middleware at all.
+5.2.2
+First design approach, the Device Manager
+The implemented DI described in the previous section is a simple design. The design have
+however some functionality ﬂaws. The signals from the DI to the device are platform
+dependent and the DI is not portable to diﬀerent platforms. The design was also con-
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 5.
+DESIGNING THE NEEDED DYSCAS COMPONENTS
+47
+Figure 5.2: The ﬂow of information and signals when using the Device Manager. The
+arrows show the chronological order that the information is sent at start up of the system.
+When the system is up and running the communications to the Conﬁguration Resolver is
+very rarely used.
+structed to meet the demands of a USB connection and some diﬃculties occurred when
+trying to implement the same design to a serial interface. The idea that the DI connects
+directly to the platform layer and thus passes the whole middleware made the ideas of the
+middleware obsolete.
+With the new design the previously described Device Inspector has split its functionality
+into three diﬀerent parts to be more integrated to the DySCAS architecture. The three
+parts are Device Inspector, Device Manager (DM ) and Device Handler (DH ). The parts
+are schematically described in ﬁgure 5.2.
+If an application wants to have access from or to a device it seeks up the appropriate
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+48
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 5.
+DESIGNING THE NEEDED DYSCAS COMPONENTS
+service that have been provided by a Device Manager. The Device Manager has exclusive
+control over the device through a Device Handler. The Device Manager checks if the
+application has the access rights to the device, and (if so) transmits the signals directly
+to the Device Handler.
+The Device Handler’s only part in this is to relay the information from or to the device.
+When a signal is received from the device, the DH relays the signal to a module within
+the middleware called the Device Inspector. Despite its name its functionality is signif-
+icantly diﬀerent to the DI described in section 5.2.1. This Device Inspector registers all
+incoming transmissions and registers them as services to the DySCAS middleware. After
+the services have been subscribed by an application the Device Inspector merely relays
+the information from the handler to the subscribing application.
+The reason for the information to go separate ways from and to a device is that the DM
+has the direct access to the DH but the DH has no corresponding access to the DM. The
+DH however has direct access to the DI which it sends all signals through.
+The advantage of this design instead of the solitude DI design is that the middleware
+has much more control of which application that has the present access to a device. The
+middleware can then take appropriate actions if the access should be switched to another
+application than the one that currently has the control. The introduction of the DM
+module is to have more control so that a malicious/renegade application couldn’t use a
+device unknowing by the middleware.
+A big diﬀerence between the three described modules is that the Device Manager and
+Device Handler are speciﬁc for each device whereas the Device Inspector is generic and is
+able to receive any kind of signal from a device. However, they all have in common that
+they are local to the node where the device is connected. The application that uses the
+device can be located on any node in the network. If a node has for example two com
+ports and 3 USB ports it is required that it has the same amount of Device Handlers and
+Device Managers, i.e. 5 DH and 5 DM. Since the DI is generic there is only one process
+taking care of all the signals from the Device Handlers.
+The advantage of this design is that all signals are going through the DySCAS middleware
+which has more control over the system than in the solitude DI case. The DM takes care of
+conﬂicts in handling the device and the DI has control over which application that should
+receive a signal from a speciﬁc device. Another advantage is that the DM at application
+level in the DySCAS architecture doesn’t use any direct calls to the platform but only
+signals to the handler. This adds to the portability of the system to a diﬀerent platform
+or OS. The DI is generic and exists on all DySCAS nodes and are also portable.
+The disadvantage of the system is that it is very extensive and resource demanding. A
+signal that is received needs to pass two diﬀerent processes before it reaches the appli-
+cation that requested it. When using ports with high speed communication this could
+delay the signal and perhaps the whole system when only receiving information. It also
+sets large demands on the future manufacturer of the system that uses DySCAS. Each
+connection to the system is required to have both a DM and DH.
+5.2.3
+Improved Design, the Device Handler
+Since the previous design is very resource demanding, a more slimmed design is needed for
+extensive communication to external devices. In the more slimmed design both the Device
+Manager and Device Inspector are removed and all that is left is the Device Handler. The
+functionality of the DM and DI are in part included in the middleware and in most part
+in the DH.
+In the previous design the Device Handler was merely used as a relay between the device
+and the Device Inspector. In this design the Device Handler takes over most of the func-
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 5.
+DESIGNING THE NEEDED DYSCAS COMPONENTS
+49
+Figure 5.3: The ﬂow of information and signals when using the Device Handler. The
+arrows show the chronological order that the information is sent at start up of the system.
+When the system is up and running the ﬁrst three arrows are not in use.
+tionality from the Device Manager and Device Inspector. The Device Handler registers
+its services to the DySCAS middleware which connects the services to an application that
+require them. The DySCAS middleware also resolves any conﬂicts when two applications
+want the same device. The application that is connected by the DySCAS middleware
+to the device receives a reference to the Device Handler with which it can send signals
+to the Device Handler through the middleware. The Device Handler receives the signal
+from the application and returns the requested information to it. The Device Handler
+saves the reference to the application that has connected to it and sends any incoming
+transmissions from its speciﬁc device to the application. A scheme over the functionality
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+50
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 5.
+DESIGNING THE NEEDED DYSCAS COMPONENTS
+of the Device Handler is shown in ﬁgure 5.3.
+Although a separate DH for each physical port are needed the functions of the DH could
+be diﬀerent in their elaboration. A primitive form of communication such as simple serial
+communication has no ability to know what information it receives and registers and has
+only one form of communication service. A more advanced communication standard such
+as USB or Bluetooth has the ability to know what kind of device it is attached to and
+can register diﬀerent services with more speciﬁc details about the device.
+In this design the signals travel a shorter path from device to application and the commu-
+nication will not slow the system as much as in the case of the design that was described
+in the previous section.
+The speciﬁcations for this design is however very similar to the previous ones. A manu-
+facturer that will use DySCAS on their platform has to make a separate Device Handler
+for each connection to it. Most Device Handlers are however very similar and it should be
+possible to make up a template Device Handler that only has to be reconﬁgured to what
+port or platform it is connected to. A suggestion for a template to use is the ﬂow chart
+diagrams that are presented in section 6.2.
+The advantages and disadvantages are the opposite from the previous design. The advan-
+tage is that the communication travels fast from device to application and the disadvan-
+tage is that the middleware has little control over what application that has control over
+a Device Handler at each point. If the DySCAS middleware decides that an application
+should be removed from control over a Device Handler it sends the appropriate signal to
+the application and hopes that it obeys. If the application continues to send signals to the
+Device Handler it is up to the Device Handler to make certain that the received signals
+come from the correct application. In the previous design the Middleware could send a
+signal to the Device Manager to stop relaying signals from a speciﬁc application.
+5.2.4
+Conclusion - Device Handling
+The three diﬀerent designs that have been presented in the earlier sections all have their
+advantages and disadvantages. The implementation of this thesis will be done on an em-
+bedded system with limited CPU and internal memory resources. The conclusion is that
+the design with the single Device Handler is the best for such a platform. For a high per-
+formance platform the advantages of this design is substantial since it allows high speed
+connections to the devices. This is a desirable functionality in a vehicle with an extensive
+amount of devices. The design with a single DH is therefore recommended in any case.
+This design is suggested to be used in future DySCAS development and will be used in
+the implementation of the GPS application to the DySCAS demonstration platform.
+The design with a Device Manager to control the communication is recommended in sys-
+tems where the need for control of the communication is needed. Although the Device
+Manager has not been implemented in this thesis, it should be considered in future im-
+plementations in systems with diﬀerent performance than the DySCAS demonstration
+platform.
+The control over transmitted signals is necessary in an environment where
+attacks by malicious coded devices are present. This is not as important within the ve-
+hicle’s communication where the information is bounded by cable. When communication
+through a wireless connection this would however be a more desirable design.
+5.3
+The applications
+As described in the previous section the applications in the DySCAS system send sub-
+scription requests to the middleware about wanted functionalities called services. These
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 5.
+DESIGNING THE NEEDED DYSCAS COMPONENTS
+51
+functionalities could be located anywhere in the DySCAS network.
+In the GPS case,
+the DH registers a serial input service which is subscribed by a GPS message decoder
+application. The application gets the information from the serial input and decodes the
+GPS signal to extract the position and time. The GPS message parser application then
+registers the position and time to the middleware as separate services in the same way the
+DH did earlier. The time and position services are then ready to be picked up by other
+applications.
+The application layer in the DySCAS middleware consists of several diﬀerent applications
+that exchange information between each other. There is a slight diﬀerence between appli-
+cations and application services. The application services provide one or more services to
+the system for another application to subscribe and use. The services are in the forms of
+signals that contain the service-speciﬁc information. An application service registers its
+services to the DySCAS middleware by calling a function from the DySCAS API that is
+provided to the application layer. The middleware handles the registration and matches
+it to a request of the service. If no such request exists, the DySCAS middleware stores the
+service and waits for such a request to be sent. When the match is done the middleware
+sends a service found signal to the requesting application. With the signal an address
+reference is sent so that the application can ﬁnd the application service. After that point
+all communication is done without the middleware’s interference. The application simply
+uses a DySCAS modiﬁed send command to the address where the application service is
+located.
+5.3.1
+The Time and Position Service
+Figure 5.4: The collaboration of the application processes
+Two diﬀerent services will be described in this section, the time service and the position
+service.
+The time service is delivered by the GPS message decoder application and it is the time
+that is presented by the GPS. The time is updated once per second and the value of the
+time is extracted from the GGA protocol that is described in section 4.2.4.
+The position is presented in longitude and latitude. It is possible to send added detailed
+data about the position, but this is however divided to diﬀerent services to minimize signal
+size. Such services could be altitude, number of satellites in view, dilution of position or
+a GPS determined speed service. These services will not be implemented in this master
+thesis, but these service works in a similar way as the described time and position services.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+52
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 5.
+DESIGNING THE NEEDED DYSCAS COMPONENTS
+The services will be able to be retrieved by other applications such as presentation appli-
+cations. An example of how the services could be distributed is shown in ﬁgure 5.4. In
+the ﬁgure the GPS decoder is considered an application service, while the Present time
+and the Present position services are considered applications.
+5.4
+Correlation of Relevant Use Cases to the Presented
+Design
+Function
+Description
+Design and Implementation
+G1
+Detection of new devices
+by the vehicle
+Depending on how advanced the connection to
+a device is, the detection of the device could
+be done either by the DH or the device appli-
+cation. The device is presented as a service to
+the DySCAS middleware and its applications.
+G2
+Attachment
+of
+detected
+new devices
+Attachment between a device and an appli-
+cation is done solely by the DySCAS middle-
+ware.
+G3
+Check
+Authentication
+of
+new device and authenti-
+cate
+Again this could be made at either the DH or
+device application depending on the connec-
+tion.
+G4
+Evaluate
+stakeholders
+preferences
+The services that are wanted by applications
+will be subscribed. The others will wait until
+requested.
+G5
+Detach functionalities
+The Device Handler or the receiving applica-
+tion could at any time stop the ﬂow of data
+by unsubscribing the service.
+The DySCAS
+middleware should also be able to control the
+DH or application functions. This is however
+not implemented in the DySCAS demonstra-
+tion platform.
+G6
+Announcement of services
+of new device to in-vehicle
+information systems
+The DySCAS middleware sends signals to the
+requesting application that the service has
+been registered.
+G7
+Check data and software
+of malicious code
+Depending on the device the checks are done
+in either the middleware or by receiving appli-
+cation.
+G8
+Monitor
+communication
+link (if wireless)
+The monitoring of the wireless communication
+link is done by the wireless communication De-
+vice Handler.
+Table 5.1: The Device Handler applied to the functionality of GUC1. The functionality
+posts are the same as in table 3.1
+In section 3.6 the relevant use cases for this thesis are described. The relevant use cases
+will in this section be described of how they could be applied to the DySCAS architecture.
+It will also be described how they could be related to diﬀerent services of the design in
+this chapter. The design of the use case is based on the recommended design with a single
+Device Handler that was described in the earlier section.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 5.
+DESIGNING THE NEEDED DYSCAS COMPONENTS
+53
+Function
+Description
+Design and Implementation
+S1
+Detection of vehicle by the
+new device
+This is in most cases unnecessary. In the rel-
+evant cases the information about the vehicle
+will be sent by the Device Handler.
+S2
+Negotiation and Contract-
+ing of functionalities
+The attachment of services is made in the
+DySCAS middleware.
+S3
+Modify in-vehicle HMI ac-
+cording to the services of
+new device
+The presenting functionality of the informa-
+tion from devices can be done in several ways.
+This could either be done in a separate appli-
+cation or by having a more advanced structure
+on the registered services. This is however not
+implemented in the DySCAS demonstration
+platform.
+S4
+Encrypt
+communication
+link (if wireless)
+As in G8 the handling of the wireless link is
+done by the wireless communication Device
+Handler.
+NF1
+The integration must be
+as transparent as possible
+to the user.
+(As long as
+no user interaction is re-
+quired)
+The interaction between the device and the
+DH is completely autonomous. In some cases
+with primitive communication the user must
+initialise the attachment by starting a speciﬁc
+application that can understand the incoming
+information.
+NF2
+It must not be possible to
+corrupt the vehicle infor-
+mation system (VIS) us-
+ing the interface for exter-
+nal devices or the external
+devices themselves)
+The security of the diﬀerent Device Handlers
+is up to the provider of the DH to implement.
+The VIS should also have some means of ﬁl-
+tering the incoming information from the de-
+vices. This is however not implemented in the
+DySCAS demonstration platform.
+NF3
+Only
+authorised
+devices
+may connect to the vehicle
+information system.
+See NF2
+NF4
+If
+conﬁdential
+data
+are
+transferred between the de-
+vice and the VIS these
+data
+must
+be
+protected
+against unauthorised ac-
+cess.
+The encryption of data should be implemented
+in the Device Handler.
+Table 5.2: The Device Handler applied to the functionality of GUC1. The functionality
+posts are the same as in table 3.1
+5.4.1
+GUC1 for GPS
+The Generic Use Case 1 that is described in section 3.6.1 follows the architectural design
+of the device handling described above. When a device is attached to a vehicle it attaches
+itself to corresponding Device Handler for the connection. The Device Handler registers
+the service to the DySCAS middleware and waits for an application to request its services.
+When an application sends a signal to the Device Handler, the Device Handler reacts to
+the signal and either sends information or relays the information from the device to the
+application.
+The speciﬁed requirements that were described in section 3.6.1 are all covered by the
+design of Device Handlers. In the tables 5.1 and 5.2 each requirement is matched to the
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+54
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 5.
+DESIGNING THE NEEDED DYSCAS COMPONENTS
+functionality design of the DH.
+5.4.2
+SUC1/1
+Function
+Description
+Design and Implementation
+1
+Detection of mobile de-
+vices inside the vehicle
+This is done by the Device Handler of the wire-
+less connector.
+2
+Attachment
+of
+detected
+mobile devices
+The Device Handler establishes the connection
+to the mobile device and register its services
+to the DySCAS middleware.
+3
+Contracting of functional-
+ities
+DySCAS middleware matches the registered
+services to request from applications.
+4
+Check
+Authorization(e.g.
+if
+the
+mobile
+device
+is
+owned by the driver or an-
+other passenger).
+Check
+if the driver really accepts
+this device to be attached
+and used.
+This should be done at either the application
+level or by relevant Device Handler. An autho-
+rization application that is connected to some
+HMI could authorize the service before it is
+transferred to other applications.
+A Device
+Handler could check with the middleware poli-
+cies if a speciﬁc device is allowed to connect
+to the DySCAS system.
+5
+Send location data to the
+mobile device
+A position application that receives its infor-
+mation from the GPS sends a signal with the
+requested data to the mobile device.
+6
+Send RDS traﬃc data to
+the mobile device
+In a similar way as in functionality 5 a RDS
+application or an application with RDS func-
+tionality is sending a signal with the requested
+information to the mobile device.
+7
+Send navigation tasks to
+mobile navigation system
+The tasks are sent from an application to the
+mobile device. The information passes the De-
+vice Handler.
+8
+Receive navigation results
+The mobile device sends back the information
+through the same path that it received it. The
+Device Handler registers the new information
+as a service to the DySCAS middleware.
+9
+Output of navigation re-
+sults on vehicle’s HMI sys-
+tems
+The new service is matched by the middleware
+to the application that handles the vehicle’s
+HMI systems. The application then puts up
+the information from the mobile device in an
+appropriate way.
+10
+Check if attached naviga-
+tion system can perform
+navigation task better than
+onboard
+navigation
+soft-
+ware
+The service that is registered from the mobile
+device have several attributes connected to it.
+The application that handles the navigation
+task has the option to select which source it
+wants to receive the service from.
+Table 5.3: The Device Handler applied to the functionality of SUC1/1. The functionality
+posts are the same as in table 3.3
+The speciﬁc use case 1/1 that is described in section 3.6.2 is a specialised subset of the
+GUC1. The design speciﬁcation of the special use case also works in basically the same
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 5.
+DESIGNING THE NEEDED DYSCAS COMPONENTS
+55
+way as the GUC1.
+The general example of this use case given in the DySCAS scenario and system require-
+ments document[2] states that a mobile device1 becomes available within the vehicle. The
+vehicle then receives navigational instructions from the mobile device that should be sent
+out via the vehicle’s speakers. The current entertainment source that uses the speakers
+should be muted while the navigational instructions take control over the speakers.
+For this example the vehicle is required to have Device Handlers for each physical device,
+i.e. the speakers2, the wireless connection to the mobile device and one for the entertain-
+ment source. On the application level there are many ways to create this functionality.
+All functionality could be implemented in one application or there could be several appli-
+cations involved. The basic implementation would be to have one application that control
+each device and one supervising application.
+The speciﬁed requirements that were described in section 3.6.2 are very similar to the func-
+tionalities of the GUC1. This is natural since the SUC1/1 is a subset of the GUC1. In
+table 5.3 each requirement is matched to the functionality design of the DH and DySCAS
+general functions.
+5.4.3
+Conclusion
+The added design of a Device Handler complements the previous design of DySCAS to
+make the use case GUC1 and SUC1/1 implementable. The Device Handler design has in
+this chapter proven to be an excellent new module to the DySCAS demonstration platform
+middleware.
+1Where the mobile device could be i.e. a PDA or a Smart phone
+2or the ampliﬁer to the speakers to be exact
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+56
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 5.
+DESIGNING THE NEEDED DYSCAS COMPONENTS
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 6.
+IMPLEMENTATION TO THE DYSCAS DEMONSTRATION PLATFORM
+57
+Chapter 6
+Implementation to the
+DySCAS Demonstration
+Platform
+In this chapter all previous theory discussion is put to the test. An implementation of a
+demonstration of the GPS application in DySCAS is described. First a description of the
+used hardware is presented and then the application is presented as it is implemented in
+the DySCAS demonstration platform. This description is on a more hands-on level than
+earlier chapters.
+6.1
+The Hardware used
+The implementation is based on hardware provided by Enea. Several Phytec boards with
+attached microcontrollers1 are used as the main platform for the demonstration. To be
+able to present the result a 4-row LCD display is used. A basic key set is also used to
+make some external inputs to the system.
+6.1.1
+BR 355
+The GPS Receiver used is a model BR 355 from the manufacturer GlobalSat. The BR
+355 is designed for marine purposes, but works just as well for this implementation. The
+receiver outputs its information through serial output, PS/2, but with converter cables
+it is possible to convert the output to a USB or RS232 connector. When converting the
+connector to RS232 an external voltage cable has to be connected since RS232 and PS/2
+have diﬀerent voltage standards. The BR 355 GPS Receiver requires 5V as power input.
+The output protocols are GGA, RGA, GSA and GSV. The protocols have been described
+in section 4.2.4. The implementation uses only the GGA and GSA protocols. The GGA
+protocol provides the time and position and is sent from the receiver every second. The
+GSA protocol provides the date and is sent from the receiver every 10 second. The reason
+for the signal to arrive so seldom is that the receiving of data are CPU consuming on the
+limited platform ECU:s. It is not essential that the date are updated more often than
+once every ten second since the date changes at a much slower rate. This gives however
+1Siemens C167CR
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+58
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 6.
+IMPLEMENTATION TO THE DYSCAS DEMONSTRATION PLATFORM
+Figure 6.1: The BR 355 GPS receiver
+that the change will be delayed at a maximum ten seconds which could present a problem
+with logging and such. For the DySCAS demonstration platform the update rate is more
+than adequate.
+6.1.2
+Phytech Board
+Figure 6.2: The experimental board with the CPU
+The basic mean of implementation are several Phytec Minimodule boards with attached
+Siemens C167 CR processors. Each board functions as a node in the DySCAS network and
+are connected through a CAN2 network. The programming language is C and the OS that
+is used is OSE EpsilonTMwhich is a product of ENEA AB. The programming environment
+used is Altium TASKING environment, which is built on the Eclipse Platform.
+6.1.3
+LCD
+To be able to display the information from the DySCAS demonstration setup a LCD
+display has been attached to one of the nodes.
+The display presents standard ASCII
+characters on a 4 * 16 character display. The LCD is connected directly on to I/O pins
+on a Phytec board and is reached by software directly addressing the microcontroller’s
+memory. Before usage an init procedure has to be done to setup the LCD to be receptive
+for incoming data. An image of the LCD display is shown in ﬁgure 6.3.
+2CAN is an acronym for Controller Area Network
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 6.
+IMPLEMENTATION TO THE DYSCAS DEMONSTRATION PLATFORM
+59
+Figure 6.3: The LCD display that is used in the implementation
+6.1.4
+Keypad
+Figure 6.4: The keypad that is used in the implementation
+In the old DySCAS demonstration platform a light application was implemented where
+connected lights where turned on and oﬀwith a set of buttons. When the information
+and applications get more complex there is a need for more sophisticated input system.
+This is why a keypad has been added to the DySCAS demonstration platform.
+The keypad is very simple and is connected to a Phytec board in the same way as the
+LCD in the previous section. One connected input pin indicates that there is information
+available and 5 pins contain the data that describes which key that have been pressed on
+the keypad. The information can be retrieved by either setting an interrupt to trigger on
+the information available pin or by polling the same pin on a regular basis. An image of
+the keypad is shown in ﬁgure 6.4.
+6.1.5
+Hardware Setup
+The entire setup for the implementation is shown in ﬁgure 6.5. As seen this is a subset
+of ﬁgure 4.5 where a suggestion of GPS usage in a DySCAS vehicle is suggested. In the
+implemented GPS application the functionality is distributed in the DySCAS network.
+The GPS signal is received on one node and is transmitted to another node where the
+information is decoded and then displayed on the LCD display which is attached to a
+third node.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+60
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 6.
+IMPLEMENTATION TO THE DYSCAS DEMONSTRATION PLATFORM
+Figure 6.5: The Hardware Demonstration Setup for the implementation. In the implemen-
+tation the information is sent from the GPS to the network of nodes where it is assembled
+and presented on the LCD Display.
+6.2
+The Implemented Device Handlers
+Figure 6.6: This is where the Device Handlers are located in the DySCAS demonstration
+platform architecture.
+In section 5.2 it was concluded that the best way of attaching devices to DySCAS was
+by using Device Handlers. In the implementation of this thesis three Device Handlers
+were implemented. The GPS functionality is required to be able to read data from a
+serial port and present it on a LCD display. A Device Handler was thus implemented for
+both devices. A keypad was also attached to the DySCAS demonstration platform and a
+keypad handler was implemented to provide the option of runtime input to the system.
+Devices in general can be sorted into three diﬀerent categories.
+Input-only Devices : The service sends information to the DySCAS node
+Output-only Devices : The DySCAS node sends information to the device
+In/Output Devices : The information can be sent from both the DySCAS node and
+the device
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 6.
+IMPLEMENTATION TO THE DYSCAS DEMONSTRATION PLATFORM
+61
+In the implementation of the master thesis all three categories are represented.
+The
+keypad is an input-only device, the LCD display is an output-only device and the COM
+port is an In/Output device.
+6.2.1
+COM Handler
+Figure 6.7: A ﬂow chart showing the implementation of the COM Handler
+The COM Handler consists of two parts, COM interrupt handler and COM handler. The
+COM interrupt handler receives interrupts from the platform when a new byte has been
+received. The COM interrupt handler then fetches the byte and transmits it to the COM
+Handler. The COM handler transmits the byte to the application which has requested
+its services. The application that requests the COM handler’s services also sends an init
+signal to the COM handler as its ﬁrst command. The init signal to the COM handler
+sets the parameters which the communication over the serial communication will be sent
+and received. For the GPS application the GPS receiver sends its information over 4800
+baud while communication to a computer could be done at much higher speeds. When
+the COM port has been initialised it is possible to send and receive data.
+The COM handler makes use of the built-in UART-controller in the platform.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+62
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 6.
+IMPLEMENTATION TO THE DYSCAS DEMONSTRATION PLATFORM
+A ﬂow chart diagram of the COM Handler is shown in ﬁgure 6.7.
+6.2.2
+LCD Handler
+Figure 6.8: A ﬂow chart showing the implementation of the LCD handler
+The LCD Handler is an output-only handler that displays information on an attached
+LCD display. The LCD display consists of 4 rows with 16 characters on each row. Like
+all Device Handlers the LCD handler registers its services to the DySCAS middleware for
+the applications to use. The applications send the subscription request and then register
+to the LCD. Since the LCD has 4 rows, an application could register one or several rows.
+Thus the LCD handler can be subscribed by a maximum of four diﬀerent applications.
+When an application requests a row the LCD handler sends back an acknowledgement
+that states whether the row is free for use or not. When an application is done using a
+row it is required by it to send a free-row signal to the LCD handler.
+The LCD handler sends out the information through pins that are connected to the mi-
+crocontroller chip.
+A ﬂow chart diagram for the LCD Handler is shown in ﬁgure 6.8.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 6.
+IMPLEMENTATION TO THE DYSCAS DEMONSTRATION PLATFORM
+63
+6.2.3
+Keypad Handler
+Figure 6.9: A ﬂow chart showing the implementation of the keypad handler
+The keypad handler is, as opposed to the LCD handler, an input-only handler. As the
+COM handler the keypad handler is divided into two parts, the keypad interrupt handler
+and the keypad handler. When a key is pressed on the attached keypad to a DySCAS
+node the keypad interrupt handler receives an interrupt from the platform. The keypad
+interrupt handler then fetches the information about which key that has been pressed on
+the keypad and sends it to the keypad handler. The keypad handler is responsible for the
+communication to the middleware and to applications. This communication is done in
+the same way as the general Device Handler.
+The keypad is connected to the board through pins on the microcontroller chip.
+A ﬂow chart diagram over the Keypad handler is shown in ﬁgure 6.9.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+64
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 6.
+IMPLEMENTATION TO THE DYSCAS DEMONSTRATION PLATFORM
+6.3
+The Implemented Applications
+Figure 6.10: This is where the applications are located in the DySCAS demonstration
+platform architecture.
+In this section the applications that are implemented by this thesis to the DySCAS demon-
+stration platform are presented. In ﬁgure 6.10 the applications are highlighted in the
+DySCAS demonstration platform architecture. The designs of the implemented appli-
+cations follow the one that was presented in chapter 5. Not all parts of the DySCAS
+middleware have been implemented however and this restricts the functionality of the
+applications to be more rudimentary than in the design.
+All applications have the same basic structure of acting on incoming signals that it re-
+ceives via the DySCAS middleware. The application also sends it outgoing signals to the
+middleware which transmits the communication to the correct recipient.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 6.
+IMPLEMENTATION TO THE DYSCAS DEMONSTRATION PLATFORM
+65
+6.3.1
+GPS Parser Application
+Figure 6.11: A ﬂow chart showing the GPS Parser application
+The GPS Parser application is a specialised application for parsing serial transmitted
+transmissions and translating it to be able to register time and position services to other
+applications in the DySCAS network. The application receives its information from the
+COM handler and parses the NMEA transmission that the GPS receiver sends through
+it.
+A ﬂow chart of the implemented program is shown in ﬁgure 6.11. The GPS parser applica-
+tion has a start up phase where it requests the COM handler service and registers a time
+and position service to the middleware. It then waits for the subscription acknowledge
+signal from the middleware that gives the reference to the COM handler. An init signal
+is sent to the COM handler that starts to transmit serial data to the GPS parser appli-
+cation. The end of a transmission is detected by searching for a line feed character. The
+GPS parser application veriﬁes that the information is a genuine GPS transmission and
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+66
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 6.
+IMPLEMENTATION TO THE DYSCAS DEMONSTRATION PLATFORM
+then starts to parser the information to be able to extract the information. If an adress
+reference to the position or time application has been received, the GPS parser application
+sends the appropriate signal to the respective application. If no adress reference has been
+received the application throws the information away.
+6.3.2
+GPS Position/Time Application
+Figure 6.12: A ﬂow chart showing the GPS Position application
+The applications that handle the position and time are very similar. Both receive their
+information from signals that the GPS Parser Application delivers. The applications ﬁnd
+the GPS Parser application through services that have been described in earlier chapters.
+The COM handler has to be found by requesting its services to the DySCAS middleware.
+The applications then register that they want either the position or time information.
+The information from the GPS Parser Application is then presented on an attached LCD-
+display through the LCD Handler. A ﬂow chart of the implemented program is shown in
+ﬁgure 6.12. The only diﬀerence in the ﬂow chart between the GPS Position and GPS Time
+Application are the services that they require and register to the DySCAS middleware.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 7.
+RESULTS
+67
+Chapter 7
+Results
+Figure 7.1: The present DySCAS middleware architecture.
+The result of this master thesis is a working GPS application for the DySCAS demonstra-
+tion platform. The GPS application is implemented in an embedded environment. The
+GPS application distributes time and position to the DySCAS demonstration platform to
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+68
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 7.
+RESULTS
+be used by other applications or the middleware. The functionality of managing devices
+has been redesigned from the previous DySCAS demonstration platform and has been
+added to the DySCAS middleware architecture.
+As it was stated in the beginning of this report, the work of this thesis has been done
+parallel to ﬁve other theses that contribute to the DySCAS demonstration platform. The
+ﬁnal DySCAS demonstration architecture has been redesigned and the ﬁnal version at this
+point is shown in ﬁgure 7.1. The updates to this architecture can be seen by comparing
+it to the architecture in ﬁgure 4.2.
+To be able to implement the GPS application a new Device Handler was designed and im-
+plemented. During the design process many diﬀerent design solutions were developed and
+a Device Manager was designed alongside the Device handler. The Device Manager was
+however estimated to be too slow for the embedded processors and was not implemented.
+Instead the Device Handler design was chosen as a better choice and was implemented
+into the DySCAS demonstration platform.
+The Device Handler was implemented in three diﬀerent versions by the work of this master
+thesis. The implemented Device Handlers are LCD Handler, COM Handler and Keypad
+Handler. The reason to implement these Device Handlers was to be able to implement
+the GPS application that was one of the goals of this thesis. The GPS application uses
+the LCD and keypad hardware for its functionality and the Device Handlers contributed
+to the ﬂexibility of the application.
+To the DySCAS demonstration platform it has been added new hardware and is more
+ﬂexible for future implementations in the continuation of the DySCAS project. The time
+and position services that have been implemented could be used to new applications and
+new functionalities. Parallel to this thesis, work has been done to create time synchro-
+nization to the DySCAS demonstration platform. The synchronization beneﬁts from that
+an absolute time is present in the system as the system then can synchronise the network
+time to the absolute time.
+The approach of the work of the thesis has been of a top-view perspective type. Not
+much emphasis has been laid to analyse the the middleware functionality. The DySCAS
+middleware has been used as a black box where signals are sent to and received from.
+This perspective is the same as a third part developer to the DySCAS middleware system
+would have. The conclusion is that it is possible to create a fairly sophisticated applica-
+tion to the DySCAS system without signiﬁcant knowledge about the functionality of each
+module within the DySCAS middleware.
+In the thesis it has been shown that the basic information that can be extracted from
+a GPS receiver could be used by many applications within a vehicle to create a variety
+of new functionality. This can be of great beneﬁts for many parties in the automotive
+industry. The users will get new features and improved functionalities of the vehicle. The
+manufacturers will get shorter development time when the new applications are easier to
+implement and cheaper to maintain. The society will in the long run beneﬁt from vehicles
+which have applications that will make them safer and more fuel eﬃcient.
+7.1
+Obstacles and Learning Experiences
+The work of the master thesis has not been without mishaps. One learning experience is
+that books from libraries could take more than two months to arrive. This delayed the
+analysis process of the thesis and other sources of information had to be found.
+The ECU with the attached LCD and Keypad was not functional at the start of the work
+of the thesis. Although the physical connections were accurately attached, a software bug
+was prohibiting the module to work correctly. The bug was well hidden, and it took about
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 7.
+RESULTS
+69
+a week of eﬀort to ﬁnd it.
+The implementation process has been an iterative process where the implementation has
+been written, tested, bugﬁxed and then tested again, in a cyclical manner. The bugﬁx
+state has been the most time consuming and an important lesson is to question the soft-
+ware thoroughly before to start to question the hardware.
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+70
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 7.
+RESULTS
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 8.
+FUTURE WORK
+71
+Chapter 8
+Future Work
+8.1
+Future Development of the DySCAS Demonstra-
+tion Platform
+The GPS application presented in this thesis report is a very basic one and can be en-
+hanced signiﬁcantly. An obvious addition to the DySCAS demonstration platform is to
+add a more advanced display than the one that is currently attached. With such a display
+it would be possible to add a GIS application that receives the GPS position and places
+the current position on a map and then displays it.
+The DySCAS demonstration platform consists of both a CAN network between embedded
+nodes running OSE and an Ethernet network between Linux nodes. The Device Handlers
+have not been implemented on the Linux version of DySCAS since the GPS have been
+connected to the embedded nodes.
+The usage of policies that was described in the theory chapter was rationalized by the ﬁnal
+application implementation. The reason for it was partly the time limitation and that
+the policies require a repository which at this stage was not implemented in the realm
+that the GPS application was implemented in. The concept of policies could however
+be implemented at a later stage and the GPS application could be modiﬁed to fulﬁl the
+functionality that was described in section 4.3.
+It is recommended that previously implemented applications to the DySCAS demonstra-
+tion platform should be modiﬁed to use Device handlers for its in- and output. It has
+not been in the scope of this thesis to alter other applications than the GPS applications.
+The functionality of the DySCAS demonstration platform would improve if all implemen-
+tations were based on a homogenous design.
+8.2
+Future Development of the Suggested Designs
+The presented ideas of Device Handler and Device Manager in the report have a long
+path of testing before a real conclusion of the best way to use them can be done. In this
+report the idea of the Device Handler has been tested in a low resource platform with
+primitive ways of communication. An implementation on a more resourceful system with
+more advanced means of communication 1 should be done to further test the ideas and
+perhaps reﬁne the design.
+1Such as USB, Bluetooth, etc
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+72
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+CHAPTER 8.
+FUTURE WORK
+When the design has been declared ﬁnal the most common devices for the automotive
+environment should be categorised and standardised. This would make the attachement
+between the device and the DySCAS middleware an easier process for the manufacturer
+of the device.
+In a longer perspective the information from the GPS and the dynamic properties of
+DySCAS could be combined to create the applications that was presented in section 4.5.
+8.3
+Future Development of DySCAS Project
+The DySCAS project is in an early stage and during the work of this master thesis it has
+been apparent that not all areas of the project have been covered completely. The ﬁeld
+of device handling that this report has pointed out, has not been addressed thoroughly
+enough to set a deﬁnite design. The project documentation is comprehensive and are not
+always coherent. It will require a signiﬁcant eﬀort before the implementations and ideas
+from the DySCAS demonstration platform can be transferred to an automotive vehicle
+and sold to the general market.
+8.4
+Conclusion of Future Work
+It will be an exciting future!
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+BIBLIOGRAPHY
+73
+Bibliography
+[1] D1.1 Existing Technologies DySCAS project documentation, Lead Contractor:
+Richard Anthony at The University of Greenwich (2007)
+[2] D1.2 Scenario and System Requirements DySCAS project documentation, Lead Con-
+tractor: Viktor Friesen at DaimlerChrysler AG (2007)
+[3] Richard Anthony, Achim Rettberg, Walter Franz, Dejiu Chen, Isabell Jahnich, Gerrit
+de Boer, Cecilia Ekelin Towards a Dynamically Reconﬁgurable Automotive Control
+System Architecture at International Embedded Systems Symposium in Irvine, CA,
+USA, May 29-June 1 (2007)
+[4] DySCAS Project Oﬃcial Website, http://www.dyscas.org - (September 2007)
+[5] FRAMES Project Oﬃcial Website http://www.md.kth.se/RTC/frames/ (September
+2007)
+[6] Dung Vi: Middleware for Dynamically Self-Conﬁguring Automotive Systems Master
+Thesis at KTH (2006)
+[7] Bj¨orn Larsson: Middleware for Self-managing automotive Systems Master Thesis at
+KTH (2007)
+[8] Bj¨orn Svensson: Adding support for Wireless Communication to the DySCAS Project
+Master Thesis at KTH (2007)
+[9] Martin Pettersson: Adding multimedia- and storage-support to the DySCAS platform
+Master Thesis at KTH (2007)
+[10] Jacob Olsson: Real time Analysis and optimization of self-managing middleware for
+automotive purposes Master Thesis at KTH (2007)
+[11] Rasmuss Graaf: Analysis and design for streaming media in DySCAS Master Thesis
+at KTH (2007)
+[12] Malin Grudeholm: Analysis and design of a real time database Polyhedra in DySCAS
+architecture platform Master Thesis at KTH (2007)
+[13] National
+Marine
+Electronics
+Association
+(NMEA)
+oﬃcial
+website
+http://www.nmea.org - (September 2007)
+[14] SiRF Binary Protocol Reference Manual Revision 1.6 (April 2005)
+[15] Magellan Corporation oﬃcial website http://www.magellangps.com - (September
+2007)
+[16] Bureau
+International
+des
+Poids
+et
+Mesures
+oﬃcal
+website,
+http://www.bipm.org/en/scientiﬁc/tai/ (September 2007)
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+74
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+BIBLIOGRAPHY
+[17] Galileo project ”Galileo joint Undertaking” oﬃcial website http://www.galileoju.com
+September (2007)
+[18] Elliot D. Kaplan (1997), Understanding GPS - Principles and Applications Artec
+House, ISBN 0-89006-793-7
+[19] B. Hofmann-Wellenhof et al. (2001) GPS- Theory and Practice Fifth, revised edition.
+Springer-Verlag Wien New York. ISBN 3-211-83534-2
+[20] Ioan Lita, Ion Bogdan Cioc, Daniel Alexandru Visan A New Approach of Automobile
+Localization System Using GPS and GSM/GPRS Transmission In proceedings of
+29th International Spring Seminar IEEE Electronics Technology, 2006. (ISSE ’06)
+[21] Max Cameron and Alison Brown Intelligent Transportation System MAYDAY Be-
+comes a Reality Proceedings of the IEEE 1995 National Aerospace and Electronics
+Conference (1995)
+[22] Lee Alexander and Max Donath Diﬀerential GPS Based Control of a Heavy Vehicle
+Proceedings of the IEEE/IEEJ/JSAI International Conference on Intelligent Trans-
+portation Systems (1999)
+[23] Nan-Ning Zheng, Shuming Tang, Hong Cheng, Qing Li, Guanpi Lai and Fei-Yue
+Wang Toward Intelligent Driver-Assistance and Safety Warning Systems Intelligent
+Systems, IEEE Volume 19, Issue 2, Mar-Apr 2004 Page(s):8 - 11
+[24] Jianyang Zheng, Yinhai Wang and Nancy L. Nihan Quantative Evaluation of GPS
+Performance under Forest Canopies Proceedings in Networking, Sensing and Control,
+IEEE (2005)
+[25] The RiksISA project oﬃcial website http://www.vitsa.se/riksisa.asp (September
+2007)
+[26] Animesh Chakravarthy, Kyung Yeol Song, Eric Feron A GPS-based Slowdown Warn-
+ing System for Automotive Safety Intelligent Vehicles Symposium, IEEE (2004)
+[27] Martin Gergeleit, Hermann Streich Implementing a Distributed High-Resolution Real-
+Time Clock using the CAN-Bus In proceedings of 1st international CAN-Conference
+94, Mainz (1994)
+[28] Hermann Kopetz Real-Time Systems, Design Principles for Distributed Embedded
+Applications chapter 3, Kluwer Academic Publishers (1997)
+[29] Hermann Kopetz, Andreas Kr¨uger, Dietmar Millinger, Anton Schedl A Synchroniza-
+tion Strategy for a Time-Triggered Multicluster Real-Time System In proceedings of
+14th symposium on Reliable Distributed Systems (1995)
+[30] Ravi Prakash and Roberto Baldoni Causality and the Spatial-Temporal Ordering in
+Mobile Systems Proceedings in the Tenth International Workshop on Database and
+Expert Systems Applications (1999)
+[31] Peter H. Dana Global Positioning System Time Dissemination for Real-Time Appli-
+cations Real-Time Systems, E-journal, Volume 12, Number 1 / January, 1997
+[32] Richard John Anthony A Policy-Deﬁnition Language and Prototype Implementation
+Library for Policy-based Autonomic Systems. Third International Conference on Au-
+tonomic Computing (ICAC), Dublin, IEEE (2006)
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA
+Analysis and Design of Embedded GPS
+Applications for Automotive Environment
+APPENDIX A. ACRONYMS
+75
+Appendix A
+Acronyms
+API - Application Programming Interface
+CAN - Controller Area Network
+DGPS - Diﬀerential GPS
+DH - Device Handler
+DI - Device Inspector
+DM - Device Manager
+DySCAS - Dynamically Self-Conﬁguring Automotive Systems
+ECU - Electrical Control Unit
+GGA - Global Positioning System Fix Data
+GIS - Geographic Information System
+GPS - Global Positioning System
+GSA - GPS DOP and active satellites
+GSV - Satellites in view
+GUC - Generic Use Case
+ITS - Intelligent Transport Systems
+OS - Operative System
+OEM - Original Equipment Manager
+QoS - Quality of Service
+RDMS - Resource Deployment Management Service
+RDS - Radio Data System
+RMC - Recommended minimum speciﬁc GPS/Transit data
+RTOS - Real Time Operative System
+SUC - Speciﬁc Use Case
+WGS 84 - World Geodetic System 1984
+by: Joakim L¨ovqvist
+joakim.lovqvist@gmail.com
+Kungliga Tekniska H¨ogskolan
+Department of Mechatronics
+ENEA

@@ -1,0 +1,1947 @@
+ 
+ 
+ 
+Elektromekanisk bildstabilisering för IR-
+kamera 
+ 
+ 
+ 
+ 
+ 
+CHRISTOFFER STRÖMBERG 
+ 
+ 
+ 
+ 
+ 
+Examensarbete 
+Stockholm, Sverige 2008 
+ 
+ 
+ 
+ 
+ 
+ 
+Elektromekanisk bildstabilisering för IR-
+kamera 
+ 
+av 
+ 
+Christoffer Strömberg 
+ 
+ 
+ 
+ 
+Examensarbete MMK 2008:2 MDA 307 
+KTH  Industriell teknik och management 
+Maskinkonstruktion 
+SE-100 44  STOCKHOLM 
+ 
+ 
+ 
+ 
+Examensarbete  MMK 2008:2 MDA 307 
+ 
+Elektromekanisk bildstabilisering för IR-kamera
+ 
+ 
+ 
+ 
+ 
+Christoffer Strömberg 
+ 
+Godkänt 
+2008-01-25 
+Examinator 
+Jan Wikander 
+Handledare 
+Mikael Hellgren 
+ 
+Uppdragsgivare 
+FLIR Systems AB 
+Kontaktperson 
+Åke Nycander 
+ 
+Sammanfattning 
+ 
+Under senare år har IR-kameror blivigt allt vanligare i kommersiella sammanhang. Detta beror 
+framförallt på att priset på de detektorer som används för att mäta IR-strålning har sjunkigt och 
+därmed även priset på kamerorna. IR-kameror avsedda för termografi har idag många likheter 
+med digitalkameror för visuellt ljus och mycket av den funktionalitet som man finner hos dessa 
+IR-kameror är hämtade från kameraindustrin.  
+ 
+I och med det att de handhållna systems som används för termografi genererar bilder med bättre 
+kvalitet börjar effekterna av ofrivilliga vibrationer, som till exempel handskak, att bli märkbara i 
+mätresultaten. Detta märks framförallt när mätningar skall göras med hjälp av system bestyckade 
+med smalvinkliga objektiv.  
+ 
+Olika lösningar för optisk bildstabilisering är idag vanligt förekommande inom kameraindustrin. 
+Lösningarna bygger ofta på att ett linselement i objektivet eller att hela bildsensorn kan förflyttas 
+i sina respektive plan. I princip är detta även genomförbart för IR-kameror.  
+ 
+Ännu en möjlig teknik är att med hjälp av en plan lins av betydande tjocklek förskjuta 
+strålgången parallellt. Denna skiva placeras företrädelsevis mellan objektivet och bildsensorn 
+och dess normal i förhållande till systemets optiska axel är justerbar. Denna teknik har, inom 
+ramen för detta examensarbete, ej kunnat hittas bland befintliga system på marknaden. 
+ 
+Då glas ej är transparent i IR-spektrumet används linser av germanium (Ge) i optiken för IR-
+kameror. Germaniumets höga brytningsindex gör att det lämpar sig mycket bra för 
+applikationen.  
+ 
+Den funktionsprototyp som detta examensarbetet lett fram till vinklar en plan germaniumskiva 
+med hjälp av två DC-motorer baserat på information från två vinkelhastighetssensorer i syfte att 
+motverkar effekterna från ofrivilligt skak av en värmekamera.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2008:2 MDA 307 
+ 
+Electromechanical image stabilizer for IR-
+camera 
+ 
+ 
+ 
+ 
+ 
+Christoffer Strömberg 
+ 
+Approved 
+2008-01-25 
+Examiner 
+Jan Wikander 
+Supervisor 
+Mikael Hellgren 
+ 
+Commissioner 
+FLIR Systems AB 
+Contact person 
+Åke Nycander 
+ 
+Abstract 
+ 
+During recent years IR cameras have been seen more and more frequently used in commercial 
+contexts. This is an effect of the price of the IR detectors which has been descending making the 
+systems in all less expensive. IR cameras designed for thermography are in many aspects similar 
+to digital cameras for and many of the functions found in theses IR-cameras comes from the 
+camera industry.  
+ 
+Since the handheld systems that are used as thermographs generates images with higher and 
+higher resolution, the effects of undesired vibrations, such as hand shakings, are becoming 
+noticeable in the results. This is especially observable for cameras equipped with lenses of a 
+small field of view. 
+ 
+Different methods for optical image stabilization are commonly appearing in the camera 
+industry. The solutions are often based on a planar movement of an element within the lens, or 
+the whole image sensor itself. Principally this would also be possible to implement on an IR 
+camera.  
+ 
+Another possible solution could be attained by using a planar lens element of significant 
+thickness to get a parallel displacement of the light when the element is tilted. This element 
+would preferably be placed between the lens and the image sensor of the camera. No cameras 
+using this technique have been found on the market. 
+ 
+Since glass is not transparent in the IR part of the spectrum lenses made of Germanium are used 
+in thermograph systems. The high indices of refraction of Germanium make it very suitable for 
+the above mentioned application.  
+ 
+The prototype that this master thesis has resulted in shows that a planar Germanium lens which 
+can be tilted by two DC motors based on the information from two angular rate sensors can 
+reduce the effects of involuntary vibrations of an IR camera. 
+Innehåll 
+Bilder.......................................................................................................................................... 1 
+Tabeller....................................................................................................................................... 1 
+1 Bakgrund ................................................................................................................................. 2 
+1.1 Problemformulering ......................................................................................................... 2 
+1.2 Avgränsningar.................................................................................................................. 3 
+2 Bildstabilisering ...................................................................................................................... 4 
+2.1 Digital bildstabilisering.................................................................................................... 4 
+2.2 Elektronisk bildstabilisering............................................................................................. 5 
+2.3 Optisk Bildstabilisering.................................................................................................... 6 
+2.4 Jämförelse mellan olika OIS-tekniker.............................................................................. 9 
+2.5 Hur mycket skakar man på handen .................................................................................. 9 
+3 Termografi............................................................................................................................. 15 
+3.1 Infraröd strålning............................................................................................................ 15 
+3.2 Värmekameran ............................................................................................................... 17 
+4 Bildstabilisering för en IR-kamera........................................................................................ 22 
+4.1 Skillnader mellan IR-strålning och visuellt ljus............................................................. 22 
+4.2 Patentsituationen ............................................................................................................ 22 
+4.3 Kundnytta....................................................................................................................... 23 
+5 Funktionsprototypen.............................................................................................................. 24 
+5.1 Krav................................................................................................................................ 24 
+5.2 Val av teknologi ............................................................................................................. 25 
+5.3 Designkrav ..................................................................................................................... 26 
+5.4 Styrning återkoppling..................................................................................................... 28 
+5.5 Testning av funktionsprototypen.................................................................................... 29 
+6 Utvärdering av funktionsprototypen ..................................................................................... 32 
+6.1 Konstruktion................................................................................................................... 32 
+6.2 Funktionalitet ................................................................................................................. 32 
+6.3 Felkällor ......................................................................................................................... 33 
+7 Slutsats/Diskussion................................................................................................................ 34 
+7.1 Förslag till fortsatt arbete ............................................................................................... 34 
+8 Refereser................................................................................................................................ 37 
+ 
+Elektromekanisk bildstabilisering för IR-kamera 
+Bilder 
+Figur 2.1: IR-kamera med systemets axlar utritade ................................................................... 6 
+Figur 2.2: Brytning av strålgången genom vätskefyllt prisma................................................... 7 
+Figur 2.3: Brytning av strålgången flyttbar lins ......................................................................... 8 
+Figur 2.4: Ljusstråle som bryts genom plan lins........................................................................ 8 
+Figur 2.5: Flyttbar CCD/CMOS från Pentax K10D................................................................... 9 
+Figur 2.6: Resultat från gyrosensortest .................................................................................... 12 
+Figur 2.7: Resultat från mätning av skak på FLIR ThermaCam™ P65................................... 13 
+Figur 3.1: Strålningen från en svartkroppsstrålare................................................................... 16 
+Figur 3.2: Skiss över optiken.................................................................................................... 17 
+Figur 3.3: Detektorelement placerade på en ROIC .................................................................. 19 
+Figur 5.1: Funktionsprototypen med och utan objektiv........................................................... 24 
+Figur 5.2: CADmodell över labbuppställningen med bildstabiliseringsmodul........................ 26 
+Figur 5.3: Detektorns storlek i förhållande till FOV................................................................ 27 
+Figur 5.4: Översikt över ett 7° objektiv där en plan lins roterats............................................. 28 
+Figur 5.5: Modell av bildstabiliseringsmodul för funktionsprototypen................................... 29 
+ 
+Tabeller 
+Tabell 3.1: Plancks lag ............................................................................................................. 15 
+ 
+ 1
+Elektromekanisk bildstabilisering för IR-kamera 
+1 Bakgrund 
+Termografi handlar om att, med hjälp av en värmekamera, mäta temperaturen hos ett objekt 
+och ge en bild som visar dess värmeenergi. Detta bygger på att mäta den infraröda (IR) 
+strålningen som objektet avger. IR-strålning är den delen av det elektromagnetiska spektrumet 
+vars våglängd är för stor för att kunna uppfattas av det mänskliga ögat ( > 0,8 µm), men 
+fortfarande kortare än radiovågor (200µm). Alla föremål med en temperatur över den absoluta 
+nollpunkten (-273°C) strålar elektromagnetisk strålning i IR-spektrumet. (Öhman, 2001) 
+ 
+Utvecklingen av IR-teknologin har historiskt sett varit mycket driven av försvarsintressen. 
+Första generationens termografiska instrument hade endast en mätpunkt och optiken skannade 
+då av den vy som skulle mätas och på så sätt kunde en bild sammanställas. Man lyckades 
+senare placera detektorelement radvis vilket effektiviserade processen och gav högre 
+upplösning. Idag sitter elementen monterade i rutnät och storleken har, tillsammans med 
+priset, sjunkit under årens lopp. Avståndet mellan två detektorelements centrumpunkter är 
+idag nere på ca 25µm och detektorer med ännu mindre element är under utveckling.  
+ 
+I och med utvecklingen av mindre och framförallt billigare detektorer med högre bildkvalitet 
+har användningsområdena för värmekameror ökat explosionsartat de senaste åren. Detta beror 
+till stor del på att kvaliteten och priset har nått en nivå som gjort värmekameror intressanta 
+även för kommersiellt bruk. Försäljningen av mindre handhållna enheter står för en stor del av 
+den totala ökningen. De nya användningsområdena har även lett till nya utmaningar för 
+utvecklandet av nya kameror. Dagens enheter har många likheter med vanliga digitalkameror, 
+vilket har medfört att mycket av funktionaliteten hos dagens värmekameror ursprungligen 
+kommer från digitalkameraindustrin. 
+ 
+Då upplösningen hos detektorerna ökar, ökar även skärpan i de bilder värmekameran 
+genererar. Detta medför även att kvalitetsförsämring i samband med oönskat skak blir 
+tydligare. Det finns mekaniska lösningar för att stabilisera kamerahuset och som fungerar bra 
+om en kamera är monterad på ett fordon, såsom en helikopter till exempel. För de handhållna 
+enheterna har man dock inte samma möjligheter. Framför allt för objektiv med större 
+fokallängder 
+(mindre 
+vidvinkliga 
+objektiv) 
+blir 
+effekterna 
+mer 
+påtagliga. 
+Inom 
+digitalkameraindustrin har olika bildstabiliseringsfunktioner sedan ett tiotal år funnits på 
+marknaden och under de senaste åren har alla större kameratillverkare någon form av 
+bildstabilisering i sina produktlinjer.  
+ 
+Det här examensarbetes syfte är att titta på olika tekniker för optisk bildstabilisering och 
+undersöka huruvida funktionaliteten är applicerbar på dagens handhållna värmekameror. 
+Genom att undersöka befintliga lösningar, framförallt från digitalkameramarknaden men även 
+genom att diskutera mindre beprövade koncept, förväntas arbetet kunna svara på om så är 
+fallet eller inte.  
+ 
+1.1 Problemformulering 
+Eftersom de handhållna värmekamerorna (i fortsättningen endast värmekameror) har många 
+likheter med digitalkameror och många gemensamma funktioner så är det möjligt att även de 
+bildstabiliseringslösningarna som digitalkameraindustrin utvecklat skulle kunna vara 
+applicerbara hos värmekameror. 
+ 
+ 
+ 2
+Elektromekanisk bildstabilisering för IR-kamera 
+En studie av hur olika bildstabiliseringsfunktioner för digitalkameror bör därför vara en logisk 
+ingång till problemet. I denna studie ingår att undersöka olika kameratillverkares lösningar, 
+befintliga patent samt artiklar som behandlar ämnet.  
+ 
+För att kunna bestämma huruvida en lösning är implementerbar i  en värmekamera krävs dels 
+en genomgång kring IR-strålning och termografi, men även hur problemet med ofrivilliga 
+skakningar ser ut i sig. Här ingår att utreda vad en skakning egentligen innebär samt vilka  
+begränsningar för dimensioner, material och så vidare som finns.  
+ 
+En diskussion förs sedan kring vilken lösning som bör lämpa sig bäst utifrån denna 
+specifikation. Att kunna visa på funktionalitet kommer dock prioriteras högt varpå detta 
+kommer väga in tungt i valet av teknologi som en funktionsprototyp kommer baseras på.  
+ 
+En diskussion förs sedan kring vilken typ av bildstabilisering som i praktiken skulle kunna 
+lämpa sig för en värmekamera för termografi.  
+ 
+1.2 Avgränsningar 
+Detta examensarbete har för avsikt att undersöka möjligheterna att använda optisk 
+bildstabilisering i en värmekamera. Detta kommer att göras genom en utvärdering av 
+befintliga tekniker samt en konstruktion av en funktionsprototyp vars uppgift är att undersöka 
+om principen för den valda tekniken fungerar. Arbetet har inte som målsättning att 
+implementera eller utveckla en implementerbar modul eller dylikt. I den mån det är möjligt 
+skall även användbarhet och eventuella kvalitetsförbättringar undersökas. 
+ 
+Examensarbetets uppgift är att undersöka elektromekaniska bildstabiliseringsfunktioner och 
+kommer inte diskutera hur en eventuell implementering av andra teknologier, såsom digitala 
+lösningar, för bildstabilisering skulle kunna genomföras.  
+ 
+Avgränsningar vad gäller optik och upplösning kommer baseras på befintliga kameror som i 
+dagsläget finns ute på marknaden och vad som för användarna av dessa är relevant.  
+ 
+ 
+ 3
+Elektromekanisk bildstabilisering för IR-kamera 
+2 Bildstabilisering 
+Bildstabilisering, eller Image Stabilization (IS),  är ett samlingsnamn för en rad tekniker som 
+har för avsikt att reducera de effekter på bildresultatet som kommer från oönskade skakningar 
+vid fotografering eller filmning. Bildstabiliseringen är alltså enbart till för att hämma 
+effekterna från skakningar av kamerahuset och avser inte reducera problem kopplade till att 
+föremål i bilden rör sig. Teknikerna är framförallt vanlig bland digitalkameror och digitala 
+videokameror, men förekommer även bland andra optiska instrument såsom kikare. 
+ 
+För digitala videokameror och kikare ger IS i första hand en jämnare och mindre skakigt 
+intryck av bildens rörelse. Vid fotografering utökas fotografens möjligheter att arbeta med 
+kamerans slutartid, den tid kameran släpper in ljus till ljussensorn. Allt som hinner röra sig i 
+bilden under det att slutaren är öppen ger ett suddigt resultat. Rör sig hela kameran kommer 
+därför hela bildens skärpa försämras. Ett objektiv med vidare vinkel (kort fokallängd) gör 
+bilden mindre känslig för rörelse eftersom en vinkling av kameran blir försumbar i 
+förhållande till det vinkelspann objektivet täcker. En kortare slutartid ger även det skarpare 
+bild eftersom en eventuell kamerarörelse helt enkelt inte hinner särskilt långt under kort tid. 
+Ökar linsens fokallängd (mer zoom och mindre vid vinkel) påverkas således bilden mer av 
+skak. För att motverka detta kan man använda sig av ett stativ eller minska slutartiden. 
+Kortare slutartider får dock som effekt att mindre ljus hinner in i kameran. Detta får till följd 
+att ljussensorn (eller filmen) måste göras mer ljuskänslig vilket i sin tur ökar annan form av 
+störningar i form av brus. Kan kameran istället reducera ofrivilliga skakningar ger det 
+fotografen mer rum att spela på. Moderna bildstabiliseringsfunktioner kan idag minska 
+skakningarna i den utsträckning att slutartiden kan förlängas upp till cirka 16 gånger 
+(Nikon.com, Sony.com). 
+ 
+Teknikerna för IS kan delas upp i tre övergripande tekniker; Digital (DIS), Elektronisk (EIS) 
+och Optisk bildstabilisering (OIS). 
+ 
+2.1 Digital bildstabilisering 
+Med digital bildstabilisering menar man den process som avser reducera effekterna av 
+oönskat skak genom användandet av digital bildbehandling helt utan några yttre hjälpmedel 
+såsom gyrosensorer till exempel (Hsu et al 2004, Ko et al 1998). DIS bygger på att kameran 
+har en ljussensor som genererar en större bild än vad kameran är avsedd att presentera. På så 
+sätt kan kameran, om den till exempel skakas, själv välja vilka pixlar som är intressant för 
+avläsning av detektorn för att reducera eller eliminera effekten av oönskade rörelser. Alla 
+metoder för DIS som undersökts i detta arbete kan sägas bygga på två block. Det första, 
+rörelseuppskattningsblocket, har till uppgift att estimera kamerans rörelse och den andra, 
+rörelsekompenseringsblocket, agerar för att motverka oönskade effekter av de rörelser som 
+estimerats. Då DIS arbetar med bildsekvenser ter det sig naturligt att man framför allt finner 
+tekniken ibland digitala videokameror.   
+ 
+2.1.1 Rörelseuppskattningsblocket 
+Genom att jämföra två eller fler bilder i sekvens strävar rörelseuppskattningsblocket efter att 
+kartlägga kamerans rörelse. En av svårigheten ligger i att skilja på om det är kameran som rör 
+på sig eller objekt i bilden samt att göra detta utan att belasta processorn för tungt (Alam et al 
+2005, Hsu et al 2004). Beroende på användningsområde används lite olika algoritmer. Några 
+ 
+ 4
+Elektromekanisk bildstabilisering för IR-kamera 
+av de vanligare är Representative Point Matching (RPM) (Hsu et al 2004, Uomori 1990), 
+Edge Pattern Matching (EPM) (Hsu et al 2004) och Bit-Plane Matching (BPM) (Ko et al 
+1998). Vid RPM väljs ett antal representativa punkter ut från den senaste bilden. Sedan 
+kontrolleras deras korrelation emot punkter i deras närområde fast i föregående bild. Ju fler 
+punkter som väljs desto bättre blir resultatet på den rörelsevektor som autokorrelationen 
+genererar. BPM fungerar på liknades sätt, men istället för att välja ett antal punkter väljs en 
+färgnyans och ett antal subbilder ut i huvudbilden. Det antas sedan att subbilderna inte ändrats 
+utan bara rört sig i bildsekvensen och korrelation för denna rörelse söks i subbildernas 
+närområde från de äldre bilderna (Ko et al 1998). Även vid EPM undersöks korrelationen för 
+förflyttning, men i detta fall identifieras kanter på objekt i bilden och hur var korrelationen för 
+de pixlarnas ”rörelse” hamnar (Paik et al 1992). Samtliga rörelseuppskattningsblock som 
+undersökts genererar en rörelsevektor (MV från ”motion vector”) som skickas vidare för att 
+behandlas av rörelsekompenseringsblocket. 
+ 
+2.1.2 Rörelsekompenseringsblock 
+Efter det att kamerans rörelse kartlagts med hjälp av rörelseuppskattningsblocket kan åtgärder 
+tas för att kompensera denna rörelse. Detta är rörelsekompenseringsblockets uppgift. 
+Svårigheten ligger i att avgöra vad som är en ofrivillig skakning och vad som är avsiktlig 
+rörelse, att kompensera den ofrivilliga på ett bra sätt samt göra detta så snabbt som möjligt 
+utan att ta för mycket processorkraft i anspråk (Morimoto and Chellappa 1998). En till 
+svårighet ligger att identifiera rörelser i bilden. Ett objekt som rör sig i bilden riskerar annars 
+att uppfattas som att kameran rör sig (Derutin et al 2004).  
+ 
+De två vanligast förekommande metoderna för rörelsekompenseringsblocket är ackumulerad 
+rörelsevektoruppskattning (accumulated motion vector estimation) (Hsu et al 2004, Paik et al 
+1992) och rampositionsutjämning (frame position smoothning) (FPS)(Hsu et al 2004). Den 
+första metoden, söker genom att titta på tidigare rörelse av kameran, uppskatta hur kameran 
+rör sig under den aktuella bilden och på så sätt välja vilka rörelser som är oavsiktliga och rätta 
+till ramen för bildgenerering. Eftersom uppskattningen av rörelsevektorn baseras på tidigare 
+rörelse ger detta dock upphov till fördröjning då rörelsen ändras (Hsu et al 2004). Den andra 
+metoden försöker titta på rörelser som inte frekvensmässigt påminner om den rörelse som 
+kameran för tillfället anser vara den avsiktliga och definierar dessa rörelser som störningar 
+(Güllü and Ertürk, 2004). 
+ 
+2.1.3 Rörelseantagande 
+Karaktären hos kamerans rörelse antas. Typen av antagandet kan delas upp i två kategorier; 
+2D- eller 3D-stabilisering. Vid den första antas att kameran rörelser sker enbart i bildplanet. 
+Kameran kan alltså enligt modellen endast röra sig horisontellt och vertikalt i bildplanet samt 
+rotera kring sin optiska axel. Väljs istället 3D-stabilisering antas bildens rörelse bero på 
+rotation av kameran. 2D-stabilisering är vanligare vid DIS eftersom det visat sig vara svårt att 
+ta fram väl fungerande algoritmer för att uppskatta rotationer (Derutin et al 2005). Notera att 
+det i själva verket är de roterande rörelserna som bidrar till den största effekten på 
+bildresultatet och att en 2D-stabilisering därför egentligen är ett felaktigt antagande. 
+ 
+2.2 Elektronisk bildstabilisering 
+Om rörelseuppskattningsblocket i en DIS byts ut emot sensorer som känner av rörelsen så har 
+man en elektronisk bildstabilisering. Rörelseestimeringen kan då göras med högre precision 
+ 
+ 5
+Elektromekanisk bildstabilisering för IR-kamera 
+och kräver heller inte några beräkningar att tala om. Uppskattningen påverkas heller inte av 
+att föremål i bilden rör sig utan enbart av kamerans rörelser. Detta leder till att 
+rörelsekompenseringsblocket får mer tillförlitliga rörelsevektorer att gå efter. EIS ger mindre 
+fördröjning än DIS och är framförallt vanlig bland digitala videokameror i det övre 
+prissegmentet mycket beroende av att tekniken är dyrare än DIS. 
+ 
+2.3 Optisk Bildstabilisering 
+Med optisk bildstabilisering menas att kamerans optiska egenskaper ändras mekaniskt för att 
+kompensera och motverka effekterna av ovälkommet skak. Det finns ett flertal olika metoder 
+för att göra detta. De flesta bygger på att ändra ljusets strålgång genom objektivet utan att 
+påverka fokallängd eller fokusering, men även metoder för att ändra detektorns position 
+förekommer. OIS är vanligt i system där det inte går att arbeta med sekvenser, där 
+fördröjningar inte kan tillåtas men även där bättre kvalitet på kompensationen helt enkelt 
+krävs. De utökade kraven på hårdvaran för OIS gör dock tekniken både dyrare och mer 
+utrymmeskrävande än DIS och EIS. 
+ 
+x 
+z 
+y 
+Figur 2.1: IR-kamera med systemets axlar utritade 
+ 
+ 
+2.3.1 Rörelseregistrering 
+Genom att placera två gyrosensorer, en för pitch (rotation kring y-axeln, se figur 2.1) och en 
+för gir (kring x-axeln) tillhandahålls information så fort kameran roterar. Detta fungerar precis 
+enligt samma princip som rörelseestimeringen hos EIS. Signalerna, som är analoga, 
+omvandlas sedan till digitala signaler och går vidare för till en mikroprocessor (Sato et al 
+1999) eller liknande beräkningsenhet. Då effekterna från translation är försumbara i 
+förhållande till rotationen är det främst roterande rörelser som är av relevans.  
+ 
+2.3.2 Beräkningsenheten 
+De signaler som kommer från rörelseestimeringen tolkas för att utvärdera huruvida det rör sig 
+om oönskat skak och hur mycket kompensering som krävs för att minimera effekterna. Denna 
+kompensering måste sedan konverteras till signaler som passar de börvärden 
+kompenseringsenheten arbetar med.  
+ 
+2.3.3 Kompenseringsenhet 
+Kompensering har till uppgift att genomföra optiska förändringar av systemet enligt de 
+signaler som genereras av beräkningsenheten. Kompenseringsenheten hos OIS innehåller, till 
+skillnad mot DIS och EIS, mekanik eftersom de optiska egenskaperna hos kameran ändras på 
+mekanisk väg. Styrningen av detta måste ske både snabbt och med hög precision för att nå så 
+bra resultat i realtid.   
+ 
+ 6
+Elektromekanisk bildstabilisering för IR-kamera 
+ 
+Det har med tiden utvecklats ett flertal olika tekniker för OIS som effekt av de olika krav och 
+begränsningar som finns hos olika kameror och kameratyper. 
+ 
+2.3.3.1 Vätskefyllt prisma 
+Det vätskefyllda prismat består i princip av två glasskivor med en transparant vätska med högt 
+brytningsindex emellan. När skivorna ställs parallella passerar ljuset genom dem utan att 
+brytas. Vinklas skivorna i förhållande till varandra, på så sätt att de inte längre ligger 
+parallellt, kommer ljus som passerar genom prismat brytas och ändra riktning (se figur 2.2). 
+Bildstabilisering uppnås helt enkelt av att servon styr de två glasskivorna, den ena skivan 
+roteras kring den vertikala axeln (motverkar pitch) och den andra kring den horisontella axeln 
+(motverkar gir) (Sato et al 1993, Canon.com). Linserna kan röra mycket fort och ger 
+möjlighet att kompensera vibrationer och skak vid mycket höga frekvenser. Tekniken 
+utvecklades av Canon och går att finna i deras ENG-objektivserie vilka används för TV-
+sändningskameror (Canon.com). 
+ 
+Figur 2.2: Brytning av strålgången genom vätskefyllt prisma 
+Källa: Canon.com 
+ 
+2.3.3.2 Rörlig lins 
+Det går även att bryta ljuset med hjälp av en konvex eller konkav lins som flyttas i det 
+horisontell-vertikala planet (Nikon.com, Bilaga 1, Canon.com). Den rörliga linsen har större 
+tröghet än det vätskefyllda prismats rörelse vilket gör tekniken lite långsammare, men tar 
+mindre plats och lämpar sig därför i till exempel digitala systemkameror där handskakningar 
+är mer förekommande problem än mer högfrekventa vibrationer (Canon.com).  
+ 
+ 
+ 7
+Elektromekanisk bildstabilisering för IR-kamera 
+Figur 2.3: Brytning av strålgången flyttbar lins 
+Källa: Canon com
+ 
+2.3.3.3 Tjock plan lins 
+Ytterligare en metod att ändra strålgången skulle kunna vara att genom att vicka en 
+transparent skiva vilket leder till en  parallellförskjutning strålgången på samma sätt som man 
+får en svag parallell förskjutning som går att se om man tittar genom en fönsterruta. Denna 
+skiva skulle i sådana fall placeras någonstans mellan bildsensorn (CMOS/CCD) och sista 
+linsen i objektivet. Förskjutningen av bilden blir proportionell emot skivans brytningsindex, 
+dess tjocklek samt dess vinkel i förhållande till CMOS/CCD-planet. 
+ 
+Plan lins 
+Figur 2.4: Ljusstråle som bryts genom plan lins 
+Ljus 
+ 
+ 
+Denna teknik har ej kunnat hittas i några befintliga optiska system för bildstabilisering på 
+marknaden. Detta kan eventuellt bero på att det, för kameror som arbetar med visuellt ljus, 
+skulle en sådan här konstruktion medföra en relativt tjock glasskiva och därav ge upphov till 
+aberrationer. I IR-system har dock för skanningmetoder använt just prismor för att flytta 
+strålgången enligt liknande filosofi. I kända sådana fall har dock prismorna varit flerkantiga 
+och roterats för att ge upphov till avskannande positionering.  
+ 
+ 8
+Elektromekanisk bildstabilisering för IR-kamera 
+ 
+2.3.3.4 Rörlig CCD/CMOS 
+En teknik som inte bygger på att bryta ljuset till bildsensorn är att istället röra på hela 
+bildsensorn i sig. Detektorn sitter då upphängd i kamerahuset och kan flyttas i sitt plan (Chiu 
+et al 2007, KonicaMinolta.com, Pentax.com). 
+ 
+Figur 2.5: Flyttbar CCD/CMOS från Pentax K10D 
+Källa: Pentax.com 
+ 
+2.3.2.5 Styrning och återkoppling 
+Styrningen av mekaniken som kompenserar effekterna av skakrörelserna sker enligt 
+servoprincipen. På grund av de mycket små fysiska avstånd krävs en tillräckligt precis 
+återkoppling. Bland de moduler för bildstabilisering som plockats isär har ljus- och 
+hallsensorbaserade återkopplingar funnits.  
+ 
+2.4 Jämförelse mellan olika OIS-tekniker 
+Det har varit svårt att finna några oberoende källor som jämfört de olika teknologiernas 
+prestanda. En av de tydligaste skillnaderna blir dock placeringen av modulen för 
+bildstabiliseringen. De system som stabiliserar genom att vinkla strålgången har generellt sett 
+modulen sittandes i objektivet. För en digital systemkamera innebär det att det krävs en 
+bildstabiliserings modul för varje objektiv. En kamera med rörlig bildsensor har istället 
+modulen placerad i kamerahuset vilket gör att om kameran har inställningar för det aktuella 
+objektivet så kan i princip vilket objektiv som helst som kan monteras på kameran användas.  
+ 
+2.5 Hur mycket skakar man på handen 
+Utredningen hade för avsikt att undersöka det ofrivilliga skakningar som uppstår vid 
+fotografering med handhållna system, i detta fall en IR-kamerorna. Målet med utredningen 
+var att undersöka skakets storlek, dess frekvens samt hur det ser ut vid fotorelaterade 
+manövrar såsom panorering eller knapptryck. 
+ 
+ 
+ 9
+Elektromekanisk bildstabilisering för IR-kamera 
+2.5.1 Metod för undersökning av handskak 
+Studien utfördes i tre delar. I den första användes en digital systemkamera (Sony A-100) med 
+inbyggd optisk bildstabilisering. Bilder med olika slutartider samt med och utan 
+bildstabiliseringsfunktionen togs och jämfördes för att ge en uppfattning kring effekterna av 
+det ofrivilliga skaket. 
+ 
+Med hjälp av en gyrosensor (Analog Devices ADXRS150) utreddes hur information om 
+rörelsen kan erhållas och hur den bör användas. 
+ 
+Sista delen var en studie med en IR-kamera (FLIR ThermaCam™ P65) där rörelser 
+registrerades med hjälp av två vinkelhastighetssensorer för att ge en bild av hur mycket skak 
+som uppkommer vid normal bildtagning med en värmekamera.  
+ 
+Då det antagits att det är roterande skak av detektorplanet som ger störst effekter på 
+bildkvaliteten är det sådana skak som utretts. Det är tänkbart att även parallellförflyttningar av 
+detektorn samt rotation kring den optiska axeln även kan påverka, men dessa rörelser har 
+ansetts försumbara. Samtliga experiment är utförda under lugna yttre förhållanden och på så 
+sätt kan det antas att alla rörelser, önskade och oönskade, är resultat av personen som håller i 
+kameran.  
+ 
+2.5.2 Test av Sony A-100 
+Sony A-100 är en digital systemkamera med optisk bildstabilisering. Sensorer i kameran 
+känner av skak varpå uträkning av bildens förskjutning sker. För att kompensera denna 
+förskjutning flyttas CCD-sensorn i sitt plan.  
+ 
+2.5.2.1 Uppställning Sony A-100 
+Monterat på kameran sitter ett objektiv med 300mm fokallängd. Detta innebär en FOV (Field 
+Of View) på ca 5°. Bilder togs sedan på svarta bokstäver ovanpå vit bakgrund varpå 
+bokstävernas tjocklek och suddighet i kanterna mättes för att ta reda på hur lång 
+förskjutningen till följd av skak blev. 
+ 
+2.5.2.2 Resultat Sony A-100 
+Om det antas att den resulterande bildförskjutningen främst beror av rotation och att 
+translationen av kameran försummas skulle detta innebära att vid en slutartid på ½ sek handlar 
+skaket om ca 0,1°. Minskas slutartiden till 1/15 sek hinner skaket inte påverka mer än vad en 
+rotation på 0,01°. Med kamerans bildstabiliseringsfunktion påslagen förbättrades 
+bildkvaliteten markant. Enligt Sony.com ska funktionen ge samma skärpa som 3-4 slutarsteg, 
+eller 8-16 gånger, snabbare slutartid. 
+ 
+2.5.3 Gyrosensortest 
+Analog Devices ADXRS150 är en vinkelhastighetssensor vars utspänning varierar 
+proportionellt mot sensorns vinkelhastighet kring en given axel. Sensorns utsignal spelades in 
+med hjälp av ett oscilloskop och analyserades senare i Matlab. 
+ 
+ 
+ 10
+Elektromekanisk bildstabilisering för IR-kamera 
+2.5.3.1 Uppställning gyrosensorer 
+Gyrosensorn fästes på en skiva som placerades i vila, för att sedan roteras. Detta för att kunna 
+se hur utsignalen tedde sig, dels i vila men även hur proportionaliteten emot rotationen såg ut. 
+Då det inte fanns möjlighet att kontrollerat rotera skivan med en viss vinkelhastighet 
+integrerades istället den inspelade signalen i Matlab och den integrerade signalen kunde på så 
+sätt jämföras med vilken position skivan roterats till under försöket. Det experimenterades 
+även med olika samplingsintervall av utsignalen samt skillnad i resultat beroende på hur 
+signal för stillastående signal definierades.  
+ 
+2.5.3.2 Resultat av gyrosensortest 
+Gyrosensorn visade sig ge en relativt tillförlitlig utsignal när skivan roterades ett givet antal 
+grader. Efter att ha integrerat inspelade signaler där skivan med gyrosensorn varit handhållen 
+kunde det även ses att roterande skak (kring den vertikala axeln) var i samma storleksordning 
+som skaket vid försöken med systemkameran från Sony.  
+ 
+Vidare kunde man notera att det handhållna skaket i detta experiment verkar ligga kring 10-
+12Hz och med amplitudmaximum kring 5°/sek. Vid integrering ser man även att längden på 
+integreringen ger ganska stor skillnad på förskjutning, vilket även det stämmer bra överens 
+med tidigare erfarenhet från slutartiderna på Sony-kameran. 
+ 
+Beroende på vad som räknades som nollsignal kan integreringen ge lite olika resultat när 
+längre integreringstider används (se figur 2.6 n.v.). Värt att notera är dock att när 
+integreringen rör sig ner emot mer relevanta tidsintervall blir skillnaderna små (se figur 2.6 
+ö.h. och n.h.). 
+ 
+ 11
+Elektromekanisk bildstabilisering för IR-kamera 
+Figur 2.6: Resultat från gyrosensortest, mätvärdena är avlästa med 500 Samplingar per sekund. 
+Olika integreringstider simulerar exponering i de högra graferna. 
+ 
+Även olika samplingsfrekvenser jämfördes (se figur 2.6 ö.h. och n.h.). Då kraven för 
+precisionen på integreringen ännu ej är kända är det svårt att resonera kring hur pass höga 
+frekvenser som krävs för att ge önskat resultat. 
+ 
+2.5.4 FLIR ThermaCam™ P65 
+FLIR ThermaCam™ P65 är ett handhållet termografisystem. Systemet väger 2kg och dess 
+volym och ergonomi är jämförbar med en digital videokamera. Ett antal olika objektiv finns 
+som valbara tillbehör till kameran som levereras med ett fast 24° FOV objektiv.  
+ 
+2.5.4.1 Uppställning FLIR ThermaCam™ P65 
+På kameran fästes med hjälp av dubbelhäftande tejp två stycken gyrosensorer av samma typ 
+som de som testats ovan. Den ena med rotationsaxeln riktad i vertikalt led (analogt med x-
+axeln i figur 2.1) och den andra för att mäta rotationen kring den horisontella icke-optiska 
+axeln (y-axeln). Signalerna, vilka antogs vara proportionella emot rotationshastigheten, 
+spelades in med hjälp av ett oscilloskop och behandlades sedan i Matlab.  
+ 
+Testet gick ut på att en försöksperson tog en bild (knapptryckning) på ett objekt samtidigt som 
+signalen från gyrosensorerna under tiden spelades in. Ett antal försökspersoner fick 
+genomföra testet för att ge större tillförlitlighet. 
+ 
+ 12
+Elektromekanisk bildstabilisering för IR-kamera 
+ 
+2.5.4.2 Resultat ofrivilligt skak FLIR ThermaCam™ P65 
+Av de värden den inspelade signalen antagit rör sig det handhållna skaket av kameran har 
+frekvenser mellan 8-12Hz och med vinkelhastigheter under ±4°/sek (se figur 2.7). Utslagen 
+vid integrering av vinkelhastigheten visade att vid exponering på 64 millisekunder (vilket 
+motsvarar drygt 15 Hz) uppgår vinkelförskjutningen till ±0.17° (se figur 2.7 nedre raden). 
+Minskas exponeringen till 16 millisekunder (motsvarande 62,5Hz) låg de största utslagen 
+kring ±0.05° (se figur 2.7 övre raden). Värt att notera är att även om storleken på de största 
+utslagen inte skiljer sig nämnvärt så verkar de vertikala rörelserna vara aningen mer påtagliga  
+kring den vertikala axeln (ger horisontella förskjutningar i bilden). 
+ran har 
+frekvenser mellan 8-12Hz och med vinkelhastigheter under ±4°/sek (se figur 2.7). Utslagen 
+vid integrering av vinkelhastigheten visade att vid exponering på 64 millisekunder (vilket 
+motsvarar drygt 15 Hz) uppgår vinkelförskjutningen till ±0.17° (se figur 2.7 nedre raden). 
+Minskas exponeringen till 16 millisekunder (motsvarande 62,5Hz) låg de största utslagen 
+kring ±0.05° (se figur 2.7 övre raden). Värt att notera är att även om storleken på de största 
+utslagen inte skiljer sig nämnvärt så verkar de vertikala rörelserna vara aningen mer påtagliga  
+kring den vertikala axeln (ger horisontella förskjutningar i bilden). 
+ 
+Med i grafen har även lagts till avläsningar av gyrosensorerna från kameran i vila på ett fast 
+underlag (gul linje i figur 2.7). I detta fall går det att se att brus ger upphov till störningar på 
+upp till 0,02 grader vid integrering över 64 millisekunder. I den högra kolumnen av grafer 
+nedan har även två kvadrater ritats in för att förenkla jämförelse till detektorelementens 
+storlek (en pixel i en resulterande bild). Den större kvadraten representerar pitchen för en 320-
+detekor om ett 24-graders objektiv används. Den mindre kvadraten representerar den hos en 
+640-dektor och ett 7-graders objektiv. Valet av detektorer och objektiv är kopplat till 
+befintliga IR-kameror från FLIR och därmed mest relevanta för detta arbete.  
+Med i grafen har även lagts till avläsningar av gyrosensorerna från kameran i vila på ett fast 
+underlag (gul linje i figur 2.7). I detta fall går det att se att brus ger upphov till störningar på 
+upp till 0,02 grader vid integrering över 64 millisekunder. I den högra kolumnen av grafer 
+nedan har även två kvadrater ritats in för att förenkla jämförelse till detektorelementens 
+storlek (en pixel i en resulterande bild). Den större kvadraten representerar pitchen för en 320-
+detekor om ett 24-graders objektiv används. Den mindre kvadraten representerar den hos en 
+640-dektor och ett 7-graders objektiv. Valet av detektorer och objektiv är kopplat till 
+befintliga IR-kameror från FLIR och därmed mest relevanta för detta arbete.  
+ 
+Figur 2.7 Resultat från mätning av skak på FLIR ThermaCam™ P65. Graferna i den högra kolumnen visar 
+hur en punkt som fotografers skulle rört sig över detektorn och rutorna representerar ungefärlig storleken 
+som en pixel utgör, dels för en 320x240 detektor med 24° objektiv (den större) och dels för en 640x480 
+detektor med 7° ob
+Figur 2.7 Resultat från mätning av skak på FLIR ThermaCam™ P65. Graferna i den högra kolumnen visar 
+hur en punkt som fotografers skulle rört sig över detektorn och rutorna representerar ungefärlig storleken 
+som en pixel utgör, dels för en 320x240 detektor med 24° objektiv (den större) och dels för en 640x480 
+detektor med 7° objektiv (den mindre) 
+ 
+ 
+ 
+ 13
+Elektromekanisk bildstabilisering för IR-kamera 
+2.5.5 Utvärdering av ofrivilligt skak 
+Det handrelaterade skaket av en FLIR-kamera låg kring 8-12 Hz och ha en maximal amplitud 
+runt 0,15-0,2° vid exponering på 64 ms, vilket motsvarar ungefär den tid över vilken 4 
+integreringar av en 60 Hz detektor vilket sker vid normal bildtagning. Den avlästa signalen 
+från gyrosensorerna stämmer relativt bra överens med de förskjutningar som kunde ses i 
+testerna med Sony-kameran. 
+ 
+Det går inte med hjälp av testets resultat avgöra huruvida systemets vikt påverkar skakandets 
+frekvens och amplitud. Valet av gyrosensor bör diskuteras ytterligare då dess brus ger utslag 
+utöver den precision som eventuellt kan komma att önskas av modulen.  
+ 
+ 
+ 14
+Elektromekanisk bildstabilisering för IR-kamera 
+3 Termografi 
+Infraröd bildåtergivning är den teknik där värmekameror eller skanners används för att i 
+realtid detektera och återge strålning från den infraröda delen av det elektromagnetiska 
+spektrumet. Tekniken, som från början växte fram främst för militärt bruk, gjorde det så 
+småningom möjligt att, förutom att enbart återge en termisk bild, även mäta temperaturer. 
+Termografi är den teknik som med hjälp av en värmekamera mäter temperaturen hos ett 
+objekt och återger en visuell bild av objektets värmeenergi. Termografiska instrument har 
+visat sig ha många spridda användningsområden kommersiellt. Det bör dock nämnas att en 
+värmekamera i själva verket inte mäter temperaturen hos ett föremål utan den infraröda 
+strålning som föremålet emitterar. 
+ 
+3.1 Infraröd strålning 
+Begreppet infraröd (IR) strålning är egentligen inte särskilt väl definierat. Generellt sett 
+räknas den del av det elektromagnetiska spektrumet från det att det mänskliga ögat inte längre 
+kan uppfatta – kring 0,8µm. Sätts en övre gräns på 200µm så täcks de flesta IR-teknologier in. 
+Inom termografi är det dock främst IR-strålning i intervallet kring 1-15µm som är av störst 
+intresse. (Öhman 2001) 
+ 
+Alla föremål med en temperatur över den absoluta nollpunkten (-273,15°C) utstrålar 
+elektromagnetisk strålning. Mängden strålning från en ”svart kropp” är beroende av våglängd 
+och temperatur enligt Plancks lag: 
+ 
+(
+)
+⎟⎠
+⎞
+⎜⎝
+⎛
+−
+=
+1
+2
+,
+5
+2
+kT
+hc
+sk
+e
+hc
+T
+I
+λ
+λ
+π
+λ
+ , [W/m2] 
+(3:1) 
+ 
+ 
+där, 
+ 
+Isk 
+Spektral strålning från en ”svart kropp” inom ett intervall av 1µm vid våglängd λ
+c 
+Ljusets hastighet = 
+ (m s-1) 
+8
+10
+3⋅
+h 
+Plancks konstant = 
+ (J s) 
+34
+10
+617
+,6
+−
+⋅
+k 
+Boltzmanns konstant = 
+ (J K-1) 
+23
+10
+380
+,1
+−
+⋅
+T 
+Temperatur (K) 
+λ 
+Våglängd (m) 
+  Tabell 3.1: Plancks lag 
+ 
+Som synes i nedan i Figur 3.1 kulminerar den elektromagnetiska strålningen från en ”svart 
+kropp” för en viss temperatur vid en viss våglängd. Denna kulmen beskrivs av Wiens 
+förskjutningslag: 
+ 
+T
+b
+=
+max
+λ
+, [m] där b = 
+ (m K) 
+(3:2) 
+3
+10
+898
+,2
+−
+⋅
+Vid rumstemperatur λmax kring 10µm medan 2500°C ger ett λmax på ca 1µm. 
+ 
+ 
+ 15
+Elektromekanisk bildstabilisering för IR-kamera 
+Figur 3.1: Strålningen från en svartkroppsstrålare med temperaturen -20°C, +20°C och +50°C 
+Källa: Wållgren 2005 
+ 
+ 
+Plancks och Wiens formler beskriver perfekta ”svarta kroppar” något som i praktiken inte 
+existerar. Vanliga föremål emitterar en lägre andel strålning än en ”svart kropp”. Kvoten av 
+den strålning ett föremål emitterar mot en ”svart kropp” vid en viss våglängd kallas emittans, 
+ε.  
+ 
+)
+,
+(
+)
+,
+(
+)
+(
+λ
+λ
+λ
+ε
+T
+I
+T
+I
+sk
+objekt
+=
+ , där 0 < ε < 1. 
+(3:3) 
+ 
+Enligt lagen om energis konserverande kan vi ställa upp följande samband: 
+ 
+W
+W
+W
+W
+=
++
++
+τ
+α
+ρ
+ 
+(3:3) 
+ 
+där ρ = reflektans, α = absorptans och τ = transmittans. Elimineras effekten, W, ur ekvation 
+(3:3) och tar hänsyn till spektrala variationer får vi: 
+ 
+1
+=
++
++
+λ
+λ
+λ
+τ
+α
+ρ
+  
+(3:4) 
+ 
+Då den spektrala absorptionen alltid har samma storlek som den spektrala emittansen för en 
+given temperatur får vi: 
+ 
+λ
+λ
+ε
+α
+=
+ 
+(3:5) 
+ 
+Kombineras ekvation (3:4) och (3:5) fås: 
+ 
+1
+=
++
++
+λ
+λ
+λ
+τ
+ε
+ρ
+  
+(3:6) 
+ 
+Det är viktigt att ta detta samband med i beräkningarna då mätningar görs. Den strålning som 
+värmekameran upptar från ett föremål påverkas även av strålning från andra källor som 
+reflekteras och transmitteras via föremålet. 
+ 
+Även atmosfären har olika reflektans, absorptans och transmittans för olika våglängder. 
+Mätningarna av IR-strålningen blir därför även beroende av avstånd, atmosfärens 
+sammansättning och det våglängdsintervall som mäts. Inom det våglängdsintervall som är 
+väsentligt för termografin (1-15µm) är stora delar mer eller mindre oanvändbara på grund av 
+att luften inte transmitterar alla våglängder särskilt bra. Intervallet brukar därför delas upp till 
+ 
+ 16
+Elektromekanisk bildstabilisering för IR-kamera 
+”short wave” (SW) och ”long wave” (LW) som täcker de mindre delintervallen 3-5µm 
+respektive 8-12µm. I SW och LW transmitteras IR-strålningen relativt bra och det lämpar sig 
+därför att designa IR-kamerorna som arbetar i dessa intervall. (Öhman 2001) 
+ 
+3.2 Värmekameran 
+Värmekamerans syfte är att avläsa och tolka den inkommande strålningen för att sedan ge en 
+visuell bild av det aktuella objektets temperatur. Vi ska nu titta lite närmare på signalkedjan 
+från det att strålningen från objektet når kamerans objektiv till det att en bild visas på en 
+display av något slag.  
+ 
+Baffel 
+Detektor
+Optik 
+Figur 3.2: Skiss över optiken 
+Källa: Wållgren 2005 
+ 
+ 
+3.2.1 Optik 
+Då glas av den typen som används i vanliga kameraobjektiv inte är transparent i IR-området 
+används germanium (Ge) i de flesta värmekamerors objektiv (Wållgren 2005). Germanium 
+har mycket bra translation vid våglängder mellan 8-11µm. På grund av germaniumets höga 
+pris används ibland GASIR® som substitut vilket är en blandning av germanium, arsenik och 
+selen. GASIR® tillverkas genom en speciell gjutteknik istället för att, som för 
+germaniumlinser, svarvas och poleras. Linserna i optiken ytbehandlas även för att göra dem 
+tåligare och motverka reflektion (Umicore.com). 
+ 
+3.2.1 Baffel 
+Baffeln styr storleken på ljusinsläppet till detektorn och är i princip en metallskiva med ett 
+runt hål i (se figur 3.2). Den uppfyller samma uppgift som bländaren i en vanlig kamera med 
+undantag för att dess storlek är fast. Ett systems F-tal beskriver ljusinsläppet och definieras 
+som, 
+ 
+D
+l
+F =
+, 
+(3:7) 
+ 
+ 
+ 17
+Elektromekanisk bildstabilisering för IR-kamera 
+där l är längden mellan baffel och detektor och D baffelns diameter. I system utan baffel 
+kommer linsdiametern istället vara avgörande för F-talet tillsammans med linsens fokallängd 
+enligt, 
+ 
+D
+f
+F =
+, 
+(3:8) 
+ 
+där f är fokallängden och D linsens diameter. I system utan baffel kan objektivet storlek 
+minimera men de får mer problem med invärtes strålning. Invärtes strålning blir framförallt 
+ett problem i system med okylda detektorer. En okyld detektor reagerar på såväl 
+värmestrålning från objektet som inifrån kameran. Antas att objekt och kamera har samma 
+temperatur kommer signalen ut från detektorn följa, 
+ 
+2
+4
+1
+F
+Sobjekt ≈
+, 
+(3:9) 
+ 
+vilket medför att, 
+ 
+2
+4
+1
+1
+F
+Skamera
+−
+≈
+ 
+(3:10) 
+ 
+och därmed, 
+ 
+1
+4
+1
+2 −
+≈
+F
+S
+S
+kamera
+objekt
+ 
+(3:11) 
+ 
+Det här innebär att den interna strålningen vid F-tal på 1 (det är svårt att nå lägre F-tal än 1) är 
+tre gånger den från objektet, givet att de har samma temperatur. Vid F-tal på 2 blir denna 
+multipel 15. Vi märker snabbt att låga F-tal – mycket ljusinsläpp – och lite intern strålning är 
+att föredra. Samtidigt ger kort fokallängd, f, och sträckan, l, större problem med så kallade 
+cos4-effekt, det vill säga den effekt som gör att de delar av detektorn som ligger ute i kanterna 
+av ljusintaget får mindre ljusintag och därmed blir deras precision i området sämre. Detta är 
+samma problem som vanliga kameror också lider av och kan synas i att bilder blir mörkare 
+emot hörnen. Med andra ord blir det en avvägning mellan liten storlek på objektivet och 
+kvalitet på signalen till detektorn. (Wållgren 2005) 
+ 
+3.2.3 Slutaren 
+Slutaren, eller shuttern, är en metallskiva som fälls in i strålgången och blockerar signalen 
+från objektet. Slutarens syfte är att ge elektroniken möjlighet att med jämna mellanrum 
+kalibrera detektorns offset mot en helt jämn bild. För en radiometer är även temperaturen på 
+slutaren känd och kan därmed användas för referens för temperatur offseten* i bilden. 
+(Wållgren 2005) 
+ 
+* Beskrivs mer ingående i kap 3.2.5.1 
+ 
+ 
+ 18
+Elektromekanisk bildstabilisering för IR-kamera 
+3.2.4 Detektorn 
+Detektorn har uppbyggd av en CMOS-krets, i detta fall ROIC (Read Out Integrated Circuit). 
+Ovanpå denna är ett antal detektorelement placerats i ett rutnät, ett element för varje pixel. 
+Varje detektorelement består i sin tur av en brygga som är belagd med, eller i sig själv, består 
+av ett resistivt material vars resistivitet är temperaturberoende. Bryggan är sedan upphängd 
+med hjälp av två tunna ledare ovanpå ROICen. Ett enskilt elements resistivitet avläses genom 
+att det biaseras (en spänning läggs över bryggan) varpå strömmen integreras i en kapacitans 
+vars spänning sedan avläses. Biasering och avläsningen går mycket snabbt och hos okylda 
+detektorer är det istället detektorelementens tidskonstant som är avgörande för hur lång tid det 
+tar att läsa en bild. Tidskonstanten beror i sin tur av detektorelementets isolation och termiska 
+massa. 
+ 
+Figur 3.3: Detektorelement placerade på en ROIC 
+Källa: Wållgren 2005 
+ 
+ 
+Biaseringen i sig värmer upp elementen och skulle snabbt förstöra dem ifall den var på 
+kontinuerligt. Därför biaseras detektorns element radvis. Detta samtidigt som integreringen 
+sker kolumnvis av en separat integrator per kolumn. Med andra ord så avläses alla 
+detektorelement i en och samma rad simultant. En avläsningscykel för en 320x240 pixlars 
+detektor innebär alltså  240 biaseringar à 320 integreringar.  
+ 
+Detektorn måste omges av vakuum för att isolationen detektorelementen emellan ska vara så 
+bra som möjligt. Därför kapslas den in i en detektorkapsel. Kapselns fönster brukar även 
+ytbehandlas för få högpassfilteregenskaper och därmed stänga ute strålning med för lång 
+våglängd. (Wållgren 2005) 
+ 
+2.2.4.1 Kylda och okylda detektorer 
+Detektorns temperatur spelar en mycket stor roll på utsignalen. De flesta detektorerna har 
+därför en termoelektrisk kylare (Thermo Electric Cooler, TEC) som kontrollerar detektorns 
+arbetstemperatur. TEC drar dock mycket effekt, har hög tillverkningskostnad och förlänger 
+ 
+ 19
+Elektromekanisk bildstabilisering för IR-kamera 
+systemets uppstartstid då temperaturen måste regleras innan användningen kan påbörjas. Det 
+har därför utvecklats kompensationselektronik till detektorerna vilket gör det möjligt att låta 
+detektorns temperatur variera så länge dessa variationer är kända. Dessa detektorer brukar 
+kallas TEC-less och är framförallt vanliga hos handhållna system för kommersiellt bruk. 
+(Wållgren 2005) 
+ 
+3.2.5 Display och videoelektronik 
+Signalen ut från detektorn innehåller en stor del brus och störningar och måste därför 
+behandlas för att endast relevant information visas på displayen. Som nämnt ovan kommer en 
+stor del av störningen från kamerans innanmäte, men även vertikalt och horisontellt brus 
+genereras vid biasering, integrering och avläsning. Vidare varierar enskilda detektorelements 
+respons sinsemellan och det finns alltid ett mindre antal defekta element. Till dess källor 
+kommer även generellt brus. (Wållgren 2005) 
+ 
+3.2.5.1 Offsetmap 
+Då slutaren fälls in kommer detektorn titta på en jämn bild och den signal som genereras från 
+detektorn kommer avspegla den interna strålning samt offsetvariationer i bilden. Eftersom 
+dessa störkällor är dynamiska sker denna kalibrering löpande med jämna mellanrum då 
+kameran arbetar. Den offsetmap som genereras när slutaren är infälld subtraheras från 
+utsignalen och jämnar därmed ut bilden. 
+ 
+3.2.5.2 Gainmap 
+På grund av variationer i respons behöver varje pixel en individuell förstärkning (gain) för sin 
+signal. Detta beror dels på den tidigare nämnda cos4-effekten vilken försvagar insignalen mot 
+bildens hörn, men även på att det finns viss variation i respons hos varje individuellt 
+detektorelement. 
+ 
+3.2.5.3 Pixelersättning 
+Hos alla IR-detektorer finns det defekta eller döda detektorelement. Dessa element 
+approximeras då med hjälp av dess närmaste grannar. 
+ 
+3.2.5.4 Global offset 
+Då en radiometer även ska kunna visa temperatur och inte bara skillnad behövs en 
+referenstemperatur. Denna erhålls enklast genom att slutarens temperatur är känd. Och 
+uppdateras i samband med att offsetmapningen sker. 
+ 
+3.2.5.5 Filter 
+De flesta kameror idag har även ett kompletterande elektroniskt filter för att reducera allmänt 
+brus men även för att förstärka konstraster etc. 
+ 
+ 
+ 20
+Elektromekanisk bildstabilisering för IR-kamera 
+3.2.5.6 Video LUT och Display 
+Spannet i temperatur från signalen är oftast större an vad som är intressant eller praktiskt går 
+att visa på displayen. Signalen från detektorn är normalt sett på 14 bitar medan displayen har 
+möjlighet att visa 8 bitar. Ett urval av vilket spann av temperatur som ska visas görs med hjälp 
+av Look Up Table (LUT) 
+ 
+Vidare bör nämnas att det finns andra map-funktioner och signaler som inte nämns här, men 
+vilka innefattas inom detta arbetes avgränsningar.  
+ 
+3.2.6 Bildtagning 
+För att få en så tillförlitlig mätning som möjligt tas ett antal bilder och varje pixel beräknas 
+som ett medeltal av de bilder som tas. Detta innebär att om en detektor har en viss frekvens 
+för hur ofta den generera bilder så kommer det ta en multipel av denna period för att ta en 
+termografibild eftersom flera bilder i sträck skall integreras.  
+ 
+ 
+ 21
+Elektromekanisk bildstabilisering för IR-kamera 
+4 Bildstabilisering för en IR-kamera 
+Det finns, som ovan nämnt, ett flertal olika tekniker för optisk bildstabilisering vilka används 
+i produkter på marknaden idag. Innan ett val av någon av ovan nämnda tekniker kan ske 
+måste hänsyn tas till dels de skillnader som finns mellan IR-strålning och visuellt ljus samt de 
+skillnader teknologierna för att känna av ljuset. Vidare påverkas även förutsättningarna för 
+valet av teknologi av de begränsningar detta examensarbete medför i form av tid- och 
+resursrelaterande faktorer. 
+ 
+4.1 Skillnader mellan IR-strålning och visuellt ljus 
+Eftersom IR-strålningens beteende och dess användningsområden skiljer sig markant emot de 
+för visuellt ljus påverkas även de teknologier för optisk bildstabilisering som lämpar sig i 
+dessa samanhang. 
+ 
+4.1.1 Spektrumet 
+Värmekameror används i första hand för att mäta temperatur, eller skillnad i temperatur. När 
+enbart temperatur mäts finns därför inget intresse av att kunna skilja på vilken våglängd den 
+IR-strålning ett objekt utstrålar utan enbart mängden strålning är av intresse. Detta innebär en 
+avsevärd skillnad i jämförelse med vanliga kameror för visuellt ljus, vilka lägger större vikt 
+vid att kunna återge rätt färg i bilden eller snarare rätt färger i förhållande till övriga färger i 
+bilden och därför måste kunna skilja på våglängderna i det ljus som skall återges.  
+ 
+4.1.2 Optiken 
+Den kanske mest påtagliga skillnaden i optiken är materialet i linserna. Eftersom glas inte är 
+transparent i IR-spektrumet används linser i germanium och i vissa fall i GASIR® (en 
+blandning av germanium, arsenik och selen). I förhållande till glas är germanium dyrt, tungt 
+och har mycket högt brytningsindex. Detta får till följd att designen av optiken för 
+värmekameror blir mycket mer fokuserad på att minimera antalet och storleken hos linserna. 
+Objektiven för värmekameror tenderar alltså att bli både tunga, dyra och svåra att tillverka i 
+jämförelse med linssystem för visuellt ljus.  
+ 
+4.1.3 Detektor 
+På grund av de krav som ställs på temperaturförändringar hos IR-detektorerna ändras 
+förutsättningarna för hur de kan placeras i kameran. En detektor med TEC måste placeras i 
+anslutning till denna medan en TEC-less detektors värme ska kunna ledas bort på ett effektivt 
+sätt. Det här gör att TEC detektorer, på grund av sin storlek, blir mycket tyngre än en 
+systemkameras CCD. En TEC-less detektor är inte avsevärt mycket större än den digitala 
+systemkamerans CCD men värmeavledningen måste kunna utföras på ett tillfredställande sätt.  
+ 
+4.2 Patentsituationen 
+Vid en första sökning av patent på kring optisk bildstabilisering som utfördes på uppdrag av 
+Albihns Patentbyrå påträffades över 8000 relevanta träffar. Bland de kameror som 
+demonterats samt de övriga tekniker för optisk bildstabilisering som detta examensarbete tagit 
+del av har inga identiska lösningar för förflyttning av optiken hittats. Kombination av ställdon 
+ 
+ 22
+Elektromekanisk bildstabilisering för IR-kamera 
+och givare samt vad som flyttas har skilt sig vilket ger en bild av att OIS-teknologierna som 
+används på marknaden är väl skyddade.  
+ 
+Inga patent eller produkter har dock funnits liknande idén om att vicka en plan skiva för att 
+parallellförflytta strålgången som beskrivs ovan (Kap 2.3.3.3). 
+ 
+4.3 Kundnytta 
+Nyttan av optisk bildstabilisering för till exempel systemkameror skiljer sig en del mot den i 
+IR-kameror. Största skillnaden är behovet av att kunna variera slutartider. Inom 
+stillbildsfotografering blir effekten av att fritt kunna laborera med slutartider, bländaröppning, 
+ljuskänsligheten för bildsensorn och så vidare en stor del av fotograferingen i sig och generellt 
+sett skulle man kunna säga att en bättre stillbildskamera ökar dessa möjligheter för fotografen. 
+Värmekameror för termografi bör snarare ses som mätinstrument. Termografens intresse att 
+kunna påverka bilden skiljer sig därför ifrån fotografens.  
+ 
+Kundnyttan av bildstabilisering för termografering handlar om att förenkla mätningarna och 
+utöka möjligheterna att få tillförlitliga resultat. Om bildstabiliseringen exempelvis möjliggör 
+att mätningarna kan göras på längre avstånd, utan stativ eller då termografens arbetsställning 
+inte är optimal så kommer hans/hennes arbetsuppgift förenklas och effektiviseras. Funktioner 
+som autofokusering kräver i dagsläget att kameran hålls relativt still under ett mindre 
+tidsintervall vilket gör att det ofta krävs flera försöka för att fokusera bra. Bildstabiliseringen 
+skulle eventuellt kunna förbättra den här funktionen.  
+ 
+Slutligen går det inte att bortse från det faktum att en extra funktion, som funktion i sig, kan 
+öka upplevelsen av värde för kunden även om kunden egentligen inte rent praktiskt har ett 
+särkskilt stort behov av funktionen.  
+ 
+ 
+ 23
+Elektromekanisk bildstabilisering för IR-kamera 
+5 Funktionsprototypen 
+Funktionsprototypens syfte är att utvärdera huruvida en funktion kan ge önskat resultat. I 
+detta 
+examensarbetes 
+fall 
+innebär 
+det 
+att 
+undersöka 
+optisk 
+bildstabiliserings 
+implementerbarhet i en värmekamera från FLIR Systems AB. I valet av teknologi 
+prioriterades i första hand genomförbarhet för maximera chansen att få ut ett resultat. 
+Användbarhet, implementerbarhet, storlek, pris eller möjlighet att finna underleverantörer 
+prioriterades med andra ord lägre. Detta leder emellertid även till frågan kring huruvida valet 
+av teknologi är lämpat för fortsatt arbete kommer därför behandlas i slutet av detta arbete. 
+ 
+ 
+ 
+A
+D
+B
+E
+A 
+Germaniumskiva 
+B 
+Motor för horisontell rotation 
+C 
+Motor för vertikal rotation 
+D 
+Styrkort 
+E 
+Vinkelhastighetsgivare 
+E
+C
+Figur 5.1:  Funktionsprototypen med och utan objektiv 
+ 
+5.1 Krav 
+Enligt de resultat testerna med gyroskopet från Analog Devices uppskattas de ofrivilliga 
+skakrörelserna kring detektorplanet ligga på mellan 8-12 Hz för en FLIR ThermaCam™ P65. 
+ 
+ 24
+Elektromekanisk bildstabilisering för IR-kamera 
+Skakningarna ligger med fåtal undantag kring ±0,1°. På grund av osäkerheten i testet på grund 
+av den lilla försöksgruppen valdes att sätta kravet på en funktionsprototyp till att kunna 
+förskjuta bilden motsvarande ±0,15° i 15 Hz. Vidare kunde inte fördröjningen i 
+kommunikationen mellan sensorerna och styrkort ej vara för stor då detta skulle leda till 
+sämre styrning. En kommunikation som ger en fördröjning på 20 ms skulle innebära att 
+styrningen uppdateras med 50 Hz, cirka 5 gånger genomsnittlig skakfrekvens, ansågs 
+tillräckligt. 
+ 
+Val av objektiv påverkar hur mycket kompensering som krävs. En rotation på 0,15° kräver 
+mer kompensering ju mindre FOV objektivet har. Här valdes att avgränsa kraven till att gälla 
+objektiv ner till 7° FOV. Objektiv med lägre FOV är mycket otympliga och används i 
+praktiken tillsammans med stativ på grund av deras storlek. 
+ 
+5.2 Val av teknologi 
+Eftersom få viskösa ämnen är IR-transparenta kan en sådan lösning relativt snabbt uteslutas.  
+ 
+Tekniken som bygger på att förflytta en lins parallellt med detektorplanet skulle mycket väl 
+kunna fungera för värmekameror. En sådan lösning är relativt väl beprövad på marknaden för 
+digitala systemkameror. Att placera bildstabiliseringsmodulen i objektivet ger även den 
+fördelen att det inte skulle behöva påverka övrig kameradesign i samma utsträckning som om 
+en modul placeras i kameran. Ett svårare fråga blir den som berör precisionen. Redan idag 
+spenderas mycket energi på att lyckas centrera linserna i objektiven med tillfredställande 
+toleranser. Att lyckas placera en rörlig lins inom samma tolerans som skapat problem redan 
+fixering av fasta linser blir sannolikt svårt. 
+ 
+Även vad gäller att flytta detektorn i sitt plan är en beprövad teknik. Vi har sett flera lösningar 
+på att förflytta såväl små, lätta CCD/CMOS (Pentax Optio A30) som större och tyngre (Sony 
+A-100, Pentax K10D). Tekniken blir allt vanligare vilket även medför att möjligheterna att 
+finna underleverantörer, som kan tillverka hela modulen, ökar. Att flytta detektorn kräver 
+dock ganska stora förändringar på befintlig konstruktion. Detta medför en hel del utmaningar 
+om det skall genomföras på en befintlig FLIR-kamerakonstruktion. Till detta tillkommer 
+sedan att arbeta fram en lösning för hur värme leds bort från detektorn då denne ej längre kan 
+vara fast monterad mot en heat sink. 
+ 
+Placering av en germaniumskiva i strålgången mellan objektiv och detektorn behöver inte 
+påverkar befintlig konstruktion i lika hög utsträckning som en modul för rörlig detektor. Att 
+det inte hittats några befintliga lösningar på marknaden kan eventuellt leda till utmaningar vad 
+gäller att designa en bra konstruktion som kan implementeras i en kamera. För detta arbetes 
+funktionsprototyp är detta dock av mindre vikt. 
+ 
+På grund av att lösningen med att implementera en germaniumskiva i en redan befintlig 
+labbuppställning för en FLIR-kamera ansågs vara mest genomförbar för detta arbeta valdes 
+den tekniken. 
+5.2.1 Laborationsuppställning  
+FLIR ThermaCAM™ P640 är FLIR:s High End kamera för kommersiellt bruk. Den har en 
+TEC-less detektor på 640x480 pixlar, vilket ger möjligheten att generera termografibilder 
+med mycket hög upplösning i förhållande till andra handhållna FLIR-system. För utveckling 
+av ThermaCAM™ P640 finns en färdig labbuppställning vilken har plats för att montera 
+ 
+ 25
+Elektromekanisk bildstabilisering för IR-kamera 
+kretskort, objektiv, detektor etc. Komponenterna på labbuppställningen sitter monterade på så 
+sätt att det blir lätt att komma åt enskilda komponenter samt att komponenter enkelt kan 
+plockas bort ifrån eller läggas till i kameran. 
+ 
+ 
+ 
+Figur 5.2: Modell över labbuppställningen med bildstabiliseringsmodul 
+5.2.2 Den plana germaniumlinsen 
+Den vinkel vars effekter som bildstabiliseringen är tänkt motverka blir proportionell mot den 
+parallella förskjutning som den uppkommer då strålgången leds genom en vinklad 
+germaniumskiva. Denna förskjutning är i sin tur proportionell, dels mot skivans vinkling, men 
+även proportionell mot dess tjocklek. Detta får till följd att en tjockare skiva ej behöver 
+vinklas lika många grader för att uppnå en viss förskjutning jämfört med en tunnare. 
+Signalstyrkan påverkas emellertid negativt ju tjockare skivan blir och tjockleken måste alltså 
+sättas så att den inte försämrar signalen i för stor utsträckning dock såpass tjock att vinklingen 
+som krävs inte börjar reflektera ljuset eller blir mekaniskt svår att utföra. 
+ 
+5.3 Designkrav 
+Kombinationen av krav på funktionen, den valda tekniken samt vilket system prototypen 
+bygger på ger ett uppsättning nya krav för vad prototypen bör kunna klara av. 
+ 
+Vi börjar med att titta på vad en viss vinkling av kameran innebär för förskjutning av 
+bildcentrum. Beräkningarna görs för två objektiv med olika FOV som finns som tillbehör till 
+ThermaCAM™ P640. Ett 24° samt ett 7° objektiv. Om vinkeln, δ, från bildcentrum till 
+bildhörn antas vara halva FOV och sträckan från bildcentrum till hörnet av detektorn, d, får vi 
+förskjutningen, f, som funktion av φ. 
+ 
+Först tittar vi på relationen mellan en d och bildhöjden, h. 
+ 
+ 
+ 26
+Elektromekanisk bildstabilisering för IR-kamera 
+r
+h
+δ
+θ 
+Figur 5.3: Detektorns storlek i förhållande till FOV
+ 
+ 
+θ = ½ Field Of View (objektivet) 
+δ = ½ Field Of View för bildhöjden 
+d = sträcken från bildcentrum till bildhörn 
+h = bildhöjd 
+ 
+Om vi antar att bildens diagonal täcker objektivets hela FOV (se figur 5.3) så följer att för en 
+640 x 480 pixlars detektor får vi 
+ 
+5
+3
+4
+3
+640
+480
+=
+⇒
+=
+r
+h
+ 
+(5.1) 
+ 
+°
+=
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
+°
+=
+⇒
+=
+=
+...
+2679
+,7
+12
+tan
+5
+3
+arctan
+tan
+tan
+5
+3
+24
+24
+δ
+θ
+δ
+r
+h
+, för ett 24° objektiv och 
+(5.2) 
+°
+=
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
+°
+=
+...
+1016
+,2
+5,3
+tan
+5
+3
+arctan
+7
+δ
+, för ett 7° objektiv 
+(5.3) 
+ 
+På samma sätt representeras 1 pixel från bildcentrum av vinkeln, f = p. 
+ 
+°
+=
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
+=
+⇒
+=
+=
+...
+0304
+,0
+tan
+240
+1
+arctan
+tan
+tan
+240
+1
+24
+δ
+ϕ
+δ
+ϕ
+r
+p
+, 24° FOV samt 
+(5.4) 
+°
+=
+⎟
+⎠
+⎞
+⎜
+⎝
+⎛
+=
+...
+00876
+,0
+tan
+240
+1
+arctan
+7
+δ
+ϕ
+, för 7° FOV 
+(5.5) 
+ 
+där p är en pixels längd. För relativt små vinklar kring bildcentrum antas att förhållandet 
+0,030 respektive 0,0088°förskjutning/pixel för 24 är en god approximation. 
+ 
+Notera att förskjutningen ute vid kanterna av bilden skiljer sig något mot den i bildcentrum. 
+För små φ antar vi dock att denna skillnad som försumbar. Om vi även tänker oss att 
+termografisten generellt sett väljer att placera de objektet vars temperatur skall mätas i 
+centrum av bilden så blir en eventuellt mätbar annorlunda förskjutning ut mot kanterna ännu 
+mindre relevant.  
+ 
+Om kameran roteras 0,15°, enligt kraven från kap 5.1, innebär detta alltså en förskjutning av 
+bildcentrum på ±5 respektive 17 pixlar för objektiv av 24° respektive 7°.  
+ 
+Enligt beräkningar gjorda av Lars Karlsson på FLIR Systems AB krävs en cirka 13° rotation 
+av en 2mm tjock germaniumskiva för att kompensera 0,15° rotation om vi har ett 7° objektiv. 
+För ett 24° objektiv blir rotationen av samma skiva kring 3.8° för samma kompensering. 
+ 
+ 
+ 27
+Elektromekanisk bildstabilisering för IR-kamera 
+Figur 5.4: Översikt över ett 7° objektiv där en plan lins roterats 
+ 
+ 
+En lösning som klarar av att rotera en germaniumskiva, vars normal är parallell med den 
+optiska axeln, kring x och y ±13° i 15 Hz skall vara tillräckligt för att nå de ovan nämnda  
+kraven på funktionsprototypen (se figur 5.4).  
+ 
+5.4 Styrning återkoppling 
+För att registrera kamerans rörelse används samma gyrosensorer som till testet av rörelse på 
+FLIR ThermaCam™ P65. Gyroskopen levererar en analog signal från 0 till 5 volt 
+proportionell mot vinkelhastigheten där cirka 2,5V representerar stillastående. De har en 
+upplösning på 12,5mV/°/s och mindre en 1% olinjäritet i intervallet ±150°/s.  
+ 
+Den plana germaniumlinsen roteras med hjälp av två DC-motorer, en kring vardera axel. För 
+att möjliggöra rotation kring två axlar sitter den ena DC-motorn monterad tillsammans med 
+den plana linsen i en ställning som sedan kan roteras kring den andra motorns axel.  
+ 
+Motoraxlarna är monterade till hallsensorbaserade encodrar för att möjliggöra återkoppling 
+(se figur 5.5). Encodrarna levererar tre pulståg, två för att avgöra förflyttning och ett tredje för 
+att ge index åt förflyttningen. Upplösningen är på 3600 pulser per kvarts varv vilket ger 
+möjlighet bestämma relativ position på 25 milligrader.   
+ 
+ 
+ 28
+Elektromekanisk bildstabilisering för IR-kamera 
+Encodrar
+Germaniums
+kiva 
+Motorer 
+Figur 5.5: Modell av bildstabiliseringsmodul för funktionsprototypen
+ 
+ 
+Den analoga signalerna från gyrosensorerna kopplas till en 10 bitars 0-5V A/D-omvandlare på 
+samma styrkort som även styr motorerna. Dessa analoga signalerna förstärks 5 gånger och ges 
+en offset på 2,5V för att få högre upplösning kring de vinkelhastigheter som uppkommer vid 
+ofrivilligt handskak enligt ovan (kap 2.5). I teorin innebär detta att A/D-omvandlaren ger en 
+signal som representerar ±40°/s med en precision på 0,8°/s. Detta stämmer dock inte helt, dels 
+eftersom 0°/s inte alltid representeras av precis 2,5V och dels eftersom den analoga signalen 
+som genereras innehåller en del brus. Den analoga signalen filtreras därför med hjälp av ett 
+lågpassfilter.  
+ 
+Styrkortet kommunicerar med en PC med hjälp av ett seriella kommunikationsprotokollet 
+RS232. RS232 stöder kommunikation på upp till 115,2 kBaud där varje paket är 8 bit. Ett 
+LabView-baserat program i PCn frågar styrkortet om den analoga signalens värde, behandlar 
+den informationen som returneras för att sedan skicka börvärden för motorernas hastighet vars 
+reglering sedan sker ifrån styrkorten.  
+ 
+Efter det att A/D-omvandling skett skickas värdet på spänningen från styrkortets analoga 
+ingång som ett word till PCn via RS232. Programmet på PCn räknar ut ett medeltal av ett 
+förbestämt antal samplingar och subtraherar detta från värdet på den analoga signalens värde. 
+Detta värde anses sedan vara proportionellt mot rotationshastigheten.  
+ 
+5.5 Testning av funktionsprototypen 
+Testning av funktionsprototypen utfördes i ett antal steg. Till att börja med utvärderades 
+huruvida en bestämd vinkel gav väntad förskjutning. Efter att relationen mellan 
+germaniumskivans rotation och förskjutning bestämts testades olika metoder för att i realtid 
+kompensera mot bestämda rörelser. Testningen utfördes med ett objektiv med 24° FOV. 
+Germaniumskivan som användes för att förskjuta strålgången hade en tjocklek på 2.21 mm. 
+På grund av yttre omständigheter, vilka ledde till att endast en motor implementerats i 
+labbuppställningen, så genomfördes testerna endast i en dimension.  
+  
+ 
+ 29
+Elektromekanisk bildstabilisering för IR-kamera 
+5.5.1 Bildförskjutning i förhållande till vinkel 
+Ett objekt i fokus fotograferades* med germaniumskivan i en bestämd position. Skivan 
+roterades sedan gradvis varpå nya bilder togs och skivans relativa vinkelförändring jämfördes 
+med förskjutning av objektet i bilden. 
+ 
+Positioneringen av den plana germaniumlinsen sker med en upplösning på 0,025°/steg. Då 
+den skivan som användes för testet var 2,21mm tjock och inte 2mm, som tidigare beräkningar 
+baserats på, måste proportionen mellan skivan vinkling och förskjutning av strålgången 
+räknas om. För varje grad germaniumskivan roteras kompenseras bilden för en rotation av 
+kameran med en upplösning, u, enligt 
+ 
+0436
+,0
+44
+.3
+21
+,2
+2
+8.3
+15
+,0
+21
+,2
+21
+,2
+21
+,2
+2
+2
+≈
+⇒
+×
+°
+≈
+⎭⎬⎫
+⎩⎨⎧
+=
+=
+×
+°
+=
+°
+mm
+mm
+mm
+mm
+mm
+u
+u
+u
+u
+u
+ 
+(5.6) 
+ 
+Det här innebär att för varje steg fås en förskjutning av bildens mittpunkt motsvarande 
+ eller 
+ 
+(5.7) 
+°
+⇔
+°
+=
+×
+/
+917
+/
+00109
+,0
+025
+,0
+21
+,2
+steg
+steg
+u
+pixel
+steg /
+28
+)3.5
+(
+⇒
+ 
+*screenshot, ingen termografisk bild 
+ 
+5.5.2 Kompensation vid rörelse 
+Att få till bra kompensation handlar om att få till regleringen från styrkorten samt algoritmen i 
+det LabView-baserade programmet som kommunicerar med styrkorten på ett tillfredställande 
+sätt.  
+ 
+I det grafiska användargränssnitt som tillhör styrkorten finns en funktion som automatiskt 
+ställer in regleringen. Det går till så att användaren i ett antal steg ställer in reglering dels 
+baserat på hur motorerna skall bete sig då börvärden kommer i form av vinkelhastigheter och 
+dels i form av positioner. Funktionen utför ett antal rörelser och itererar sig på så sätt fram till 
+regulatorns inställningar. Erfarenheten visar dock att resultaten blir mycket varierande och att 
+det krävs ett par försök samt lite manuell intrimning för att förbättra inställningarna. 
+ 
+För att sedan testa hur väl styrningen fungerar vickades kameran som stod på en bänk i 
+höjdled kontrollerat i små rörelser och med och utan styrning. Skillnader i beteende hos den 
+streamade bilden från kameran med och utan stabilisering påslagen noterades.  
+ 
+Ännu ett test utfördes, men denna gång hölls kameran fritt i handen för att generera 
+okontrollerade skakningar och skillnaden noterades på samma sätt som ovan. 
+ 
+För att styra den plana linsens rotation provades två metoder i det LabView-baserade 
+programmet. Den första väljer att skicka börvärden i form av rotationshastigheter, baserad på 
+signalen från gyroskopen, medan den andra metoden integrerade denna signal och istället 
+skicka börvärden i form av position. 
+ 
+5.5.3 Bildkvalitet 
+Genom att jämföra bilder som tagits med och utan hjälp av rörelse av germaniumskivan skulle  
+bildkvaliteten kunna jämföras. På grund av den mängd bakgrundsstrålning som når detektorn 
+då delar av baffeln plockats bort och även på grund av att nya krav på baffelöppningen som 
+ 
+ 30
+Elektromekanisk bildstabilisering för IR-kamera 
+blev aningen för stor till följd av att germaniumskivans påverkan på de optiska egenskaperna 
+så blir bildkvaliteten i de bilder som tas inte särskilt hög. Det blev därför svårt att försöka 
+härleda eventuella skillnader i skärpa till bildstabiliseringen.  
+ 
+ 
+ 31
+Elektromekanisk bildstabilisering för IR-kamera 
+6 Utvärdering av funktionsprototypen 
+Resultaten från testningen av funktionsprototypen har delats upp i tre delar. Först utvärderas 
+konstruktionslösningen med avseende på funktionalitet. Sedan redogörs för hur bra 
+funktionaliteten i sig fungerat. 
+ 
+6.1 Konstruktion 
+Problem med förseningar och en trasig motor gjorde att vinkling av planlinsen kring två axlar 
+aldrig möjliggjordes. På grund av storleken av den mindre av de två motorerna, dess givare 
+samt aluminiumgodset som höll i arrangemanget blev stora delar av baffeln tvunget att skäras 
+bort. Detta fick till följd att en hel del bakgrundstrålning läckte in till detektor vilket påverkar 
+bildkvaliteten och mätnoggrannheten. Vidare tillät konstruktionen enbart en rotation kring 
+skivans horisontella axel på cirka ±12° vilket är något mindre än målet på 15 grader. Detta 
+tros dock inte ha påverkat funktionaliteten allt för mycket eftersom endast tester med ett 24° 
+objektiv genomfördes och därmed blev så stora utslag egentligen inte nödvändiga. 
+ 
+6.2 Funktionalitet 
+Testningen av bildförskjutning i förhållande till vinkel visade på att det verkar gå bra att 
+förskjuta bilden med hjälp av att rotera en plan germaniumlins. Efter jämförelse av ett antal 
+bilder med bestämde vinkelförskjutningar kunde det ses att bilden förskjutits ett antal pixlar 
+som stämde bra överens med beräkningarna nämnda i föregående kapitel. På grund av 
+bristande bildkvalitet tillsammans det faktum att förskjutningarna inte handlar om mer än 5-
+30 pixlars förskjutning så blev det svårt att få exakta resultat. En felaktig avläsning på enstaka 
+pixlar till följd av kornig bildkvalitet leder lätt till mer än 10% avvikelse från förväntat värde.  
+ 
+Vid kontrollerade långsamma rörelser fungerar kompenseringen mot rörelserna bra. Efter det 
+att tillfredställande inställningar funnits finner styrningen rätt positionering för såväl styrning 
+via positionsbörvärden som för de börvärden i form av vinkelhastigheter. När frekvensen på 
+rörelserna ökar får dock systemet problem att hänga med.  
+ 
+Framförallt den positionsbaserade styrningen lider av fördröjningar. Loopen som körs i PCn 
+tar här mellan 30 och 40 ms medan det för den hastighetsbaserade styrningen ligger kring 20 
+ms. Den positionsbaserade styrningen känns även mycket hackig då accelerationerna och 
+inbromsningarna får den effekten att skivan rör sig i små steg istället för en jämn kontrollerad 
+rörelse. 
+ 
+Den vinkelhastighetsbaserade styrningen går följsammare men lider av större överslag. Trots 
+mer arbete med inställningarna på styrkortets för denna styrning blev det svårt att helt 
+eliminera 
+överslagen. 
+Vid 
+regulatorns 
+inställning 
+med 
+hjälp 
+av 
+det 
+grafiska 
+användargränssnittet som medföljde styrkortet blev överslagen mycket små och överslagen 
+som uppkommer då styrningen interagerar med PCn tros därför ha att göra med fördröjningar 
+i kommunikationen.  
+ 
+När kameran hölls i händerna fungerade emellertid den vinkelhastighetsbaserade styrningen 
+bättre. Här kunde man klart märka skillnad mellan av- och påslagen bildstabilisering, även om 
+stor del av skaket fortfarande tog sig igenom. Utan bildstabiliseringen visade det sig svårt att 
+hålla siktpunkten i skiktet vilket gick betydligt bättre med stabiliseringsfunktionen påslagen. 
+ 
+ 32
+Elektromekanisk bildstabilisering för IR-kamera 
+ 
+6.3 Felkällor 
+Den kanske viktigaste felkällan för utvärderingen av funktionaliteten är svårigheten att på ett 
+bra sätt mäta hur mycket skak som elimineras. Dels gör bristerna i bildkvalitet att det är svårt 
+att manuellt mäta förändring mellan två stillbilder, dels gör suddigheten att det blir svårt att 
+skarpt se hur mycket man skakar i realtid. 
+ 
+Styrningen av systemet var problematisk. Systemets komplexitet gör det svårt att härleda vad 
+fördröjningarna berodde på. Även här var det svårt att finna ett bra sätt att mäta 
+fördröjningarna då även dessa mätningar, såsom värden från det LabView-baserade 
+programmet, med största sannolikhet led av fördröjningar och/eller var svåra att få tillräckligt 
+bra upplösning på. 
+ 
+Labbuppställningen väger mer än en handhållen kamera och har ett antal sladdar som är 
+kopplade till skärm, spänningskub, PC och nätuttag. Detta är faktorer som naturligtvis kan 
+påverka hur det ofrivilliga handhållna skaket ter sig jämfört med det handhållna systemet som 
+testades i kapitel 2.5.  
+ 
+Det 
+finns 
+även 
+fler 
+potentiella 
+felkällor, 
+såsom 
+tillförlitlighet 
+i 
+signalkedjan, 
+labbuppställningens robusthet eller optikens tolerans som kan ha påverkats av modifieringen 
+för att få plats med konstruktionen. 
+ 
+ 
+ 33
+Elektromekanisk bildstabilisering för IR-kamera 
+7 Slutsats/Diskussion 
+Utifrån den funktionsprototyp som konstruerats, de tester som utförts samt de resultat som 
+erhållits inom ramen för detta examensarbete går det att komma till den slutsats att en plan 
+germaniumlins, som kan roteras kring sina två axlar vinkelräta mot planets normal, kan 
+användas för att förskjuta den bild som projiceras på en IR-detektor i syfte att uppnå 
+bildstabiliserande funktionalitet. Fullgod funktionalitet hos prototypen uppnåddes emellertid 
+inte, dels eftersom fungerande delar till konstruktionen ej erhållits i tid, dels på grund av 
+svårigheter att få till ett väl fungerande styrsystem för rörelse av linsen. Detta medför att det 
+finns ett flertal delar av funktionsprototypen som kan förbättras för att även kunna utvärdera 
+en optisk bildstabiliserings effekter på bildresultatet vid fotografering.  
+ 
+De svårigheter som uppstod i att konfigurera ett styrsystem för att rotera germaniumskivan 
+berodde på komplexiteten, fördröjningar och svårigheten att ställa in regulatorn som detta 
+medförde. Även brist på tillförlitliga metoder att mäta felen bidrog till svårigheter att 
+analysera problemen. Därför är det i första hand regleringen som bör ses över för att förbättra 
+prototypen. 
+ 
+Prototypens konstruktion, framförallt valet av motorer, var kraftigt överdimensionerade. Detta 
+berodde på att funktionen prioriterades och att det inte i detta arbete fanns tid att optimera mot 
+något som skulle kunna användas i en kamera till marknaden. Det är därför svårt att säga hur 
+pass små motorer som kan användas och om lösningen med att använda sig utav DC-motorer 
+även skulle kunna vara användbart till en sådan kamera. Storleken och tyngden på 
+germaniumskivan tyder dock på att denna teknik för optisk bildstabilisering skulle kunna 
+implementeras i en värmekamera utan att påverka den fundamentala designen alltför mycket.  
+ 
+Inom ramen för detta arbete har det även ingått att undersöka de tekniker för bildstabilisering 
+som finns på marknaden. Den teknologin som prövats i arbetet har ej hittats på marknaden 
+och ej heller några patent på liknade lösningar har hittats då en sökning genomfördes. Detta 
+tyder på att tekniken inte ännu används vilket med stor sannolikhet kan ha att göra med att 
+den ej lämpar sig för synligt ljus på samma sätt som för IR-strålning.  
+ 
+Bland de andra metoder för optisk bildstabilisering som finns ute på marknaden är det 
+framförallt förflyttning av detektorn som verkar vara mest intressant. Här finns det dock en 
+del frågor som måste tas i beaktande. Dels hur värmen leds från detektorn när denna är rörlig 
+men även hur pass skyddad teknologin är av patent och så vidare. Eventuellt går det att finna 
+underleverantörer av en sådan modul. 
+ 
+Frågan kvarstår dock om det i verkligen är just optisk bildstabilisering som lämpar sig bäst för 
+handhållna system. Det finns fortfarande anledning att utreda hur till exempel elektronisk 
+bildstabilisering skulle klara av uppgiften. Elektronisk bildstabilisering skulle kräva minimal 
+inverkan på konstruktionen av kamerorna men kräver att en ett antal pixlar offras för 
+ändamålet. En sådan här utredning finns dock inte med inom ramarna för detta arbete.  
+ 
+7.1 Förslag till fortsatt arbete 
+Som tidigare nämnt finns det en hel del förbättringar att genomföra på den existerande 
+funktionsprototypen, framför allt när det kommer till regleringen. Det finns dock även andra 
+lösningar av intresse att utreda. Även en kortare redogörelse för eventuella nya möjligheter 
+optisk bildstabilisering skulle kunna medföra gavs en kortare diskussion.  
+ 
+ 34
+Elektromekanisk bildstabilisering för IR-kamera 
+7.1.1 Förbättringar av funktionsprototypen 
+Det finns flera potentiella förbättringar som går att genomföra för funktionaliteten på den 
+funktionsprototyp arbetet resulterat i. Till att börja med kan man titta på styrningen som är 
+mer komplex än nödvändigt vilket gör den svåranalyserad och svårinställd. Till exempel 
+skulle en mikroprocessor kunna sköta såväl reglering som styralgoritmen istället för att som i 
+nuläget ha en kommunikation mellan styrkort och PC.  
+ 
+Även signalförstärkningen och filtreringen av den analoga signalen från gyroskopen behöver 
+ses över. Modellen på gyrosensorer skulle behöva bytas till en med ett verkningsområde som 
+bättre passar den typen av rörelse som uppkommer från ofrivilligt skak. Det finns idag ett 
+antal gyroskop anpassade just för bildstabilisering och företrädesvis kan någon av dessa 
+användas istället för den mer generella typen av gyroskop som för tillfället används i 
+prototypen.  
+ 
+De motorer som står för den plana germaniumlinsens rotation är, som ovan nämnt, 
+överdimensionerade och medför att konstruktionen är för stor för att kunna implementeras i 
+en värmekamera. Även konstruktionen i sig behöver ses över. Rörelsen med hjälp av kugghjul 
+har med största sannolikhet visst glapp. Om rörelsen verkligen ska göras med hjälp av DC-
+motorer är också en intressant diskussion. Man kan till exempel tänka sig andra typer av 
+roterande motorer eller kanske en konstruktion med linjära ställdon.  
+ 
+Bättre integrationsmöjligheter till kamerans befintliga resurser kan även det undersökas. Till 
+exempel kommunikationen mellan styrkort/mikroprocessor skulle kunna ske över den 
+befintliga kommunikationsbussen som används för kamerans interna kommunikation.  
+ 
+För att kompenseringen inte skall bottna när kameran följer ett objekt i rörelse behöver 
+styralgoritmen kunna uppfatta och ta hänsyn till den här typen av rörelser.  
+ 
+7.1.2 Övriga lösningar 
+Valet av teknik för den bildstabiliseringen i funktionsprototypen baserades till större del på 
+funktionalitet än vad som lämpar sig marknadsmässigt eller kring implementerbarhet i en 
+befintlig produkt. Det återstår därför även att utvärdera andra tekniker för bildstabilisering. 
+Vad gäller optisk bildstabilisering är det, som tidigare nämnt, framförallt den teknik som 
+bygger på att flytta detektorn som ser mest lovande ut. Här måste det diskuteras hur en sådan 
+lösning skulle se ut rent mekaniskt, hur värme kan ledas bort från detektorn samt hur 
+möjligheterna att finna en underleverantör, som skulle kunna sätta ihop hela modulen, ser ut. 
+Även icke-optiska lösningar för bildstabilisering bör undersökas. På samma sätt som det finns 
+skillnader i förutsättningar för optisk bildstabilisering mellan kameror för visuellt ljus och IR-
+kameror så skiljer sig antagligen förutsättningarna även vad gäller elektronisk 
+bildstabilisering.  
+ 
+7.1.3 Nya möjligheter 
+Precis som bildstabilisering leder till nya utmaningar medföljer även flera nya möjligheter. 
+Tekniken där detektorn är rörlig används till exempel i många av de systemkameror där den 
+finns även till att skaka bort damm. Det är även tänkbart att kompensationsmöjligheterna hos 
+den optiska bildstabilisering skulle kunna användas för att kalibrera offsetmappningen och 
+därmed minska behovet av att med jämna mellanrum fälla in shutterflaggan.  
+ 
+ 
+ 35
+Elektromekanisk bildstabilisering för IR-kamera 
+Om kameran på en kontrollerat sätt skulle kunna förskjuta bilden med halva pixlars längd kan 
+en högupplöst bild erhållas med hjälp av så kallad microscanning (Shi 2006). Detta skulle 
+antingen kunna användas för att höja upplösningen till nivåer dit detektorerna ej ännu 
+utvecklats eller sänka kraven från en dyr högupplöst detektor till en billigare med lägre 
+upplösning. 
+ 
+Tiltningsfunktionalitet i användargränssnittet är något som idag blir allt vanligare i bland 
+annat mobiltelefoner, bärbara mediaspelare och spelkonsoler. De gyrosensorer som behövs 
+för bildstabilisering vid fotograferingstillfället kan mycket väl få nya användningsfunktioner 
+när de inte används som till exempel i användargränssnittet. 
+ 
+Kundnyttan av bildstabilisering slutar inte nödvändigtvis vid handhållna system för 
+termografi. Kameror monterade på bilar och båtar skulle mycket väl kunna ha användning av 
+bildstabilisering. 
+ 
+ 
+ 36
+Elektromekanisk bildstabilisering för IR-kamera 
+8 Refereser 
+M. S. Alam, J. G. Bognar, R. C. Hardie, and J.Yasuda, ”Infrared Image Registration and 
+High-Resolution Reconstruction Using Multiple Translationally Shifted Aliased Video 
+Frames”, IEEE Transactions on Instrumentation and Measurement, Vol. 49, No. 5, October 
+2005. 
+ 
+C-C. Chiu, P. C-P. Chao, and C-Y Wu, “Optimal Design of Magnetically Actuated Optical 
+Image Stabilizer Mechanism for Cameras in Mobile Phones via Genetic Algorithm”, IEEE 
+Transactions on Magnetics, Vol. 43, No. 6, June 2007. 
+ 
+J. P. Derutin, F. Dias, L. Damez, and N. Allezard, “SIMD, SMP and MIMD-DM parallel 
+approaches for real-time 2D image stabilization”, Proceedings of the Seventh Iinternational 
+Workshop on Computer Architecture for Machine Perception (CAMP’05) IEEE, 2005. 
+ 
+M. K. Güllü, and S. Ertürk, “Membership Function Adaptive Fuzzy Filter for Image Sequence 
+Stabilization”, IEEE Transactions on Consumer Electronics, Vol 50, No. 1, February 2004. 
+ 
+S-C. Hsu, S-F. Liang, and C-T. Lin, “A Robust Digital Image Stabilization Technique Based 
+on Inverse Triangle Method and Background Detection”, IEEE Transaction on Consumer 
+Electronics, Vol. 51, No. 2, May 2005 
+ 
+S-J. Ko, S-H. Lee, and K-H. Lee, ”Digital Image Stabilizing Algorithms Based on Bit-Plane 
+Matching”, IEEE Transaction on Consumer Electronics, Vol. 44, No. 3, August 1998. 
+ 
+C. Morimoto, and R. Chellappa, ”Evaluation of Image Stabilization Algorithms”, IEEE 
+Transactions on Consumer Electronics, Vol. 5, May 1998. 
+ 
+J. K. Paik, Y. C. Park, and D. W. Kim, “An Adaptive Motion Decision System for Digital 
+Image Stabilizer Based on Edge Pattern Matching”, IEEE Transaction on Consumer 
+Electronics, Vol. 38, No. 3, August 1992. 
+ 
+J. Shi, S. E.  Reichenbach, and J. D. Howe, “Small-kernel superresolution methods for 
+microscanning imaging systems”, Applied Optics, Vol.45, No. 6, February 2006. 
+ 
+K. Sato, S. Ishizuka, A. Nikami, and M. Sato, “Control Techniques for Optical Image 
+Stabilizing System”, IEEE Transaction on Consumer Electornics, Vol. 39, No. 3, August 
+1993. 
+ 
+K. Uomori, A. Morimura, H. Ishii, T. Sakaguchi, and Y. Kitamura, “Automatic image 
+stabilizing system by full-digital signal processing”, ”, IEEE Transaction on Consumer 
+Electronics, Vol. 36, No. 3, August 1990 
+ 
+U. Wållgren, “Teknisk Rapport, Karakterisering och beskrivning av signalkedja för okylt 
+system”, FLIR Systems AB, May 2005.  
+ 
+C. Öhman, “Measurement in Thermography”, FLIR Systems AB, November 2001. 
+ 
+Canon.com, http://www.canon.com/bctv/faq/vari.html, 2007-12-10. 
+ 
+ 
+ 37
+Elektromekanisk bildstabilisering för IR-kamera 
+ 
+ 38
+Canon.com, http://www.canon.com/bctv/faq/optis.html, 2007-12-10. 
+ 
+KonicaMinolta.com, 
+http://ca.konicaminolta.com/products/consumer/digital_camera/slr/dynax-7d/02.html, 2007-
+12-10. 
+ 
+Nicon.com, http://nikonimaging.com/global/technology/scene/16/, 2007-12-10. 
+ 
+Pentax.com, 
+http://www.pentaximaging.com/products/product_details/digital_camera--
+K10D/reqID--8793673/subsection--digital_slr, 2007-12-10. 
+ 
+Sony.com, 
+http://www.sony.se/view/ShowProduct.action?product=DSLR-
+A100H&site=odw_sv_SE&pageType=Overview&imageType=Main&category=DSS+Digital
++SLR, 2007-12-10. 
+ 
+Umicore.com, http://www.optics.umicore.com/umicore_optics/products/gasir.asp, 2007-12-
+10. 
+ 

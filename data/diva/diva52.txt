@@ -1,0 +1,3366 @@
+ 
+ 
+AVDELNINGEN FÖR ELEKTRISKA ENERGISYSTEM 
+Balansering av vindkraft 
+och vattenkraft i norra 
+Sverige 
+En studie av vattenkraftsmodeller  
+ 
+Carl Englund 
+2009 
+ 
+ 
+ 
+ 
+ 
+    
+ii 
+ 
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16) (17) (18) (19) (20) (21) (22) 
+(23) (24) (25) (26) (27) (28) (28) (29) (30) (31) (32) (33) (34) (35) (36) (37) (38) (39) (40) 
+(41) (42) 
+ 
+ 
+iii 
+ 
+Sammanfattning 
+Detta examensarbete inleddes med målet att försöka ge ett svar på vid vilken utbyggnadsnivå av 
+vindkraft norr om snitt 2 som stamnätet måste förstärkas över detta snitt. Under arbetets gång 
+har dock målet mer inriktats mot att ta fram en modell för att analysera hur väl vattenkraften i 
+Norrland kan hantera de snabba förändringar i produktion som vindkraften tyvärr besitter.  
+Att skapa en bra modell för all vattenkraft i Norrland är ett mycket stort arbete, alldeles för stort 
+för  att  rymmas  inom  ramen  för  ett  examensarbete.  Denna  rapport  avslutas  därför  med  en 
+noggrann  analys  av  vilka  förenklingar  som  är  gjorda  och  vilken  effekt  dessa  har  samt 
+rekommendationer för framtida arbete. 
+Den modell som har skapats har visat sig producera mycket bra resultat och de slutsatser som 
+kan dras  av  detta  arbete är att  vattenkraften har mycket goda  möjligheter att balansera den 
+ojämna  vindkraftsproduktionen.  Endast  enstaka  fall  har  påträffats  där  spill  uppstår  trots  att 
+ledig kapacitet har funnits och de stora spill som påträffas bland resultaten kan avhjälpas med 
+bättre säsongsplanering. 
+Examensarbetet  har  utförts  i  nära  samarbete  med  Andreas  Fagerberg,  vars  rapport  (19) 
+ständigt refereras till i texten. 
+ 
+ 
+ 
+ 
+iv 
+ 
+ 
+ 
+v 
+ 
+Abstract 
+This master thesis was initiated with the aim to answer at what level of installed capacity of 
+wind power  in the northern parts of Sweden it would be beneficial to improve the transmission 
+capacity from the northern Sweden. During the process of this work the aim has changed to try 
+and  create  a  model  that  can  be  used  to  analyze  how  well  the  hydro  power  installed  in  the 
+northern Sweden can even out the quick changes in wind power production.  
+To create a good model of all hydro power in northern Sweden is a very large job, unfortunately 
+too  large  for  a  master  thesis.  This  report  therefore  ends  with  an  extensive  analysis  of  the 
+simplifications that have been made and their effects as well as a list of the future work that has 
+to be done. 
+The  model  that  has  been  created  have  shown  to  be  effective  and  produce  good  results.  The 
+conclusions  that  can  be  made  is  that  the  northern  Swedish  hydro  power  have  very  good 
+possibilities to balance the wind power production. Only a few cases where water have been 
+spilled even though there has been some free capacity has been discovered. Also the scenarios 
+where  a  large  amount  of  spilled  water  occurred  can  be  cancelled  by  altering  the  seasonal 
+planning of the hydro power stations.  
+This master thesis has been made in close cooperation with Andreas Fagerberg, whose report 
+(19) is often referred to in this text. 
+ 
+ 
+vi 
+ 
+ 
+ 
+ 
+vii 
+ 
+Innehållsförteckning 
+ 
+Sammanfattning ................................................................................................................................................................... iii 
+Abstract ......................................................................................................................................................................................v 
+Innehållsförteckning ......................................................................................................................................................... vii 
+Lista över figurer och tabeller ....................................................................................................................................... ix 
+Nomenklatur och förkortningar ................................................................................................................................... xi 
+1 
+Introduktion .................................................................................................................................................................. 1 
+1.1 
+Bakgrund .............................................................................................................................................................. 1 
+1.2 
+Mål ........................................................................................................................................................................... 2 
+1.3 
+Problemformulering ........................................................................................................................................ 3 
+1.4 
+Begränsningar .................................................................................................................................................... 3 
+1.5 
+Metoder ................................................................................................................................................................. 3 
+2 
+De ingående systemen .............................................................................................................................................. 5 
+2.1 
+Vindkraft ............................................................................................................................................................... 5 
+2.2 
+Vattenkraft ........................................................................................................................................................... 5 
+2.3 
+Kraftnät .................................................................................................................................................................. 6 
+3 
+Optimering ..................................................................................................................................................................... 8 
+3.1 
+Linjär programmering .................................................................................................................................... 8 
+3.2 
+Icke‐linjär programmering ........................................................................................................................... 9 
+3.3 
+Heltalsprogrammering .................................................................................................................................10 
+3.4 
+Stokastisk programmering .........................................................................................................................11 
+3.5 
+GAMS .....................................................................................................................................................................12 
+4 
+Grundmodellen av systemet ................................................................................................................................13 
+4.1 
+Vindkraft .............................................................................................................................................................13 
+4.2 
+Vattenkraft .........................................................................................................................................................13 
+4.2.1 
+Fysiska begränsningar ........................................................................................................................13 
+4.2.2 
+Juridiska begränsningar .....................................................................................................................15 
+4.2.3 
+Målnivåer ..................................................................................................................................................17 
+4.2.4 
+Elproduktion ...........................................................................................................................................18 
+4.3 
+Transmission, övrig produktion och last .............................................................................................20 
+4.4 
+Den sammansatta modellen.......................................................................................................................21 
+5 
+Simuleringar av grundmodellen ........................................................................................................................23 
+5.1 
+Indata och scenarier ......................................................................................................................................23 
+viii 
+ 
+5.1.1 
+Vindkraft ...................................................................................................................................................23 
+5.1.2 
+Vattenkraft ...............................................................................................................................................25 
+5.1.3 
+Maximal produktion ............................................................................................................................26 
+5.2 
+Kontroll av modellen .....................................................................................................................................27 
+5.3 
+Resultat ................................................................................................................................................................29 
+5.4 
+Analys av osäkra parametrar ....................................................................................................................31 
+5.4.1 
+Kapaciteten över snitt 2 .....................................................................................................................31 
+5.4.2 
+Gångtidernas betydelse ......................................................................................................................32 
+5.4.3 
+Målnivåer ..................................................................................................................................................34 
+6 
+Utökade modeller .....................................................................................................................................................36 
+6.1 
+Förbjudet tappningsintervall ....................................................................................................................36 
+6.2 
+Start och stopp av kraftverk ......................................................................................................................37 
+6.3 
+Tappningsändringar ......................................................................................................................................39 
+6.4 
+Fallhöjdsberoende ..........................................................................................................................................39 
+6.5 
+Resultat ................................................................................................................................................................40 
+6.5.1 
+Förbjudet tappningsintervall ..........................................................................................................40 
+6.5.2 
+Start och stopp av kraftverk.............................................................................................................44 
+6.5.3 
+Tappningsförändringar ......................................................................................................................45 
+6.5.4 
+Fallhöjdsberoende ................................................................................................................................47 
+7 
+Slutsatser ......................................................................................................................................................................49 
+7.1 
+Gjorda förenklingar ........................................................................................................................................50 
+7.1.1 
+Överskattning av reglerförmågan .................................................................................................50 
+7.1.2 
+Underskattning av reglerförmågan ..............................................................................................52 
+7.2 
+Framtida arbete ...............................................................................................................................................52 
+7.2.1 
+Omvärlden ................................................................................................................................................52 
+7.2.2 
+Tillrinning .................................................................................................................................................53 
+7.2.3 
+Målnivåer ..................................................................................................................................................53 
+7.2.4 
+Scenarier ...................................................................................................................................................54 
+7.2.5 
+Fallhöjder ..................................................................................................................................................54 
+7.2.6 
+Stokastisk modell ..................................................................................................................................54 
+7.2.7 
+Pris och marknadsmodeller .............................................................................................................54 
+7.2.8 
+Förbättringar inom modellen ..........................................................................................................55 
+8 
+Referenser ....................................................................................................................................................................56 
+ 
+ix 
+ 
+Lista över figurer och tabeller 
+ 
+Figurer 
+FIGUR 1.1: KARTA OVER DET NORDISKA STAMNÄTET. SNITT 2 ÄR MARKERAT SOM ETT TJOCKT SVART STRÄCK. LEDNINGAR 
+PÅ 400 KV ÄR RÖDA OCH 220 KV ÄR GRÖNA. .............................................................................................................................. 1 
+FIGUR 1.2: VARAKTIGHETSKURVOR FÖR LEVERERAD ENERGI ÖVER SNITT 2 I SYDLIG RIKTNING FÖR ÅREN 2000 TILL 2001. 
+(20) ..................................................................................................................................................................................................... 2 
+FIGUR 4.1: ELPRODUKTIONEN SOM FUNKTION AV TAPPNINGEN I KRAFTVERKEN. PRODUKTION OCH TAPPNING ANGES I 
+PROCENT AV DE ENSKILDA KRAFTVERKENS MAXIMALA PRODUKTION OCH TAPPNINGAR. .................................................. 19 
+FIGUR 4.2: ETT EXEMPEL PÅ DEN TOTALA PRODUKTIONEN I SNITT PER VECKA UPPDELAD EFTER FÖRBRUKNING, LEVERANS, 
+EXPORT ELLER SPILL. ...................................................................................................................................................................... 21 
+FIGUR 5.1: MAGASINSNIVÅERNA I PROCENT AV MAXIMALA I SVERIGE DE SENASTE ÅREN JÄMFÖRT MED MAX, MEDIAN OCH 
+MINVÄRDEN MELLAN 1950 – 2004. BILDEN ÄR HÄMTAD FRÅN (26)................................................................................. 23 
+FIGUR 5.2: PLACERING AV DE 18 VINDKRAFTSPARKERNA I NORRA SVERIGE. (15) ..................................................................... 24 
+FIGUR 5.3: JÄMFÖRELSE MELLAN VERKLIG OCH SIMULERAD PRODUKTION FÖR 2007. ................................................................ 27 
+FIGUR 5.4: VARAKTIGHETSKURVA FÖR LEVERENS ÖVER SNITT 2 FRÅN SIMULERING UTAN VINDKRAFT OCH MED HÄNSYN TILL 
+FAKTISK EXPORT OCH IMPORT. ..................................................................................................................................................... 28 
+FIGUR 5.5: VERKLIGA VARAKTIGHETSKURVOR FÖR TRANSMISSION ÖVER SNITT 2 UNDER ÅREN 2004‐2007 (11). ............ 28 
+FIGUR 5.6 TOTALA VÄRDET AV SPILLT VATTEN FÖR SAMTLIGA SCENARION. .................................................................................. 29 
+FIGUR 5.7: LEVERERAD ENERGI ÖVER SNITT 2 FÖR DE OLIKA SCENARION JÄMFÖRT MED DEN MAXIMALA KAPACITETEN. .... 30 
+FIGUR 5.8: EXPORTERAD ENERGI NORR OM SNITT 2. NEGATIVA VÄRDEN MOTSVARAR VAD SOM TEORETISKT KAN 
+IMPORTERAS INNAN DET LEVERERAS VIDARE SÖDER ÖVER SNITT 2. DET BLÅ FÄLTET I BAKGRUNDEN MARKERAR DEN 
+MAXIMALA KAPACITETEN I LEDNINGARNA. ................................................................................................................................ 30 
+FIGUR 5.9: JÄMFÖRELSE MELLAN SIMULERAD EXPORT OCH VERKLIG EXPORT/IMPORT. DE SIMULERADE BEHOVEN AV 
+EXPORT OCH MÖJLIG IMPORT ÄR LINJER MEDAN DEN FAKTISKA EXPORTEN/IMPORTEN ÄR DEN IFYLLDA YTAN. ........... 31 
+FIGUR 5.10: FÖRBRUKNINGEN I SVERIGE UPPDELAD I NORR OCH SÖDER OM SNITT 2 JÄMFÖRT MED KAPACITETEN FÖR 
+ÖVERFÖRING ÖVER SNITTET. ......................................................................................................................................................... 32 
+FIGUR 5.11: PRODUKTION PER VECKA FÖR OLIKA SKALNINGAR AV GÅNGTIDERNA MED 1000 MW INSTALLERAD 
+VINDKRAFT. ...................................................................................................................................................................................... 33 
+FIGUR 5.12: PRODUKTION PER VECKA FÖR OLIKA SKALNINGAR AV GÅNGTIDERNA MED 8000 MW INSTALLERAD 
+VINDKRAFT. ...................................................................................................................................................................................... 33 
+FIGUR 5.13: PRODUKTION PER VECKA DÅ VARANNAN GÅNGTID SKALATS UPP RESPEKTIVE NED 50% MED 1000MW 
+INSTALLERAD VINDKRAFT. ............................................................................................................................................................ 34 
+FIGUR 6.1:  ELPRODUKTION HOS SAMTLIGA KRAFTVERK I MODELLEN JÄMFÖRT MED ETT VERKLIGT KRAFTVERK. ................. 36 
+FIGUR 6.2: TAPPNINGSPLAN FÖR KRAFTVERKEN I LULEÄLVEN UNDER VECKA 25 MED 8000MW INSTALLERAD VINDKRAFT. 
+LUCKOR INNEBÄR ATT INGEN TAPPNING SKER. ......................................................................................................................... 38 
+FIGUR 6.3: TOTALA PRODUKTIONEN I DEN NYA MODELLEN UTAN VINDKRAFT JÄMFÖRT MED RESULTATEN FRÅN FALLSTUDIE 
+1 SAMT DE VERKLIGA DATA. .......................................................................................................................................................... 41 
+FIGUR 6.4: PRODUKTIONEN I DEN NYA MODELLEN JÄMFÖRT MED PRODUKTIONEN I FALLSTUDIE 1. ........................................ 41 
+FIGUR 6.5: DEN TOTALA PRODUKTIONEN UPPDELAD EFTER FÖRBRUKNING, LEVERANS OCH EXPORT SAMT SPILL VID 
+UTBYGGNADSNIVÅN 8000MW. ................................................................................................................................................... 42 
+FIGUR 6.6: TOTALA VÄRDET AV SPILLT VATTEN FÖR SAMTLIGA SCENARION ................................................................................. 42 
+FIGUR 6.7: FÖRÄNDRINGEN AV SPILLET JÄMFÖRT MED LÄGSTA UTBYGGNADSNIVÅN. NOTERA ATT STAPLARNA FÖR 8000 
+MW VECKA 7 SAMT 12000MW VECKORNA 3 OCH 7 INTE SLUTAR VID 500 %. FÖR ATT TYDLIGGÖRA ANDRA 
+DETALJER HAR STAPLARNA BESKURITS VID DENNA NIVÅ. ........................................................................................................ 43 
+FIGUR 6.8: EXPORT FÖR DE OLIKA UTBYGGNADSNIVÅERNA JÄMFÖRT MED MAXIMALA KAPACITETEN. NEGATIVA VÄRDEN 
+MOTSVARAR SOM TIDIGARE KAPACITET FÖR IMPORT FÖR VIDARE TRANSMISSION SÖDER ÖVER SNITT 2. ...................... 44 
+FIGUR 6.9: TAPPNINGSPLAN FÖR KRAFTVERKEN I LULEÄLVEN UNDER VECKA 25 MED 8000MW VINDKRAFT SAMT MAX 
+200 STARTER. ................................................................................................................................................................................. 45 
+x 
+ 
+FIGUR 6.10: TAPPNINGSPLAN FÖR KRAFTVERKEN I LULEÄLVEN UNDER VECKA 25 MED 8000MW VINDKRAFT SAMT C = 
+10‐9. .................................................................................................................................................................................................. 46 
+FIGUR 6.11: TAPPNINGSPLAN FÖR KRAFTVERKEN I LULEÄLVEN UNDER VECKA 25 MED 8000MW SAMT C = 10‐2. ............ 47 
+FIGUR 6.12: PRODUKTION OCH FÖRLORAD PRODUKTION PÅ GRUND AV FÖRLORAD FALLHÖJD JÄMFÖRT MED 
+MAGASINSFYLLNADEN FÖR LAXEDE KRAFTVERK UNDER EN SIMULERING AV VECKA 12 MED LÄGSTA 
+UTBYGGNADSNIVÅN AV VINDKRAFT. ............................................................................................................................................ 48 
+FIGUR 7.1: JÄMFÖRELSE MELLAN DE OLIKA TYPER AV SCENARIER SOM KAN RÅDA. ÖVERST TILL VÄNSTER (A) ÄR ETT 
+SCENARIO DÄR DEN TOTALA PRODUKTIONEN ÄR KLART UNDER KAPACITETEN. ÖVERST TILL HÖGER (B) ÄR ETT 
+SCENARIO DÄR PRODUKTIONEN VIDA ÖVERSTIGER KAPACITETEN OCH MYCKET SPILL OUNDVIKLIGEN UPPSTÅR. DE TVÅ 
+NEDRE GRAFERNA ILLUSTRERAR SAMMA FÖRUTSÄTTNINGAR MEN DÄR DEN VÄNSTRA (C) REPRESENTERAR DÅLIGT 
+NYTTJANDE AV VATTNET OCH LEDER TILL SPILL VISAR DEN HÖGRA (D) PÅ HUR MAN BÄTTRE KAN NYTTJA VATTNET 
+FÖR ATT HELT UNDVIKA SPILL. ..................................................................................................................................................... 50 
+ 
+Tabeller 
+TABELL 5.1: SIMULERADE VECKOR ........................................................................................................................................................ 23 
+TABELL 6.1: PRODUKTION OCH ANTALET STARTER SOM FUNKTION AV MAXIMALT ANTAL TILLÅTNA STARTER. RESULTATEN 
+ANGES BÅDE I ABSOLUT FORM OCH I PROCENT AV VÄRDENA DÅ INGEN BEGRÄNSNING FINNS. .......................................... 44 
+TABELL 6.2: RESULTAT FÖR OLIKA STRAFF FÖR TAPPNINGSÄNDRINGAR. FÖRLORAD PRODUKTION ANGER HUR MYCKET 
+PRODUKTIONEN MINSKAT MOT DET FALL DÅ INGET STRAFF FINNS. FÖRÄNDRINGSFAKTOR ÄR SUMMAN AV ALLA 
+TAPPNINGSÄNDRINGAR SOM SKER UNDER VECKAN. .................................................................................................................. 45 
+TABELL 6.3: JÄMFÖRELSE AV OLIKA GRÄNSER MELLAN VILKA KRAFTVERK SOM ANSES FÖRLORA FALLHÖJD MED MINSKADE 
+MAGASINSNIVÅER. SIMULERINGAR MED SAMTLIGA KRAFTVERK GAV INGA RESULTAT DÅ DET VAR FÖR 
+ARBETSINTENSIVT FÖR EN VANLIG DATOR. ................................................................................................................................ 47 
+ 
+ 
+xi 
+ 
+Nomenklatur och förkortningar 
+ 
+Mängder/ Set 
+ 
+݅ 
+Vattenkraftverk 
+݆ 
+Segment i kraftverk
+ݐ 
+Tid (h) 
+ࣥ௜ 
+Mängden av kraftverk närmast uppströms från kraftverk ݅
+ܮ௜ 
+Mängden av kraftverk som spiller vatten direkt uppström om kraftverk ݅ 
+ 
+ 
+Variabler 
+ 
+ܯ௜,௧ 
+Innehåll vattenmagasin ݅vid slutet av timme ݐ(TE)
+ܳ௜,௧ 
+Total tappning genom kraftstation ݅under timme ݐ(TE)
+ܳ௜,௝,௧ 
+Tappning genom kraftstation ݅, segment ݆, under timme ݐ(TE) 
+ܵ௜,௧ 
+Spill förbi kraftstation ݅under timme ݐ(TE)
+ܪ௜,௧ 
+Elproduktion för kraftstation ݅under timme ݐ(MWh/h)
+ܼ௜,௧ 
+Binär variabel som indikerar om kraftverk ݅är i bruk under timme ݐ 
+ܷ௜,௧ 
+Binär variabel som indikerar ifall kraftverk ݅har startats under timme ݐ 
+ܵݐݎ݂݂ܽ௜,௧ 
+Förlorad produktion till följd av förlorad fallhöjd i kraftverk ݅ (MWh/h) 
+ 
+ 
+Parametrar 
+ 
+ܸ௜ 
+Lokal tillrinning till kraftverk ݅(TE)
+߬௜ 
+Gångtid från kraftverk ݅till nästa nedströms liggande kraftverk (min) 
+݄௜ 
+Gångtiden i hela timmar (h)
+݉௜ 
+Gångtidens resterande minuter (min)
+ܯ௦௧௔௥௧,௜ 
+Magasininnehåll vid simuleringsperiodens början i kraftverk ݅ (TE) 
+݉௦௧௔௥௧ 
+Magasinens fyllnadsgrad vid simuleringsperiodens början (%) 
+ܯ௦௟௨௧,௜ 
+Mål för magasinens innehåll vid simuleringsperiodens slut i kraftverk ݅ 
+(TE) 
+݉௦௟௨௧ 
+Mål för magasinens fyllnadsgrad vid simuleringsperiodens slut (%) 
+ܳ௜ 
+Maximalt total tappning för kraftverk ݅(TE)
+ܳ௜,௝ 
+Maximal tappning för kraftverk ݅, segment ݆(TE)
+ܳ෨ 
+Maximal tappningsförändring i kraftverk ݅(TE)
+ܵ௜ 
+Minimalt spill från kraftverk ݅(TE)
+ܵ௜ 
+Maximalt spill från kraftverk ݅(TE)
+ܯ௜ 
+Minimalt magasininnehåll för kraftverk ݅(TE)
+ܯ௜ 
+Maximalt magasininnehåll för kraftverk ݅(TE)
+ܪ௜ 
+Installerad effekt kraftverk ݅(MW)
+ߛ௜,௝ 
+Produktionsekvivalent för kraftverk ݅, segment ݆(MW/TE)
+ܹ௧ 
+Produktion från vindkraft i norrland timme ݐ(MWh/h)
+ܦ௧ 
+Förbrukning i Sverige norr om snitt 2 under timme ݐ(MWh/h) 
+ܵ݊݅ݐݐ2௧ 
+Kapacitet för överföring i stamnätet över snitt 2 under timme ݐ (MWh/h) 
+ܨ݈݅݊ܽ݊݀௧ 
+Kapacitet för export till Finland norr om snitt 2 under timme ݐ (MWh/h) 
+ܰ݋ݎ݃݁௧ 
+Kapacitet för export till Norge norr om snitt 2 under timme ݐ (MWh/h) 
+ܳෘ௜ 
+Lägsta tillåtna tappningsnivån i kraftverk ݅(TE)
+ܭ 
+Maximalt tillåtna starter för samtliga kraftverk under hela simuleringen 
+ܥ 
+Anger hur hårt tappningsändringar straffas
+ܨ௜ 
+Anger produktionsförlusten för förlorad fallhöjd i kraftverk ݅ 
+1 
+ 
+1 Introduktion 
+1.1 Bakgrund 
+Den  svenska  energienheten  har  föreslagit  ett  svenskt  planeringsmål  på  30  TWh  producerad 
+vindkraft  per  år  från  år  2020.  För  att  nå  detta  mål  måste  den  installerade  kapaciteten  av 
+vindkraft vara ungefär 12 000 MW(16). Var denna vindkraft ska installeras är idag osäkert men 
+det finns ett uttalat intresse för stora investeringar i Norrland.  
+Norra  och  södra  Sverige  är  idag  sammanbundet  av  åtta  stycken  parallella  kraftledningar  på 
+vardera 400kV, se figur Figur 1.1. Deras totala kapacitet för transmission är ungefär 7000 MW 
+(13)  och  används  främst  för  överföring  av  vattenkraft  från  de  stora  norrländska  älvarna  till 
+resten av landet.   
+ 
+Figur 1.1: Karta over det nordiska stamnätet. Snitt 2 är markerat som ett tjockt svart sträck. Ledningar på 
+400 kV är röda och 220 kV är gröna. 
+Som man kan se i Figur 1.2 så finns det idag en del överkapacitet i dessa ledningar som kan 
+användas  för  överföring  av  vindkraft.  Vid  stor  utbyggnad  av  den  norrländska  vindkraften 
+kommer antalet timmar då den fulla kapaciteten för överföring från norr till söder nyttjas att 
+öka.  Man  kan  dock  optimera  nyttjandet  av  dessa  ledningar  i  viss  mån  genom  att  använda 
+vattenkraftens  reglerande  förmåga.  Alltså  att  vid  stark  vind,  mycket  vindkraft,  dra  ner  på 
+2 
+ 
+vattenkraftproduktionen 
+och 
+spara 
+vattnet 
+i 
+magasinen 
+till 
+tider 
+med 
+lägre 
+vindkraftsproduktion. Denna reglerförmåga  är dock inte oändlig, styrningen  av  vattenkraften 
+begränsas  av  fysiska  lagar  och  domstolsbeslut,  s.k.  vattendomar.  Detta  medför  att  vid  stora 
+produktioner  av  elkraft  kommer  man  bli  tvungen  att  spilla  el  som  helt  enkelt  inte  går  att 
+leverera i dagens ledningsnät. 
+ 
+Figur 1.2: Varaktighetskurvor för levererad energi över snitt 2 i sydlig riktning för åren 2000 till 2001. (20) 
+I nuläget finns tre följande alternativ hur detta problem kan hanteras 
+• 
+Mothandel.  Idag  har  systemoperatören  Svenska  Kraftnät  ansvaret  för  att  hålla 
+ledningarna  fria  från  stockningar  genom  mothandel.  Då  överföringen  över  dessa 
+ledningar ökar kommer kostnaderna för denna mothandel att öka. 
+• 
+Marknadsuppdelning. Om kostnaderna för mothandeln blir för höga kanske en lösning 
+är att dela upp Sverige i två elhandelszoner på elmarknaden Nord Pool Elspot Market. 
+Detta skulle resultera i lägre elpriser i norra Sverige.  
+• 
+Utbyggnad av kraftledningarna. Om produktionen av vind och vattenkraft i Norrland 
+blir tillräckligt stor kommer förlusterna av spilld energi vara större än kostnaderna för 
+en  utökning  av  överföringskapaciteten,  en  ny  kraftledning.  När  så  är  fallet  kommer 
+samhället att tjäna på att bygga ut kraftnätet. 
+Det kommer ta många år innan den installerade effekten av vindkraften i Norrland är tillräckligt 
+stor för att en utbyggnad av kraftnätet ska vara det bästa alternativet. Men eftersom en sådan 
+utbyggnad tar mycket lång tid att planera och bygga så är det viktigt att studera denna fråga 
+redan idag så att en framtida utbyggnad står färdig att använda när den behövs. 
+1.2 Mål 
+Förr  eller  senare  kommer  en  utbyggnad  av  kraftnätet  att  vara  fördelaktigt  för  samhället  då 
+kapaciteten för vindkraften i Norrland ökar. Det övergripande målet med detta projekt är att 
+estimera  hur  mycket  vindkraft  som  kan  hanteras  av  existerande  kraftnät.  Eftersom  stora 
+osäkerheter är oundvikliga i indata och beräkningar kommer det vara omöjligt att hitta ett exakt 
+värde för detta. Det praktiska målet blir då att finna ett intervall av vindkraftskapacitet inom 
+vilket utbyggnad av kraftnätet är värt att se över. 
+3 
+ 
+Ett sekundärt mål med arbetet är att utföra en känslighetsanalys av olika gjorda antaganden. 
+Dessa  resultat  ska  användas  som  underlag  för  vilka  faktorer  som  kan  behöva  undersökas 
+noggrannare i framtida projekt för att förbättra intervallet. 
+1.3 Problemformulering 
+Värdet  av  den  ökade  elproduktionen  i  Norrland  ska  undersökas  genom  att  skapa  ett  set  av 
+möjliga  scenarion  med  olika  alternativ  för  nya  vindkraftverks  placering,  nya  kraftledningar, 
+investeringar  i  norra  Norge  eller  Finland,  o.s.v.  Dessa  scenarion  ska  sedan  analyseras  i  en 
+modell som tar hänsyn till begränsningar i vattenkraften och i kraftledningar. För att kunna ta 
+hänsyn  till  de  snabba  förändringarna  i  vindkraftens  produktion  blir  det  nödvändigt  att  inte 
+använda tidssteg större än en timme. Längden på varje undersökt problem måste vara minst en 
+vecka annars finns en stor risk att man överskattar vattenkraftens lagringsförmåga.  
+1.4 Begränsningar 
+På  grund  av  storleken  på  problemet  bör  modellen  som  ska  användas  vara  linjär  och 
+deterministisk. Då inte ens den levererade kraften av ett ensamt  vattenkraftverk är  en linjär 
+funktion  av  vattenflödet  leder  detta  uppenbarligen  till  vissa  begränsande  förenklingar  i 
+modellen. 
+I detta arbete kommer också elmarknaden att antas vara perfekt, alltså att kraftverken styrs på 
+sådant  sätt  att  kostnaderna  minimeras  för  en  given  last.  Modellen  kommer  alltså  minimera 
+genomsnittskostnaden för all producerad el och ingen hänsyn till enskilda intressen hos de olika 
+företagen som äger kraftverk kommer att tas. 
+Eftersom detta arbete skall kunna presenteras för Elforsk och elproducenterna baseras det på 
+offentliga  uppgifter  om  till  exempel  magasin  och  vattenföringar  och  inte  de  interna 
+driftsvillkoren  som  de  olika  ägarna  av  kraftverken  jobbar  efter.  Detta  leder  så  klart  till 
+förenklande antaganden kring kraftverkens produktion. 
+1.5 Metoder 
+För  att  skapa  denna  modell  behövs  först  modeller  för  vindkraftverk,  vattenkraftverk  och 
+kraftnätssystemet som sedan får samverka i en stor modell genom vilken en mängd scenarier 
+kommer att simuleras.  
+Vindkraftverken kommer att modelleras som tidsserier av producerad el. Dessa sekvenser kan 
+antingen baseras på historiska data eller genom att skapa stokastiska processer som genererar 
+verkliga värden.  
+Det är mycket viktigt att vattenkraftens förmåga att ställa om mellan olika produktionsnivåer 
+och lagringskapacitet inte överskattas. Därför måste modellen av vattenkraften innehålla alla 
+hydrologiska kopplingar mellan kraftverk i samma älvsystem såsom vattnets gångtider mellan 
+reservoarer, reservoarernas storlek, maximala utsläpp, m.m. Andra begränsningar i styrningen 
+av vattenkraften utgörs av de vattendomar som finns för varje enskilt kraftverk för att skydda 
+miljön kring dessa. Effektiviteten hos de olika kraftverken kommer dock att behöva linjäriseras 
+då de följer komplicerade funktioner. 
+Modellen  av  kraftnäten  bör  innehålla  de  stora  starkströmsledningarna  mellan  norra  och 
+centrala Sverige samt de mindre lokala ledningarna som anses vara av vikt för att balansera 
+vind‐ och vattenkraften.  
+4 
+ 
+Dessa  modeller  kombineras  för  att  analysera  resultat  av  de  scenarion  som  ska  undersökas. 
+Modellerna  kommer  att  beskrivas  med  linjär  optimering  där  målfunktionen  kan  vara  att 
+minimera kostnaderna för producerad el eller att minimera spillet. För att göra detta kommer 
+optimeringsprogrammet GAMS att användas. 
+ 
+ 
+5 
+ 
+2 De ingående systemen 
+2.1 Vindkraft 
+Energin hos vinden har utnyttjats av människan i tusentals år,  ett tidigt  exempel är segel på 
+båtar. Vinddrivna väderkvarnar började användas i Sverige på 1200‐talet. Principen för dessa 
+var  mycket  enkel,  de  segelklädda  armarna  drevs  av  vinden  kring  en  axel.  Denna  axel  var 
+kopplad  till  kvarnhjulen  vilka  började  rotera.  Vindkvarnarna  blev  mycket  populära  längs 
+kusterna i södra Sverige där vindförhållandena är gynnsamma och det saknas stora vattendrag 
+som kunde driva de mer tillförlitliga vattenkvarnarna. Vinden började utnyttjas för kommersiell 
+elproduktion  för  ungefär  30  år  sedan  och  har  sedan  dess  byggts  ut  och  utvecklats  kraftigt, 
+mycket tack vare att vindkraft räknas som ett av de miljövänligaste produktionssätten. (28) 
+Dagens  vindkraftverk  fungerar  enligt  samma  princip  som  de  gamla  väderkvarnarna,  vinden 
+sätter snurr på rotorbladen vars axel är direkt kopplad till en generator som alstrar ström. Ett 
+normalt vindkraftverk alstrar ström vid vindar mellan 4 till 25 m/s. För låga vindhastigheter 
+räcker inte för att driva generatorn och vid för höga hastigheter kopplas kraftverket ifrån då det 
+finns risk för skador på maskineriet. (28) 
+För att effektivt kunna producera el på stor skala behöver rotorbladen ha en diameter av minst 
+25‐50 m och de bör placeras på hög höjd där vindarna både är energirikare och stabilare. Den 
+idag mest ekonomiskt lönsamma storleken på ett vindkraftverk är en rotordiameter på 40‐80 m 
+vars axel placeras ungefär 75‐120 m över marknivå. (28) 
+Till  skillnad  från  många  andra  energikällor  finns  det  idag  ingen  möjlighet  för  reglering  av 
+vindkraftsproduktionen.  Vindkraftsverken  producerar  helt  enkelt  energi  när  det  blåser  och 
+annars inte. Man kan alltså inte förlita sig på att vindkraft ska kunna stå för en för stor del av 
+energibehovet  då  el  måste  produceras  samtidigt  som  den  brukas.  Istället  tänker  man  sig  att 
+vindkraften  ska kunna  avlasta  andra energikällor som under vindstarka  tider kan bygga upp 
+lager, exempelvis genom att fylla magasinen hos vattenkraftverken, som kan utnyttjas vid lägre 
+produktion av vindkraft.  
+2.2 Vattenkraft 
+I Sverige började man även utnyttja energin hos strömmande vatten redan på 1200‐talet då det 
+första kvarnhjulet importerades från Kina. Dessa kunde leverera ett kraftfullt arbete med stor 
+tillförlitlighet. Man insåg snabbt vattnets potential att utföra andra tunga arbeten än att mala 
+säd  men  tyvärr  begränsades  man  av  att  den  utvunna  energin  inte  kunde  ledas  några  längre 
+sträckor  från  vattendragen.  Det  stora  genombrottet  för  vattenkraften  kom  i  och  med  att 
+generatorn och elektriciteten kom på 1800‐talet. Energin i vattnet kunde nu användas till att 
+driva  generatorn  som  omvandlade  rörelsen  till  elektrisk  energi.  Elektricitet  är  ju  som  vi  vet 
+mycket lämpligt för transport dit behovet finns. (28) 
+Ett vattenkraftverk utnyttjar nivåskillnaden mellan två vattenmassor genom att den potentiella 
+energi  som  finns  hos  den  högre  vattenmassan  utvinns  när  detta  vatten  strömmar  genom  en 
+turbin  ned  till  den  lägre  nivån.  Turbinen  driver  en  generator  som  omvandlar  denna 
+rörelseenergi till elektricitet. 
+En av vattenkraftens största fördelar är att vattnet till skillnad från elektricitet kan lagras i stora 
+mängder och över lång tid. Man kan därför spara vatten under perioder med låg förbrukning 
+6 
+ 
+eller ett lågt pris och utnyttja dessa reservoarer under perioder när efterfrågan på el är större.  
+På  grund  av  stora  mängder  smältvatten  från  fjälltrakterna  är  tillrinningen  av  vatten  till 
+reservoarerna  störst  under  vår  och  tidig  sommar.  Det  mesta  av  detta  vatten  lagras  för  att 
+utnyttjas i produktion till vintern när efterfrågan på el är som störst. (1) 
+Andra  mycket  goda  egenskaper  hos  vattenkraft  är  att  inga  dyra  bränslen  förbrukas,  när  ett 
+vattenkraftverk  väl  är  installerat  producerar  det  väldigt  billig  el.  Det  ”bränsle”  som  driver 
+kraftverket är naturligt tillrinnande vatten som fylls på av naturens kretslopp.  Slutligen så har, 
+framförallt på senare tid, vattenkraftens bra miljöegenskaper uppmärksammats.  
+Tack vare dessa mycket positiva egenskaper, stundtals höga priser för fossila bränslen och då, 
+framförallt norra, Sverige är berikat med flera stora vattendrag har Sverige idag en väl utbyggd 
+vattenkraftproduktion.  Vattenkraften  producerar  idag  c:a  65TWh/år  vilket  motsvarar  nära 
+hälften av Sveriges samlade energiproduktion. Kärnkraft står för ungefär lika mycket och övriga 
+produktionssätt står endast för ett par procent sammanlagt (13).  
+Totalt finns idag omkring 1800 vattenkraftverk i landet varav drygt 200 räknas som stora, alltså 
+kraftverk med en installerad effekt större än 10MW. Det största vattenkraftverket i Sverige är 
+Harsprånget i Luleälven med en installerad effekt av 977MW som levererar 2,2TWh i snitt per 
+år. Det största magasinet i landet är vår största sjö, Vänern med ungefär 9,4 miljarder m3(27).  
+Allt vatten i magasinen går dock inte att utnyttja då det finns regler för hur magasinens nivåer 
+får höjas eller sänkas och hur stora eller små genomsläpp som får göras för att störa naturen så 
+lite som möjligt. Dessa regler utgörs av domstolsbeslut, så kallade vattendomar, tagna i landets 
+sex olika miljödomstolar. (1) 
+Eftersom el inte kan ”sparas i ledningarna” måste det hela tiden produceras lika mycket ström 
+som  förbrukas.  För  att  balansera  produktionen  med  konsumtionen  används  vattenkraftens 
+styrförmåga, detta kallas korttidsreglering då man arbetar med tidsintervall från en timme till 
+ett par dygn. Tidigare nämnda sparande från vår till vinter kallas säsongsreglering och hos vissa 
+stora magasin  högst i älvarna  använder man sig även  av årsreglering för att i någon mening 
+balansera skillnaderna mellan torr‐ och våtår. (1) 
+2.3 Kraftnät 
+I  Sverige  har  vi  historiskt  sett  haft  ett  stabilt  utbyggt  kraftnät,  något  vi  varit  tvungna  till 
+eftersom den mesta produktionen har funnits i norr och den stora konsumtionen i landets södra 
+delar.  Utbyggnaden  av  det  svenska  kraftledningssystemet  började  kring  första  världskriget. 
+1910 stod de första näten med en spänning på 50kV klara och några år senare byggdes västra 
+stamlinjen mellan Trollhättan och Västerås. Då vattenkraftverken i norrland växte både i storlek 
+och antal byggde man landets första 220 kV‐ledning från Krångede vid Indalsälven till Hofors i 
+södra dalarna och Stockholm. År 1951 invigde Sverige världens första ledning på 400 kV mellan 
+Harsprångets kraftstation i Luleälven och Hallsberg. Idag är det svenska elnätet cirka 62 000 mil 
+långt varav 26 000 mil är underjordisk kabel och 36 000 mil är luftledning (22).  
+Det svenska kraftnätet är uppbyggt i tre nivåer, stamnätet, regionalnät och lokalnäten. Det är till 
+stamnätet som större produktionsanläggningar kopplar in sin produktion och det är också på 
+denna  nivå  som  landets  olika  delar  binds  samman  med  varandra  och  med  andra  länder.  I 
+stamnätet  används  huvudsakligen  spänningsnivåerna  400kV  och  220kV.  I  Sverige  ägs  och 
+7 
+ 
+förvaltas stamnätet av staten genom Svenska Kraftnät.  Mätt i sträckning är stamnätet bara en 
+liten del av Sveriges totala kraftnät då dess totala längd är ungefär 1500 mil. (22) 
+Regionalnäten 
+kopplar 
+ihop 
+stamnätet 
+med 
+produktionsanläggningar, 
+stora 
+förbrukningsindustrier och lokalnäten. Lokalnätet står slutligen för spridningen till resterande 
+förbrukare av ström och här har strömmen transformerats ned under 40kV. 
+ 
+ 
+8 
+ 
+3 Optimering  
+Optimeringslära, eller programmering, är en matematisk teori om att lösa ett givet problem på 
+det ”bästa” sättet. Problemen som kan lösas kan vara av väldigt skiftande slag och storlek men 
+de behöver alla kunna beskrivas på matematisk form. Att finna detta sätt att utrycka ett verkligt 
+problem kan många gånger vara det svåraste momentet i lösandet och kräver ofta en del fantasi 
+och mycket rutin.  
+Nedan finns en kort sammanfattning av optimeringslära. För mer information om teori, exempel 
+och lösningsmetoder rekommenderas till exempel (5). 
+För  att  lösa  ett  problem  måste  man  först  och  främst  bestämma  vad  som  menas  med  ”bästa” 
+sättet. Det kan till exempel vara att maximera en vinst för ett företag, att minimera tid för en 
+resa eller hitta den balans mellan risk och förväntad avkastning bland möjliga investeringar som 
+tilltalar mest. Sedan måste man identifiera vilka val som har inverkan på detta värde. Dessa val 
+kallas variabler och det gäller nu att beskriva deras effekt på slutvärdet med en funktion. För en 
+minimering  av  restid  är  vägvalen  som  görs  exempel  på  variabler.  Målfunktionen  är  den 
+matematiska formulering av hur målvärdet beror av dessa variabler, som den totala restiden 
+beror av vägval. 
+I de allra flesta fall finns det krav på hur variablerna får väljas, man kan ju till exempel inte åka 
+längs vägar som inte finns eller snabbare än högsta tillåtna hastighet. Dessa så kallade bivillkor 
+måste också beskrivas på matematisk form. 
+Ett generellt optimeringsproblem ሺܲሻ kan alltså formuleras som 
+ሺܲሻ
+min ݂ሺܠሻ
+          x א ܺ
+ 
+ 
+3.1 
+Där ݂ሺܠሻ är  målfunktionen  som  beror  av  variablerna ܠൌሺݔଵ, … , ݔ௡ሻ୘ och ܺ är  mängden  av 
+tillåtna val av ܠ. Normalt sätt kan denna mängd beskrivas med hjälp ݉ stycken olikhetsvillkor 
+på formen 
+݃௜ሺxሻ൒ܾ௜,
+݅ൌ1, . . , ݉ 
+ 
+3.2
+Andra exempel på bivillkor kan vara att en variabel är binär eller måste vara heltal.  
+Att  problemet  ovan  är  skrivet  som  ett  minimeringsproblem  är  ingen  inskränkning  då  att 
+minimera ݂ሺܠሻ är detsamma som att maximera െ݂ሺܠሻ. Samma resonemang gäller för riktningen 
+på olikheterna i bivillkoren, ݃࢐ሺxሻ൑ܾ࢐ kan istället skrivas som െ݃࢐ሺxሻ൒െܾ࢐.  
+Man brukar dela upp optimeringsproblem i de två huvudkategorierna linjära och icke‐linjära 
+problem  eftersom  metoderna  för  att  lösa  de  olika  problemen  skiljer  sig  mycket  åt.  Medans 
+linjära problem nästan alltid följer relativt enkla metoder och ger resultat som kan analyseras i 
+detalj så kan det många gånger vara nära omöjligt att bevisa att man ens har funnit en optimal 
+lösning för ett icke‐linjärt problem. 
+3.1 Linjär programmering 
+Om målfunktionen och alla bivillkor är linjära funktioner med avseende på variablerna kallas 
+problemet  linjärt.  Ett  linjärt  problem  är  mycket  önskvärt  då  lösandet  av  sådana  är  mycket 
+9 
+ 
+effektivt.  Därför  approximerar  man  gärna  nästan  linjära  funktioner  med  linjära..  Ett  linjärt 
+problem kan skrivas på standardform på två sätt, matrisform (LP) eller funktionsform (LP’) 
+ሺܮܲሻmin ܋܂ܠ  
+                                               ۯܠ൒܊ 
+    ሺܮܲᇱሻmin ∑
+ܿ௝ݔ௝
+௡
+௝ୀଵ
+  
+෍ܽ௜௝ݔ௝൒ܾ௜    ݅ൌ1, … , ݉
+௡
+௝ୀଵ
+ 
+ 
+ݔ௝൒0
+݆ൌ1, … , ݊   
+  
+3.3
+ 
+Om ۯ är  den  (݉ൈ݊)‐matris  som  utgörs  av  elementen ܽ௜௝, ܊ är  vektorn  som  byggs  upp  av ܾ௜, 
+݅ൌ1, … , ݉,  och ܋ den  vektor  som  utgörs  av ܿ௝, ݆ൌ1, … , ݊ är  de  här  två  sätt  att  skriva  exakt 
+samma problem. För den teoretiske matematikern är oftast matrisformen att föredra men den 
+praktiske ingenjören har oftast lättare att utläsa den verkliga tolkningen ur funktionerna i (LP’).  
+Linjära problem har alltid ingen, en eller oändligt många lösningar, aldrig bara exakt två eller 
+15.  Då  både  målfunktionen  och  villkoren  är  linjära  kommer  den  optimala  lösningen  att 
+återfinnas i ett hörn av det tillåtna lösningsområdet, alltså en punkt där minst två bivillkor möts. 
+Om målfunktionens nivåkurvor är parallella med (minst) ett av bivillkoren kan problemet ha 
+oändligt  många  lösningar,  vilka  i  sådant  fall  är  alla  punkter  i  det  tillåtna  området  längs  med 
+detta  bivillkor.  Mindre  bra  formulerade  problem  saknar  lösning  då  olika  bivillkor  motsäger 
+varandra och problemet saknar ett tillåtet lösningsområde. Ett annat problem är om villkoren 
+inte stänger in området tillräckligt väl så att man alltid kan  hitta en bättre lösning ända tills 
+målfunktionens  värde  och  värdet  av  (minst)  en  variabel  är  oändligt.  Det  kanske  enklaste 
+exemplet på ett problem med obunden optimallösning är  
+ሺܮܲሻmin ݔ 
+ݔ൑0 
+3.4
+ 
+ 
+Inom  linjär  optimering  använder  man  vanligen  en  variant  av  simplex‐metoden  för  att  finna 
+lösningen  till  ett  problem.  Eftersom  lösningen  alltid  återfinns  i  (minst)  ett  hörn  av 
+lösningsområdet undersöker denna metod bara målfunktionens värde i ett hörn och ifall värdet 
+förbättras längs något av de villkor som bildar detta hörn. Om värdet förbättras längs riktningen 
+för  ett  bivillkor  söker  metoden  efter  nästa  hörn  längs  detta,  alltså  när  detta  villkor  skär  ett 
+annat. Väl i det nya hörnet upprepas metoden tills man är i ett hörn ur vilket målvärdet inte 
+förbättras längs något av de ingående villkoren. Då har man funnit den optimala lösningen. Om 
+man har ett problem med oändligt antal lösningar kommer metoden att stanna i ett av hörnen 
+av  dessa  lösningar,  i  vilket  hörn  spelar  ju  ingen  roll  då  båda  är  likvärdiga  enligt  problemets 
+formulering. 
+3.2 Icke‐linjär programmering 
+För  ett  icke‐linjärt  problem  är  lösningarna  inte  nödvändigtvis  enkla  och  rätt  fram.  När 
+målfunktionen är olinjär finns även möjligheten att en punkt där derivatan av målfunktionen är 
+noll är den optimala lösningen. Det finns också möjligheter att ett funnet optimum, en punkt ur 
+vilken  ingen  riktning  förbättrar  målfunktionen,  inte  är  det  enda  optimumet.  Inom  icke‐linjär 
+optimering pratar man därför gärna om lokala och globala optimum, ett lokalt optimum är en 
+punkt med ett bättre målvärde än det direkt angränsande området och ett globalt optimum är 
+det eller de lokala optimum med det bästa målvärdet. För problem med olinjära bivillkor kan 
+10 
+ 
+också en punkt längs villkorets rand men mellan två hörn vara mer optimal än hörnen. Allt detta 
+gör  att  det  kan  vara  mycket  svårare  att  finna  den  (globalt)optimala  lösningen  än  vid  linjär 
+programmering. Optimum måste inte ligga i ett hörn mellan två villkor utan kan finnas mitt på 
+villkor  eller  mitt  i  det  tillåtna  området  och  ett  funnet  optimum  behöver  inte  vara  det  bästa 
+värdet då det kan finnas fler optimala punkter.  
+Endast för så kallade konvexa problem  där  man optimerar en  konvex funktion, ݂ሺܠሻ, över  en 
+konvex mängd, ܺ, kan man vara säker på att det garanterat finns ett globalt optimum som hittas 
+med enkla metoder. En konvex funktion beskrivs enklast genom att funktionen av medelvärdet 
+av två punkter är mindre än medelvärdet av funktionen i dessa två punkter, alltså 
+  
+݂൬1
+2 ܠ൅1
+2 ܡ൰൑1
+2 ݂ሺܠሻ൅1
+2 ݂ሺܡሻ 
+3.5
+ 
+ 
+En kvadratisk funktion är ett enkelt exempel på en konvex funktion. En konvex mängd är en 
+mängd där en linje mellan två punkter inom mängden inte kan skära mängdens gräns, alltså 
+om ܠ, ܡא ܺ ݏå ܽܠ൅ሺ1 െܽሻܡא ܺ där 0 ൑ܽ൑1. För problem som inte är konvexa kan det vara 
+mycket svårt att visa att ett lokalt funnet optimum även är den globalt optimala lösningen.  
+För konvexa problem  finns flera  mer eller  mindre effektiva lösningsmetoder som baseras på 
+simplex‐metoden,  skillnaden  är  att  man  inte  bara  söker  genom  hörnor  och  längs  bivillkoren 
+utan målfunktionens gradient beräknas och följs för varje iteration. Detta upprepas tills man 
+kommit i någon mening tillräckligt nära optimala värdet.  
+På grund olinjära problems mycket mer komplicerade lösningsförfarande ska modellen i detta 
+arbete  vara  linjär.  För  mer  information  om  olinjära  problem  och  lösningsmetoder 
+rekommenderas exempelvis (5). 
+3.3 Heltalsprogrammering 
+Om minst en av variablerna endast kan anta heltalsvärden, till exempel ett antal av någonting, 
+får man ett så kallat heltalsproblem. Heltalsproblem är betydligt mer komplicerade att lösa än 
+vanliga linjära och olinjära problem och kräver ofta betydligt mer tid och datorkapacitet. Detta 
+beror  på  att  det  nu  inte  finns  ett  stort  sammanhängande  område  av  tillåtna  lösningar  utan 
+många spridda punkter av tillåtna lösningar. 
+Standardförfarandet  vid  lösandet  av  heltalsproblem  är  att  först  lösa  problemet  utan 
+heltalskravet,  för  att  sedan  utgå  ifrån  denna  lösning  för  att  finna  den  bästa  heltalslösningen. 
+Vilken metod som används för att finna heltalslösningen varierar men de bygger oftast på att 
+dela in det tillåtna området i många underområden i ett sökträd. Redan ett problem med två 
+heltalsvariabler  och  totalt  12  tillåtna  lösningspunkter  ger  ett  sökträd  med  7  noder  för  vilka 
+optimalvärden  och  optimallösningar  måste  beräknas  och  sparas.  Moderna  lösare  har  dock 
+mycket sofistikerade metoder för att korta lösningstiderna. Oftast nöjer sig lösaren också med 
+en  i  någon  mening  ”tillräckligt  optimal  lösning”  snarare  än  den  absolut  mest  optimala.  Detta 
+görs  genom  att  jämföra  optimalvärdet  i  noden  med  det  optimala  värde  som  erhölls  utan 
+heltalskravet, om skillnaden är tillräckligt liten nöjer sig lösaren med denna lösning. 
+11 
+ 
+Eftersom  heltalsvariabler  försvårar  lösandet  mycket  försöker  man  undvika  att  formulera  sitt 
+problem med sådana. Ofta finns knep att använda sig av för att åtminstone hålla nere antalet 
+binära  variabler  något.  Till  exempel  kan  många  heltalsvariabler  som  är  direkt  beroende  av 
+andra heltalsvariabler många gånger modelleras som fria variabler, beroendet och egenskaper 
+hos den optimala lösningen kommer se till att variablerna endast antar heltal i lösningen.  
+En vanlig variant av heltalsproblem är så kallade binära problem där minst en variabel endast 
+kan  anta två värden, 0 och 1. Binärvariabler används ofta för  att  beskrivningen  om  något  är 
+avställt eller används. Ett exempel kan vara kostnaden för produktion i en fabrik som antingen 
+kan  vara  stängd  och  då  inte  kosta  någonting  men  om  fabriken  används  beror 
+produktionskostnaden dels på en fast kostnad för att hålla fabriken igång och dels en kostnad 
+som  varierar  linjärt  med  produktionsstorleken.  Om ܲ är  priset  för  produktionen  får  man  då 
+alltså 
+ܲൌܥ· ݖ൅ܿ· ݔ
+ݔ൏ܭ· ݖ
+ݔ൒0
+ݖא ሼ0,1ሽ
+ 
+ 
+3.6
+ 
+ 
+Där variabeln ݔ anger antalet producerade enheter, binärvariabeln ݖ är 1 om fabriken används 
+och  0  annars. ܥ, ܿ och ܭ anger  respektive  fasta  kostnaden  för  att  hålla  fabriken  igång, 
+produktionskostnaden per enhet och den maximala produktionen. Binära optimeringsproblem 
+är något lättare att lösa än problem med fria heltalsvariabler men fortfarande inte önskvärda.  
+3.4 Stokastisk programmering 
+För att kunna lösa ett optimeringsproblem behöver alla parametrar tilldelas värden. Hittills har 
+dessa värden antagits vara kända och deterministiska men i verkligheten är tyvärr många av de 
+värden som skall användas behäftade med osäkerheter som inte alltid går att bortse från.  
+Om  variationerna  av  de  osäkra  parametrarna  är  små  kan  man  klara  sig  med  att  analysera 
+lösningens robusthet. En robust lösning är en lösning vars målvärde ändras mycket lite då de 
+osäkra parametrarna ändras och som framförallt fortfarande producerar tillåtna lösningar vid 
+små  förändringar.  En  lösnings  robusthet  analyseras  enklast  med  hjälp  av  dualvariabler.  Mer 
+avancerade analyser av robustheten bygger på att man tillåter små brott mot bivillkoren men 
+att dessa brott straffas hårt i målfunktionen. Sådana metoder kommer inte att nyttjas i detta 
+arbete. 
+Om  variationerna  istället  är  mycket  stora,  till  exempel  om  modellen  är  beroende  av  vädrets 
+utfall  över  6  månader,  måste  man  istället  använda  så  kallad  stokastisk  programmering.  I  ett 
+stokastiskt  problem  är  minst  en  parameter  beskrivs  som  en  sannolikhetsfunktion.  Denna 
+sannolikhetsfunktion delas in i ett antal möjliga utfall och sannolikheten för att var och ett av 
+dessa inträffar.  
+Ett  stokastiskt  optimeringsproblem  kategoriseras  av  när  besluten  om  planering  måste  göras. 
+Den enklaste typen är ett problem i ett steg där planerna måste fastställas innan utfallet från de 
+osäkra variablerna är känt. Sådana problem kan ofta vara svåra att lösa om skillnaderna mellan 
+de olika utfallen är stora då det kan vara svårt att finna någon lösning som är tillåten för alla 
+utfall. 
+12 
+ 
+Betydligt  intressantare  är  ett  så  kallat  tvåstegsproblem  där  planen  måste  fastställas  innan 
+utfallen är kända men man ges en chans att (till en högre kostnad) rätta till vissa variabler i 
+efterhand. Vidare finns problem i fritt antal steg där man ges fler chanser att rätta till planerna 
+varefter utfallen blir kända.  
+Ett enkelt exempel är när en bonde ska planera sin åkermark, han har flera olika grödor att välja 
+mellan  som  ger  olika  mycket  vinst.  Dock  så  går  priset  på  en  gröda  ner  om  bonden  vill  sälja 
+utöver en given volym av denna varför det inte bara är att enbart odla den gröda som betalar 
+bäst. Det som gör detta problem riktigt svårt är att storleken av skörden är beroende av vädret 
+varför det är mycket svårt att säga exakt hur mycket som ska odlas av varje gröda. Betänker 
+man  sedan  att  bonden  måste  producera  minst  en  viss  mängd  av  några  olika  grödor  för  att 
+utfodra sin boskap får man ett riktigt komplext problem.   
+Om  man  antar  att  bonden  planerar  sina  odlingar  efter  bästa  förmåga  och  sedan  väntar  in 
+skörden för att se vad vinsten blev eller om det ens finns tillräckligt för utfodringen (alltså om 
+lösningen är tillåten) så är detta ett enstegsproblem. Om bonden har möjlighet att efter skörden 
+köpa in de grödor som saknas för utfodring till ett högre pris än i första steget har man istället 
+ett  tvåstegsproblem  som  alltid  kommer  att  generera  tillåtna  lösningar.  Ett  flerstegsproblem 
+uppstår ifall bonden kan odla sin mark i flera omgångar under planeringsperioden, där utfallet 
+av en skörd är känd när nästa uppdelning av marken görs. 
+3.5 GAMS 
+Att lösa små, en till tre variabler stora, optimeringsproblem kan göras med enkla medel som 
+derivering  för  hand  eller  att  rita  nivåkurvor  över  det  tillåtna  området  på  papper.  Men  när 
+problemen blir större än så eller mer komplicerade behövs hjälp av datorprogram för effektivt 
+lösande. Ett mycket vanlig sådant program heter General Algebraic Modeling System (GAMS).  
+GAMS är som namnet antyder ett program som används för att bygga de modeller som skall 
+lösas, när modellen är klar väljer man ett program som GAMS ska anropa för att utföra själva 
+lösandet  av  modellen.  Att  formulera  optimeringsmodeller  i  GAMS  är  mycket  likt  det  sätt 
+problemen beskrivs i funktionsformen i ekvation 3.3 ovan. Det tillåter mycket bra översikt och 
+det är enkelt att utöka och förbättra modellen genom små tillägg i koden, till exempel genom att 
+lägga till ett extra bivillkor.  
+ 
+ 
+13 
+ 
+4 Grundmodellen av systemet 
+Som tidigare nämnts kräver en modell av detta stora och komplexa system först modeller för de 
+olika  komponenterna  som  ingår.  Dessa  skall  sedan  sammanlänkas  till  den  färdiga  modellen 
+vilket  låter  sig  göras  tack  vare  ett  optimeringsproblems  enkla  natur  där  alla  system  kan 
+formuleras med bivillkor. Genom denna stora modell ska slutligen en mängd möjliga scenarion 
+simuleras och analyseras.  
+De övergripande egenskaperna för modellen är att simuleringarna sker över en vecka och är 
+indelat i tidssteg av storleken en timme.  
+4.1 Vindkraft 
+Produktionen från vindkraftsverken simuleras i modellen av en given tidsserie, ܹ௧.  
+Ett  problem  med  att  ge  optimeringsproblemet  givna  serier  är  att  det  i  verkligheten  skulle 
+motsvara att man redan vid planeringen av driften av vattenkraften nästa vecka har en perfekt 
+prognos  av  vindförhållanden  och  hur  mycket  vindkraft  som  kommer  produceras.  Detta 
+stämmer  naturligtvis  inte  överens  med  verkligheten  där  man  i  stället  för  sådana  perfekta 
+prognoser har väderprognoser från bland andra SMHI att planera efter. 
+4.2 Vattenkraft 
+Modelleringen av vattenkraften är det största och viktigaste momentet i denna modell. Det är av 
+stor vikt att skapa en modell med stor överensstämmelse med verkligheten och som framförallt 
+inte  överskattar  verklighetens  regleringsförmåga.  Driften  av  vattenkraften  är  den  möjlighet 
+modellen har att styra den totala elproduktionen i landets norra delar.  
+De villkor och begränsningar som finns för vattenkraft kan delas upp i tre kategorier. Dels finns 
+fysiska  villkor  så  som  att  vatten  ska  rinna  från  någon  plats  till  någon  annan.  Sedan  finns 
+juridiska  begränsningar  för  hur  regleringen  av  vattnet  får  skötas.  Den  sista  kategorin  är 
+drifttekniska förutsättningar som bland annat beskriver hur elproduktionen beror av vattnets 
+flöden. 
+4.2.1 
+Fysiska begränsningar 
+Först och främst är det av mycket stor vikt att vattnet flödar genom modellen på ett naturligt 
+sätt. Vattnet i modellen måste till exempel rinna från ett magasin till nästa magasin nedströms 
+och kan inte tillåtas ta några andra vägar genom systemet. Vatten får inte heller skapas eller 
+försvinna någonstans längs älvarna.  
+Ett magasins innehåll av vatten en viss tid beror av innehållet ett tidssteg innan, hur mycket 
+som runnit in i magasinet och hur mycket som runnit ut sedan dess.  
+ܯܽ݃ܽݏ݄݅݊݅݊݊݁å݈݈  ൌ݈݃ܽ݉݉ܽݐ ݉ܽ݃ܽݏ݄݅݊݅݊݊݁å݈݈൅ݐ݈݈݅ݎݑ݊݊݁ݐݒܽݐݐ݁݊െݑݐݎݑ݊݊݁ݐ ݒܽݐݐ݁݊ 
+ 
+4.1
+Det  gamla  magasininnehållet  ges  av  innehållet  tiden  innan.  För  första  tidpunkten  finns  dock 
+inget  sådant  utan  man  får  ange  en  parameter  med  ett  startinnehåll, ܯ௦௧௔௥௧,௜.  Storleken  av 
+startinnehållet beräknas med hjälp av parametern ݉௦௧௔௥௧  som är en procentsats av magasinens 
+maximala innehåll. Denna fyllnadsnivå vid simuleringarnas början är i denna modell gemensam 
+för samtliga magasin. 
+14 
+ 
+ܯ௦௧௔௥௧,௜ൌ ݉௦௧௔௥௧· ܯ௜ 
+ 
+4.2
+Där ܯ௜ är den maximala volymen vatten i magasinet.  
+Vatten  kan  rinna  till  ett  magasin  från  flera  olika  källor.  Dels  har  ett  område  en  naturlig 
+tillrinning, ܸ௜, från  olika  små  vattendrag  och  sjöar  som  bland  annat  beror  på  nederbörd  och 
+smältvatten. I ett vattendrag med mer än ett kraftverk kommer styrningen av ett kraftverk att 
+påverka vattenflödet hos nedströms liggande kraftverk. Vatten som tappas eller spills hos det 
+övre kraftverket kommer efter en tid (߬) att nå nedströms liggande magasin som därmed fylls 
+på. Man kan alltså beskriva det tillrunna vattnet för kraftverk ݅ som 
+ݐ݈݈݅ݎݑ݊݊݁ݐ ݒܽݐݐ݁݊ൌܸ௜൅෍ܳ௞,௧ିఛೖ൅ܵ௞,௧ିఛೖ
+௞ఢ௄೔
+ 
+ 
+4.3
+där ܭ௜är mängden av alla direkt uppströms liggande kraftverk. En viktig detalj som kom att visa 
+sig under kartläggningen av älvarna är att vissa magasin spiller vatten i en annan älvfåra än den 
+som turbinerna leder  vattnet till.  Det gör  att ett  kraftverk kan tillhöra  mängden ܭ௜ för  spillet 
+eller tappningen oberoende av varandra och ekvation 4.3 får skrivas om som  
+ݐ݈݈݅ݎݑ݊݊݁ݐ ݒܽݐݐ݁݊ൌܸ௜൅෍ܳ௞,௧ିఛೖ൅෍ܵ௟,௧ିఛ೗
+௞א௅೔
+௞ఢ௄೔
+ 
+ 
+4.4
+Där ܭ௜ är  mängden  kraftverk  vars  turbiner  leder  vatten  direkt  uppströms  till  kraftverk ݅ och 
+ܮ௜är mängden kraftverk vars spillvatten går till kraftverk ݅. 
+Gångtiden (߬) är en komplicerad funktion av bland annat mängden genomsläppt vatten vilket 
+leder till att termen ܳ௜,௧ିఛ೔ är olinjär. Då detta antas ha en relativt liten effekt på slutresultatet 
+och önskemålet är en linjär modell approximeras denna gångtid med ett medelvärde. Hos en 
+modell som denna med diskretiserade tidsteg är inte heller meningen av ݐെ߬ helt självklar om 
+inte  gångtiderna ߬ kan  mätas  i  hela  tidsteg.  Då  modellen  mäter  tiden ݐ i  hela  timmar  och 
+gångtiderna  ofta  är  av  storleksordningen  minuter  behövs  en  metod  för  att  kompensera  för 
+detta. Om gångtiden från kraftverk ݅ är ݄௜ hela timmar och ݉௜ minuter kan man uttrycka dess 
+effekt som ett viktat medelvärde av  ݄௜ och ݄௜൅1 timmar tidigare enligt 
+ܳ௜,௧ିఛ೔ൌ݉௜
+60 ܳ௜,௧ି௛೔ିଵ൅60 െ݉௜
+60
+ܳ௜,௧ି௛೔ 
+ 
+4.5
+ 
+ 
+Ett uttryck för effekten av spillvattnets gångtid tas fram på samma sätt och skiljer sig endast 
+genom att ܳ byts mot ܵ i 4.5.  
+ܵ௜,௧ିఛ೔ൌ݉௜
+60 ܵ௜,௧ି௛೔ିଵ൅60 െ݉௜
+60
+ܵ௜,௧ି௛೔ 
+ 
+4.6
+ 
+ 
+Då gångtiderna mellan vissa kraftverk är så långa som två dygn får man några mycket oönskade 
+egenskaper hos simuleringarna. Bland annat kommer tillrinningen hos det nedströms liggande 
+kraftverket enbart bestå av det från närområdet tillrunna vattnet fram tills det första vattnet 
+från  kraftverket  ovan  når  fram.  Då  det  är  mycket  otroligt  att  kraftverket  ovan  har  varit  helt 
+stängt  under  dagarna  innan  simuleringens  början  läggs  en  extra  term  under  de ݄௜ första 
+15 
+ 
+timmarna  till  så  att  tillrinningen  under  dessa  blir  lika  stor  som  medelvattenföringen  under 
+simuleringsperioden.  
+Det ur magasinet runna vattnet är enkelt summan av tappningen och spill under det aktuella 
+tidssteget 
+ݑݐݎݑ݊݊݁ݐݒܽݐݐ݁݊ൌܳ௜,௧൅ܵ௜,௧ 
+ 
+4.7
+Nu  finns  allt  som  behövs  för  att  beskriva  vattnets  flöde  i  systemet  som  en  linjär  modell 
+beroende  av  lokal  tillrinning,  genomsläpp,  spill,  gångtider  och  magasinens  innehåll  vid 
+starttiden.  Tillrinningen,  gångtiderna  och  startinnehållen  är  parametrar  som  bestäms  på 
+förhand.  Genomsläpp och spill är optimeringsvariabler vilka kan styras för att finna optimala 
+driftplaner. 
+Andra  fysiska  begränsningar på systemet  är  exempelvis storleken på magasinen, hur mycket 
+vatten  man  kan  släppa  genom  turbinerna  eller  spillvägar  och  hur  snabbt  man  kan  ställa  om 
+mellan olika genomsläpp. Dessa har dock sällan någon betydelse för modellen då det oftast finns 
+minst lika hårda juridiska begränsningar. 
+4.2.2 
+Juridiska begränsningar 
+För varje ingrepp i ett vattendrag idag finns det minst en så kallad vattendom som bestämmer 
+hur detta ingrepp får se ut och hur det får nyttjas. Vattendomarna är domstolsbeslut som fattas 
+av Sveriges olika miljödomstolar för att förhindra att man förstör eller för negativt förändrar 
+miljön kring kraftverken och dammarna. 
+Vattendomarna  begränsar  exempelvis  vilka  högsta  och  lägsta  nivåer  man  får  hålla  i 
+vattenmagasinen eftersom man vill undvika att sjöar torkas ut och strandkanter översvämmas. I 
+modellen anges detta som gränser för största och minsta tillåtna volym i vattenmagasinen.  
+ܯ௜൑ܯ௜൑ ܯ௜ 
+ 
+4.8
+för alla magasin ݅. För att förenkla arbetet något skalar man om volymerna till så kallade aktiva 
+volymer vilka bättre återspeglar hur mycket vatten man har att arbeta med. Ett magasins aktiva 
+volym är helt enkelt den faktiska volymen minus den minsta tillåtna. Detta gör att den undre 
+gränsen för den aktiva volymen är noll och den övre gränsen är precis den volym vatten man 
+kan nyttja. Man kan därför skriva om 4.7 som 
+0 ൑ܯ௜൑ ܯ௜ 
+ 
+4.9
+Där ܯ௜ nu är den mängd vatten som kan tömmas från magasinet och ܯ௜ är den aktiva volymen. 
+I  vattendomarna  anges  även  gränser  för  hur  stora  och  små  tappningar  som  får  göras  i  varje 
+kraftverk. Vanligast är att den maximala tappningen i kraftverken även är den största som tillåts 
+i domen och att tappningen tillåts att stängas av helt. Domar för minsta tappningar, så kallade 
+mintappningar, finns oftast för att säkerställa ett jämnt flöde av vatten nedströms kraftverket. 
+Dessa utformas vanligen med antingen ett momentant minimum eller ett minimum för dygns‐ 
+eller  veckomedel.  Gränserna  för  mintappningarna  kan  också  variera  med  tiden  på  året  eller 
+t.o.m. med tiden på dygnet eller veckodagarna. 
+Maxtappning  och  momentan  mintappning  är  de  enklaste  domarna  att  beskriva  som  bivillkor 
+och är  
+16 
+ 
+ܳ௜,௧൑ܳ௜ 
+ 
+4.10
+ 
+respektive 
+ܳ௜൑ܳ௜,௧ 
+ 
+4.11
+Där ܳ௜ för vissa kraftverk även är beroende av tiden t och därför blir ܳ௜,௧. 
+Veckomedel modelleras enkelt då simuleringarna sker över just en vecka 
+ܳ௜൑
+1
+168 ෍ܳ௜,௧
+௧
+ 
+ 
+4.12
+Medan dygnsmedel får den något mer komplicerade ekvationen 
+ܳ௜൑1
+24 ෍ܳ௜,௧
+௧אௗೖ
+׊ ݇א 1, … ,7 
+ 
+4.13
+Där ݀௞ representerar timmarna för dygn ݇ under veckan, till exempel 
+݀ଵൌ1, 2, … , 24 och ݀ସൌ73, 74, … , 96
+ 
+4.14
+För  några  stationer  finns  även  begränsningar  i  hur  stora  förändringar  i  tappningen  som  får 
+göras  inom  en  viss  tid,  vanligen  ett  dygn.  Detta  villkor  formuleras  matematisk  genom  att 
+begränsa differensen mellan den största och minsta tappningen inom ett givet tidsintervall som 
+i ekvation 4.15 är ett dygn. 
+݉ܽݔ൫ܳ௜,௧൯െ݉݅݊൫ܳ௜,௧൯൑ܳ෨௜   där   ݐ, ݐᇱא ݀௞׊ ݇א 1, … , 7 
+ 
+4.15
+Funktionerna ݉ܽݔሺݔሻ och ݉݅݊ሺݔሻ kräver binära lösningsmetoder och bivillkor 4.15 bör därför 
+ersättas med ett enklare uttryck som ger samma effekt. Eftersom differensen mellan det största 
+och minsta värdet garanterat är den största av alla differenser kan man enkelt nog bara ta bort 
+de binära funktionerna och i övrigt behålla samma villkor. Man får då att 
+ܳ௜,௧െܳ௜,௧ᇱ൑ܳ෨௜    där   ݐ, ݐᇱא ݀௞׊ ݇א 1, … , 7 
+ 
+4.16
+I  en del kraftverk tillåts  endast en del av  magasinet att  användas för kortare  regleringar, till 
+exempel  kan  det  finnas  begränsningar  i  hur  stora  skillnaderna  mellan  högsta  och  lägsta 
+vattenstånd får vara under en vecka. Då vi inte anger nivåerna i magasinen i ytans höjd utan i 
+procent av magasinets maximala innehåll i timenheter krävs det en metod att tolka om dessa 
+krav. Enklast är att anta att sjöns area är lika stor oberoende av vattenståndet, vilket betyder att 
+höjdnivåerna  direkt  kan  översättas  till  modellens  skala.  Ett  magasin  med  begränsningar  i 
+nivåförändringen per vecka ger detta bivillkor till modellen 
+ܯ௜,௧െܯ௜,௧ᇱ൑ܯ෩௜ 
+4.17
+ 
+Magasin med begränsade nivåändringar per dag får samma tillägg som ekvation 4.16. 
+Hos ett fåtal kraftverk finns domar som begränsar hur snabbt tappningen för ökas från att ha 
+varit avstängd. I de flesta fall är denna tid betydligt kortare än denna modells tidssteg på en 
+timme varför man kan bortse från dessa men i ett fall måste ändå hänsyn tas till detta krav. I 
+17 
+ 
+detta fall är kravet att det ska ta en timme från nolltappning tills en tappning på 100 m3/s har 
+uppnåtts. Alltså att 
+ܳ௜,௧൑100 om ܳ௜,௧ିଵൌ0
+4.18
+ 
+Ett bivillkor som 4.18 är dock binärt vilket kräver betydligt mer avancerade och långsammare 
+lösningsmetoder och bör därför skrivas om som 
+ܳ௜,௧൑100 ൅ܥ· ܳ௜,௧ିଵ
+ 
+4.19
+ 
+där ܥ är ett mycket stort värde. 
+Både ekvation 4.18 och 4.19 medger dock möjligheten att istället för att stänga tappningen helt 
+välja att tappa en väldigt liten mängd för att fritt kunna välja tappningen i nästa tidssteg. För att 
+minska sådana effekter kan man välja ett relativt lågt värde på ܥ.  
+En  sista  vanligt  förekommande  begränsning  av  styrningen  av  kraftverken  är  att 
+dämningsgränsen är beroende av det vattenflöde som för stunden finns i älven. Man får alltså 
+hålla vattnet vid en viss nivå om flödet överstiger ett visst värde och en annan högre nivå om 
+flödet är ännu högre. Domar av den här typen finns oftast för små dammar i slutet av älvarna, 
+längst nedströms, och den praktiska betydelsen är tillrunnet vatten inte får sparas i några större 
+mängder. Då även insamlad information om dessa magasin visar på försumbart små volymer 
+blir tolkningen att magasinen saknar aktiv volym. 
+4.2.3 
+Målnivåer 
+Det är av stor vikt att på något sätt modellera värdet av sparat vatten vid simuleringsperiodens 
+slut. Om ingen hänsyn togs till detta kommer modellen att utnyttja så mycket vatten som möjlig 
+för den simulerade perioden och inte spara något till följande period. Den vanligaste metoden 
+vid mindre simuleringar är att ange ett värde på det vatten som finns kvar vid simuleringens 
+slut. Normalt sett görs detta genom att estimera ett genomsnittligt framtida försäljningspris för 
+el och multiplicera detta med hur mycket el som kan produceras för det sparade vattnet. Värdet 
+för detta adderas i målfunktionen och man får en mer långsiktig plan.  
+I  denna  modell  används  en  annan  betydligt  enklare  metod  där  ingen  värdering  av  elpriser 
+behövs,  nämligen  målnivåer.  Denna  metod  används  också  exempelvis  på  kraftverkens  olika 
+driftcentraler.  Målnivån  räknas  dock  oftast  ut  med  hjälp  av  bland  annat  estimeringar  av 
+framtida elpris. Metoden går helt enkelt ut på att man i början av perioden anger en nivå för hur 
+mycket vatten som ska finnas i magasinen vid periodens slut. Målnivåerna beräknas precis som 
+startnivåerna  med  hjälp  av  en  parameter, ݉௦௟௨௧ ,    som  anger  hur  stor  del  av  den  maximala 
+volymen  som  skall  vara  fylld  vid  simuleringens  slut.  Även ݉௦௟௨௧ antas  vara  samma  för  alla 
+magasin. 
+ܯ௦௟௨௧,௜ൌ ݉௦௟௨௧· ܯ௜ 
+ 
+4.20
+Både i verkligheten och i en matematisk modell är det mycket svårt och ofta omöjligt att träffa 
+denna målnivå exakt. Att ställa en exakt träff som ett bivillkor i modellen leder ofta tillsammans 
+med  de  andra  villkoren  till  att  problemet  saknar  lösningar.  Varför  man  istället  behöver 
+formulera detta som en olikhet där modellen tillåts missa målnivån något, säg maximalt en halv 
+procent, uppåt. Resultatet blir ett bivillkor av formen 
+18 
+ 
+ܯ௦௟௨௧,௜൑ܯ௜,௧௜ௗଵ଺଼൑1,005 · ܯ௦௟௨௧,௜ 
+ 
+4.21
+Att ställa gemensamma krav på samtliga magasins slutnivåer ger dels en enkel modell men är 
+också viktigt då en optimeringsmodell annars kommer att finna ett sätt höja produktionen. Om 
+man till exempel istället krävde att genomsnittet i magasinens slutnivåer ska uppfylla målnivån 
+kommer modellen att välja en lösning där magasinen högt i älvarna töms i större utsträckning 
+och de lägre magasinen fylls för att kompensera, detta eftersom vattnet då hinner passera fler 
+kraftverk  under  den  simulerade  tidsperioden.  En  sådan  lösning  är  inte  önskvärd  då  vattnet 
+tappar i värde allt eftersom det rinner längs älvarna och efter den simulerade veckan står man 
+inför en mycket dålig situation. 
+4.2.4 
+Elproduktion 
+Mängden el  som produceras i  ett  vattenkraftverk är  en invecklad  olinjär funktion som bland 
+annat beror av mängden vatten som strömmar genom kraftverkets turbiner och höjdskillnaden 
+mellan  vattennivåerna  upp‐  och  nedströms.  För  att  denna  modell  ska  vara  linjär  måste 
+kraftproduktionen 
+approximeras 
+som 
+en 
+linjär 
+funktion 
+av 
+vattenmängden 
+som 
+genomströmmar  turbinerna.  Eftersom  fallhöjden  har  en  förhållandevis  mindre  inverkan  är 
+denna approximation inte allt för grov.  
+Tyvärr  ökar  inte  elproduktionen  linjärt  med  genomströmningen  utan  följer  en  för  varje 
+kraftverk individuell och ganska komplicerad funktion. Vissa nivåer på genomströmning har en 
+bättre 
+så 
+kallad 
+produktionsekvivalent, 
+alltså 
+kvoten 
+av 
+producerad 
+energi 
+och 
+genomströmningen  ሺߛሺܳሻൌ
+ுሺொሻ
+ொሻ.  Dessa  toppar  är  att  föredra  då  man  vid  dessa 
+tappningsnivåer får ut högst effekt för vattnet. För att kunna förenklat beskriva elproduktionen 
+som en linjär funktion av genomströmningen och behålla effekten av dessa toppar behövs en 
+styckvis linjär funktion som har brytpunkter mellan de linjära segmenten i just dessa toppar. 
+Eftersom lösningen till ett linjärt problem alltid återfinns i ett hörn av den tillåtna mängden kan 
+man genom att låta brytpunkterna överensstämma med produktionstopparna få modellen att 
+favorisera dessa toppar. 
+För 
+att 
+ett 
+segment 
+ska 
+användas 
+fullt 
+innan 
+nästa 
+påbörjas 
+bör 
+segmentens 
+produktionsekvivalenter vara avtagande med högre segment. En optimal lösning kommer då att 
+nyttja  ett  lägre  segment  fullt  ut  innan  nästa  påbörjas,  dock  med  några  få  undantag.  De 
+undantagen är då det finns övre gränser för hur mycket el som ska produceras, till exempel om 
+man ska leverera el mot en given last eller om det finns en övre gräns för hur mycket som kan 
+levereras.  
+Då problemet som undersöks i denna rapport är av just denna natur bör man därför se till att 
+undersöka de optimala lösningarna ifall detta inträffat. I sådant fall kan man också tänka sig att 
+denna felaktiga lägre effekt för nyttjat vatten istället beror av en blandning av nyttjat och spillt 
+vatten.  
+Ett annat sätt att försäkra sig mot sådana lösningar är att införa extra krav för att förhindra att 
+ett nytt segment används utan att det undre är fullt utnyttjat. Detta löser man genom att införa 
+den binära variabeln ܼ som är noll då det finns ledig kapacitet i ett undre segment och ett då 
+nästa får nyttjas. 
+19 
+ 
+ܳ௜,௝,௧൑ܼ௜,௝ିଵ,௧כ ܳ௜,௝   där  ܼ௜,௝,௧ൌ൝
+0
+݋݉ܳ௜,௝,௧൏ܳ௜,௝
+1
+݋݉ܳ௜,௝,௧ൌܳ௜,௝
+ 
+4.22
+ 
+ 
+Detta resulterar i att man får ett heltalsproblem med många binära variabler. Som beskrivs i 
+avsnitt 3.3 är stora heltalsproblem arbetsintensiva och ibland kan resultera i konstiga lösningar 
+varför  vi  väljer  att  istället  kontrollera  lösningen  och  anse  en  lägre  verkningsgrad  bero  på 
+inblandning av spill. 
+Då nödvändig fakta för en mer noggrann modell av kraftverken inte varit möjlig att erhålla, eller 
+kunnat användas i denna rapport, har samtliga kraftverk modellerats med två linjära segment 
+med en brytpunkt vid 75 % av den maximala genomströmningen. De maximala tappningarna 
+genom de olika segmenten blir alltså 
+ܳ௜,௦௘௚௠௘௡௧ଵൌ0.75 · ܳ௜ 
+ 
+ܳ ௜,௦௘௚௠௘௡௧ଶൌܳ௜െܳ௜,௦௘௚௠௘௡௧ଵൌ0.25 · ܳ௜ 
+ 
+4.23
+ 
+Detta val har gjorts då erfarenheten säger att den bästa verkningsgraden ligger ungefär vid just 
+75% (29). Efter brytpunkten antas produktionsekvivalenten vara 5 procentenheter lägre.  
+ 
+Figur  4.1:  Elproduktionen  som  funktion  av  tappningen  i  kraftverken.  Produktion  och  tappning  anges  i 
+procent av de enskilda kraftverkens maximala produktion och tappningar.  
+Elproduktionen  vid  ett  vattenkraftverk  approximeras  alltså  med  en  rätlinjig  funktion  från 
+nollpunkten  (0  TE  genomströmning  ger  0  MWh  producerad  el)  till  brytnivån,  75  %  av  max 
+genomströmning. Vid tappningar över brytpunkten approximeras produktionen av en rät linje 
+från brytpunkten till maximal tappning, där man erhåller maximal effekt.  
+ De  marginella  produktionsekvivalenterna, ߤ௜,௝,  motsvaras  av  funktionens  lutning  i  de  två 
+segmenten och kan lösas ur följande villkor 
+0%
+20%
+40%
+60%
+80%
+100%
+0%
+25%
+50%
+75%
+100%
+Elproduktion i procent av maximal
+Tappning i procent av maximal
+20 
+ 
+ߤ௜,௦௘௚௠௘௡௧ଶൌ0,95 · ߤ௜,௦௘௚௠௘௡௧ଵ
+ߤ௜,௦௘௚௠௘௡௧ଵ· ܳ௜,௦௘௚௠௘௡௧ଵ൅ߤ௜,௦௘௚௠௘௡௧ଶ· ܳ௜,௦௘௚௠௘௡௧ଶൌܪ௜ 
+4.24
+ 
+ 
+Vilket ger för segment 1 
+ 
+ߤ௜,௦௘௚௠௘௡௧ଵൌ
+ܪ௜
+ܳ௜,௦௘௚௠௘௡௧ଵ൅0.95 · ܳ௜,௦௘௚௠௘௡௧ଶ
+ൌ
+ܪ௜
+0.75ܳ௜൅0.95 · 0.25ܳ௜
+ 
+4.25
+ 
+ 
+och för segment 2 
+ߤ௜,௦௘௚௠௘௡௧ଶൌܪ௜െ0.7595ܪ௜
+ܳ௜,௦௘௚௠௘௡௧ଶ
+ 
+4.26
+ 
+ 
+Den totala produktionen från vattenkraftverk ݅ under timme ݐ blir då alltså 
+ܪ௜,௧ൌ෍ߤ௜,௝· ܳ௜,௝,௧
+௝
+ 
+4.27
+ 
+ 
+Där ܳ௜,௝,௧ begränsas av bivillkoren i 4.23. I samtliga tidigare villkor som beror av flödet byts nu 
+ܳ௜,௧ mot ∑ܳ௜,௝,௧ 
+௝
+för att passa detta nya sätt att uttrycka tappningen ܳ. 
+4.3 Transmission, övrig produktion och last 
+I denna grundmodell tas ingen större hänsyn till elnätets begränsningar. Det antas att det inte 
+finns några interna begränsningar, vilket innebär att produktionen i visst kraftverk inte behöver 
+ta hänsyn till vad övriga kraftverk i samma del av nätet producerar. De enda begränsningar hos 
+elnätet  som  modelleras  är  kapaciteten  i  förbindelserna  med  andra  områden,  alltså  södra 
+Sverige, Norge och Finland i denna modell. 
+Man måste ta hänsyn till att först och främst så förbrukas en del av den energin som produceras 
+i  norrland  i  just  norrland  och  tar  därför  inte  upp  något  utrymme  av  kapaciteten  för 
+transmission.  Alltså  blir  den  maximalt  tillåtna  totalt  producerade  energin  summan  av  den 
+inhemska förbrukningen och den maximala transmissionskapaciteten. I modellen anges denna 
+inhemska förbrukning som en tidsberoende parameter kallad ܦ௧. 
+I  norrland  finns  även  annan  produktion  än  vatten‐  och  vindkraft.  Inhemsk  produktion  från 
+främst kraftvärmeverk simuleras även den som en given tidsserie kallad ܩ௧. 
+Som nämns i inledningen av den här rapporten finns en begränsning på hur mycket effekt som 
+kan levereras mellan norra och södra Sverige över snitt 2. Denna kapacitet modelleras med en 
+tidsberoende parameter ܵ݊݅ݐݐ2௧ . Utöver ledningarna över snitt 2 kan vi även leverera överskott 
+av  producerad  el  i  förbindelser  med  norra  Norge  och  Finland.  Dessa  anges  även  dem  som 
+tidsberoende parametrar ܨ݈݅݊ܽ݊݀௧ och ܰ݋ݎ݃݁௧. 
+De maximala leveranskapaciteterna ger bivillkoret att den maximala mängden energi som kan 
+produceras är summan av förbrukningen inom vårt område och mängden som kan skickas till 
+andra områden. 
+21 
+ 
+෍ܪ௜,௧
+௜
+൅ ܹ௧൅ܩ௧൑ܦ௧൅ܵ݊݅ݐݐ2௧൅ܨ݈݅݊ܽ݊݀௧൅ܰ݋ݎ݃݁௧ 
+4.28
+ 
+4.4 Den sammansatta modellen 
+Att sätta samman de olika delmodellerna till en större orsakar tack vare optimeringsproblemets 
+enkla  natur  inga  problem  då  allt  hittills  är  uttryckt  i  variabler,  bivillkor  och  parametrar  för 
+dessa bivillkor. Den sammansatta modellen är summan av de små, en modell med alla variabler, 
+parametrar  och  bivillkor.  Det  enda  som  behövs  nu  är  en  målfunktion.  Då  det  överhängande 
+målet är att producera så mycket el som möjligt för det tillgängliga vattnet har målfunktionen 
+valts till 
+max ෍ܪ௜,௧
+௜,௧
+ 
+4.29
+ 
+Som  illustreras  i  Figur  4.2  kommer  modellen  först  att  täcka  behovet  av  el  inom  norrland, 
+därefter  levereras  så  mycket  som  möjligt  över  snitt  2  till  södra  Sverige.  Finns  det  sedan  ett 
+överskott av producerad energi exporteras detta till Norge och Finland. När även den maximala 
+kapaciteten för export är nådd uppstår spill. 
+ 
+Figur 4.2: Ett exempel på den totala produktionen i snitt per vecka uppdelad efter förbrukning, leverans, 
+export eller spill. 
+Värdet  av  spillt  vatten  bestäms  som  antalet  timenheter  spillt  vatten  vid  ett  kraftverk  utöver 
+eventuellt domspill multiplicerat med kraftverkets verkningsgrad. Detta ger hur mycket detta 
+spill hade varit värt om det istället hade kunnat nyttjas för produktion. 
+0
+2000
+4000
+6000
+8000
+10000
+12000
+14000
+16000
+3
+7
+12
+16
+20
+25
+29
+33
+38
+42
+47
+51
+Förbrukning [MWh/h]
+Vecka
+Spill
+Export
+Snitt 2
+Norrland
+22 
+ 
+ܵ݌݈݈݅ൌ෍ߤ௜,௦௘௚௠௘௡௧ଵ· ൫ܵ௜,௧െܵ௜൯
+௜,௧
+ 
+4.30
+ 
+ 
+ 
+23 
+ 
+5 Simuleringar av grundmodellen 
+Modellen  har  drygt  3000  parametrar  vilka  alla  behöver  värden.  Till  parametrarna  som  styr 
+vattenflöden och vattenkraft användes insamlad data från år 2007. Tillgången till data från detta 
+år var mycket god och 2007 var ett relativt normalt år vad gäller flöden och magasinsnivåer 
+vilket  kan  ses  i  Figur  5.1  nedan.  Även  förbrukning,  transmissionskapaciteter  och 
+kraftvärmeproduktionen hämtades från år 2007. Data för produktion från vindkraft kan dock 
+inte  erhållas  från  tidigare  år  då  modellen  ska  användas  för  att  simulera  framtida 
+utbyggnadsnivåer. 
+ 
+Figur 5.1: Magasinsnivåerna i procent av maximala i Sverige de senaste åren jämfört med max, median och 
+minvärden mellan 1950 – 2004. Bilden är hämtad från (26) 
+5.1 Indata och scenarier 
+När  modellen  för  elproduktionen  i  norra  Sverige  står  klar  skall  den  nyttjas  för  att  simulera 
+utfallen  för  olika  möjliga  förutsättningar.  Detta  arbetes  huvuduppgift  är  att  simulera  och 
+analysera vad som sker vid olika nivåer av utbyggnad av vindkraft. Hänsyn måste också tas till 
+de olika förutsättningar som gäller under olika tider på året och som kan påverka detta resultat. 
+I  det  här  arbetet  har  först  12  olika  modeller  skapats  vilka  motsvarar  en  vecka  under  varje 
+månad, de veckor som valdes anges i Tabell 5.1. De olika förutsättningarna som gäller under de 
+olika  veckorna  beskrivs  nedan  samt  även  vilka  ytterligare  variationer  av  modellerna  som 
+gjordes. 
+Månad  Jan 
+Feb 
+Mars 
+April
+Maj
+Juni
+Juli
+Aug
+Sep 
+Okt 
+Nov  
+Dec
+Vecka 
+3 
+7 
+12 
+16 
+20
+25
+29
+33
+38
+42 
+47 
+51
+Tabell 5.1: Simulerade veckor 
+5.1.1 
+Vindkraft 
+För att modellera vindkraften används tidsserierna för vindkraftsproduktion som är framtagna i 
+(15).  I  denna  rapport  har  man  analyserat  vinddata  under  en  10‐års  period  vid  tilltänkta 
+vindkraftsparker.  Med  hjälp  av  informationen  om  vindförhållanden  och  en  tänkt  installerad 
+24 
+ 
+effekt  i  vindkraftsparkerna  har  man  kunnat  räkna  ut hur  stor  produktionen  bör  ha  varit  om 
+vindkraftsparkerna  varit  byggda.  Dessa  resultat  har  angivits  som  tänkt  produktion  för  varje 
+timma under de tio analyserade åren.  
+ 
+Figur 5.2: Placering av de 18 vindkraftsparkerna i norra Sverige. (15) 
+Genom  att  välja  ut  de  18  vindkraftsparker  som  ligger  norr  om  snitt  2  och  summera  deras 
+produktion får man de tidsserier för vindkraftsproduktion som behövs i denna modell. I denna 
+modell har vinddata från de 12 simulerade veckorna under 2001 valts ut. Detta visade sig vid en 
+snabb  jämförelse  vara  intressant  då  vindarna  förändras  mycket  under  året.  Exempelvis  är 
+medelproduktionen av vindkraft under vecka 7 är nära fem gånger större än vecka under 29.  
+Eftersom det här arbetet ska undersöka flera nivåer av utbyggnad av vindkraft och de tidsserier 
+som används är baserade på en bestämd nivå behöver dessa utvecklas. Det finns två alternativ 
+25 
+ 
+att göra detta på, det enklaste är att anta att en större utbyggnad motsvaras av större effekt hos 
+de  vindkraftsparker  som  används  i  rapporten.  Ett  sådant  antagande  leder  till  att  man  något 
+förenklat kan nöja sig med att skala upp tidsserierna. Om den geografiska spridningen på de 
+analyserade områdena är god ger denna metod även bra approximationer för produktion om 
+andra vindkraftsparker byggs. Som visas i Figur 5.2 så är den geografiska spridningen relativt 
+god i denna rapport. 
+Den andra och mer avancerade metoden är att göra samma arbete som gjordes för rapporten 
+och  undersöka  nya  intressanta  platser  för  utbyggnad  av  vindkraftsparker  och  lägga  till 
+produktionen  från  dessa  till  tidsserierna.  Då  detta  alternativ  är  betydligt  mycket  mer 
+tidskrävande  och  inte  nödvändigtvis  ger  mycket  bättre  resultat  har  skalning  av  givna  serier 
+valts för detta arbete.  
+Den totala installerade effekten av vindkraft ovanför snitt 2 i rapporten är cirka 765 MW och 
+som nämns i inledningen och (16) bör ungefär 12 000 MW vara installerat i hela landet år 2020. 
+Därför har simuleringar gjorts för att undersöka effekterna av en utbyggnad i norrland på olika 
+nivåer mellan 1 000 MW och ända till 12 000 MW. I denna modell gjordes simuleringar för de 
+fyra nivåerna 1000, 4000, 8000 och 12000 MW. 
+5.1.2 
+Vattenkraft 
+I modellen har endast de vattenkraftverk som ligger norr om snitt 2 och har en installerad effekt 
+större  än  10  MW  inkluderats.  Det  ger  totalt  154  kraftverk  spridda  från  Luleälven  i  norr  till 
+Ljusnan  i  söder.  Sammanlagt  har  dessa  kraftverk  en  installerad  effekt  på  ungefär  13,2  GW. 
+Kraftverk  med  mindre  effekt  än  10  MW  har  uteslutits  från  modellen  då  deras  inverkan  på 
+slutresultatet är försumbart liten. Totalt i hela Sverige finns ungefär 900 MW installerad effekt i 
+sådana så kallade små kraftverk(4).  
+Nästan  alla  parametrar  kring  vattenkraften  kunde  ges  värden  som  erhållits  direkt  från 
+kraftverksägarna, vattenregleringsföretagen eller miljödomstolarna. Många parametrar som till 
+exempel domspill och maxtappningar är exakt angivna medan framförallt gångtider endast är 
+en mer eller mindre grov uppskattning. Många gångtider saknades det också uppgifter om vilka 
+fick estimeras med hjälp av mätning av älvsträckorna. Gångtiden har därefter beräknats med 
+antagandet att vattnet rinner ungefär 4‐5 m/s (35). På grund av de stora osäkerheterna finns en 
+kort analys av gångtidernas betydelse i kapitel 5.4.2. 
+ Förutsättningarna  för  vattenkraft  ändras  drastiskt  med  året  då  både  juridiska  och  naturliga 
+villkor ändras. Den vanligaste förändringen av de juridiska förutsättningarna är att nivån för 
+mintappnignar  och  domspill  höjs  under  vår‐  och  sommarmånaderna,  bland  annat  för  att 
+underlätta fiskens lek i älvarna och säkra vatten till badplatser. Under vintermånaderna håller 
+det höga elpriserna uppe tappningarna utan dombeslut.  
+Som  nämndes  ovan  varierar  alltså  tillrinningen  mycket  med  årstiderna.  Då  grundmodellen 
+endast använder medelvattenföringen över hela året för att räkna ut tillrinningen måste något 
+göras åt detta. I (21) finns data för tillrinningen i hela Sverige i GWh under alla veckor och med 
+hjälp  av  dessa  kunde  en  skalfaktor  för  de  olika  veckornas  tillrinningar  estimeras.  Denna 
+skalfaktor multipliceras sedan med modellens medeltillrinning för de olika veckorna. 
+För de tolv scenarierna gäller även olika nivåer på magasinens fyllnadsgrad i början och slutet 
+av den simulerade perioden. Detta beror som bekant på vårflodens höga flöden som skall sparas 
+26 
+ 
+för att användas under vintern. Data över de svenska magasinens fyllnadsgrad erhölls från (21). 
+Det bör noteras att den siffra som anges är ett medeltal över de större magasinens fyllnad men i 
+modellen används nivåerna som gräns för samtliga magasin.  
+5.1.2.1 Vårfloden 
+Scenariot för vecka 20 som infaller under vårflodens extremt höga flöden skapar en del stora 
+problem för modellen. Dels så räckte många gånger inte det tillrunna vattnet till för att fylla upp 
+de  riktigt  stora  magasinen  till  de  rätta  målnivåerna  men  ändå  produceras  alldeles  för  stora 
+mängder energi. De här två problemen kan först tyckas vara motsägelser till varandra då för lite 
+vatten borde leda till underskattad produktion men beror av en felfördelning av tillrinningarna. 
+I  modellen  skalas  alla  lokala  tillrinningar  upp  med  samma  nivå  men  under,  framförallt, 
+vårfloden  sker  den  stora  tillrinningen  främst  i  fjällvärlden  till  följd  av  snösmältningen.  Detta 
+leder till att i modellen får de stora magasinen högt i älvarna inte så mycket vatten som krävs 
+för  att  kunna  nå  målnivåerna.  Samtidigt  tilldelades  kraftverken  med  små  magasin  i  slutet  i 
+älvarna alldeles för mycket vatten som alltså nästan allt kan användas för produktion. Vilket 
+resulterade i överskattad produktion trots att vatten saknades i systemet. 
+Alltså är det nödvändigt att gå igenom och analysera systemet närmare för att försöka fördela 
+den  extra  tillrinningen  mer  naturtroget,  magasin  för  magasin.  Med  hjälp  av  data  över 
+vattenföringen från SMHI (18) kunde mer realistiska värden för  tillrinningar för varje enskilt 
+magasin erhållas. När detta arbete var gjort visade en testkörning att den producerade energin 
+nu stämde mycket väl överens med verkligheten. Mer om detta arbete finns att läsa i (19). 
+5.1.3 
+Maximal produktion 
+Data för förbrukningen i Norrland samt kapaciteten i ledningarna över snitt 2 per timme under 
+de veckor som undersöks hämtas från Svenska Kraftnät (9).  
+Den  maximala  kapaciteten  i  förbindelser  mellan  olika  länder  i  NordPool  finns  angivna  som 
+tidsserier för varje timma (7). Det är dock inte all kapacitet mellan Sverige och grannländerna i 
+dessa serier som kan användas i modellen då flera ledningar når Sverige söder om snitt 2.  
+I  fallet  med  Norge  passar  dessa  tidsserier  modellen  mycket  väl  då  Norge  är  uppdelat  i  tre 
+prisområden och all data anges per område och inte för hela Norge. Att gränsen mellan område 
+1  och  2  i  Norge  sammanfaller  med  Sveriges  snitt  2  gör  att  man  enkelt  kan  räkna  bort 
+kapaciteten i ledningarna mellan Sverige och Norge 1 för att erhålla möjlig överföringskapacitet 
+från norra Sverige till Norge. 
+Finland är till skillnad från Norge ett enda prisområde till vilket det finns ledningar både från 
+Norrbotten  och  Uppland.  Den  genomsnittliga  kapaciteten  för  de  enskilda  ledningarna  kan 
+hämtas från (13). De kapaciteterna har använts för att beräkna en skalfaktor som multiplicerat 
+med Sveriges totala exportkapacitet till Finland ger en ungefärlig exportkapacitet norr om snitt 
+2. 
+Det bör dock understrykas att de exportkapaciteter som används nu är de maximala mängder 
+som skulle kunna levereras i ledningarna och inte vad de övriga områden är villiga att ta emot. 
+Som jämförelse kan nämnas att Sverige idag har nettoimport från Norge under ett år. 
+ 
+27 
+ 
+5.2 Kontroll av modellen 
+Först genomfördes simuleringar av de olika veckorna utan vindkraftsproduktion för att jämföra 
+med  data  över  vad  som  faktiskt  producerades  i  vattenkraftverken  under  de  simulerade 
+veckorna. Resultaten presenteras i Figur 5.3 nedan 
+ 
+Figur 5.3: Jämförelse mellan verklig och simulerad produktion för 2007. 
+Som  framgår  stämmer  den  simulerade  produktionen  mycket  väl  överens  med  den  verkliga, 
+modellen följer väl med i produktionsvariationer över året. Produktionen överskattas något i 
+modellen  i  normalfallet,  mellan  en  halv  och  tio  procent.  Denna  överskattning  var  väntad  då 
+modellen  finner  den  övergripande  maximerande  lösningen  med  perfekta  prognoser  över 
+framtida  tillrinningar,  gångtider  och  liknande  faktorer.  I  verkligheten  arbetar  de  olika 
+kraftverksägarna  efter  egna  intressen,  prognoserna  är  bristfälliga  och  målet  är  maximerade 
+vinster inte maximerad produktion.  
+Vecka 7 är undantaget där produktionen faktiskt underskattas något. Detta beror troligen på 
+samma  skäl  som  uppstod  för  vecka  20  där  tillrinningarna  är  mycket  ojämnt  fördelade  över 
+älvarna  och  bör  också  ge  bättre  resultat  då  samma  förbättring  av  modellen  görs,  se  avsnitt 
+5.1.2.1.  
+Även en jämförelse av en framsimulerad varaktighetskurva över leveranserna över snitt 2, Figur 
+5.4, med de faktiska från år 2000‐2002, Figur 5.5, visar på en liten skillnad mellan modellen och 
+verkligheten.  Den  simulerade  kurvan  har  skapats  i  ett  scenario  utan  vindkraft  och  där  den 
+export och import som faktiskt ägde rum under året har utförts innan leveranser över snitt 2 
+skett. 
+0
+200
+400
+600
+800
+1000
+1200
+1400
+1600
+3
+7
+12
+16
+20
+25
+29
+33
+38
+42
+47
+51
+Produktion [GWh/vecka]
+Vecka
+Verklig
+Simulerad
+28 
+ 
+ 
+Figur  5.4:  Varaktighetskurva  för leverens  över  snitt  2 från  simulering utan vindkraft och  med  hänsyn till 
+faktisk export och import. 
+ 
+Figur 5.5: Verkliga varaktighetskurvor för transmission över snitt 2 under åren 2004­2007 (11). 
+Det  man  kan  säga  om  varaktighetskurvan  är  att  som  tidigare  fastslagits  så  är  produktionen 
+högre  i  modellen  än  i  verkligheten.  I  övrigt  finns  det  betydligt  fler  timmar  med  riktigt  stora 
+leveranser söder över snittet . Dessutom existerar ett par timmar med stora leveranser norrut 
+över  snittet  vilket  tyder  på  att  modellen  svänger  mer  i  produktionsnivå  än  vad  som  sker  i 
+verkligheten. 
+ 
+-2000
+-1000
+0
+1000
+2000
+3000
+4000
+5000
+6000
+7000
+8000
+0
+1000
+2000
+3000
+4000
+5000
+6000
+7000
+8000
+Överföring (MW)
+Timmar
+5.3 Resu
+ I Figur 5
+periodern
+Figur 5.6 T
+Det något
+alls trots 
+märkbart
+vindkraft
+spillet  sk
+represent
+skulle mo
+inkludera
+målnivåe
+400 GWh
+Under ve
+tyder på 
+mellan m
+En intres
+12000MW
+kraftvärm
+vecka  51
+figuren m
+Mer intre
+detaljer 
+utbyggna
+Spill [GWh]
+ultat 
+5.6 visas värd
+na för de fyra
+Totala värdet a
+t förvånande
+en kraftigt 
+t  efter  en  vi
+t än man tidi
+kulle  kräva 
+tativ  för  en 
+otsvara c:a 4
+ar  dock  det 
+erna, än effek
+h per i år. 
+cka 20 är sp
+att detta spil
+magasinen för
+ssant detalj k
+W  installerad
+meverk. Spill
+1  med  högsta
+men jämfört m
+essanta resu
+kring  den 
+adsnivåerna p
+0
+100
+200
+300
+400
+500
+600
+700
+3
+det av summ
+a utbyggnads
+ av spillt vatten
+e resultatet v
+utökad vind
+ss  utbyggna
+igare trott sk
+en  utbyggn
+hel  månad  b
+30, 640, 220
+grundspill  s
+kter som gör
+illet stort un
+ll inte beror 
+r att uppfylla
+kring spillet 
+d  vindkraft 
+et från vatte
+a  utbyggnad
+med lägre utb
+ltat och slut
+levererade 
+presenteras 
+7
+12
+16
+man av detta 
+snivåerna av
+n för samtliga s
+vad gäller sp
+kraftsproduk
+dsnivå.  Dett
+kulle kunna 
+nad  av  stam
+betyder  des
+0 och 4200 G
+som  snarare
+r sig gällande
+nder alla utby
+av vindkraft
+a kravet på m
+som inte fra
+skulle  spilla
+enkraftverken
+dsnivån.  I  ab
+byggnadsniv
+tsatser kan fi
+effekten.  Ef
+i Figur 5.7 oc
+20
+25
+29
+Veck
+spill över al
+v vindkraft. 
+ scenarion. 
+illet är att de
+ktion, endas
+ta  skulle  i  pr
+byggas i nor
+mnätet.  Om
+sa  resultat  a
+GWh med res
+e  beror  av  b
+e i verklighe
+yggnadsnivå
+ten utan av a
+målnivåerna. 
+amgår av Fig
+as  ungefär  1
+n börjar ock
+bsoluta  tal  är
+våer är spillet
+innas om ma
+ffekt  som  l
+ch exportera
+33
+38
+4
+ka
+la kraftverk 
+et under stör
+t under veck
+raktiken  bety
+rrland innan
+  varje  simu
+att  det  totala
+spektive utb
+brister  i  mod
+eten. Detta gr
+er men ökar
+tt modellen b
+gur 5.6 är att
+,13  GWh  el 
+så öka under
+r  skillnadern
+t mer än förd
+an tittar när
+evereras  öv
+ad effekten i F
+42
+47
+51
+under hela d
+rre delen av 
+korna 3 och 
+yda  att  lång
+n värdet av d
+ulerad  veck
+a  spillet  und
+yggnadsnivå
+dellen,  främs
+rundspill up
+r alltså inte m
+behöver bala
+t det under v
+producerad 
+r denna veck
+na  för  små  f
+dubblat. 
+mare på ytte
+ver  snitt  2 
+Figur 5.8. 
+1
+4
+8
+1
+2
+de simulerad
+året inte öka
+7 ökar spill
+gt  mycket  me
+det påtvingad
+ka  antas  var
+der  ett  helt  å
+å. Dessa siffro
+st  till  följd  a
+pgår till dryg
+med dessa. D
+ansera vattne
+vecka 47 me
+av  vind‐  oc
+ka samt unde
+för  att  synas
+erligare någr
+för  de  olik
+1000 MW
+4000 MW
+8000 MW
+12000 MW
+29
+de 
+ 
+ar 
+et 
+er 
+de 
+ra 
+år 
+or 
+av 
+gt 
+et 
+et 
+ed 
+ch 
+er 
+s  i 
+ra 
+ka 
+30 
+ 
+ 
+Figur 5.7: Levererad energi över snitt 2 för de olika scenarion jämfört med den maximala kapaciteten. 
+ 
+Figur 5.8: Exporterad energi norr om snitt 2. Negativa värden motsvarar vad som teoretiskt kan importeras 
+innan  det  levereras  vidare  söder  över  snitt  2.  Det  blå  fältet  i  bakgrunden  markerar  den  maximala 
+kapaciteten i ledningarna. 
+Som  tidigare  nämndes  så  spiller  modellen  endast  vatten  under  timmar  när  kapaciteten  i 
+ledningarna till Norge och Finland är fullt utnyttjad. För scenarierna med 8000 och 12000MW 
+installerad vindkraft i norrland ser man tydligt hur detta är fallet under hela veckorna 3 och 7 
+och spillet är därför också mycket stort.  
+Det mest intressanta resultatet är kanske ändå vecka 51 med 12000MW vindkraft där spillet 
+har ökat jämfört med lägre nivåer utan att den totala kapaciteten i ledningarna är nådd. I denna 
+0
+1000
+2000
+3000
+4000
+5000
+6000
+7000
+8000
+3
+7
+12
+16
+20
+25
+29
+33
+38
+42
+47
+51
+Genomsnittlig leverans [MWh/h]
+Vecka
+Max
+1000
+4000
+8000
+12000
+‐500
+‐400
+‐300
+‐200
+‐100
+0
+100
+200
+300
+400
+500
+3
+7
+12
+16
+20
+25
+29
+33
+38
+42
+47
+51
+Genomsnittlig leverans [MWh/h]
+Vecka
+Max
+1000 MW
+4000 MW
+8000 MW
+12000 MW
+31 
+ 
+simulering har alltså modellen varit tvungen att spilla vatten  under vissa av veckans timmar 
+samtidigt  som  den  totala  kapaciteten  inte  kunnats  nå  vid  andra  tidpunkter.  Anledningen  till 
+detta  är  framförallt vindkraftens snabba  variationer. Detta  scenario är alltså ett  exempel där 
+vattenkraftens reglerförmåga under veckan har nått sin begränsning.  
+Den kanske största faktorn till det låga spillet finner man då man jämför exportnivåerna med de 
+verkliga  under  det  simulerade  året.  I  Figur  5.9  representerar  det  blå  fältet  nu  den  verkliga 
+exporten respektive importen vid negativa värden (8). Om man antar att handeln med andra 
+länder  skulle  vara  oförändrad  vid  utbyggnad  av  vindkraften,  kanske  för  att  även  Norge  och 
+Finland  bygger  ut  sin  produktion,  kommer  spillet  att  vara  betydligt  större.  Redan  en 
+utbyggnadsnivå på 1000MW installerad vindkraft innebär spill av vatten under vintern medan 
+samtliga  nivåer  fortfarande  klarar  sig  utan  att  spilla  under  sommarmånaderna,  vilket  förstås 
+kan  ändras  med  bättre  säsongsplanering.  Gränserna  för  vilka  veckor  som  kräver  spill  och 
+storleken på detta spill varierar som väntat med utbyggnadsnivåerna. 
+ 
+Figur 5.9: Jämförelse mellan simulerad export och verklig export/import. De simulerade behoven av export 
+och möjlig import är linjer medan den faktiska exporten/importen är den ifyllda ytan. 
+5.4 Analys av osäkra parametrar 
+De flesta parametrar som finns i modellen är givna från kraftverksägarna eller regleringsföretag 
+och  får  därför  anses  vara  mycket  goda.  Några  parametrar  är  dock  mer  eller  mindre  goda 
+uppskattningar,  exempelvis  gångtiderna,  och  andra  kan  vara  beroende  av  större  frågor  än 
+denna rapport försöker analysera, som kapaciteterna för export. 
+5.4.1 
+Kapaciteten över snitt 2 
+Hur  resultaten ändras om kapaciteten för  export ändras har i viss mån  undersökts i kapitlet 
+innan, finns det något liknande problem kring leveranserna söder över snitt 2? I de simuleringar 
+som gjorts har kapaciteten satts till de värden vilka Svenska kraftnät angivit som den maximala 
+kapaciteten i ledningarna. Denna kapacitet behöver dock inte överensstämma med hur mycket 
+energi  södra  Sverige  kan  ta  emot.  Om  förbrukningen  söder  om  snittet  är  tillräckligt  låg  kan 
+‐500
+‐400
+‐300
+‐200
+‐100
+0
+100
+200
+300
+400
+500
+3
+7
+12
+16
+20
+25
+29
+33
+38
+42
+47
+51
+Genomsnittlig leverans [MWh/h]
+Vecka
+År 2007
+1000MW
+4000 MW
+8000 MW
+12000 MW
+32 
+ 
+kapaciteten i ledningarna vara en överskattning då södra Sverige inte kan förbruka den elen 
+som tas emot. 
+ I Figur 5.10 illustreras Sveriges totala förbrukning uppdelad i norr och söder om snitt 2 jämfört 
+med kapaciteten över snitt 2. Figuren visar tydligt att förbrukningen söder om snittet inte för 
+någon vecka understiger eller ens är nära kapaciteten i snittet vilket bör tyda på att detta inte 
+ska vara något problem. 
+ 
+Figur  5.10:  Förbrukningen  i  Sverige  uppdelad  i  norr  och  söder  om  snitt  2  jämfört  med  kapaciteten  för 
+överföring över snittet. 
+Det  lägsta  värdet  för  den  totala  förbrukningen  i  Sverige  under  2007  var  9452  MWh/h  som 
+uppmättes  under  juli  månad.  Förbrukningen  norr  om  snitt  2  under  juli  var  i  snitt  c:a  1530 
+MWh/h vilket betyder att förbrukningen söder om snittet som lägst under en timme är drygt 
+900 MWh/h större än kapaciteten över snittet.  
+För att södra Sverige ska kunna ta emot all energi som norra Sverige vill leverera krävs dock att 
+produktionen  söder  om  snittet  anpassas  efter  leveranserna  från  Norrland.  Detta  är  dock 
+knappast troligt då produktionen i landets södra delar främst kommer från kärnkraft. Å andra 
+sidan behöver inte all energi som produceras i eller levereras till södra Sverige förbrukas här 
+utan kan exporteras vidare till Danmark,  Tyskland samt södra  Norge och Finland.  Alla dessa 
+faktorer måste beaktas och analyseras varför det är mycket svårt att ta fram bra data för hur 
+mycket  som  modellen  kan  tillåtas  leverera  söder  över  snittet  under  månaderna  med  låg 
+förbrukning. Stamnätets kapacitet är i varje fall en övre gräns för leveranserna som inte kan 
+överstigas varför detta varit ett naturligt val. 
+5.4.2 
+Gångtidernas betydelse 
+Vattnets gångtider mellan olika kraftverk är som tidigare diskuterats mycket osäker data. För 
+att  undersöka  om  resultaten  påverkas  nämnvärt  av  ändrade  gångtider  genomfördes 
+simuleringar  där  gångtiderna  mellan  samtliga  kraftverk  skalats  upp  respektive  ned. 
+Simuleringarna  utfördes  för  samtliga  veckor  med  1000  respektive  8000  MW  installerad 
+0
+500
+1000
+1500
+2000
+2500
+3000
+3500
+4000
+3
+7
+12
+16
+20
+25
+29
+33
+38
+42
+47
+51
+Genomsnittlig förbrukning [GWh/vecka]
+Vecka
+Norr
+Söder
+Kapacitet
+33 
+ 
+vindkraft.  I  Figur  5.11  och  Figur  5.12  visas  hur  produktionen  varierar  med  skalningen  av 
+gångtiderna jämfört med originalgångtiderna.  
+ 
+Figur 5.11: Produktion per vecka för olika skalningar av gångtiderna med 1000 MW installerad vindkraft. 
+ 
+Figur 5.12: Produktion per vecka för olika skalningar av gångtiderna med 8000 MW installerad vindkraft. 
+Det  är  tydligt  att  gångtiderna  faktiskt  har  en  viss  betydelse  för  produktionen,  under  vissa 
+scenarier ändras produktionen med över 10% jämfört med de värden som erhållits tidigare. Det 
+är även intressant att se att produktionen ökar med ökande gångtider. Intuitivt tror man gärna 
+att  kortare  gångtider  bör  betyda  att  vattnet  hinner  passera  fler  kraftverk  under 
+simuleringsperioden men i denna modell verkar de längre gångtiderna passa kravet att uppnå 
+en bestämd målnivå bättre.  
+90%
+95%
+100%
+105%
+110%
+115%
+3
+7
+12
+16
+20
+25
+29
+33
+38
+42
+47
+51
+Produktion jämfört med oskalade 
+gångtider
+Vecka
+0,25
+0,5
+1,5
+2
+3
+90%
+95%
+100%
+105%
+110%
+115%
+3
+7
+12
+16
+20
+25
+29
+33
+38
+42
+47
+51
+Produktion jämfört med oskalade 
+gångtider
+Vecka
+0,25
+0,5
+1,5
+2
+3
+34 
+ 
+Utbyggnadsnivån  av  vindkraften  har  bara  betydelse  för  resultaten  under  veckor  där  spillet 
+redan  är  stort,  vilket  visas  av  skillnaderna  .  Ett  stort  skäl  till  detta  är  att  modellen  nu  kan 
+använda  sig  av  att  vatten  som  befinner  sig  mellan  två  magasin  inte  räknas  in  i  kravet  på 
+maximal  magasinsfyllnad.  Om  gångtiderna  är  långa  kan  mycket  vatten  nyttjas  i  slutet  av 
+perioden som inte hinner nå magasinet nedströms innan simuleringens slut. Längre gångtider 
+ökar möjligheterna att utnyttja detta kryphål i modellen. 
+Dock bör det påpekas att även om gångtiderna mellan enskilda kraftverk kan vara uppskattade 
+med fel minst lika stora som undersökts här så är det mycket otroligt att samtliga gångtider är 
+uppskattade fel åt samma håll. Det är mycket troligare att de flesta gångtiderna är någorlunda 
+korrekt uppskattade, några är överskattade medan andra är underskattade. Detta bör leda till 
+att effekterna av feluppskattade gångtider är betydligt mindre än de resultat som visas i denna 
+analys. Som ett snabbt test av detta skalades varannan gångtid upp med 50 % och varannan ned 
+med 50 %. Resultaten skilde mycket lite från de oskalade som åskådliggörs i Figur 5.13, i snitt 
+hade produktionen sjunkit med en halv procent och som mest med drygt 1,3 %. Slutsatsen av 
+detta är att gångtiderna kan vara av stor betydelse för resultaten men då de flesta värdena har 
+erhållits från kraftverksägarna själva kan man anta att effekterna är små. 
+ 
+Figur  5.13:  Produktion  per  vecka  då  varannan  gångtid  skalats  upp  respektive  ned  50%  med  1000MW 
+installerad vindkraft.  
+5.4.3 
+Målnivåer 
+Andra metoder än den som används för att ange målnivåerna i denna modell har redan i viss 
+utsträckning diskuterats i kapitel 5.1.2. Antar man att den valda metoden är den bästa återstår 
+bara att diskutera värdena för målnivåerna. I modellen har värden tagits från givna nivåer från 
+ett  relativt  genomsnittligt  år  men  vid  en  kraftigt  utbyggd  vindkraft  kommer  års‐  och 
+säsongsplaneringen  av vattenkraften att förändras.  Till exempel ser  man att modellen  spiller 
+vatten  under  vintern  samtidigt  som  det  finns  ledig  kapacitet  under  sommarmånaderna,  om 
+målnivåerna anpassades så att mindre vatten nyttjades under vintern för att användas under 
+sommaren skulle spillet minimeras och produktionen ökas betydligt. Det här är dock en alldeles 
+90%
+95%
+100%
+105%
+110%
+115%
+3
+7
+12
+16
+20
+25
+29
+33
+38
+42
+47
+51
+Produktion jämfört med oskalade 
+gångtider
+Vecka
++50% / ‐50%
+35 
+ 
+för  stor  och  komplicerad  fråga  för  det  här  arbetet  varför  den  analysen  lämnas  till  framtida 
+arbete. 
+ 
+36 
+ 
+6 Utökade modeller 
+Grundmodellen  är  mycket  snabb  och  effektiv  att  använda  och  producerar  relevanta  resultat. 
+Men det är en relativt grov förenkling av verkligheten då många detaljer har antingen förenklats 
+eller  helt  enkelt  bortsetts  ifrån.  Att  förbättra  modellen  genom  att  modellera  fler  detaljer  bör 
+leda  till  bättre  och  mer  tillförlitliga  resultat  av  simuleringarna  men  leder  också  till  en  mer 
+komplicerad modell. Motiveringen för de flesta förenklingar som gjorts är att undvika olinjära 
+villkor  eller  heltalsvariabler.  På  grund  av  modellens  storlek  kan  båda  dessa  leda  till  mycket 
+komplicerade och tidskrävande beräkningar.  
+Då det funnits ett stort intresse att undersöka effekten av vissa av de förenklingar som gjorts i 
+grundmodellen har ändå några mer detaljerade modeller skapats och analyserats. De utökade 
+modeller  som  beskrivs  i  detta  arbete  handlar  om  att  försöka  bättre  modellera  hur 
+elproduktionen  beror  av  flöde  och  även  fallhöjd.  Alla  modeller  är  fortfarande  linjära  men 
+innehåller över 25000 binära variabler.  
+Det är även av stort intresse att analysera vad som händer vid andra förutsättningar än de som 
+använts i den förta fallstudien. I Andreas rapport (19) finns resultaten av simuleringar för våt‐ 
+och torrår samt olika vindförhållanden. Där går också att finna en enkel analys av hur mycket 
+vattenkraftens reglerförmåga överskattas till följd av de kända vindserierna.  
+6.1 Förbjudet tappningsintervall 
+Den  kanske  grövsta  uppskattningen  som  är  gjord  i  grundmodellen  är  vattenkraftverkens 
+produktion  beroende  av  tappningsnivån.  Vid  mycket  låga  tappningar  är  i  verkligheten 
+verkningsgraden  mycket  låg  men  i  modellen  är  verkningsgraden  den  högsta  möjliga  för  alla 
+tappningar under 75 % av den maximala. En jämförelse mellan modellens verkningsgrad och en 
+fiktiv men något mer verklig kurva finns i Figur 6.1. 
+ 
+Figur 6.1:  Elproduktion hos samtliga kraftverk i modellen jämfört med ett verkligt kraftverk. 
+0%
+20%
+40%
+60%
+80%
+100%
+120%
+Porudktion i procent av maximal
+Tappning i procent av maximal
+Modell
+"Verkligt"
+37 
+ 
+För att bättre beskriva den verkliga verkningsgraden är man tvungen att införa binära variabler 
+i modellen eftersom man måste försäkra sig om att de lägsta segmenten används fullt ut innan 
+nästa kan nyttjas, vilket även diskuteras i kapitel 4.2.4. Detta resulterar i flera binära variabler 
+per  kraftverk,  en  för  varje  segment.  Som  tidigare  nämnts  är  binära  variabler  något  som  bör 
+undvikas i en effektiv modell då lösandet blir både tidskrävande och något mer osäkert ju fler 
+binärvariabler som finns i modellen.  
+För  att  bättre  simulera  produktionen  och  endast  införa  en  binär  variabel  utnyttjar  man  att 
+kraftverken (nära på) aldrig använder de lägsta tappningsnivåerna eftersom man då inte är i 
+närheten av att få ut fullt värde för vattnet. Det innebär att modellen kan förbjudas att använda 
+detta  tappningsintervall  genom  att  kräva  att  tappningen  antingen  är  noll  eller  över  en  viss 
+procent  av  maximala  tappningen.  Ett  förbjudet  intervall  ger  endast  en  binär  variabel  per 
+kraftverk och tidigare framtagna produktionsekvivalenter kan fortfarande användas. 
+ݖ௜,௧ൌ൜0
+݅݊݃݁݊ݐܽ݌݌݊݅݊݃
+1
+ݒ݅݀ݐܽ݌݌݊݅݊݃ 
+6.1
+ 
+Med hjälp av den binära variabeln inkluderas det förbjudna området i modellen med två enkla 
+bivillkor, 6.2 och 6.3. 
+෍ܳ௜,௝,௧
+࢐
+൒ݖ௜,௧· ܳ෰௜ 
+6.2
+ܳ௜,௝,௧൑ݖ௜,௧· ܳ௜,௝ 
+ 
+6.3
+Där ܳ෰௜ motsvarar  den  lägsta  tillåtna  tappningen,  dessa  bestäms  i  denna  modell  som  en 
+procentsats av den maximala tappningen i varje kraftverk, exempelvis som 0,20· ܳ௜ om de 20 % 
+lägsta tappningsnivåerna förbjuds. 
+I kraftverk med en dom som reglerar mintappningen kan detta ytterligare villkor bli av mycket 
+stor betydelse då nolltappning inte är möjlig och lägre tappningar än ܳ෰௜ alltså förbjuds. För att 
+undvika dessa knappast korrekta effekter ändras ekvationerna 4.11‐ 4.13 så att även eventuellt 
+spill får adderas till tappningen för att nå kravnivåerna. Till exempel skrivs ekvation 4.11 om 
+som 
+ܳ௜൑ܳ௜,௧൅ܵ௜,௧ 
+6.4
+ 
+6.2 Start och stopp av kraftverk 
+Något  som  efterfrågats  av  representanter  från  kraftverksägarna  är  hur  modellens  optimala 
+lösningar kräver att kraftverken nyttjas. Bland annat vill man undvika att kraftverken startas 
+och  stoppas  för  ofta  och  snabbt  då  detta  sliter  hårt  på  utrustningen.  I  Figur  6.2  visas 
+grundmodellens  tappningsplan  för  kraftverken  i  Luleälven  under  vecka  25  med  8000MW 
+installerad  vindkraft.  Trots  att  denna  vecka  är  ganska  lugn,  utan  stort  spill,  ser  man  att 
+tappningarna ständigt ändras mycket. Det är inte heller ovanligt att ett kraftverk växlar mellan 
+noll och maximal tappning, t.ex. Letsi, Porsi och Harsprånget.  
+38 
+ 
+ 
+Figur  6.2:  Tappningsplan  för  kraftverken  i  Luleälven  under  vecka  25  med  8000MW  installerad  vindkraft. 
+Luckor innebär att ingen tappning sker. 
+För att minska antalet start och stopp kan man införa en övre gräns för hur många starter som 
+får göras under en vecka. Utför man sedan simuleringar för olika sådana gränser kan man välja 
+den tappningsplan som ger det bästa förhållandet mellan antalet starter och producerad energi.  
+෍ܷ௜,௧
+௜,௧
+൑ܭ 
+6.5
+Där ܷ௜,௧ är  1  om  en  start  sker  och  annars  0  och ܭ är  det  maximalt  tillåtna  antalet  starter  av 
+kraftverk under simuleringen.  
+I  modellen  med  den  binära  variabeln ݖ௜,௧ som  indikerar  om  kraftverket  används  kan  man 
+enklast beräkna startvariabeln ܷ௜,௧ som  
+ܷ௜,௧ൌቄ1
+0
+݋݉ݖ௜,௧൐ݖ௜,௧ିଵ
+ܽ݊݊ܽݎݏ
+ 
+6.6
+ 
+Detta villkor är dock redundant, alltså att en variabel är en icke kontinuerlig funktion av (minst) 
+en annan. Dessutom innebär 6.6 att även variablerna ܷ௜,௧ är binära vilket betyder en fördubbling 
+av antalet binära variabler. Förutom en enorm ökning av tiden det tar att lösa ett problem så 
+ökar effekterna av mindre exakta binärlösnignar som tidigare påvisades ibland annat Figur 6.7. 
+Istället kan man välja att skriva om villkoren för ܷ௜,௧ på ett smartare sätt genom att utnyttja att 
+variablerna ݖ௜,௧ redan  är  binära  och  att  modellen  alltid  kommer  att  välja  det  lägsta  tillåtna 
+värdet på ܷ௜,௧.  
+ܷ௜,௧൒ݖ௜,௧െݖ௜,௧ିଵ
+6.7
+ 
+Ekvation 6.7 kräver att ܷ௜,௧ är större än eller lika med 1 om kraftverket startar timme ݐ, 0 om 
+ingen  förändring  skett  och  ‐1  om  kraftverket  slutade  tappa  timme ݐ.  För  att  förhindra  de 
+negativa värdena för ܷ௜,௧ vid ett stopp läggs ekvation 6.8 till  
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+0
+24
+48
+72
+96
+120
+144
+Tappning [TE]
+Timme
+Ritsem  
+Vietas
+Porjus
+Harspranget
+Ligga
+Messaure
+Seitevare
+Parki
+Randi
+Akkats 
+Letsi
+Porsi
+Laxede
+Vittjarv
+Boden
+39 
+ 
+ܷ௜,௧൒0
+6.8
+ 
+Detta betyder att värdet av ܷ௜,௧nu är minst 1 när kraftverk startar och minst 0 annars. Eftersom 
+det finns en övre begränsning för summan av ܷ௜,௧ kommer den optimala lösningen aldrig välja 
+ett värde för ܷ௜,௧ som är större än lägsta tillåtna, alltså 0 eller 1.   
+Det bör påpekas att dessa starter och stopp gäller hela kraftverk och inte enskilda turbiner i 
+kraftverken. Att istället kunna kontrollera starterna av turbiner skulle vara mer önskvärt men 
+då ingen hänsyn tagits tidigare till kraftverkens olika utformning eller antal turbiner kan inte 
+det göras i den här modellen.  
+6.3 Tappningsändringar 
+För att minska förändringarna i tappningen kan man välj att straffa målvärdet för dessa.  Genom 
+ett  tillägg  till  målfunktionen  som  nu  ser  ut  som  ekvation  6.9  kommer  modellen  att  undvika 
+lösningar som ofta ändrar tappningen i kraftverken.  
+max ෍ܪሺ݅, ݐሻ
+௜,௧
+െܥ· ෍ܾܽݏ൫ܳ௜,௧െܳ௜,௧ିଵ൯
+௜,௧
+ 
+6.9
+Det är storleken på ܥ som avgör hur hårt straffet är, ett större ܥ ger mindre svängningar men på 
+bekostnad av en lägre produktion. Enklaste metoden att bestämma en bra storlek för ܥ är att 
+utföra tester och välja det ܥ som ger minst svängningar utan att sänka produktionen för mycket.  
+6.4 Fallhöjdsberoende 
+Det  finns  också  fler  detaljer  att  förbättra  kring  vattenkraftverkens  produktion.  Den  kanske 
+grövsta förenklingen i denna modell är avsaknandet av ett fallhöjdsberoende hos kraftverken. 
+Normalt används ickelinjära modeller för simuleringar med hänsyn till fallhöjdsberoende och 
+som tidigare påpekats gör storleken på detta problem att sådana modeller skulle vara mycket 
+opraktiska  och  kanske  även  nästan  omöjliga  att  lösa  utan  mycket  kraftfulla  datorer  och 
+avancerad optimeringsteknik. Det är dock möjligt att skapa en väldigt enkel linjär modell som 
+tar hänsyn till vikten av hög fallhöjd. 
+Om  man  antar  att  vattenytan  i  ett  magasin  sjunker  linjärt  med  fyllnadsgraden  kan  man 
+subtrahera ett straff på produktionen som är linjärt beroende nivån enligt 
+ݏݐݎ݂݂ܽ௜,௧ൌܨ௜· ܯ௜െܯ௜,௧
+ܯ௜
+ 
+6.10
+Där ܨ௜ är  en  parameter  som  får  estimeras  för  varje  kraftverk  med  hjälp  av  information  om 
+fallhöjder, tappningar och dämnings‐ och sänkningsgränser.  
+Ett sådant straff kommer dock att straffa alla tappningar lika hårt, även om ingen tappning sker 
+vilket leder till negativ produktion vid nolltappning. I en modell med förbjudet intervall finns 
+dock  möjligheten  att  nyttja  heltalsvariabeln ܼ௜,௧ som  anger  om  tappning  sker  eller  ej  för  att 
+förhindra detta. 
+40 
+ 
+ݏݐݎ݂݂ܽ௜,௧ൌܼ௜,௧· ܨ௜· ܯ௜െܯ௜,௧
+ܯ௜
+ 
+6.11
+Ekvation  6.11  är  dock  inte  linjär  då  två  variabler  multipliceras  med  varandra  varför  man  är 
+tvungen att använda ett knep i samma stil som det som användes för att skriva om ekvation 6.6 i 
+avsnittet om att begränsa antalet starter. Precis som då får man två olikheter 
+ݏݐݎ݂݂ܽ௜,௧൒ܨ௜· ܯ௜െܯ௜,௧
+ܯ௜
+െܨ௜· ൫1 െܼ௜,௧൯ 
+6.12
+och  
+ݏݐݎ݂݂ܽ௜,௧൒0
+6.13
+ 
+Återigen utnyttjas att den införda variabeln kommer att minimeras i en optimal lösning varför 
+olikheten med det största högerledet alltid kommer att vara en likhet i lösningen.  Den andra 
+termen i ekvation 6.12 måste vara tillräckligt stor för att säkerställa att högerledet garanterat är 
+mindre  än  eller  noll  då  ingen  tappning  sker,  alltså  då ܼ௜,௧ൌ 0.  Det  fungerar  lika  bra  med  en 
+tillräckligt stor konstant istället för ܨ௜ så länge denna är större än det största ܨ௜.  
+Att  estimera parametrarna ܨ௜ är som  nämndes tidigare  ett mycket  gediget  arbete  där  hänsyn 
+måste tas till många parametrar men en övre gräns går att härleda. Straffet får inte vara så stort 
+att ”negativ produktion” kan uppstå, jämför man produktionen med straffet får man att 
+෍ܳ௜,௝· ߤ௜,௝
+௝
+൒ܨ௜· ܯ௜െܯ௜,௧
+ܯ௜
+ 
+6.14
+Vilket i fallet med minimal produktion med maximalt straff, alltså vid lägsta tillåtna tappningen 
+med tomt magasin ger att 
+ܳෘ௜· ߤ௜,௦௘௚௠௘௡௧ଵ൒ܨ௜ 
+6.15
+ 
+6.5 Resultat 
+Resultaten  för  de  olika  utbyggda  modellerna  presenteras  var  för  sig,  även  om  alla  de  övriga 
+modellerna också inkluderar det förbjudna tappningsintervallet. 
+6.5.1 
+Förbjudet tappningsintervall 
+I  simuleringarna  som  gjorts  har  den  lägsta  tappningsnivån  satts  till  20  %  av  den  maximala 
+tappningen  i  varje  kraftverk.  Som  väntat  när  möjligheterna  att  styra  tappningen  begränsas 
+sjunker produktionen något. Förlusten är dock inte enorm, utan varierar mellan som värst drygt 
+2 procent, vecka 42, och som minst 0,2 procent vecka 16. I Figur 6.3 jämförs den nya simulerade 
+produktionskurvan  med  den  tidigare  samt  den  verkliga  och  Figur  6.4  visar  i  detalj  den 
+procentuella  minskningen  av  produktionen  för  de  olika  veckorna  vid  införande  av  förbjudna 
+tappningsintervall. 
+41 
+ 
+ 
+Figur 6.3: Totala produktionen i den nya modellen utan vindkraft jämfört med resultaten från fallstudie 1 
+samt de verkliga data. 
+ 
+Figur 6.4: Produktionen i den nya modellen jämfört med produktionen i fallstudie 1. 
+När produktionen minskar ökar spillet. Dels beror detta på att spill i vissa fall används för att 
+klara kraven för mintappningar . Dessutom kan spill uppstå i slutet av simuleringsperioden då 
+modellen  kan  behöva  flytta  små  mängder  vatten  till  ett  lägre  magasin  för  att  uppfylla 
+målnivåerna. Om mängden vatten som ska flyttas är mindre än lägsta nivån för tillåten tappning 
+innebär det att vattnet istället måste spillas.  
+0
+200
+400
+600
+800
+1000
+1200
+1400
+1600
+3
+7
+12
+16
+20
+25
+29
+33
+38
+42
+47
+51
+Produktion [GWh/vecka]
+Vecka
+Verklig
+Utan förbjuden tappning
+Med förbjudet tappning
+96,50%
+97,00%
+97,50%
+98,00%
+98,50%
+99,00%
+99,50%
+100,00%
+3
+7
+12
+16
+20
+25
+29
+33
+38
+42
+47
+51
+Del av produktion i fallstudie 1
+Vecka
+42 
+Figur  6.5:
+utbyggnad
+I  Figur  6
+vindkraft
+de ändra
+resultaten
+samma m
+Figur 6.6: T
+I Figur 6
+utbyggna
+1
+1
+1
+1
+Genomsnittlig förbrukning [MWh/h]
+Spill [GWh]
+  Den  totala 
+dsnivån 8000M
+6.5  och  Figur
+tens utbyggn
+de bivillkore
+n  snarlika  g
+mönster som 
+ Totala värdet a
+.7 nedan vis
+adsnivån.  So
+0
+2000
+4000
+6000
+8000
+10000
+12000
+14000
+16000
+3
+0
+100
+200
+300
+400
+500
+600
+700
+3
+  produktionen
+MW. 
+r  6.6  framgå
+nadsnivå, har
+en för mintap
+grundmodell
+tidigare. 
+ av spillt vatten
+as förändrin
+om  tydligt  fr
+7
+12
+16
+7
+12
+n  uppdelad  e
+år  att  ett  vis
+r ökat jämför
+ppning som 
+lens,  produk
+n för samtliga 
+ngen av spill
+ramgår  min
+6
+20
+25
+Ve
+16
+20
+2
+fter  förbrukn
+sst  ”grundsp
+rt med tidiga
+nu inkludera
+ktionen  är  n
+ scenarion 
+et med utby
+nskar  faktisk
+29
+33
+ecka
+5
+29
+33
+Vecka
+ning,  leverans
+pill”,  alltså  d
+are modell. D
+ar spillet. Bo
+nästan  den 
+yggd vindkra
+kt  spillet  i  v
+38
+42
+3
+38
+42
+s  och  export 
+det  spill  som
+Detta är främ
+ortsett från g
+samma  och
+aft jämfört m
+vissa  fall  tro
+47
+51
+2
+47
+5
+1000 
+4000 
+8000 
+1200
+  samt  spill  v
+m  sker  oavse
+mst en följd a
+grundspillet ä
+  spillet  följe
+med den lägst
+ots  en  störr
+Spill
+Export
+Snitt 2
+Norrland
+51
+MW
+MW
+MW
+0 MW
+ 
+vid 
+ett 
+av 
+är 
+er 
+ 
+ta 
+re 
+43 
+ 
+levererad  effekt  från  vindkraften,  detta  är  en  effekt  av  en  av  att  modellen  nu  innehåller 
+heltalsvariabler och kan i praktiken bortses ifrån. För att lösandet inte skall ta oändligt lång tid 
+väljer datorn en i någon mening tillräckligt bra lösning, vilken alltså kan vara lite sämre än den 
+som hittats för lägre utbyggnadsnivåer.   
+ 
+Figur 6.7: Förändringen av spillet jämfört med lägsta utbyggnadsnivån. Notera att staplarna för 8000 MW 
+vecka  7  samt  12000MW  veckorna  3  och  7  inte  slutar  vid  500  %.  För  att  tydliggöra  andra  detaljer  har 
+staplarna beskurits vid denna nivå. 
+Det kanske mest intressanta resultatet även från dessa simuleringar får man när man jämför 
+spillet  med  exporten.  I  Figur  6.7  ser  man  att  spillet  ökar  veckorna  47  och  51  vid  12000MW 
+samtidigt som Figur 6.8  visar  att hela veckans totala exportkapacitet inte är  nyttjad till max. 
+Under vecka 51 med högsta utbyggnaden  finns  30 GWh outnyttjad exportkapacitet  och ändå 
+spiller modellen mer än 2 GWh mer än för de lägre nivåerna.  
+Skälet  till  detta  är  som  tidigare  nämnts  att  kapaciteten  för  vattenkraftens  reglerförmåga  är 
+begränsad. Jämför man de nämnda scenarierna i Figur 6.8 och Figur 5.8 framgår det att den nya 
+modellen  har  sämre  möjligheter  att  jämna  ut  vindkraftens  produktion.  Ett  mer  begränsat 
+tappningsintervall leder alltså till fler fall där vattenkraftens reglerförmåga inte räcker till för 
+att jämna ut svängningarna i vindkraftsproduktion. 
+0%
+50%
+100%
+150%
+200%
+250%
+300%
+350%
+400%
+450%
+500%
+3
+7
+12
+16
+20
+25
+29
+33
+38
+42
+47
+51
+Förändring jämfört med 1000 MW
+Vecka
+4000 MW
+8000 MW
+12000 MW
+44 
+ 
+ 
+Figur  6.8:  Export  för  de  olika  utbyggnadsnivåerna  jämfört  med  maximala  kapaciteten.  Negativa  värden 
+motsvarar som tidigare kapacitet för import för vidare transmission söder över snitt 2. 
+6.5.2 
+Start och stopp av kraftverk 
+Valet av ܭ är godtyckligt och beror på hur mycket producerad energi man är beredd att offra för 
+några  färre  starter,  resultaten  från  några  val  av ܭ för  vecka  25  med  8000MW  installerad 
+vindkraft visas nedan i tabell 6.1. 
+K 
+Total 
+produktion 
+(GWh) 
+% 
+Antal 
+starter 
+% 
+∞ 
+967,241 
+100,0
+1438
+100,0
+1000  971,551 
+100,5
+  973
+ 67,7
+500 
+971,824 
+100,5
+  471
+ 32,8
+300 
+972,997 
+100,6
+  276
+ 19,2 
+200 
+969,786 
+100,3
+  199
+ 13,8
+150 
+939,823 
+  97,2
+  149
+ 10,3
+Tabell 6.1: Produktion och antalet starter som funktion av maximalt antal tillåtna starter. Resultaten anges 
+både i absolut form och i procent av värdena då ingen begränsning finns.  
+Det är mycket tydligt att heltalslösningarna ger lite underliga resultat, modellen har inte funnit 
+den absolut bästa lösningen i flera utav fallen. Modellen söker inte nu nödvändigtvis efter den 
+absolut optimala lösningen utan efter en tillräckligt optimal lösning, ibland kan man därför, som 
+i detta fall, med hårdare villkor finna något lite bättre lösningar. Vad som dock framgår är att 
+med  denna  enkla  begränsning  kan  modellen  minska  antalet  starter  betydligt  utan  att  det 
+behöver innebära stora produktionsförluster .  
+I Figur 6.9 visas en ny tappningsplan för Luleälven under samma förutsättningar som tidigare 
+men  med  begränsat  antal  starter.  Tyvärr  växlar  tappningarna  nu  ofta  och  snabbt  mellan 
+maximal och minimal tappning för att slippa stoppa kraftverket, en icke önskvärd bieffekt. 
+‐500
+‐400
+‐300
+‐200
+‐100
+0
+100
+200
+300
+400
+500
+3
+7
+12
+16
+20
+25
+29
+33
+38
+42
+47
+51
+Genomsnittlig leverans [MWh/h]
+Vecka
+Max
+1000 MW
+4000 MW
+8000 MW
+12000 MW
+45 
+ 
+ 
+Figur 6.9: Tappningsplan för kraftverken i Luleälven under vecka 25 med 8000MW vindkraft samt max 200 
+starter. 
+6.5.3 
+Tappningsförändringar 
+I  Tabell  6.2  presenteras  resultaten  av  simuleringar  av  vecka  25  med  olika  värden  för 
+straffparametern ܥ, det vill säga kostnaden för förändring i tappningsnivå.  
+࡯ 
+Antal 
+starter 
+Total 
+produktion 
+(GWh) 
+Förlorad 
+produktion 
+(GWh) 
+Förlorad 
+produktion 
+(%) 
+∑Tappnings­
+ändringar 
+(TE) 
+∑Tappnings­
+ändringar 
+(%) 
+0 
+473 
+972,145 
+0
+0
+749538
+100 
+૚૙ି૚૙ 
+473 
+972,145 
+0
+0
+748180
+99,82 
+૚૙ିૢ 
+213 
+956,007 
+16,138
+1,66
+170920
+22,82 
+૚૙ିૡ 
+207 
+963,670 
+8,475
+0,87
+72799
+9,71 
+૚૙ିૠ 
+170 
+894,531 
+77,614
+7,98
+72017
+9,61 
+૚૙ି૟ 
+178 
+928,801 
+43,334
+4,46
+65905
+8,79 
+0,1 
+181 
+901,579 
+63,602
+6,54
+69640
+9,29 
+Tabell  6.2:  Resultat  för  olika  straff  för  tappningsändringar.  Förlorad  produktion  anger  hur  mycket 
+produktionen  minskat  mot  det  fall  då  inget  straff  finns.  Förändringsfaktor  är  summan  av  alla 
+tappningsändringar som sker under veckan. 
+Teorin  är  att  ju  mindre ܥ är  desto  mindre  förändringar  skall  ses  på  produktion  och 
+tappningsändringar.  I  Tabell  6.2  syns  dock  att  även  här  uppstår  små  bekymmer  med 
+heltalslösningarna varför resultaten inte alltid stämmer helt överens med teorin. Det är ändå 
+inte speciellt svårt att utläsa trenden att med ett ܥ i storleksordningen 10ି଺ till 10ିଽ går det att 
+finna lösningar där kraftverken drastiskt minskar tappningsändringarna utan att förlora mer än 
+några procent av produktionen. En sådan förlust skulle i verkligheten vara ett stort problem 
+men eftersom modellen fortfarande överskattar produktionen något jämfört med verkligheten 
+är detta inget problem.  
+En intressant effekt av denna metod är att inget extra straff eller krav på antal starter behöver 
+anges.  På  grund  av  det  förbjudna  tappningsintervallet  blir  en  start  en  stor  förändring  i 
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+0
+24
+48
+72
+96
+120
+144
+Tappning [TE]
+Timme
+Ritsem  
+Vietas
+Porjus
+Harspranget
+Ligga
+Messaure
+Seitevare
+Parki
+Randi
+Akkats 
+Letsi
+Porsi
+Laxede
+Vittjarv
+Boden
+46 
+ 
+tappningen vilket kostar målvärdet mycket och antalet starter hålls automatiskt på en låg nivå. 
+Att straffa förändrad tappning kan också i viss mån sägas ha en hämmande effekt på start och 
+stopp av enskilda turbiner. 
+Det bör också noteras att denna typ av straff inte gör någon skillnad på snabba eller långsamma 
+förändringar i  tappningen.  Att  ändra mellan två  tappningsnivåer under en timme kostar inte 
+målvärdet mer än en utdragen ändring som tar flera timmar. En variant som straffar snabba 
+förändringar kontra långsamma görs enklast genom att kvadrera absolutbeloppet i ekvation 6.9 
+men detta medför så klart en olinjär modell. 
+I Figur 6.10 visas driftplanen för Luleälven under samma scenario som i Figur 6.2 men med ett 
+relativt lindrigt straff, ܥൌ10ିଽ .  
+ 
+Figur 6.10: Tappningsplan för kraftverken i Luleälven under vecka 25 med 8000MW vindkraft samt C = 10­9. 
+Det  är  som  nämnts  möjligt  att  göra  tappningarna  betydligt  mer  stabila,  till  exempel  med 
+ܥൌ10ିଶ som visas i Figur 6.11 nedan. Att straffa förändringar så här hårt är dock inte önskvärt 
+då den totala produktionen under veckan sjunkit med över 5 % jämfört med grundmodellen. Så 
+stora förluster betyder att modellen i sådant fall underskattar verkligheten. Noterbart är också 
+att  vissa  kraftverk  inte  producerar  något  under  hela  perioden  utan  endast  spiller  vatten, 
+exempelvis Ritsem och Seitevare i Luleälven, vilket ytterligare betonar att så hårda straff  för 
+ändringar är orimliga. 
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+1000
+0
+24
+48
+72
+96
+120
+144
+Tappning [TE]
+Timme
+Ritsem  
+Vietas
+Porjus
+Harspranget
+Ligga
+Messaure
+Seitevare
+Parki
+Randi
+Akkats 
+Letsi
+Porsi
+Laxede
+Vittjarv
+Boden
+47 
+ 
+ 
+Figur 6.11: Tappningsplan för kraftverken i Luleälven under vecka 25 med 8000MW samt C = 10­2. 
+6.5.4 
+Fallhöjdsberoende 
+I de simuleringar som gjorts med denna metod för fallhöjdsberoende har halva värdet av den 
+härledda övre gränsen för ܨ௜ använts i de större magasinen. I de övriga kraftverken, alltså de 
+med  små  magasin  har  straffaktorn  satts  till  noll.  Då  små  magasin  i  regel  har  mycket  små 
+skillnader i fallhöjd bör effekterna av låg fyllnadsgrad i magasinen också vara betydligt mindre 
+för  dessa.  Genom  att  endast  straffa  produktionen  i  kraftverken  med  de  största  magasinen 
+undviker  man  dessutom  ett  stort  antal  ekvationer  beroende  av  binärvariablerna ܼ௜,௧ vilket  är 
+mycket  önskvärt  för  lösningstiderna.  På  grund  av  detta  val  av  straffparametrar  är  resultaten 
+endast användbara som indikator för hur metoden fungerar och bör inte användas för att dra 
+slutsatser kring driftplaner eller hur de andra modellerna överskattar produktionen. 
+I Tabell 6.3 åskådliggörs resultaten för simuleringar av vecka 12 med olika gränser mellan stora 
+och små magasin. Antalet kraftverk som anges är hur många kraftverk som räknas som stora 
+och därför har straff för förlorad fallhöjd. Den förlorade produktionen är uträknad i jämförelse 
+med grundmodellen utan straff för förlorad fallhöjd eller förändrad tappning. 
+Gräns (TE) 
+Antal 
+kraftverk 
+Lösningstid 
+(min) 
+Produktion 
+(GWh) 
+Förlorad 
+produktion 
+(%) 
+100000 
+22 
+5
+1234,673
+2,90 
+10000 
+47 
+20
+1221,026 
+3,97 
+1000 
+98 
+35
+1217,080 
+4,28 
+0 
+154 
+∞
+‐ 
+‐
+Tabell  6.3:  Jämförelse  av  olika  gränser  mellan  vilka  kraftverk  som  anses  förlora  fallhöjd  med  minskade 
+magasinsnivåer. Simuleringar med samtliga kraftverk gav inga resultat då det var för arbetsintensivt för en 
+vanlig dator. 
+ 
+0
+100
+200
+300
+400
+500
+600
+700
+800
+900
+0
+24
+48
+72
+96
+120
+144
+Tappning (TE)
+Timme
+Ritsem  
+Vietas
+Porjus
+Harspranget
+Ligga
+Messaure
+Seitevare
+Parki
+Randi
+Akkats 
+Letsi
+Porsi
+Laxede
+Vittjarv
+Boden
+48 
+ 
+Det  är  uppenbart  att  lösningsarbetet  ökar  med  antalet  kraftverk  som  straffas  för  förlorad 
+fallhöjd. Ett tiotal kraftverk ledde inte till några problem men att straffa alla 154 kraftverk blev 
+för mycket för en vanlig persondator. 
+I Figur 6.12 illustreras produktionen samt förlorad produktion till följd av förlorad fallhöjd för 
+ett givet kraftverk under en simulerad vecka. Det är tydligt att modellen nu strävar efter att få 
+fylla magasinet snabbt för att minimera förlusterna på grund av låg fallhöjd. Kravet att uppfylla 
+den  givna  målnivån  gör  sig  sedan  gällande  på  slutet  av  simuleringen  då  magasinet  måste 
+tömmas och fallhöjdsförluster uppstår på nytt.  
+ 
+Figur 6.12: Produktion och förlorad produktion på grund av förlorad fallhöjd jämfört med magasinsfyllnaden 
+för Laxede kraftverk under en simulering av vecka 12 med lägsta utbyggnadsnivån av vindkraft. 
+Produktionen i modellen med fallhöjdsförluster är i storleksordningen ett par procent lägre än 
+vad  som  producerades  i  modellen  utan  hänsyn  till  fallhöjden.  Det  är  samma  storleksordning 
+som skillnaden mellan modellernas överskattning av produktion jämfört med verkligheten. Man 
+kan alltså anta att denna metod kan vara användbar i framtida arbete. 
+ 
+ 
+0%
+10%
+20%
+30%
+40%
+50%
+60%
+70%
+80%
+90%
+100%
+0
+50
+100
+150
+200
+250
+0
+24
+48
+72
+96
+120
+144
+Magasinsnivå
+Produktion och förlorad produktoon
+[Mwh/h]
+Timme
+Produktion
+Förlorad produktion
+Magasinsfyllnad
+49 
+ 
+7 Slutsatser 
+Den kanske viktigaste slutsatsen som kan dras från detta arbete är att vattenkraft har mycket 
+goda  möjligheter  att  reglera  variationerna  i  vindkraftsproduktionen.  Visserligen  har  en  del 
+förenklingar  gjorts  som  kan  leda  till  en  överskattad  regleringsförmåga,  framförallt  att  övrig 
+produktion och förbrukning är känd samt kraftverkens frihet i val av tappningsnivå. Dock syns i 
+detta arbete sällan någon ökning i spillet med en mycket kraftigt utbyggd vindkraft vilket visar 
+på god regleringsförmåga. Endast scenarier där vindkraften hade mycket stor produktion under 
+hela den simulerade tidsperioden var spillet stort under andra scenarier med endast stundtals 
+hög vindkraftsproduktion var spillet nära obefintligt.  
+Som nämns i de båda avsnitten om resultat, 5.3 och 6.5, är de mest intressanta resultaten av 
+denna undersökning de från scenarier där vattenkraftens reglerförmåga sätts på prov. I många 
+scenarier,  framförallt  sommarmånaderna,  finns  det  under  hela  simuleringsperioderna  ledig 
+kapacitet för att ökad produktion, se graf (a) i Figur 7.1. I andra scenarier kan inte ens det mest 
+optimala nyttjandet av vattnet undvika stora mängder spill, exempelvis veckorna 3 och 7 med 
+minst  8000MW  vindkraft,  graf  (b).  De  mest  intressanta  scenarierna  är  de  där 
+vattenkraftsproduktionen  över  hela  veckan  precis  kan  fylla  den  lediga  kapaciteten.  I  sådana 
+scenarier kan optimal användning av vattnet ge väldig lite spill samtidigt som slarvigt nyttjande 
+innebär stora spillförluster, graferna (c) och (d). 
+ 
+ 
+50 
+ 
+ 
+ 
+ 
+Figur 7.1: Jämförelse mellan de olika typer av scenarier som kan råda. Överst till vänster (a) är ett scenario 
+där  den  totala  produktionen  är  klart  under  kapaciteten.  Överst  till  höger  (b)  är  ett  scenario  där 
+produktionen  vida  överstiger  kapaciteten  och  mycket  spill  oundvikligen  uppstår.  De  två  nedre  graferna 
+illustrerar  samma  förutsättningar  men  där  den  vänstra  (c)  representerar  dåligt  nyttjande  av  vattnet  och 
+leder till spill visar den högra (d) på hur man bättre kan nyttja vattnet för att helt undvika spill. 
+Värdet av spillt vatten på grund av vindkraftsutbyggnaden och behov av stamnätsutbyggnad går 
+dock  inte  att  säga  mycket  om  i  detta  läge.  Mycket  noggrannare  analyser  av  framförallt  de 
+parametrar som sätter produktionstaket måste göras innan några sådana slutsatser kan dras.  
+7.1 Gjorda förenklingar 
+Även om stor möda lagts ned på att använda en detaljerad modell av vattenkraften och verklig 
+data  så  är  det  oundvikligt  att  man  tvingas  göra  vissa  förenklingar.  Det  är  därför  viktigt  att 
+analysera vilka konsekvenser de förenklingarna har för resultaten. 
+7.1.1 
+Överskattning av reglerförmågan 
+I denna modell beror de flesta förenklingar som leder till en överskattning av reglerförmågan på 
+perfekta prognoser av parametrar som i verkligheten är behäftade med osäkerheter. Även vissa 
+grundläggande antaganden och nödvändiga förenklingar leder till denna överskattning.  
+ 
+Produktion
+Övrig prod.
+Vattenkraft
+Spill
+Max prod.
+Porduktion
+51 
+ 
+7.1.1.1 Vattenkraft 
+I  grundmodellen  används  som  diskuterats  ingående  i  tidigare  avsnitt  en  mycket  förenklad 
+modell  av  elproduktionen  som  medger  mycket  stor  frihet  att  välja  tappningsnivå.  Eftersom 
+kraftverksägarna endast väljer tappningsnivå inom de intervall där mest effekt fås för vattnet är 
+detta  en  klar  överskattning  av  reglerförmågan.  I  de  mer  utbyggda  modellerna  har  detta 
+förbättrats något då det sämsta tappningsintervallet förbjudits.  
+Effekten är som nämnts inte heller enbart beroende av tappningsnivån utan av andra faktorer, 
+framförallt  fallhöjden  som  i  sin  tur  är  beroende  av  magasinsnivån.  Detta  leder  också  till  en 
+överskattning av reglerförmågan då modellen slipper ta hänsyn till att magasinen bör hållas så 
+fulla som möjligt. I kapitel 6.4 har en linjär modell skapats vilken kan användas för att undvika 
+denna överskattning.  
+Modellen  tillåts  också  att  använda  kraftverk  och  magasin  utan  marginaler.  I  verkligheten 
+används vattenkraften till frekvensreglering inom timmarna. Vilket betyder att kraftverk som 
+deltar i primärregleringen inte kan nyttjas fullt ut eller för nära lägsta tappningsnivån. Om dessa 
+kraftverk  nyttjas  fullt  till  max  finns  ingen  möjlighet  att  öka  produktionen  om  förbrukningen 
+ökar eller vindarna mojnar och vice versa ifall kraftverken är avstängda eller tappar så litet som 
+är  tillåtet.  Kravet  att  hålla  marginaler  för  att  kunna  reglera  tappningen  ger  också  krav  på 
+marginaler i magasinsnivåerna. Om ett magasin är fullt måste tappningen vara minst lika stor 
+som tillrinningen, annars måste vatten spillas. Ifall magasinet är tomt kan inte tappningen ökas 
+mer än tillrinningen. 
+7.1.1.2 Övrig produktion, transmission och last 
+Modelleringen  av  elnäten  är  antagligen  en  av  de  grövsta  förenklingarna  i  denna  modell.  I 
+verkligheten finns det transmissionsbegränsningar även inom norrland vilket leder till att en 
+ökad produktion i de nordligaste kraftverken inte garanterat kan levereras över snitt 2. Som 
+man förstår ökar betydelsen av dessa interna flaskhalsar då produktionen ökar, som när stora 
+vindkraftsparker byggs. 
+ I  modellen  vet  man  till  skillnad  från  verkligheten  exakt  hur  stor  övrig  produktion,  last  och 
+tillrinningen kommer att vara nästa timme, dygn och vecka. Detta gör att modellen till exempel 
+kan fylla ett magasin till maxgränsen om den vet att det inte blir problem senare. Modellen kan 
+också nyttja hela magasinen i början av simuleringsperioden i de fall då vindkraftproduktionen 
+är mycket stor i slutet av veckan.  
+Slutligen  räknar  denna  modell  med  att  övriga  områden  som  är  förbundna  med  norrland  är 
+beredda att ta emot precis den mängd el som norrland kan exportera varje timma samtidigt som 
+de  är  beredda  att  leverera  el  under  de  timmar  då  produktionen  i  norrland  understiger 
+förbrukningen.  Södra  Sverige  saknar  nämnvärda  möjligheter  till  snabb  reglering  av 
+elproduktion varför detta antagande leder till en grov överskattning av reglerförmågan. 
+7.1.1.3 Elmarknad 
+Som  nämnts  i  inledningen  av  denna  rapport  tar  denna  modell  ingen  hänsyn  till  att  de  olika 
+aktörerna på elmarknaden har egna intressen och mål. Kraftverksägarna har till exempel inte 
+som mål att gemensamt maximera produktionen utan att maximera sin egen vinst. Modellen 
+genererar till skillnad från verkligheten de lösningar som optimerar den totala reglerförmågan. 
+ 
+52 
+ 
+7.1.2 
+Underskattning av reglerförmågan 
+Det  är  betydligt  färre  förenklingar  som  leder  till  en  underskattad  reglerförmåga.  Men 
+framförallt de som rör vattenhushållningen kan antas vara av mycket stor betydelse, kanske lika 
+stor som de överskattande förenklingarna. 
+7.1.2.1 Vattenkraft 
+Det  är  främst  de  modelleringar  som  gjorts  för  att  behålla  vatten  i  magasinen  vid 
+simuleringsperiodens  slut  som  leder  till  underskattning  av  reglerförmågan.  Det  hårda  kravet 
+med  en  målnivå  som  måste  uppfyllas  innebär  i  scenarier  med  mycket  vindkraft  att  mycket 
+vatten måste spillas förbi kraftverk i slutet av simuleringarna. Detta vatten skulle i verkligheten 
+ha lagrats i vecko‐ och säsongsregleringsmagasin.  I de fall där produktionen av vindkraft är 
+väldigt låg kan  det istället vara lönsamt  att få sänka magasinsnivåerna  mer än vad  målnivån 
+tillåter. 
+I resultaten som presenteras till grundmodellen, kapitel 5.3, är det tydligt att det är möjligt att 
+minska det totala spillet över ett helt år genom att ändra målnivåerna för de olika veckorna. 
+Istället för att spilla det vatten som ”blir över” i vissa scenarier kan detta lagras för att nyttjas i 
+de scenarier där det finns ledig produktionskapacitet. 
+7.1.2.2 Övrig produktion 
+I  denna  modell  har  all  övrig  produktion  givits  av  tidsserier  som  inte  kan  påverkas. 
+Vindkraftsproduktionen är mycket riktigt inte möjlig att reglera som man vill men de termiska 
+kraftverk som finns i området är. I verkligheten spiller man så klart inte vatten på grund av 
+begränsad exportkapacitet samtidigt som termiska kraftverk producerar maximal effekt.  
+7.2 Framtida arbete 
+Inom  ramarna  för  ett  examensarbete  hinner  man  bara  skrapa  på  ytan  av  den  stora  och 
+komplexa fråga som ska besvaras. Fokus har lagts på att skapa en modell som kan användas för 
+att  analysera  de  olika  scenarier  som  kan  vara  troliga  framtider.  Modellen  har  sedan  visats 
+generera  bra  svar  på  dessa  scenarier  givet  att  indatan  är  av  god  kvalitet.  I  vissa  fall  behövs 
+bättre noggrannhet än andra, såsom simuleringar av scenarier med vårflod och höga flöden. De 
+resultat  som  tagits  fram  i  denna  rapport  är  dock  mycket  enkla  uppskattningar  då  många 
+parametrar har tilldelats alldeles för grovt uppskattade värden. Framförallt de parametrar som 
+bestämmer möjligheterna för leverens av energin till andra områden.  
+Denna rapport avslutas därför med en genomgång av det viktigaste framtida arbete som bör ske 
+med denna modell för att kunna analysera och ge svar på den ursprungliga frågan. Många av 
+dessa handlar enbart om bättre analyser och framtagning av indata till den befintliga modellen 
+men även några förslag för hur modellen i sig kan förbättras. 
+7.2.1 
+Omvärlden 
+Som har nämnts upprepade gånger i denna rapport så har kapaciteten för överföring av energi 
+till  de  omkringliggande  områdena,  södra  Sverige,  Norge  och  Finland,  givits  av  historiska 
+kapaciteter  i  kraftledningarna.  Kapaciteterna  i  ledningarna  stämmer  dock  inte  nödvändigtvis 
+överens  med  hur  mycket  som  dessa  angränsande  områden  kan  ta  emot.  Exempelvis  är  i  de 
+flesta  fall  kapaciteten  i  ledningen  oförändrad  över  olika  tider  på  dygnet  och  årstider.  I 
+verkligheten  är  norrlands  möjligheter  till  leverens  över  snittet  samt  export  betydligt 
+begränsade under perioder med låg förbrukning, som nattetid och varmare årstider.  
+53 
+ 
+Storleken för hur mycket energi som kan levereras timme för timme över snitt 2 är mycket svår 
+att uppskatta.  Bland  annat måste  man  ta hänsyn till förbrukningen och produktionen under 
+snittet samt vilka möjligheter som finns för vidare export från södra Sverige . Även hur mycket 
+som kan exporteras är svårt att uppskatta då det kräver en analys av situationen i Norge och 
+Finland.  Där  hänsyn  måste  tas  till  bland  annat  förbrukning,  produktion,  vidare  export  och 
+importmöjligheter från andra grannländer. 
+Det kommer också att vara av stor betydelse att hålla en viss marginal öppen i ledningarna då 
+den norrländska vattenkraften ska klara att reglera variationer i förbrukning och produktion 
+även  i  södra  Sverige.  För  att  klara  en  ökning  av  förbrukningen  eller  en  dipp  i  produktionen 
+söder om snitt 2 måste det finnas marginal i ledningarna som kan utnyttjas för ökad produktion 
+i norr. Denna marginal kommer också bara att bli viktigare ju mer vindkraften byggs ut då en 
+mycket stor andel kommer att byggas söder om snittet. 
+7.2.2 
+Tillrinning 
+Den metod som använts hittills för att bestämma storleken på den naturliga tillrinningen till 
+varje magasin har varit ganska enkel. Som beskrevs i avsnitt 4.2.1och 5.1.2 har medelvärdet av 
+tillrinningen till de enskilda kraftverken använts. Dessa värden har sedan skalats upp respektive 
+ned med en gemensam faktor för samtliga kraftverk beroende på vilken vecka under året som 
+simulerats. Under veckor där tillrinningarna varierar mycket mellan olika geografiska områden 
+är  denna  metod  allt  för  enkel  och  leder  till  dåliga  resultat  och  ofta  även  att 
+optimeringsproblemet blir olösligt.  
+Redan  i  grundmodellen  uppstod  ett  sådant  problem  under  vecka  20.  Det  löstes  genom  det 
+betydligt  mer  tidskrävande  arbetet  att  jämföra  flöden  i  modellen  med  mätdata  från  SMHI:s 
+mätstationer  längs  med  de  aktuella  älvarna.  Detta  arbete  kan  upprepas  i  långt  många  fler 
+scenarier och bör göras för alla scenarier vars flöden som avviker från det normala över året. 
+7.2.3 
+Målnivåer 
+Hittills  har  denna  modell  använt  en  av  de  enklast  möjliga  metoderna  för  att  behålla  vatten  i 
+magasinen  vid  simuleringsperiodens  slut  genom  kravet  varit  att  samtliga  magasin  skall 
+innehålla  en  viss  andel  vatten.  Då  stora  mängder  vindkraft  installeras  i  Sverige  kommer 
+nivåerna  för  magasinsfyllnad  över  året  att  ändras  från  dagsläget.  Som  framgår  i  resultaten  i 
+denna rapport vore det mycket mer lönsamt att använda mindre vatten under vinterveckorna 
+och  istället  utnyttja  den  överblivna  kapaciteten  för  export  under  sommaren.  Denna  slutsats 
+kommer dock att kunna ändras med övrigt framtida arbete till exempel om kapaciteterna för 
+snitt 2 och export ändras över året. 
+Ett exempel på hur man kan bättre utnyttja modellen är simuleringar där målnivåerna för de 
+stora års‐ och säsongsmagasinen sätts individuellt medan de övriga mindre magasinen har en 
+gemensam nivå. De mindre magasinens målnivåer har mindre betydelse för resultaten då dessa 
+kan fyllas och tömmas mycket snabbt och kan därför sättas gemensamt.  
+Det är också möjligt att kräva att flera magasin tillsammans ska uppnå en viss nivå, så att om ett 
+magasin har extra vatten kan man tillåts sänka ett annat motsvarande mängd. Denna metod bör 
+dock  inte  användas  på  två  stora  magasin  som  ligger  upp‐  och  nedströms  om  varandra  då 
+modellen kommer vilja tömma det övre magasinet och fylla det nedre. Detta beror på att vattnet 
+då har kunnat passera minst en extra kraftstation och produktionen har ökats.  
+54 
+ 
+I verkligheten råder också mycket större flexibilitet vad gäller magasinsnivåerna, under veckor 
+med lite vind kommer man att tillåta att mer vatten utnyttjas än planerat samtidigt som man 
+spar  extra  när  det  blåser  mer  istället  för  att  spilla.  Detta  kräver  till  skillnad  från  de  andra 
+förbättringarna en större förändring av modellen med ett tillägg till målfunktionen som straffar 
+extra nyttjande och belönar sparat vatten. 
+7.2.4 
+Scenarier 
+I  denna  rapport  har  ett  mycket  begränsat  antal  scenarier  analyserats.  Endast  en  vecka  per 
+månad under ett relativt normalt år vad gäller vattenflöden och vindhastigheter har simulerats. 
+Detta  ger  inte  tillräckliga  kunskaper  för  att  kunna  dra  önskade  slutsatser.  Det  skulle  vara 
+önskvärt  att  skapa  scenarier  med  alla  möjliga  förutsättningar  för  att  simulera  dessa  med 
+modellen. Kan man sedan estimera sannolikheten för att dessa olika scenarier skall inträffa kan 
+man börja dra slutsatser kring vilka de troliga följderna blir av vindkraftsutbyggnaden.  
+I  Andreas  rapport  (19)  går  att  läsa  om  de  resultat  som  erhölls  från  simuleringar  med  några 
+ytterliggare  scenarier,  som  våtår  (data  från  2001),  torrår  (data  från  2003)  samt  olika 
+vindhastigheter.  Det  finns  fortfarande  långt  många  fler  intressanta  scenarier  som  behöver 
+analyseras,  som  år  med  mycket  varierad  nederbörd  eller  vad  som  sker  vid  olika  nivåer  för 
+leverens över snitt eller export. 
+7.2.5 
+Fallhöjder 
+Det  klassiska  sättet  att  modellera  fallhöjdsförluster  är  tyvärr  inte  möjligt  att  använda  i  en 
+modell  av  denna  storlek  med  en  normal  dator  då  det  innebär  en  icke‐linjär  ekvation  för 
+produktionen i alla kraftverk. Förhoppningsvis kommer den linjära modellen som togs fram i 
+kapitel  6.5  att  fungera  tillfredsställande  när  straffparametrarna  ܨ௜ har  analyserats  och 
+estimerats  för  alla  kraftverk  var  för  sig.  Detta  bör  kunna  göras  med  den  information  kring 
+kraftverken som finns tillänglig såsom magasinsvolymer, bruttofallhöjder samt dämnings‐ och 
+sänkningsgränser. Med ett grundligt arbete bör denna modell då vara fullt användbar att dra 
+slutsatser från. 
+7.2.6 
+Stokastisk modell 
+Det  har  flera  gånger  i  rapporten  påpekats  att  vindkraftproduktionen  är  mycket  förenklad  i 
+denna  modell.  Att  man  i  början  av  veckan  vet  den  exakta  mängd  som  kommer  produceras 
+timma för timma under hela veckan är inte en bra uppskattning av verkligheten. För att komma 
+åt detta problem behöver modellen förbättras med stokastisk programmering. Detta kräver en 
+omarbetning  av  modellen  och  skiljer  sig  alltså  åt  från  tidigare  förbättringar  som  enbart 
+fokuserat på ta fram bättre indata till modellen. 
+I  Andreas  rapport  (19)  finns  även  en  beskrivning  av  hur  en  mycket  enkel  stokastisk  analys 
+genomfördes och resultaten från denna. Resultaten visar att osäkerhet kring vindkraftverkens 
+produktion leder till drastiskt ökade förluster i form av spill. I vissa simulerade scenarier ökar 
+spillförlusterna  till  ungefär  det  dubbla  jämfört  med  simuleringarna  med  perfekta  prognoser. 
+Denna enkla modell är dock just en enkel modell och resultaten  visar endast att en betydligt 
+mer avancerad analys och förbättring skulle vara mycket önskvärd. 
+7.2.7 
+Pris och marknadsmodeller 
+I  inledningen  av  denna  rapport  klargörs  det  att  ingen  hänsyn  tas  till  enskilda  aktörers  egna 
+ekonomiska intressen. Detta är dock knappast något man kan bortse från i ett mer detaljerat 
+perspektiv då det faktiskt är de enskilda ekonomiska intressen som styr över kraftverken. Varje 
+55 
+ 
+ägare till kraftverk kommer att styra dessa för att maximera sin egen vinst snarare än för ett 
+övergripande allmännyttigt intresse. Därför kan det vara intressant att bygga ut modellen med 
+kurvor över elpriser och hänsyn till vinster hos de olika ägarna. 
+Ett annat sätt att se på problemet med ekonomin är att använda modellen för att försöka finna 
+det övergripande optimala sättet att styra den svenska produktionen. Sedan kan man med hjälp 
+av ekonomiska inticament försöka förmå kraftverksägarna att följa denna optimala driftplan. 
+7.2.8 
+Förbättringar inom modellen 
+Slutligen kan det även vara intressant att titta närmare på ett par områden där modellen idag 
+har mer eller mindre grova förenklingar av verkligheten. I några fall krävs endast bättre och 
+mer detaljerad information för att göra modellen bättre. Andra förenklingar har varit viktiga för 
+att minimera datorkapaciteten som krävs för lösningsarbetet men det är intressant att estimera 
+effekterna av dessa.  
+Det  kan  vara  av  stor  vikt  att  ta  hänsyn  till  interna  flaskhalsar  inom  norrland,  framförallt  i 
+scenarier  med  stor  utbyggnad  av  vindkraft.  Att  lokalisera  dessa  och  estimera  maximala 
+kapaciteter  är  fullt  möjligt  att  göra  men  då  krävs  tillgång  till  mycket  detaljerad  data  om  till 
+exempel  förbrukningen  mellan  alla  sådana  flaskhalsar.  Varken  den  information  eller  tid  som 
+behövs fanns för att kunna inkludera de interna flaskhalsarna i detta arbete.  
+Ett kraftverk har ett visst antal optimala körpunkter eller korta intervall, för vilka tappningar 
+man  erhåller  bäst  effekt  för  vattnet.  I  normalfallet  körs  endast  kraftverken  på  just  dessa 
+intervall, detta kan simuleras om de binära variablerna ändras till heltalsvariabler. En modell 
+som tar hänsyn till dessa intervall skulle också ta hänsyn till start och stopp av enskilda turbiner 
+inom kraftverken. Denna modell kräver dock mycket detaljrik information om kraftverken som 
+kan vara mycket svår att få tag på. Dessutom var de heltalsmodeller som testades i detta arbete 
+betydligt mer arbetsintensiva än grundmodellen och införande av ytterliggare heltalsvariabler 
+bör göras mycket restriktivt. Kanske kan en mindre modell av detta slag testas för att försöka 
+identifiera vilka effekter dessa villkor kan ha på resultaten. 
+Till  slut  kan  det  också  vara  intressant  att  se  effekterna  av  att  ha  viss  kontroll  över 
+elproduktionen  hos  andra  kraftverkstyper,  framförallt  de  ovanför  snitt  2.  I  modellen  har 
+produktionen  från  dessa  hittills  givits  av  tidsserier  vilka  inte  kunnat  ändras  även  om  det 
+innebär att producerad el måste spillas. Att istället ha viss kontroll över elproduktion från bland 
+annat kraftvärmeverk kan leda till betydligt bättre lösningar för alla inblandade producenter. 
+Det  finns  idag  färdiga  metoder  för  modellering  av  värmekraftverk  som  enkelt  kan 
+implementeras i denna modell.  
+ 
+ 
+56 
+ 
+8 Referenser 
+ 
+Litteratur 
+1. Söder, Lennart och Amelin, Mikael. Effektiv drift och planering av kraftsystem. Stockholm : 
+Avdelningen för elektriska energisystem, Kungliga Tekniska Högskolan, 2008. 
+2. Jacobsson, Karl­Axel, o.a. Elkraftsystem 1. u.o. : Liber AB, 1997. 
+3. Kraftverksföreningen. Hydro Power in Sweden. 1987. ISBN: 91‐7186‐064‐9. 
+4. —. Register ‐ Hydro Power Stations and Dams. 1999. 
+5. Nash, Stephen G. och Sofer, Ariela. Linear and Nonlinear Programming. u.o. : McGraw‐Hill, 
+1996. ISBN 0‐07‐114537‐0. 
+6. Brooke, Anthony, o.a. GAMS ­ a user's guide. u.o. : GAMS Development Corporation, 1998. 
+ 
+Rapporter o. dyl. 
+7. NordPool. Capacity_Daily_2008.xls. NordPool Spot. [Online] 2009. 
+http://www.nordpoolspot.com/reports/capacities/Post.aspx. 
+8. —. Flow_Daily_2008.xls. NordPool Spot. [Online] 2009. 
+http://www.nordpoolspot.com/reports/flow/Post.aspx. 
+9. Svenska Kraftnät. N_FoT2008.xls. Elstatistik för Sverige. [Online] 2009. 
+http://www.svk.se/Energimarknaden/El/Statistik/Rad2/. 
+10. —. SVE‐STA_2008. Elstatistik för Sverige. [Online] 2009. 
+http://www.svk.se/Energimarknaden/El/Statistik/Rad2/. 
+11. —. Storskalig utbyggnad av vindkraft ­ Konsekvenser för stamnätet och behov av reglerkraft. 
+2008. Dnr 617/2008/AN40. 
+12. Nordel. Nordel Annual Report 2007. 2008. 
+13. —. Nordel annual statistics 2008. 2009. 
+14. Svensk Energi. Svensk Elproduktion. [Online] 
+http://www.svenskvindenergi.org/files/Elkarta.pdf. 
+15. Magnusson, Mikael, o.a. Effektvariationer av vindkraft ­ En studie av 
+vindenergiproduktionens tidsvariation. u.o. : Elforsk . 04:34. 
+16. Energimyndigheten. Nytt planeringsmål för vindkraften år 2020. 2007. ER 2007:45. 
+17. Sveriges Miljödomstolar. div. Domslut. 1900‐2009. 
+18. SMHI. Vattenflöden vid mätstationer. 2009. 
+57 
+ 
+19. Fagerberg, Andreas. Balansering av vindkraft och vattenkraft i norra Sverige, med hänsyn 
+till vädervariationer. Stockholm : Avdelningen optimeringslära och systemteori, Kungliga 
+Tekniska Högskolan, 2009. 
+20. Matevosyan, Julija. Wind Power Integration in Power Systems with Transmission Bottlenecks. 
+Stockholm : Avdelningen för elektriska energisystem, Kungliga Tekniska Högskolan, 2006. 
+TRITA‐ETS 2006:41. 
+21. Svensk Energi. Elmarknadsstatistik per vecka för Sverige 2007. [Online] 2008. 
+http://www.svenskenergi.se/upload/Statistik/Tidigare%20statistik/Veckostat%203%20%C3
+%A5r/Vecka_01‐52_2007_ver_A.pdf. 
+ 
+Internet 
+22. Svenska Kraftnät. [Online] http://www.svk.se. 
+23. Svensk Energi. [Online] http://www.svenskenergi.se. 
+24. Energimyndigheten. [Online] http://www.energimyndigheten.se. 
+25. Vattenfall. [Online] http://www.vattenfall.se. 
+26. NordPool. [Online] http://www.nordpool.com. 
+27. Kuhlin, Leif. [Online] http://www.kuhlins.com. 
+28. Wikipedia. [Online] www.sv.wikipedia.org. 
+ 
+Intervjuer 
+29. Söder, Lennart. Avdelningen för elektriska energisystem, Kungliga Tekniska Högskolan. 2009. 
+30. Boman, Harald. Vattenfall. 2009. 
+31. Brännström, Mats. Vattenfall. 2009. 
+32. Lindberg, Johnny. Vattenfall. 2009. 
+33. Lindström, Tord. Vattenfall. 2009. 
+34. Olofsson, Jan. Vattenfall. 2009. 
+35. Calla, Peter. Vattenregleringsföretagen. 2009. 
+36. Larsson, Karin. Vattenregleringsföretagen. 2009. 
+37. Eliasson, Sigrid. E:ON. 2009. 
+38. Hautakoski, Johan. Jämtkraft. 2009. 
+39. Johansson, Olle. Jämtkraft. 2009. 
+58 
+ 
+40. Johansson, Ann. Vattenregleringsföretagen. 2009. 
+41. Lindström, Jan. Holmen Energi. 2009. 
+42. Lindström, Peter. Skellefteälvens vattenregleringsföretag. 2009. 
+43. Norgren, Elisabet. Svenska Kraftnät. 2009. 
+ 

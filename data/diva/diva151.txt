@@ -1,0 +1,6127 @@
+ 
+ 
+ 
+Aerodynamisk optimering av vindkraftverks 
+rotorblad med en genetisk algoritm,  
+BEM-teori, och XFOIL   
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+Max Berggren 
+	  
+ 
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+Handledare: 
+Nenad Glodic 
+	  
+	  
+	  
+	  
+MJ153x Examensarbete i Energi och miljö, grundnivå 
+	  
+Stockholm 2014 
+ABSTRACT
+This study presents a methodology that enables the annual average power of a wind
+turbine to be increased by automatically optimizing it’s airfoil, twist and chord dis-
+tribution. As a part of the study the software SiteOpt has been developed. This
+software connects the open source software XFOIL with the blade element momen-
+tum theory. XFOIL gives lift and drag coeﬃcients which enable the blade element
+momentum theory to predict the power of a wind turbine at diﬀerent wind and ro-
+tational speeds. An optimization algorithm of the type genetic algorithms is used to
+develop a new rotor blade. An academic benchmark case (Unsteady Aerodynamics
+Experiment Phase III) was selected as a starting point of the optimization because
+wind tunnel data was available for that campain. With the geometry developed by
+the genetic algoritm a theoretical increase of 15 % more power could be extracted.
+However, it has been shown that the model has shortcomings at high wind speeds
+where the predicted power does not match wind tunnel data. This is thought to be
+related to that the model assumes a completely rigid blade. In real world applica-
+tions a rotorblade will bend on higher wind speeds (about 8 m/s). It is therefore
+concluded that the model in its current form is ﬂawed and that future work should
+aim to take these eﬀects into account. However, a wind histogram for a speciﬁc loca-
+tion was used in order to calculate the annual average power for the wind turbine.
+The wind histogram used in this study to obtain the results has it’s wind speeds 81
+% before 10 m/s where the model is acceptable. Therefore the results are largely to
+be considered accurate.
+ii
+SAMMANFATTNING
+I denna studie presenteras en metod som möjliggör att ett vindkraftverks årliga
+genomsnittseﬀekt kan ökas genom att vingproﬁler, korda- och twistdistributioner
+automatiskt optimeras. För studien har därför programvaran SiteOpt utvecklats.
+Denna sammanbinder den öppna programvaran XFOIL med den så kallade “bla-
+de element momentum”-teorin. XFOIL kan för vingproﬁler ta fram lyft- och mot-
+ståndskoeﬃcienter vilka möjliggör för “blade element momentum”-teorin att ta fram
+ett vindkraftverks eﬀekt vid olika vindhastigheter och rotationshastigheter. En op-
+timeringsalgoritm av typen genetiska algoritmer har använts för att utifrån ett re-
+ferensfall ta fram ett optimerat rotorblad. I detta fallet valdes ett akademiskt vind-
+kraftverk (Unsteady Aerodynamics Experiment Phase III) där vindtunneldata fanns
+tillgänglig. Genom att den genetiska algoritmen optimerade vingproﬁlens geometri
+kunde teoretiskt 15 % mer eﬀektuttag göras och en ny vingproﬁl presenteras i stu-
+dien. Däremot har det visats att den för studien utvecklade modellen har avvikelser
+från verkligheten vid höga vindhastigheter. Detta tros ha att göra med att model-
+len förutsätter ett helt stelt blad, medans verkligheten ofta medför blad som böjer
+sig vid höga vindhastigheter (c:a 8 m/s). Det konstateras därför att modellen i sin
+nuvarande form har vissa brister och att framtida arbete bör inrikta sig på att ta
+hänsyn till dessa hållfasthetsaspekter. Däremot används ett vindhistogram för en
+speciﬁk plats för att beräkna ett vindkraftverks årliga genomsnittseﬀekt. Då vind-
+histogrammet som godtyckligt användes har vindhastigheter som till 81 % ligger
+innan 10 m/s, konstateras det att resultatet som presenteras till stor del ändå är
+giltigt då det använder den delen av modellen som visats ge god överensstämmelse
+med verkligheten.
+Innehållsförteckning
+Sammanfattning
+i
+Innehållsförteckning
+iii
+Figurlista
+vii
+Tabellista
+ix
+Nomenklatur
+ix
+1
+Introduktion
+1
+1.1
+Syfte . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1
+1.2
+Mål
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2
+1.3
+Litteraturstudie . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2
+1.3.1
+Vindturbiner
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2
+1.3.2
+Vindens inneliggande energi . . . . . . . . . . . . . . . . . . . . . .
+4
+1.3.3
+Eﬀekt-kurvan för ett vindkraftverk . . . . . . . . . . . . . . . . . .
+5
+1.3.4
+CP -kurvan . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+7
+1.3.5
+Cl- och Cd-kurvor
+. . . . . . . . . . . . . . . . . . . . . . . . . . .
+8
+1.3.6
+Programvaror och erhållande av Cl och Cd . . . . . . . . . . . . . .
+8
+1.3.7
+Val av modell för att förutsäga ett vindkraftverks produktion . . .
+9
+1.3.8
+Vingproﬁlsrepresentation . . . . . . . . . . . . . . . . . . . . . . . .
+9
+1.3.9
+“Blade element momentum”-teori (Bem) . . . . . . . . . . . . . . .
+11
+1.3.9.1
+Analys av rörelsemängd i en dimension
+. . . . . . . . . .
+11
+1.3.9.2
+“Blade element momentum”-metoden . . . . . . . . . . . .
+16
+1.3.9.3
+Prantl topp-förluster . . . . . . . . . . . . . . . . . . . . .
+20
+1.3.9.4
+Glauert-korrektion . . . . . . . . . . . . . . . . . . . . . .
+21
+1.3.9.5
+Implementering av Bem-algoritmen
+. . . . . . . . . . . .
+22
+1.3.10 Optimeringslära
+. . . . . . . . . . . . . . . . . . . . . . . . . . . .
+22
+1.3.10.1 Andra författares val av målfunktion . . . . . . . . . . . .
+23
+1.3.10.2 Optimeringsalgoritmer . . . . . . . . . . . . . . . . . . . .
+23
+1.3.10.3 Genetiska algoritmer . . . . . . . . . . . . . . . . . . . . .
+24
+1.4
+Relevans för studien
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+25
+1.5
+Avgränsningar . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+25
+2
+Metod
+27
+2.1
+Vingproﬁlsrepresentation med B-splines
+. . . . . . . . . . . . . . . . . . .
+29
+2.1.1
+Restriktioner
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+30
+iii
+iv
+INNEHÅLLSFÖRTECKNING
+2.2
+Korda- och twistdistribution över bladet . . . . . . . . . . . . . . . . . . .
+31
+2.2.1
+Restriktioner
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+31
+2.3
+Rotorbladsrepresentation . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+32
+2.4
+SiteOpts implementering av Bem . . . . . . . . . . . . . . . . . . . . . . .
+33
+2.4.1
+Fixerade parametrar . . . . . . . . . . . . . . . . . . . . . . . . . .
+34
+2.5
+Erhållande av Cl och Cd . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+35
+2.5.1
+Xfoil . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+35
+2.5.2
+Interpolering mellan olika Re och α för Cl och Cd . . . . . . . . . .
+37
+2.5.3
+Hantering av uteblivet resultat från Xfoil . . . . . . . . . . . . . .
+37
+2.6
+Post-stall-extrapolation av Cd och Cl . . . . . . . . . . . . . . . . . . . . .
+38
+2.7
+Vindhastighetsproﬁler
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+40
+2.8
+Genetisk algoritm . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+41
+2.8.1
+Implementering av den genetiska algoritmen . . . . . . . . . . . . .
+42
+2.8.2
+Fitnessfunktion . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+43
+3
+Resultat
+45
+3.1
+Referensfall för veriﬁering av SiteOpt . . . . . . . . . . . . . . . . . . . . .
+45
+3.2
+Optimering av UAE III
+. . . . . . . . . . . . . . . . . . . . . . . . . . . .
+50
+4
+Diskussion
+55
+4.1
+Sammanfattning
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+55
+4.2
+Slutsatser . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+56
+4.3
+Rekommendationer för framtida arbete . . . . . . . . . . . . . . . . . . . .
+59
+Litteraturförteckning
+61
+Appendix A: Källkod SiteOpt
+63
+Appendix B: SiteOpt output av UAE III
+79
+Figurer
+1.1
+Totalt installerad global vindkraftseﬀekt. Reproducerat från GWEC (2014).
+1
+1.2
+Vingproﬁl med krafter utmarkerat. Fritt reproducerat från Hansen (2005).
+2
+1.3
+De två vanligaste typerna av vindturbiner. Fritt reproducerat från Burton
+et al. (2005). . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3
+1.4
+Gir (γ), korda (c) och pitch (θp) utmarkerat på en vindturbin. . . . . . . .
+4
+1.5
+Eﬀektkurva för Vestas V80 2 MW 80 m diameter. Fritt reproducerat från
+Wood (2011). . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+6
+1.6
+CP mot λ för Vestas V80 2 MW 80 m diameter. Fritt reproducerat från
+Wood (2011)
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+7
+1.7
+Cl och Cd för vingproﬁlen S809 vid Re en miljon. Data från Hand (2001) .
+8
+1.8
+Vingproﬁlsrepresentation genom sammanbindning av diskreta punkter ge-
+nom B-spline-interpolation . . . . . . . . . . . . . . . . . . . . . . . . . . .
+10
+1.9
+Illustration visande strömlinjerna som passerar rotorn samt hur tryck och
+hastighet förändras över denna. Fritt reproducerat från Hansen (2005). . .
+11
+1.10 Kontrollvolym kring den ideala rotorn. Fritt reproducerat från Hansen
+(2005). . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+12
+1.11 Ny kontrollvolym kring den ideala rotorn. Fritt reproducerat från Hansen
+(2005).
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+13
+1.12 Figur visande hur CT varierar med a. Fritt reproducerat från Hansen
+(2005).
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+15
+1.13 Olika typer av virvlar. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+15
+1.14 Hastighetskomponenterna som en vingproﬁl upplever. Fritt reproducerat
+från Hansen (2005). . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+16
+1.15 Kontrollvolym med formen som ett rör genom rotorplanet. Fritt reprodu-
+cerat från Hansen (2005).
+. . . . . . . . . . . . . . . . . . . . . . . . . . .
+17
+1.16 Hastighetskomponenterna en vingproﬁl i rotorplanet upplever. Fritt re-
+producerat från Hansen (2005). . . . . . . . . . . . . . . . . . . . . . . . .
+17
+1.17 Krafter upplevda av en vingproﬁl i rotorplanet. Fritt reproducerat från
+Hansen (2005). . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+19
+1.18 Illustration visande hur designrymden utvärderas av målfunktionen för att
+ge en målrymd. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+23
+2.1
+Överblick av studiens metod . . . . . . . . . . . . . . . . . . . . . . . . . .
+28
+2.2
+Vingproﬁlsrepresentation genom sammanbindning av diskreta punkter ge-
+nom B-spline-interpolation . . . . . . . . . . . . . . . . . . . . . . . . . . .
+29
+2.3
+Korda- respektive twistdistribution över bladet
+. . . . . . . . . . . . . . .
+31
+2.4
+Rotorbladets representation i SiteOpt . . . . . . . . . . . . . . . . . . . . .
+32
+2.5
+Exempel på input skickad till Xfoil. . . . . . . . . . . . . . . . . . . . . .
+36
+2.6
+Exempel på output som Xfoil returnerar i form av en textﬁl. . . . . . . .
+36
+v
+vi
+FIGURER
+2.7
+Resulterande Cl efter utvärdering av 10 st Re i Xfoil . . . . . . . . . . .
+37
+2.8
+Cl från Xfoil (fet linje) och extrapolerade Cl (tunn linje) enligt förfaran-
+det beskrivet i 2.5.2 för en S809 vingproﬁl vid Re en miljon.
+. . . . . . .
+39
+2.9
+Cd från Xfoil (fet linje) och extrapolerade Cd (tunn linje) enligt förfa-
+randet beskrivet i 2.5.2 för en S809 vingproﬁl vid Re en miljon. . . . . . .
+39
+2.10 Vindhastighetsfördelning. Data från hämtad från St. Lawrence i Canada
+reproducerad från Kenway & Martins (2008). . . . . . . . . . . . . . . . .
+40
+2.11 Initial populations rot-vingproﬁler skapad genom variationer på S809 med
+10 % slumpfaktor i varje punkt. . . . . . . . . . . . . . . . . . . . . . . . .
+41
+3.1
+Resultat av UAE III utvärderat i SiteOpt vid olika vindhastigheter samt
+experimentell data från Ceyhan (2008). . . . . . . . . . . . . . . . . . . . .
+48
+3.2
+Resultat av vindkraftverket beskrivet i Gertz & Johnson (2011) (Waterloo)
+utvärderat i SiteOpt vid olika vindhastigheter samt experimentell data. . .
+48
+3.3
+Figur illustrerande hur genomsnittseﬀekten P av den bästa individen i
+varje generation utvecklas med ytterligare generationer i den genetiska
+algoritmen.
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+50
+3.4
+Eﬀektkurvor för referensfallet UAE III och det optimerade rotorbladet. . .
+51
+3.5
+Den optimerade vingproﬁlen jämfört med ursprungsproﬁlen S809. . . . . .
+52
+3.6
+Det optimerade rotorbladets korda- och twistdistribution jämfört med ut-
+gångspunkten UAE III.
+. . . . . . . . . . . . . . . . . . . . . . . . . . . .
+52
+3.7
+Lyftkoeﬃcient för den optimerade vingproﬁlen och utgångspunkten S809
+utvärderat i Xfoil samt experimentell data för S809 från Somers (1997). .
+53
+3.8
+Motståndskoeﬃcient för den optimerade vingproﬁlen och utgångspunkten
+S809 utvärderat i Xfoil. . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+53
+Tabeller
+2.1
+Maximal och minimal korda och twist enligt Kenway & Martins (2008)
+samt valda värden för studien. . . . . . . . . . . . . . . . . . . . . . . . . .
+32
+2.2
+Parametrar för den genetiska algoritmen . . . . . . . . . . . . . . . . . . .
+42
+3.1
+Speciﬁkationer för referensfallen Waterloo och UAE III . . . . . . . . . . .
+46
+3.2
+Twist- och kordadistribution längs rotorbladet i UAE III (Simms et al. ,
+1999) och Waterloo (Gertz & Johnson, 2011)
+. . . . . . . . . . . . . . . .
+47
+3.3
+Speciﬁkationer för optimeringen som görs med utgångspunkt i UAE III . .
+50
+3.4
+Speciﬁkationer för använd hårdvara . . . . . . . . . . . . . . . . . . . . . .
+51
+vii
+Nomenklatur
+α
+Angreppsvinkel
+β
+Lokal vridning längs rotorbladets vingproﬁl i jämförelse med topp-vingproﬁlens
+vinkel
+γ
+Gir i vindkraftverkets torn
+λ
+Löptal (eng: tip speed ratio)
+Ω
+Vinkelhastighet
+P
+Genomsnittseﬀekt
+ρ
+Luftens densitet
+σ
+Lokal solidity
+θp
+Rotorbladets pitch (rotation av rotorbladet)
+a
+Axiell induktionsfaktor
+a′
+Tangentiell induktionsfaktor
+AR
+Aspect ratio - förhållande mellan kordan och radien vid 80 % av radien.
+B
+Antal blad på vindkraftverket
+c
+Korda
+Cd
+Dimensionslös motståndskraft
+Cl
+Dimensionslös lyftkraft
+CT
+Dimensionslös tryckkraft
+Cθ
+Förkortning för 2a′Ωr
+D
+Motståndskraft
+dQ
+Tillskott till vridmomentet
+ix
+x
+TABELLER
+dr
+Bladelementens bredd (m)
+dT
+Tillskott till tryckkraften
+F
+Prantls toppförlustfaktor
+Fn
+Kraft i normalriktningen
+Ft
+Kraft i tangentialriktningen
+L
+Lyftkraft
+N
+Normalkraft
+Q
+Vridmoment
+r
+Lokal radie längs rotorbladet (m)
+rhub
+Radien där rotorbladets vinge börjar (m)
+Re
+Reynolds tal
+T
+Tryckkraft
+V∞
+Friströmshastigheten långt innan rotorplanet
+Vtot
+Total hastighet för en vingproﬁl uppkommen genom rotorbladets rotation samt
+den inkommande vinden
+Märkeﬀekt Högsta eﬀekt som en generator klarar av att producera
+NREL National Renewable Energy Laboratory
+UAE
+Unsteady Aerodynamics Experiment (experiment utförda vid NREL)
+Kapitel 1
+Introduktion
+Fossila bränslen står idag för 82 % av världens totala energibehov (UEIA, 2014). Ef-
+tersom förbränningen av fossila bränslen är huvudanledningen till växthuseﬀekten be-
+hövs alternativa energikällor. Därför står vindkraft idag för en allt växande global trend
+av installerad kapacitet vilket syns i Figur 1.1.
+Figur 1.1: Totalt installerad global vindkraftseﬀekt. Reproducerat från GWEC (2014).
+Förnyelsebara energikällor såsom vindkraftverk är ideala eftersom de inte medför be-
+tydande utsläpp av växthusgaser. Vindkraftverk är samtidigt idag ett av de absolut
+mest kostnadseﬀektiva sättet att producera energi. Koldixoxidutsläppen som produktio-
+nen och uppförandet av ett vindkraftverk ger upphov till är uppvägda efter tre till sex
+månader efter att vindkraftverket tagits i drift. Efter detta återstår c:a 20 års fossilfri
+kraftproduktion vilket är en vanlig livstid för ett vindkraftverk (GWEC, 2012).
+1.1
+Syfte
+För att gynna möjligheterna till en hållbar framtid syftar denna studie bidra till eﬀekti-
+viseringar av ett vindkraftverks energiproduktion.
+1
+2
+Kapitel 1 Introduktion
+1.2
+Mål
+Det generella målet är att utifrån ett histogram med vindhastigheter för en plats kunna
+presentera det rotorblad som ger största genomsnittliga eﬀekt för ett vindkraftverk. Detta
+kommer ske genom ett par delmål:
+• Skapa en modell som förutsäger ett vindkraftverks genomsnittliga eﬀekt.
+• Hitta och presentera ett referensfall som kan användas för att utvärdera den skapade
+modellens giltighet.
+• Ett optimeringsproblem ska formuleras och implementeras som kommunicerar med
+modellen för att hitta rotorblad med högre genomsnittlig eﬀekt.
+• Ta fram ett alternativt rotorblad genererat ur optimeringen och jämföra dess pre-
+standa mot referensfallet.
+1.3
+Litteraturstudie
+1.3.1
+Vindturbiner
+Vindkraftverk är en maskin som konverterar vindens inneliggande rörelseenergi till elekt-
+risk energi. Detta görs genom att inkommande luft skapar en lyftkraft på rotorbladets
+vingproﬁl som driver ett vridmoment. Vridmomentet utnyttjas sedan i en generator för
+att producera el. I Figur 1.2 syns ett tvärsnitt av ett vindkraftverks rotorblad med lyft-
+(L) och motstånds- (D) och normalkraft (N) utmarkerat.
+α
+α
+L
+N
+D
+Vtot
+Figur 1.2: Vingproﬁl med krafter utmarkerat. Fritt reproducerat från Hansen (2005).
+Kapitel 1 Introduktion
+3
+  
+V∞
+R
+(a) Horizontellt axlad vindturbin (hawt)
+(b) Vertikalt axlad vindturbin (vawt)
+Figur 1.3: De två vanligaste typerna av vindturbiner. Fritt reproducerat från Burton
+et al. (2005).
+I Figur 1.3(a) syns den horisontellt axlade vindturbinen (ofta kallat hawt) vilken är den
+vanligast förekommande. En alternativ variant på vindkraftverk är den vertikalt axlade
+vindturbinen (vawt) som syns i Figur 1.3(b). Dessa har fördelarna att de producerar
+eﬀekt oavsett vindriktning samt att de är lättare att utföra service på då viktiga delar
+nås från fundamentet. Dessa utvecklades i kommersiell skala fram till 80-talet men får
+idag mindre uppmärksamhet på grund av dess nackdelar:
+• Närmast marken är vindhastigheten lägre (vidhäftningsvilkoret) vilket gör att tur-
+binens nedre del är mindre eﬀektiv än den övre.
+• Turbinen har svårt att självstarta och behöver därför en motor för att komma upp
+i en hastighet där de producerar eﬀekt.
+• Vridmomentet ﬂuktuerar mycket mellan rotationerna.
+• De kräver en mekanisk broms vid höga vindhastigheter för att inte komma upp i
+rotationshastigheter där konstruktionen går sönder.
+hawt är den idag mest förekommande varianten och den enda som behandlas i denna
+uppsats. I stora drag består en hawt av en motorgondol monterat på ett högt torn. I
+motorgondolen ﬁnns en generator samt även ofta ett växelhus, även om ett ökande antal
+vindturbiner idag är utan växelhus. För att vända turbinen mot den inkommande vinden
+ﬁnns oftast en motor som möjliggör gir (γ) (se Figur 1.4).
+4
+Kapitel 1 Introduktion
+p
+c
+½
+Figur 1.4: Gir (γ), korda (c) och pitch (θp) utmarkerat på en vindturbin.
+En rotor som sitter framför motorgondolen uppströms vindens riktning samt tre rotorblad
+är idag den vanligast förekommande typen av vindturbin i kommersiell drift. Vanligast
+är även att rotationshastigheten (Ω) är variabel.
+För att kunna kontrollera vindkraftverket vid höga rotationshastigheter sitter ofta även
+motorer som kontrollerar rotorbladens så kallade pitch (θp). När vindhastigheten blir för
+hög kan rotorbladen ställas så att lyftkraften minskar och på så sätt hålla generatorn
+från att skadas. Korda (c) beskriver rotorbladets vingproﬁls längd i ett tvärsnitt och
+varierar ofta med radien. Dessa koncept illustreras i Figur 1.4. En ytterligare vridning
+längs radien kallas twist (β) och deﬁnieras som avvikelse från kordans plan i rotorbladets
+topp.
+Idag existerar vindturbiner med maximal eﬀekt från några enstaka kW till ﬂera MW
+och rotordiametern är därefter. Ett vindkraftverk i MW-klass är inte sällan över 100 m
+i diameter (Dixon, 2014).
+1.3.2
+Vindens inneliggande energi
+Vindens inneliggande kinetiska energi som passerar den cirkulära area rotorn sveper i
+Figur 1.3(a) kan visas ge eﬀekten
+Pvind = 1
+2ρAV 3
+∞= 1
+2ρV 3
+∞πR2
+(1.1)
+Kapitel 1 Introduktion
+5
+Där A är den cirkulära arean πR2 där R är radien och V∞vindhastigheten uppströms
+rotorn. Ekvationen visar alltså att energin som kan tas ut ur vinden beror på vind-
+hastigheten i kubik vilket är viktigt att komma ihåg. Den visar även att eﬀektuttaget
+är beroende på radien i kvadrat, vilket förklarar dagens trend med ökande storlek på
+vindkraftverken.
+I praktiken är eﬀekten som ett vindkraftverk genererar aldrig så hög som ekvation 1.1
+antyder. Det hade inneburit att vinden tappat all sin hastighet genom rotorn och bloc-
+kerat ytterligare vind. Detta leder oss till den dimensionslösa storheten CP som är vanlig
+i dessa sammanhang deﬁnierad
+CP =
+P
+Pvind
+=
+P
+1
+2ρV 3
+∞πR2
+(1.2)
+Detta är alltså andelen producerad eﬀekt mot det som annars hade passerat den cirkulära
+arean.
+Nästa vanliga storhet att vara bekant med är löptalet λ (på engelska tip speed ratio)
+vilket CP visar sig vara starkt beroende av. Denna deﬁnieras
+λ = ΩR/V∞= Vtopp/V∞
+(1.3)
+Vilket relaterar rotorns toppars hastighet ΩR mot den inkommande friströmshastigheten
+V∞. λ brukar vara mellan 7 och 10 när vindkraftverk producerar maximalt CP .
+Den tredje dimensionslösa enheten är Reynolds tal som i vindkraftssammanhang deﬁnie-
+ras
+Re = Vtotalc/ν
+(1.4)
+Vtotal kommer att deﬁnieras tydligare i 1.3.9 men är den totala hastigheten en vingproﬁl
+ser när både inkommande hastighet V∞och λ gör sig gällande. c betecknar kordan och
+ν luftens kinematiska viskositet.
+1.3.3
+Eﬀekt-kurvan för ett vindkraftverk
+I Figur 1.5 visas en Vestas V80 2 MW vindkraftverks eﬀektkurva. Detta är ett vindkraft-
+verk med 80 meter i diameter och med en typisk eﬀektkurva. Inkoppling sker när lägsta
+vindhastighet som kan producera eﬀekt uppnås Uin (på engelska cut-in wind speed),
+vilket i detta fallet är 3 m/s.
+6
+Kapitel 1 Introduktion
+2
+4
+6
+8
+10
+12
+14
+16
+18
+Vindhastighet (m/s)
+0
+500
+1000
+1500
+2000
+Effekt (kW)
+Figur 1.5: Eﬀektkurva för Vestas V80 2 MW 80 m diameter. Fritt reproducerat från
+Wood (2011).
+Eﬀekten planar i Figur 1.5 ut mot det som kallas märkeﬀekt (på engelska rated power)
+vilket är det maximala eﬀekt generatorn kan producera. När denna eﬀekt närmas vrids
+rotorbladen via deras pitch (θp) för att minska lyftkraften och på så vis kunna hålla sig
+under märkeﬀekten. Alternativt används en mekanisk broms. Detta görs för att genera-
+torn inte ska skadas.
+Vid en maximal vindhastighet Uut kommer även vindkraftverket att stänga av helt och
+hållet (eng: cut-out speed) eftersom risken för skador från den höga rotationshastigheten
+och dess medförda centrifugalkrafter då är för stora. Detta kan göras genom att bladen
+ställs så att endast motståndskraft uppstår vilket får rotationen att upphöra.
+Kapitel 1 Introduktion
+7
+1.3.4
+CP-kurvan
+En kurva visandes CP mot λ visas i Figur 1.6. Som tidigare nämnt ﬁnns alltid ett löptal λ
+där ett maximalt CP uppnås. Därför körs moderna vindkraftverk med variabel hastighet
+för att kunna följa detta maximum.
+4
+6
+8
+10
+12
+14
+16
+18
+Löptal (λ)
+0.10
+0.15
+0.20
+0.25
+0.30
+0.35
+0.40
+0.45
+Effektkoefficient (CP )
+Figur 1.6: CP mot λ för Vestas V80 2 MW 80 m diameter. Fritt reproducerat från
+Wood (2011)
+8
+Kapitel 1 Introduktion
+1.3.5
+Cl- och Cd-kurvor
+Cl och Cd är på samma vis som tidigare en dimensionslös en storhet som beskriver lyft-
+kraft och motståndskraft för en tvådimensionell vingproﬁl. Dessa deﬁnieras på följande
+sätt
+Cl =
+l
+1
+2 ρV 2
+totc,
+Cd =
+d
+1
+2 ρV 2
+totc
+(1.5)
+Där Cl och Cd kommer visa sig beroende på vingproﬁlens utformning, α och Re. Typiska
+kurvor för deras starkaste beroende α visas i Figur 1.7. Här syns att vid ett speciellt α har
+Cl nått sitt maximum och börjar minska. Detta kallas stall-vinkeln och kommer vidare
+benämnas αstall.
+−5
+0
+5
+10
+15
+20
+Attackvinkel (α)
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+1.2
+Lyft- (Cl) och dragkoefficient (Cd )
+Cd
+Cl
+Figur 1.7: Cl och Cd för vingproﬁlen S809 vid Re en miljon. Data från Hand (2001)
+Ekvationer som nu presenterats återﬁnns i mer utförlig form i Wood (2011).
+1.3.6
+Programvaror och erhållande av Cl och Cd
+Lyft- och motståndskoeﬃcient (Cl och Cd) är de aerodynamiska variabler som är av högst
+intresse för att kunna göra en Bem-analys. Att ta fram dessa i vindtunnelexperiment är
+dock omöjligt i en optimeringsstudie som då hade inneburit att tusentals vingproﬁler
+skulle byggas och testas i tunneln.
+cfd (Computional Fluid Dynamics) är ett alternativ som ger resultat av hög kvalitet,
+men är ofta väldigt beräkningsintensivt. Drela (1989) har utvecklat programvaran Xfoil
+som kan lösa det inviskösa och viskösa ﬂödet kring en vingproﬁl. Detta genom en linjär
+vorticitetsmetod tillsammans med Karman-Tsien-kompesibilitetskorrektion löses det in-
+viskösa ﬂödet. Gränsskiktet och övergången till turbulent ﬂöde löses simultant med det
+inviskösa potentialﬂödet med en global Newton–Raphson-metod.
+Kapitel 1 Introduktion
+9
+Flertalet studier har undersökt Xfoils giltighet och kunnat konstatera god överensstäm-
+melse med verkligheten vid låga α (Chepyala, 2012; Grasso, 1989). Xfoil avviker enligt
+Grasso (1989) från experimentella resultat för Cl nära och efter stallvinkeln passerats
+där Cl då överskattas. Vid höga vinklar konstateras även att Xfoil underskattar Cd och
+en korrektionsfaktor där Xfoil data ökas 10 % används. Dock skulle inte denna korrek-
+tionsfaktor räcka till för att kompensera avvikelsen för Cd som presenteras i Chepyala
+(2012).
+1.3.7
+Val av modell för att förutsäga ett vindkraftverks produktion
+Strömningen som uppstår kring ett vindkraftverks rotorblad är ofta av transient natur,
+turbulent, tredimensionellt samt med många separationer i ﬂödet. Detta gör det till ett
+komplext problem som är väldigt tidsödande att lösa med cfd (Computional Fluid Dy-
+namics). Ett alternativ till cfd är potentialteori, men då kan ingen hänsyn till ﬂuidens
+viskositet tas. Därför har det blivit industristandard att idag använda “blade element
+momentum”-teori (Bem). Detta är en tvådimensionell metod som i princip extrapoleras
+in i tre dimensioner tillsammans med semi-empiriska antaganden som kommer från jäm-
+förelser med cfd-studier. Detta leder till en metod som till väldigt låg beräkningskostnad
+kan ge tillräckligt goda förutsägelser på ett vindkraftverks elproduktion. Bems största
+nackdel är att den inte tar hänsyn till vindens transienta natur utan förutsätter ett ﬂöde
+i samma hastighet oberoende av tiden (stationärt tillstånd) samt en hastighet oberoende
+av position i rymden (Wendler & Marten, 2013).
+I Tangler (2002) visas att Bems största felkälla är dess lyft- och motståndskoeﬃcienter
+(Cl och Cd). Bem kan alltså antas ge ett resultat nära verkligheten givet att lyft- och
+motståndskoeﬃcienter är korrekta. Korrekta koeﬃcienter kan ges med empiriska mät-
+ningar på vingproﬁler i en vindtunnel. Tas dessa fram på annan väg bör resultatet för
+Bem beaktas med försiktighet.
+1.3.8
+Vingproﬁlsrepresentation
+Ett vindkraftverks rotorblad kan anses bestå av ﬂera tvådimensionella vingproﬁler. Det
+går att representera dessa vingproﬁler på väldigt många olika sätt. Oftast görs detta
+med diskreta punkter som sammanbinds med någon interpolationsteknik (se Figur 1.8).
+Frihetsgrader benämner antalet parametrar som sedan kan förändras i optimeringspro-
+cessen. En punkt i xy-planet är därmed förknippat med två frihetsgrader när punkten
+inte är låst i någon led.
+Drela (1998) har visat att en allt för detaljerad representation av vingproﬁlen har många
+negativa eﬀekter. Dels eftersom beräkningskostnaden växer med antalet parametrar som
+sedan optimeras över, men även eftersom optimeringen då kan börja ta hänsyn till små
+10
+Kapitel 1 Introduktion
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+x/c
+−0.10
+−0.05
+0.00
+0.05
+0.10
+0.15
+y/c
+Figur 1.8: Vingproﬁlsrepresentation genom sammanbindning av diskreta punkter ge-
+nom B-spline-interpolation
+fysikaliska fenomen som borde vara obetydliga. I Drela (1998) utvecklades en vågformad
+yta på vingproﬁlen som uppstod för att kompensera för separationsbubblor. Dock är
+platsen för där separationsbubblorna uppstår beroende av Cl och därför inte giltig för
+mer än just en angreppsvinkel på vingproﬁlen.
+Av ovanstående anledningar används idag ett färre antal diskreta punkter. Vesel (2012)
+använder som många andra (Ram et al. , 2013; Bizzarrini et al. , 2011) bezierkurvor för
+denna interpolationen. Fördelarna är en mjuk representation av vingproﬁlen med få pa-
+rametrar. Vesel (2012) använder här 22 frihetsgrader men ner till 16 används (Bizzarrini
+et al. , 2011).
+Liknande bezierkurvor är B-splines som även de ger en mjuk representation. Största
+skillnaden är att en förändring i en diskretiseringspunkt ger en mer lokal förändring
+på kurvan än vad motsvarande gör i en bezierkurva. Dahl & Fuglsang (1998) använder
+B-splines.
+Cencelli (2006) har istället valt att deﬁniera fem grundproﬁler som sedan mixas efter
+olika proportioner. Detta inskränker således designrymden men har fördelen att frihets-
+graderna minskar.
+CST-metoden har i Chepyala (2012) använts vilket i princip är användandet av ett
+polynom för representationen. Koeﬃcienterna i polynomet är således frihetsgraderna
+vilka kan hållas få till bekostnad på att alla vingproﬁler inte kan representeras på detta
+sätt.
+Kapitel 1 Introduktion
+11
+Andra författare har valt ytterligare förenklingar där t.ex. Kenway & Martins (2008)
+valt att endast låta optimeringsalgoritmen välja ur en förutbestämd mängd vindproﬁler
+(NACA 44XX).
+1.3.9
+“Blade element momentum”-teori (Bem)
+“Blade element momentum”-teori (Bem) är idag ett vanligt sätt att förutsäga ett vind-
+kraftverks prestanda. Givet pitch-vinkel (θ) och löptal (λ) kan eﬀekt och tryckkraft upp-
+skattas. För att kunna göra detta används två strömningsmekaniska teorier: Endimen-
+sionell rörelsemängdsteori och “blade element”-teori som i kommande stycken beskrivs i
+korthet efter hur de formulerats i Hansen (2005).
+1.3.9.1
+Analys av rörelsemängd i en dimension
+Denna teori beskriver en förenklad och ideal rotor som kan uppskattas till en cirkulär
+disk (d.v.s. oändligt antal rotorblad) utan tjocklek där strömningen är friktionsfri och
+inkompressibel. Det ﬁnns heller ingen rotationell hastighetskomponent i vaken bakom
+rotorn. Disken kommer att stanna upp vindhastigheten V∞uppströms till u i rotorplanet
+och till u1 i vaken bakom rotorn. Trycket kommer att från atmosfärstrycket p0 höjas till
+p direkt innan rotorn för att sedan göra ett diskontinuerligt fall ∆p. Hur tryck och
+vindhastighet varierar visas i Figur 1.9.
+V∞
+p0
+u1
+p0
+V∞
+u
+x
+x
+hastighet
+V∞
+u
+u1
+xrotor
+x
+tryck
+p0
+xrotor
+Figur 1.9: Illustration visande strömlinjerna som passerar rotorn samt hur tryck och
+hastighet förändras över denna. Fritt reproducerat från Hansen (2005).
+12
+Kapitel 1 Introduktion
+Tryckkraften T ligger i strömningens riktning och är ett resultat av tryckfallet över
+rotorn.
+T = ∆pπR2
+(1.6)
+Bernoullis ekvation är nu giltig mellan platsen långt uppströms till precis innan rotorn,
+p0 + 1
+2ρV 2
+∞= p + 1
+2ρu2
+(1.7)
+samt även mellan platsen precis bakom rotorn till långt nedströms,
+p −∆p + 1
+2ρu2 = p0 + 1
+2ρu2
+1
+(1.8)
+Kombineras dessa ekvationer erhålls
+∆p = 1
+2ρ(V 2
+∞−u2
+1)
+(1.9)
+V∞
+u1
+V∞
+T
+A
+A1
+AKV
+msidan
+.
+KONTROLLVOLYM
+Figur 1.10: Kontrollvolym kring den ideala rotorn. Fritt reproducerat från Hansen
+(2005).
+Ur en analys av en cirkulär kontrollvolym som visas i Figur 1.10 där stationärt ﬂöde
+antas, atmosfärstrycket po råder nedströms i vaken och att ingen radiell komponent av
+kraften uppstår kan följande visas
+ρu2
+1A1 + ρV 2
+∞(AKV −A1) + ˙msidanV∞−ρV 2
+∞AKV = −T
+(1.10)
+Genom masskonservering kan ˙msidan och totala massﬂödet ˙m erhållas
+Kapitel 1 Introduktion
+13
+˙msidan = ρA1(V∞−u1)
+(1.11)
+˙m = ρuA = ρu1A1
+(1.12)
+Genom att kombinera ekvationerna 1.10, 1.11 och 1.12 fås
+T = ρuA(V∞−u1)
+(1.13)
+Om T nu ersätts med tryckfallet i ekvation 1.6 fås
+u = 1
+2(V∞+ u1)
+(1.14)
+Vilket visar att hastigheten i rotorplanet är ett medelvärde av friströmshastigheten och
+vakhastigheten.
+V∞
+u1
+V∞
+T
+A
+KONTROLLVOLYM
+A1
+x
+p(x)
+Figur 1.11: Ny kontrollvolym kring den ideala rotorn. Fritt reproducerat från Hansen
+(2005).
+Med kontrollvolymen i Figur 1.11 och antagandet om ett friktionslöst ﬂöde som inte har
+någon ändring i intern energi kan det nu visas att eﬀekten i vindkraftverkets axel måste
+vara
+P = ρuA
+|{z}
+˙m
+1
+2V 2
+∞+ p0
+ρ −1
+2u2
+1 −p0
+ρ
+
+vilket ger
+14
+Kapitel 1 Introduktion
+P = 1
+2ρuA(V 2
+∞−u2
+1)
+(1.15)
+Den axiella induktionsfaktorn a kan nu introduceras som
+a = V∞−u
+V∞
+(1.16)
+Genom att kombinera den med ekvation 1.14 fås
+a = V∞−u1
+2V∞
+(1.17)
+Detta kan nu introduceras i ekvation 1.15 och 1.13 och resulterar i
+P = 2ρV 3
+∞a(1 −a)2A
+(1.18)
+T = 2ρV 2
+∞a(1 −a)A
+(1.19)
+CP är sedan tidigare deﬁnierat till
+CP =
+P
+1
+2ρV 3
+∞A
+(1.20)
+Tillsammans med ekvation 1.18 och deriverat med avseende på a samt satt lika med noll
+fås
+dCP
+da
+= 4(1 −a)(1 −3a) = 0
+(1.21)
+Ur detta kan man se att CPmax uppstår när a = 1/3 varpå ett CP = 16/27 ≈0.593. Detta
+är känt under namnet Betz-gränsen vilket är ett teoretiskt maximum för hur mycket av
+vindens inneliggande energi som går att ta ut.
+På samma sätt som CP introducerats deﬁnieras tryckkraftskoeﬃcienten CT
+CT =
+T
+1
+2ρV 2
+∞A
+(1.22)
+Antagandena som fram tills nu gjorts har med experimentella data visats endast giltiga
+för a < 0.4 vilket syns i Figur 1.12. Om rörelsemängsdteorin var giltig över 0.4 hade detta
+Kapitel 1 Introduktion
+15
+a
+CT
+1.0
+0.5
+0
+1.0
+2.0
+experimentell 
+data
+Glauerts korrektion
+momentum teori giltig
+momentum teori 
+ej giltig
+Figur 1.12: Figur visande hur CT varierar med a. Fritt reproducerat från Hansen
+(2005).
+betytt att hastigheten i vaken var negativ vilket inte är fallet. Detta kommer senare att
+tas hänsyn till.
+(a) Virveln ett ﬂygplan inducerar. Foto:
+NASA public domain
+ 
+ 
+ 
+ 
+ 
+ 
+V∞
+ 
+ 
+ 
+(b) Virvlarna ett vindkraftverks rotorblad inducerar. Fritt
+reproducerat från Hansen (2005)
+Figur 1.13: Olika typer av virvlar.
+a som tidigare introducerades ska nu visa sig ha en fysikalisk betydelse som framöver är
+av stor vikt. I Figur 1.13(a) syns virveln som ett ﬂygplans vinge inducerar. På samma
+sätt skapar ett vindkraftverks rotorblad virvlar som måste tas hänsyn till. I Figur 1.13(b)
+illustreras dessa virvlar.
+Systemet av virvlar inducerar en axiell hastighetskomponent i motsatt riktning som den
+inkommande vinden samt en tangentiell komponent i motsatt riktning till rotationen
+av rotorbladen. Den axiella hastigheten speciﬁceras med den tidigare nämnda axiella
+16
+Kapitel 1 Introduktion
+induktionsfaktorn a som aV∞. Den tangentiella hastigheten som uppstår i rotorns vak
+speciﬁceras med den tangentiella induktionsfaktorn a′ som 2a′Ωr.
+2a′Ωr kallas vidare Cθ.
+rotorplanet
+Vtot
+Va 
+Vrot
+Figur 1.14: Hastighetskomponenterna som en vingproﬁl upplever. Fritt reproducerat
+från Hansen (2005).
+Vingproﬁlerna i rotorbladet påverkas därför av hur dessa nya hastihetskomponenter beter
+sig. I Figur 1.14 syns dessa och följande samband gäller
+Va = (1 −a)V∞
+(1.23)
+Vrot = (1 + a′)Ωr
+(1.24)
+1.3.9.2
+“Blade element momentum”-metoden
+“Blade element momentum”-metoden kopplar samman den endimensionella rörelse-
+mängdsteorin med det som faktiskt händer lokalt längs bladet. Den kontrollvolymen som
+i endimensionella rörelsemängdsteorin introducerade delas nu upp i ett antal element med
+samma höjd dr där r är den lokala radien och R rotorns fulla radie. Detta ses i Figur 1.15.
+Dessa avgränsas av ﬂödeslinjer vilket alltså betyder att inget ﬂöde kan ske mellan dessa
+element vilket är ett antagande Bem-teorin vilar på.
+Rörelsemängdsekvationen på integralform kan nu appliceras på ett element och ge till-
+skottet av tryckkraft i det elementet
+dT = (V∞−u1) d ˙m = 2πrρu(V∞−u1) dr
+(1.25)
+Vridmomentet dQ kan på samma sätt tas fram om rotationens hastighet i friströmmen
+sätts till noll och den i vaken sätts till Cθ
+Kapitel 1 Introduktion
+17
+rotorplanet
+R
+dr
+kontrollvolym
+r
+Figur 1.15: Kontrollvolym med formen som ett rör genom rotorplanet. Fritt reprodu-
+cerat från Hansen (2005).
+dQ = rCθ dm = 2πr2ρuCθ dr
+(1.26)
+Genom att nu föra in det som tagits fram gällande a i ekvation 1.17 samt Cθ = 2a′Ωr
+kan tryckkraft och vridmoment skrivas om till
+dT = 4πrρV 2
+∞a(1 −a) dr
+(1.27)
+dQ = 4πr3ρV∞Ω(1 −a)a′ dr
+(1.28)
+rotorplanet
+Vtot
+Va  = V0(1 - a)
+Ωr(1 + a’)
+α
+Φ
+θ
+korda
+Figur 1.16: Hastighetskomponenterna en vingproﬁl i rotorplanet upplever. Fritt re-
+producerat från Hansen (2005).
+18
+Kapitel 1 Introduktion
+Om nu Vrot och Va placeras ut som i Figur 1.16 kan ses att vingproﬁlen i själva verket
+utsätts för hastigheten Vtot. Pitch i varje lokal vingproﬁl längs rotorbladet är en kombi-
+nation av bladets pitch (θp) och twist (β) som θ = θp +β. φ är den totala vinkeln mellan
+rotorplanet och hastigheten Vtot.
+Vingproﬁlens lokala angreppsvinkel (α) blir alltså
+α = φ −θ
+Figur 1.16 ger även att
+φ = arctan (1 −a)V∞
+(1 + a′)Ωr
+Lyft- och motståndskraften har tidigare visas implicit i 1.5. Lyftkraften ligger vinkel-
+rätt mot den inkommande vindhastigheten Vtot och motståndskraften i samma riktning.
+Därför gäller
+l = 1
+2ρV 2
+totcCl
+(1.29)
+d = 1
+2ρV 2
+totcCd
+(1.30)
+Där små bokstäver för lyft- och motståndskraft används för att påpeka att det är tvådi-
+mensionella krafter.
+Eftersom endast normal- och tangentialkraften i rotorplanet är av intresse projiceras
+krafterna till Fn och Ft vilket syns i Figur 1.17 enligt
+Fn = l cos φ + d sin φ
+(1.31)
+Ft = l sin φ −d cos φ
+(1.32)
+Dessa kan nu göras dimensionslösa genom att delas på 1
+2ρV 2
+totc och blir då
+Cn = Cl cos φ + Cd sin φ
+(1.33)
+Ct = Cl sin φ −Cd cos φ
+(1.34)
+Kapitel 1 Introduktion
+19
+rotorplanet
+Vtot
+Φ
+D
+FN
+FT
+L
+R
+Φ
+90-Φ
+Figur 1.17: Krafter upplevda av en vingproﬁl i rotorplanet. Fritt reproducerat från
+Hansen (2005).
+där
+Cn =
+Fn
+1
+2ρV 2
+totc
+(1.35)
+Ct =
+Ft
+1
+2ρV 2
+totc
+(1.36)
+Ur geometrin i Figur 1.16 kan även ses att
+Vtot sin φ = V∞(1 −a)
+(1.37)
+Vtot cos φ = Ωr(1 + a′)
+(1.38)
+Lokal solidity σ införs som andelen yta som täcks med blad i en radiell position
+σ(r) = c(r)B
+2πr
+(1.39)
+20
+Kapitel 1 Introduktion
+Notera att detta är lokalt vid varje position på rotorbladet och därför en funktion av
+radien. B är antalet blad på vindkraftverket, c(r) den lokala kordan och r den radiella
+positionen.
+Krafterna Fn och Ft multipliceras eftersom de är tvådimensionella med sitt radiella ele-
+ment dr och ger tillskottet av trust dT och vridmoment dQ
+dT = BFn dr
+(1.40)
+dQ = rBFt dr
+(1.41)
+Använder ekvation 1.35 för att ersätta Fn och ekvation 1.37 för Vtot fås istället
+dT = 1
+2ρB V 2
+∞(1 −a)2
+sin2 φ
+cCn dr
+(1.42)
+Används på liknande sätt ekvation 1.36 för att ersätta Ft och ekvation 1.37 och 1.38 blir
+nu istället 1.41
+dQ = 1
+2ρB V∞(1 −a)Ωr(1 + a′)
+sin φ cos φ
+cCtr dr
+(1.43)
+Likställs dT för 1.27 och 1.42 samt appliceras σ (1.39) kan ett utryck för a nu härledas
+a =
+1
+4 sin2 φ
+σCn
++ 1
+(1.44)
+Om 1.28 och 1.43 likställs fås på samma sätt
+a′ =
+1
+4 sin φ cos φ
+σCt
+−1
+(1.45)
+1.3.9.3
+Prantl topp-förluster
+Tidigare i 1.3.9.1 har antaganden gjorts att vindkraftverkets rotor bestått av ett oändligt
+antal rotorblad. När ett begränsat antal rotorblad som t.ex. 3 st används påverkar detta
+virvlarna som uppstår i vaken. För att kompensera för detta används ofta Prandtls
+korrektionsfaktor F. För en fullständig härledning hänvisas läsaren till Glauert (1935).
+f = B
+2
+R −r
+r sin φ
+(1.46)
+Kapitel 1 Introduktion
+21
+Sätts in i
+F = 2
+π arccos(e−f)
+(1.47)
+Om ekvation 1.27 och 1.28 multipliceras med F och a och a′ löses ut fås istället
+a =
+1
+4F sin2 φ
+σCn
++ 1
+(1.48)
+a′ =
+1
+4F sin φ cos φ
+σCt
+−1
+(1.49)
+1.3.9.4
+Glauert-korrektion
+I Figur 1.12 visades att för a > 0.4 behövs en empirisk korrektion göras för CT . Detta
+görs enligt förfarandet föreslagit i Buhl (2004) eftersom annars en numerisk instabilitet
+kan uppstå (Moriarty, 2005).
+När CT > 0.96F vilket är samma som a > 0.4 gäller därför
+a = 18F −20 −3
+p
+CT (50 −36F) + 12F(3F −4)
+36F −50
+(1.50)
+CT tas nu istället fram genom att sätta samman dess deﬁnition 1.12 för ett radiellt
+element
+CT =
+dT
+ρV 2
+∞π dr
+(1.51)
+med 1.42 vilket ger
+CT = (1 −a)2σCn
+sin2 φ
+(1.52)
+22
+Kapitel 1 Introduktion
+1.3.9.5
+Implementering av Bem-algoritmen
+Alla ekvationer som behövs har nu presenterats och a och a′ kan nu iterativt tas fram
+för varje radiellt element på rotorn. Detta görs förslagsvis enligt följande steg:
+1. Initialt sätts a = 0 och a′ = 0
+2. Vinkeln φ = arctan (1−a)V∞
+(1+a′)Ωr beräknas så att α = φ −θ kan tas fram.
+3. Cl och Cd interpoleras fram från datan som i denna studie kommer från Xfoil.
+4. Cn och Ct beräknas enligt ekvationerna 1.33 och 1.34.
+5. Räkna ut Prantl topp-förlust-faktorn F genom ekvation 1.47 samt CT med ekvation
+1.52
+6. Beroende på värde på CT beräkna a med ekvation 1.50 eller 1.48.
+7. Räkna ut a′ med ekvation 1.49
+8. Jämför värdet på a med det tidigare. Skiljer de sig mindre åt än tolleransnivån har
+konvergens nåtts. Om inte, gå tillbaka till steg 2.
+När a och a′ erhållits för alla radiella element längs rotorn kan nu även vridmomentet
+för alla radiella element beräknas med exempelvis ekvation 1.43.
+Genom att sedan integrera dessa tillskott dQ till vridmomentet, och med antagandet att
+allt före rhub endast genererar motståndskraft - fås det totala vridmomentet i rotorn.
+Q =
+Z R
+rhub
+dQ
+(1.53)
+Detta används tillsammans med vinkelhastigheten (Ω) för att få fram rotorns eﬀekt
+P = QΩ
+(1.54)
+För mer utförlig beskrivning av ekvationer som här presenterats hänvisas läsaren till
+Burton et al. (2005).
+1.3.10
+Optimeringslära
+Studiens mål och senare metodologi baseras att ett optimeringsproblem där så mycket
+eﬀekt som möjligt ska tas ut ur vinden. Därför presenteras här optimeringsterminologi
+och optimeringsalgoritmer som senare används.
+Kapitel 1 Introduktion
+23
+f1
+f2
+målfunktion
+designrymd
+P
+målrymd
+Figur 1.18: Illustration visande hur designrymden utvärderas av målfunktionen för
+att ge en målrymd.
+Ett optimeringsproblem deﬁnieras av sina designvariabler, designrymd, dess målfunktion
+och målrymd (se Figur 1.18). Designvariablerna utgör de variabler som kan varieras för
+för att få olika resultat. Givet N antal designvariabler {f1, f2, . . . , fN} (i Figur 1.18 är
+N = 2) deﬁnieras designrymden varpå målfunktionen utvärderar dessa för att returnera
+en målrymd. I denna studien är målrymden endast ett reellt tal eftersom optimeringen
+av vindkraftverkets rotorblad endast görs med avseende på dess genomsnittliga eﬀekt P.
+Eftersom målfunktionen maximeras kallas ibland även målfunktionen för ﬁtness-funktion.
+1.3.10.1
+Andra författares val av målfunktion
+Valet av ett optimeringsproblems målfunktion är av yttersta vikt för vilket resultat som
+kommer fås. Dahl & Fuglsang (1998); Ram et al. (2013); Bizzarrini et al. (2011) op-
+timerar endast en vingproﬁls lyft- och motståndskoeﬃcienter (Cl och Cd) över rimliga
+angreppsvinklar. Cencelli (2006) gör optimeringen på vindkraftverkets eﬀektkoeﬃcient
+(CP ) vid ett par olika vindhastigheter.
+Andra författare tar ett större grepp och väljer att maximera ett vindkraftverks årliga
+produktion. Kenway & Martins (2008) låter ett vindhastighetshistogram vara styrande.
+Detta är ett intressant förhållningssätt eftersom vindkraftverkets riktiga produktion för
+en speciﬁk plats då nås. Eﬀektkurvan matchas då med vindhastighetshistogrammet som
+beskriver andelen av tid som en viss vindhastighet förekommer varpå genomsnittseﬀekten
+P kan tas fram.
+1.3.10.2
+Optimeringsalgoritmer
+Lämpliga optimeringsmetoder som studerats har antingen använt sig av gradient för
+optimeringen eller inte. I Kenway & Martins (2008) används gradientmetoden SQP (se-
+quential quadratic programming). Fördelen är att konvergens snabbare kan uppnås med
+24
+Kapitel 1 Introduktion
+en gradient som visar i vilken riktning optimeringen bör fortskrida, men har den stora
+nackdelen att lokala max/min ofta står för konvergensen.
+Därför är genetiska algoritmer väldigt återkommande i den studerade litteraturen då de
+är en metod som når globala max/min (Benini, 2002; Vesel, 2012; Ram et al. , 2013;
+Chepyala, 2012; Dahl & Fuglsang, 1998). Flera varianter på genetiska algoritmer ﬁnns.
+ECGA är en variant på genetisk algoritm som utlovar snabbare konvergens med mindre
+populationsstorlekar (Chen et al. , 2007). Bizzarrini et al.
+(2011) utlovar samma sak
+med det som kallas microGA.
+“Particle swarm”-metoden är även den en gradientlös metod som imiterar ett ﬂockdjurs
+tendens att efterlikna andra individers framgångsrika beteende. I Cencelli (2006) används
+metoden framgångsrikt.
+1.3.10.3
+Genetiska algoritmer
+En genetisk algoritm är en optimering som hämtar terminologi och inspiration från evo-
+lutionen som sker i naturen. Principen är att individer med goda egenskaper kommer
+premieras i evolutionen genom att deras arvsmassa förs vidare i större utsträckning än
+mindre lyckade individer.
+Följande begrepp är centrala och dess betydelse listas här:
+Individ En möjlig lösning på optimeringsproblemet. I denna studie kommer varje indi-
+vid vara ett vindkraftverk.
+Population En grupp av individer.
+Arvsmassa En individs bakomliggande genetiska uppsättning som ger upphov till indi-
+videns egenskaper. I detta fallet är det vindkraftverkets vingproﬁler, korda-distribution
+och twist-distribution längs rotorbladet. Detta representeras av en sträng siﬀror el-
+ler bokstäver G = {g1, g2, . . . , gn}.
+Fitness-funktion Målfunktionen som utvärderar individerna.
+En initial population individer inleder den genetiska algoritmen. Hur bra en individ
+är, avgörs av den så kallade ﬁtness-funktionen som i denna studien utgörs av Bem-
+algoritmen.
+När alla individer har tilldelats ett ﬁtness-värde kan individerna ordnade efter ﬁtness till-
+delas en partner som deras arvsmassa blandas med enligt en förutbestämd sannolikhet.
+Vid korsningen av arvsmassa sker även vissa mutationer med en bestämd sannolikhet.
+Efter detta sker ﬁtness-utvärderingen på nytt och proceduren upprepas tills ett förutbe-
+stämt antal generationer passerat eller att ett ﬁtness-mål uppnås.
+Kapitel 1 Introduktion
+25
+1.4
+Relevans för studien
+I litteraturstudien har det framkommit att optimering av ett vindkraftverk ofta görs
+med målfunktioner som inte representerar produktionen för ett vindkraftverk på ett
+speciﬁkt vindförhållande. Det är därför rimligt att i optimeringen fortsätta ta hänsyn
+till vindhastighetsfördelningen vilket utifrån litteraturstudien endast Kenway & Martins
+(2008) gör. Kenway & Martins (2008) har en väldigt begränsad designrymd där endast
+vingproﬁler i NACA 44XX-serien används. Detta bjuder in till att ta vid där de slutade
+och utöka med en större designrymd med ﬂer vingproﬁler.
+1.5
+Avgränsningar
+Xfoil har visat sig vara ett välanvänt alternativ för att ta fram en vingproﬁls aerody-
+namiska egenskaper. Eftersom resultaten visats vara goda kommer inga utförliga försök
+till att veriﬁera Xfoils giltighet att göras. Vidare kommer inga andra programvaror att
+beaktats eftersom litteraturstudien även visat att t.ex. cfd kommer till för stor beräk-
+ningskostnad.
+I denna studie beaktas uteslutande vindhastighet som oberoende av rumskoordinater och
+vid stationärt tillstånd då detta är förutsättningar för Bem.
+Luft betraktas i studien som en inkompressibel ﬂuid. Detta trots att vindhastigheter vid
+vingbladens topp på vindkraftverk av megawatt-klass kan komma så långt som mach
+0.25-0.3 (Grasso, 1989).
+Strukturella aspekter som belastningen i rotorbladets struktur tas med i ett par studier
+och kan ge betydande påverkan på resultatet (Vesel, 2012; Kenway & Martins, 2008).
+Detta kommer här anses ligga utanför studiens omfattning för att istället tas hänsyn till
+med enklare restriktioner.
+Mer avancerade genetiska algoritmer har framkommit i litteraturstudien, men en mer
+djupgående analys av deras skillnader anses ligga utanför denna rapportens ambition.
+Kapitel 2
+Metod
+För studien har en enklare programvara som implementerar Bem-teorin samt sköter kom-
+munikation med Xfoil och optimeringsalgoritmen utvecklats. Denna hänvisas vidare till
+som SiteOpt och ﬁnns i sin helhet i Appendix A. Hur olika delar hänger ihop åskådliggörs
+även i Figur 2.1.
+Sammantaget är SiteOpts funktion att utvärdera varje individ som optimeringsalgorit-
+men skapar. Detta görs genom att vingproﬁler från individens arvsmassa skapas och
+utvärderas i Xfoil. Mellanliggande vingproﬁler längs rotorbladet interpoleras fram och
+utvärderas även de.
+Individen och dess lyft- och motståndskoeﬃcienter (Cl och Cd) för vingproﬁlerna samt
+korda- och twist-distributionen kan nu med Bem generera en eﬀektkurva. Med vind-
+hastighetshistogrammet SiteOpts användare speciﬁcerat fås en genomsnittseﬀekt P som
+agerar underlag för optimeringsalgoritmen. Denna styr sedan vilka individer som förs
+vidare till nästa generation genom korsningar. De nya individerna utsätts även för mu-
+tationer.
+27
+GA
+N st individer
+  Populationsstorlek
+  Max. antal generationer
+korsningar
+mutationer
+max antal 
+generationer?
+nej
+ja
+bästa individ ∈ slutgiltig pop.
+∀ individ ∈ pop. 
+mittvingprofil
+toppvingprofil
+rotvingprofil
+I
+N
+T
+E
+R
+P
+O
+L
+E
+R
+I
+N
+G
+X
+F
+O
+I
+L
+I
+N
+T
+E
+R
+P
+O
+L
+E
+R
+I
+N
+G
+Cl
+Cd
+Cl
+Cd
+Cl
+Cd
+Cl
+Cd
+Cl
+Cd
+E
+X
+T
+R
+A
+P
+O
+L
+korda, twist
+BEM
+P (W)
+m/s
+P
+frq (%)
+m/s
+SiteOpt
+Effektkurva
+Vindhistogram
+Rotorblad
+Genomsnittseffekt
+Genetisk algoritm
+Figur 2.1: Överblick av studiens metod
+28
+Kapitel 2 Metod
+29
+2.1
+Vingproﬁlsrepresentation med B-splines
+Figur 2.2: Vingproﬁlsrepresentation genom sammanbindning av diskreta punkter ge-
+nom B-spline-interpolation
+I litteraturstudien framkom att för många designvariabler i ett optimeringsproblem leder
+till höga beräkningskostnader. Av den anledningen ska antalet designvariabler hållas lågt
+utan att för den delen inskränka för mycket på designrymden. CST-metoden (Chepya-
+la, 2012) som använde ett begränsande polynom samt Cencelli (2006) där istället fem
+grundproﬁler blandades gör båda för stora inskränkningar på designrymden och valdes
+därför bort.
+Kvar blir sammanbindning av diskreta punkter genom Beziér-kurvor eller B-splines, och
+eftersom B-splines ger en väldigt enkel representation där alla punkter kan genomlöpas
+valdes denna metod. Detta betydde att existerande vingproﬁler enkelt kunde återskapas
+med B-splines under arbetets gång.
+Programmeringsspråket Pythons inbyggda interpoleringsmodul splprep som implemen-
+terar en B-spline så som beskrivet av Dierckx (1981) användes med parametern s=0.
+Detta gör att alla diskreta punkter genomlöps. K sattes till 3 vilket är graden på poly-
+nomet som sammanbinder punkterna. Dessa B-splines kallas ibland kubiska B-splines.
+De diskreta punkterna som bygger upp vingproﬁlen kan moturs representeras med S som
+har N element vilket visas i Figur 2.2.
+S =
+ 
+x0, x1, . . . , xN−1
+y0, y1, . . . , yN−1
+!
+I studien har N = 12 använts för att återspegla avvägningen mellan beräkningstid och
+inskränkning av designrymd. (x6, y6) = (0, 0) eftersom framkanten är en fast punkt.
+30
+Kapitel 2 Metod
+För att inga små detaljer ska gå förlorade och för att möta ett krav på 120 punkter
+som Xfoil har (Drela, 1989) interpoleras i slutändan 200 punkter fram givet de diskreta
+punkterna.
+2.1.1
+Restriktioner
+Negativ tjocklek (vingproﬁlens överdel korsar underdelen) är ej realistiskt och kan heller
+ej utvärderas i Xfoil. Därför subtraheras de y-värden som hör till vingproﬁlens underdels
+punkter från de på överdelen. Om ett negativt värde påträﬀas tilldelas vindkraftverket
+en negativ eﬀekt.
+Kenway & Martins (2008) har satt minsta tjocklek på vingproﬁlen till 6 % av kordan
+och maximal till 20 % vilket även används i denna rapporten.
+Kapitel 2 Metod
+31
+2.2
+Korda- och twistdistribution över bladet
+Likt vindproﬁlsrepresentationen ges korda- och twistdistributionen av diskreta punkter
+vars mellanliggande punkter interpoleras fram. Detta tas som tidigare i 2.1 fram med
+splprep men denna gång med k=2, alltså ett andragradspolynom sammanbinder punk-
+terna. I Figur 2.3(a) syns hur tre punkter utgör twist-distributionen längs rotorbladets
+radie. Första punkten är låst i x-ledd vid x = 0 och sista vid x = 1. Samma gäller för
+Figur 2.3(b) där korda-distribution representeras på samma sätt.
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+r/R
+0
+10
+20
+30
+40
+50
+Twist (grader)
+(a) Twist-distribution längs rotorbladets radie interpolerat från tre diskreta punkter utmar-
+kerade i ﬁguren.
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+r/R
+0.40
+0.41
+0.42
+0.43
+0.44
+0.45
+Korda (m)
+(b) Korda-distribution längs rotorbladets radie interpolerat från tre diskreta punkter utmar-
+kerade i ﬁguren.
+Figur 2.3: Korda- respektive twistdistribution över bladet
+2.2.1
+Restriktioner
+Maximal och minimal korda och twist från Kenway & Martins (2008) ses i Tabell 2.1.
+32
+Kapitel 2 Metod
+Tabell 2.1: Maximal och minimal korda och twist enligt Kenway & Martins (2008)
+samt valda värden för studien.
+Parameter
+Max-värde
+Min-värde
+Kenway & Martins (2008) korda
+0.40 m
+0.05 m
+Vald korda för studien
+1.60 m
+0.10 m
+Twist
+75◦
+-75◦
+I denna studie kommer senare ett vindkraftverk med c:a 10 meters diameter beaktas.
+Eftersom Kenway & Martins (2008) behandlade ett vindkraftverk med c:a 5 meter i
+diameter har min-värdet för kordan satts till det dubbla och max-värdet det fyrdubbla.
+2.3
+Rotorbladsrepresentation
+Toppvingprofil 
+Mittvingprofil
+Rotvingprofil
+Figur 2.4: Rotorbladets representation i SiteOpt
+Rotorbladet består i modellen av tre huvudsakliga vingproﬁler. En vingproﬁl som ligger
+där rotorbladet börjar (rotvingproﬁl), en vingproﬁl vid rotorbladets topp (toppvingproﬁl)
+samt en mellanliggande (mittvingproﬁl). Se Figur 2.4. Dessa är således även vingproﬁ-
+lerna vars geometri som i optimeringen varieras.
+Ur dessa huvudsakliga vingproﬁler interpoleras fyra ytterligare mellanliggande proﬁler.
+Två mellan rot-mitt och två mellan mitt-topp vilka även syns i Figur 2.4 som streckade
+röda vingproﬁler.
+Kapitel 2 Metod
+33
+I Figur 2.2 visades att vingproﬁlerna byggs upp av 12 diskreta punkter. Om varje sådan
+punkt betecknas
+si =
+ 
+xi
+yi
+!
+och vingproﬁlerna som ska interpoleras mellan är A och B med respektive uppsättning
+punkter SA = {s1, . . . , s12}A och SB = {s1, . . . , s12}B ges de linjärt mellanliggande
+punkterna SI av
+SI = SA (SB −SA) ∆H
+Där ∆H är i procent hur mycket SB ska blandas i SA. Detta resulterar alltså totalt i fyra
+nya vingproﬁler som utvärderas i Xfoil (utmarkerad som röda streckade i Figur 2.4).
+Cl och Cd-kurvorna för vingproﬁlerna kan nu interpoleras linjärt mellan de alla de ving-
+proﬁlerna som utvärderats i Xfoil och sex mellanliggande positioner tas fram vilket i
+Figur 2.4 är utmarkerat som långt streckade gråa element.
+Rotorbladet har nu 13 vingproﬁler och består av 12 radiella element.
+I SiteOpt har användaren valet att om önskat stänga av vingproﬁlsinterpoleringen ef-
+tersom den leder till ﬂer anrop till Xfoil och därmed mer beräkningstid. Då görs istället
+en linjär interpolering av Cl och Cd för alla radiella positioner mellan huvudvingproﬁlerna
+(rot, mellan och topp).
+2.4
+SiteOpts implementering av Bem
+Bem-modellen har implementerats som beskrivet i litteraturstudien (se 1.3.9). Följande
+mer speciﬁka implementeringar för SiteOpt presenteras här:
+• När a och a′ beräknas görs maximalt 200 iterationer innan algoritmen avslutas.
+Om feltoleransen 10−4 uppnås innan det, avslutas iterationen då.
+• För att en diskontinuitet i Bem beskriven i Maheri (2006) inte ska bli ett problem
+används en dämpade faktor satt till 0.5 när a och a′ uppdateras i varje iteration.
+a och a′ uppdateras alltså endast 50 % i den riktning ett nytt värde räknats ut.
+• Algoritmen har tillgång till Cl och Cd för alla vingproﬁler i rotorbladet vid önskad
+angreppsvinkel α och Re genom interpolation som beskrivs senare i 2.5.2. För att
+möjliggöra detta beräknas
+34
+Kapitel 2 Metod
+Vtot =
+q
+(V∞(1 −a))2 + (Ωr (1 + a′))2
+vilket erhålls genom geometrin i Figur 1.16. Med Vtot kan nu Re beräknas över sin
+deﬁnition så att Xfoil kan utvärdera vid rätt Re.
+• Ett Remax och Remin behöver tas fram för att modellen ska veta mellan vilka Re
+som Xfoil ska kallas. Remax och Remin tas fram som
+Remax =
+√
+U2
+ut+(λUut)2cmax
+ν
+,
+Remin =
+√
+U2
+in+(λUin)2cmin
+ν
+NRe st antal Re tas sedan fram mellan Remax och Remin. Användaren har dock
+även valet att välja att endast ett speciﬁcerat Re utvärderas.
+• Kunde inte Cl och Cd erhållas från Xfoil sätts Bem-modellens resultat till en
+negativ eﬀekt vilket resulterar i att den kommer sorteras bort av den genetiska
+algoritmen.
+2.4.1
+Fixerade parametrar
+Bem kräver även ytterligare parametrar, fysikaliska storheter och toleransnivåer som är
+ﬁxerade och ej varieras i optimeringen. Dessa ställs in genom att editera de första raderna
+på SiteOpt.
+• Märkeﬀekt (eng: rated power)
+• Bladets toppradie (R)
+• Bladets startradie (rhub) mätt från rotationsaxeln
+• Löptal λ (eller vid konstant rotationshastighet RPM)
+• Inkopplingshastighet (Uin)
+• Urkopplingshastighet (Uut)
+• Antal rotorblad (B)
+• Pitch-vinkel (θp)
+• Reynoldsupplösning (NRe) - Antalet Re som ska utvärderas mellan Remin och
+Remax av Xfoil.
+• ρ - Luftens densitet
+• tol - Toleransnivån för a- och a′iterationen
+Kapitel 2 Metod
+35
+Givet allt detta kan nu BEMT-metoden generera en eﬀektkurva som kan paras med vind-
+hastighetshistogrammet för att ge genomsnittseﬀekten P. Detta beskrivs noggrannare i
+2.8.2.
+2.5
+Erhållande av Cl och Cd
+2.5.1
+Xfoil
+Xfoil är en programvara som kan lösa det inviskösa och viskösa ﬂödet kring en vingproﬁl
+utvecklat av Mark Drela och beskrivet av samma författare i Drela (1989). Detta görs ge-
+nom en linjär vorticitetmetod tillsammans med Karman-Tsien-kompesibilitetskorrektion
+som löser det inviskösa ﬂödet. Gränsskiktet och övergången till turbulent ﬂöde löses
+simultant med det inviskösa potentialﬂödet med en global Newton–Raphson-metod.
+Givet en vingproﬁl, Reynolds tal (Re) och angreppsvinkel (α) kan Cl, och Cd erhållas för
+vingproﬁler där formen ligger inom ramarna för hur en vingproﬁl brukar se ut - och där
+angreppsvinklarna inte avviker allt för mycket från spannet −5 < α < 30. Hur vinklar
+utanför detta spannet erhålls beskrivs i 2.6.
+Xfoil har ett textbaserat gränssnitt som nås via kommandoraden vilket gör det enkelt
+att koppla samman med studiens utvecklade programvara SiteOpt. Ett exempel på vilka
+kommandon som används ses i Figur 2.5. Detta skapar ﬁlen S809.pol innehållandes det
+som sedan i Figur 2.6 ses.
+S809.pol läses sedan av SiteOpt som en vanlig textﬁl och får på så sätt få tillgång till
+Cl och Cd.
+Xfoil kommer för vissa α inte uppnå konvergens och av den anledning hoppa över den
+vinkeln. Detta går att lösa genom att låta Xfoil iterera ytterligare gånger när detta sker.
+Men eftersom detta skulle addera ytterligare beräkningstid interpoleras istället gällande
+värden fram linjärt mellan de närliggande värdena.
+Xfoil låter användaren speciﬁcera Ncrit vilket är att tolkas som turbulensnivån på ﬂödet.
+Detta har i studien satts till standardvärdet 9.
+36
+Kapitel 2 Metod
+LOAD S809.dat
+PANE
+PANE
+OPER
+VPAR
+N 9
+VISC 1e6
+ITER 50
+PACC
+S809.pol
+ASEQ -1 20 1
+PACC
+QUIT
+Figur 2.5: Exempel på input skickad till Xfoil.
+alpha
+CL
+CD
+CDp
+CM
+Top_Xtr
+Bot_Xtr
+------ -------- --------- --------- -------- -------- --------
+-1.000
+-0.0083
+0.00808
+0.00258
+-0.0326
+0.6020
+0.5241
+0.000
+0.1114
+0.00823
+0.00279
+-0.0351
+0.5982
+0.5427
+1.000
+0.2308
+0.00839
+0.00304
+-0.0375
+0.5937
+0.5556
+2.000
+0.3499
+0.00854
+0.00318
+-0.0399
+0.5855
+0.5619
+3.000
+0.4676
+0.00825
+0.00298
+-0.0419
+0.5686
+0.5686
+4.000
+0.5844
+0.00813
+0.00294
+-0.0437
+0.5388
+0.5747
+6.000
+0.7398
+0.01399
+0.00672
+-0.0367
+0.0361
+0.5865
+7.000
+0.8201
+0.01591
+0.00880
+-0.0332
+0.0281
+0.5928
+8.000
+0.8913
+0.01754
+0.01051
+-0.0287
+0.0253
+0.5976
+9.000
+0.9412
+0.02155
+0.01474
+-0.0246
+0.0224
+0.6048
+10.000
+1.0064
+0.02545
+0.01879
+-0.0237
+0.0206
+0.6115
+11.000
+1.0604
+0.03032
+0.02374
+-0.0224
+0.0189
+0.6170
+12.000
+1.0951
+0.03646
+0.03014
+-0.0196
+0.0177
+0.6242
+13.000
+1.1385
+0.04198
+0.03584
+-0.0177
+0.0165
+0.6310
+14.000
+1.1792
+0.04804
+0.04204
+-0.0164
+0.0155
+0.6380
+15.000
+1.2049
+0.05550
+0.04977
+-0.0142
+0.0146
+0.6451
+16.000
+1.2338
+0.06347
+0.05802
+-0.0135
+0.0140
+0.6516
+17.000
+1.2545
+0.07277
+0.06767
+-0.0139
+0.0133
+0.6607
+18.000
+1.2668
+0.08370
+0.07888
+-0.0156
+0.0128
+0.6683
+19.000
+1.2663
+0.09671
+0.09217
+-0.0186
+0.0123
+0.6765
+20.000
+1.2378
+0.11476
+0.11077
+-0.0246
+0.0119
+0.6842
+Figur 2.6: Exempel på output som Xfoil returnerar i form av en textﬁl.
+Kapitel 2 Metod
+37
+2.5.2
+Interpolering mellan olika Re och α för Cl och Cd
+Proceduren beskriven i 2.5.1 behöver göras en gång för varje Re som önskas.
+När ﬂera Re utvärderats ﬁnns alltså data likt det som syns i Figur 2.7 i diskreta punkter.
+För att Bem-modellen ska kunna erhålla Cl för vilket Re och α som helst görs en linjär
+interpolering i två dimensioner mellan de närmsta värdena. På samma sätt görs för Cd.
+Har endast ett Re valts görs interpolationen endast på α och oberoende av Re.
+Angreppsvinkel (α)
+−5
+0
+5
+10
+15
+20
+25
+30
+35
+Re ∗105
+−50
+0
+50
+100
+150
+200
+250
+300
+Lyftkoefficient (Cl)
+−0.5
+0.0
+0.5
+1.0
+1.5
+2.0
+Figur 2.7: Resulterande Cl efter utvärdering av 10 st Re i Xfoil
+2.5.3
+Hantering av uteblivet resultat från Xfoil
+För vissa Re lyckas Xfoil inte ge något resultat över huvud taget. Detta hanteras
+genom att det problematiska Re ignoreras och istället interpoleras mellanliggande fram
+som beskrivet i 2.5.2.
+Det händer även att Xfoil låser sig. Exakt när detta sker och varför har inte kunnat
+kartläggas helt men beror förmodligen på en för avvikande vingproﬁl. För att kunna
+hantera detta har en timer implementerats. Har inget resultat kommit från Xfoil efter
+60 sekunder får vingproﬁlen tilldelat sig negativa Cl och Cd för att på så sätt rensas ut.
+38
+Kapitel 2 Metod
+2.6
+Post-stall-extrapolation av Cd och Cl
+Xfoil ger endast tillförlitliga resultat fram till αstall (Grasso, 1989). Av den anledningen
+har endast angreppsvinklarna −5◦< α < 30◦utvärderats med Xfoil. Därefter har αstall
+satts till det α där Cl haft högst värde (Clstall).
+Bem-algoritmen behöver i vanliga fall inga Cl och Cd utanför −5◦< α < αstall. Men i
+undantagsfall och under optimeringsprocessen behövs α utanför intervallet. Därför har
+Viternaekvationerna implementerats vilka beskriver ett enkelt sätt att extrapolera Cl
+och Cd utanför intervallet. Detta beskrivs i Tangler & Kocurek (2005) och återges här i
+korthet.
+Extrapoleringen av Cd görs för intervallet αstall < α < 90◦görs med
+Cd = B1 sin2 α + B2 cos α
+(2.1)
+där
+AR =
+R
+c0.8R
+(2.2a)
+B1 = Cdmax = 1.11 + 0.018AR
+(2.2b)
+B2 = CDstall −CDmax sin2 αstall
+cos αstall
+(2.2c)
+AR är ett förhållande mellan radien och kordan (c) vid 80 % av radien (c0.8R).
+På liknande sätt kan Cl extrapoleras i αstall < α < 90◦med
+Cl = A1 sin 2α + A2
+cos2 α
+sin α
+(2.3)
+där
+A1 = B1/2
+(2.4a)
+A2 = (Clstall −Cdmax sin αstall cos αstall) sin αstall
+cos2 αstall
+(2.4b)
+Ytterligare Cl och Cd kan extrapoleras med antagandet att vingproﬁlen beter sig som en
+platt platta i intervallet 90◦< α < 180◦positivt och negativt
+Kapitel 2 Metod
+39
+CLplatta = 2 sin α cos α
+(2.5a)
+CDplatta = B1 sin2 α
+(2.5b)
+Genom dessa ekvationer och datan från Xfoil kan nu Cl och Cd erhållas för −180◦< α <
+180◦. I Figur 2.8 syns datan från Xfoil i en tjockare blå linje medans den extrapolerade
+är den tunnare gröna linjen.
+Cd tas på samma sätt fram för hela spannet. I Figur 2.9 syns Xfoils data med tjock blå
+linje och den extrapolerade med tunn grön linje.
+−200
+−150
+−100
+−50
+0
+50
+100
+150
+200
+Attackvinkel (α)
+−1.0
+−0.5
+0.0
+0.5
+1.0
+1.5
+Lyftkoefficient (Cl)
+Figur 2.8: Cl från Xfoil (fet linje) och extrapolerade Cl (tunn linje) enligt förfarandet
+beskrivet i 2.5.2 för en S809 vingproﬁl vid Re en miljon.
+−200
+−150
+−100
+−50
+0
+50
+100
+150
+200
+Attackvinkel (α)
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+1.2
+1.4
+Dragkoefficient (Cd )
+Figur 2.9: Cd från Xfoil (fet linje) och extrapolerade Cd (tunn linje) enligt förfarandet
+beskrivet i 2.5.2 för en S809 vingproﬁl vid Re en miljon.
+40
+Kapitel 2 Metod
+2.7
+Vindhastighetsproﬁler
+SiteOpt tar som input en vindhastighetsproﬁl - det vill säga ett histogram över förekoms-
+ten av olika vindhastigheter för en plats. Data från St. Lawrence i Kanada (Kenway &
+Martins, 2008) syns i Figur 2.10 (mätt 30 meter från marken). Antalet observationer har
+normerats till en procentuell förekomst. Summan av alla staplar är således 1.
+Detta histogram används sedan i referensfallet och kallas vidare h(U) (där U är en
+vindhastighet) och används som uppskattning av den bakomliggande sannolikhetsfördel-
+ningen (vidare kallad fw(U)).
+0
+5
+10
+15
+20
+Vindhastighet (m/s)
+0
+2
+4
+6
+8
+10
+12
+14
+Procentuell förekomst (%)
+Figur 2.10: Vindhastighetsfördelning. Data från hämtad från St. Lawrence i Canada
+reproducerad från Kenway & Martins (2008).
+Kapitel 2 Metod
+41
+2.8
+Genetisk algoritm
+När den genetiska algoritmen initieras så skapas en första population. Denna utgår från
+vingproﬁlen S809 varpå de diskreta punkterna som bygger upp vingproﬁlen utsätts för
+en gaussisk slumpfaktor med standardavvikelse om 10 % från de ursprungliga punkterna
+som bygger upp S809. Detta görs för att skapa en population med vingproﬁlskaraktär
+samtidigt som en bred del av designrymden söks av.
+I Figur 2.11 visas den initiala populationens 28 första rot-vingproﬁler som exempel, men
+populationen kan alltså även innehålla mellan-vingproﬁlen, top-vingproﬁlen, kordadistri-
+butionen och twistdistributionen som här ej visas. Dessa utsätts för samma slumpade
+initiering.
+Figur 2.11: Initial populations rot-vingproﬁler skapad genom variationer på S809 med
+10 % slumpfaktor i varje punkt.
+42
+Kapitel 2 Metod
+2.8.1
+Implementering av den genetiska algoritmen
+Biblioteket Deap till programmeringsspråket Python har använts med parametrar enligt
+Tabell 2.2 och algoritmen eaSimple. Denna valdes eftersom det är en enkel implementa-
+tion och trots litteraturstudien visat att mer avancerade algoritmer kan ge resultat till
+lägre beräkningskostnad.
+Tabell 2.2: Parametrar för den genetiska algoritmen
+Parameter
+Värde
+Mutationssannolikhet för en individ (MUTpb)
+10 %
+Mutationssannolikhet för arvsmassans individuella element (INDpb)
+10 %
+Standardavvikelse för den gaussiska slumpfaktorn (σ)
+2 %
+Sannolikhet att avkomma skapas genom korsning (CXpb)
+50 %
+Antal generationer innan avslut (NG)
+10 000 st
+Populationsstorlek
+600 st
+eaSimple utsätter först en initial population för ﬁtness-funktionen. Efter detta påbörjas
+en generationsloop i vilken:
+1. Populationens individer utsätts för korsning med CXpb procents sannolikhet.
+2. De kvarvarande individerna utsätts för mutation enligt MUTpb procents sannolik-
+het där
+(a) arvsmassans element muteras med INDpb procents sannolikhet
+(b) med en gaussisk avvikelse där standardavvikelsen är σ
+3. Alla individer skapade enligt ovan samt de kvarvarande orörda individerna över-
+förs till nästa generation och processen återupprepas tills NG antal generationer
+passerat eller att användaren avslutar processen.
+Förfarandet för eaSimple som i korthet här beskrivits återges mer utförligt i kapitel 7
+av Back et al. (2000).
+Kapitel 2 Metod
+43
+2.8.2
+Fitnessfunktion
+Bem-metoden beskriven i 2.4 ger alltså, givet en uppsättning vindhastigheter - en eﬀekt-
+kurva. Denna kan med sannolikheterna för respektive vindhastigheter h(U) (se 2.7) ge
+en genomsnittseﬀekt P. Detta görs genom att sannolikhetsfördelningen fw aproximeras
+med vindhastighetshistogrammet h(U) enligt
+P =
+Z Uut
+Uin
+fw(U)P(U)dU
+≈
+Uut
+X
+Uin
+h(U)P(U)
+P ger nu approximativt hur pass bra ett vindkraftverk är för platsen som vidhistogram-
+met h(U) beskriver eftersom summan av h(U) = 1.
+Kapitel 3
+Resultat
+3.1
+Referensfall för veriﬁering av SiteOpt
+Amerikanska National Renewable Energy Laboratory (NREL) har utfört ﬂera väldoku-
+menterade experiment på vindkraftverk där all data tillgängliggjorts (Simms et al. ,
+1999). Av dessa har det som benämnts Unsteady Aerodynamics Experiment Phase III
+(vidare kallat UAE III) valts som ett referensfall. Ytterligare ett referensfall från univer-
+sitetet i Waterloo, Canada beskrivet i Gertz & Johnson (2011) har även valts ut (vidare
+kallat Waterloo). Båda valdes eftersom de med enkelhet kunde reproduceras med studiens
+modell (SiteOpt).
+I Tabell 3.1 resenteras UAE IIIs och Waterloos speciﬁkationer tillsammans med Rey-
+noldstalen Remin och Remax som utvärderingen gjorts mellan i NRe st steg.
+45
+46
+Kapitel 3 Resultat
+Tabell 3.1: Speciﬁkationer för referensfallen Waterloo och UAE III
+Experiment
+Waterloo
+UAE III
+Antal blad (st)
+3
+3
+Rotordiameter (m)
+3.3
+10.046
+Hubradie (m)
+0.144
+0.72
+Rotationshastighet (RPM)
+200
+71.63
+Inkopplingshastighet (m/s)
+3.6
+5
+Märkeﬀekt (kW)
+-
+19.8
+Korda (m)
+Se Tabell 3.2
+Konstant 0.4572
+Pitch (θp) (◦)
+0
+3
+Toppvingproﬁl
+S833a
+S809
+Mellanvingproﬁl
+S835b
+S809
+Rotvingproﬁl
+S835
+S809
+Twist (◦)
+Se Tabell 3.2
+Se Tabell 3.2
+Reynoldsupplösning NRe (st)
+12
+12
+Remin × 105
+1
+5
+Remax × 105
+11
+60
+aStudiens modell har ej tagit hänsyn till att rotorbladets sista 5 % egentligen ska bestå av S834
+bDenna placeras vid rotorbladets mitt trots att den är speciﬁcerad till 40 % av rotorbladet.
+Kapitel 3 Resultat
+47
+Tabell 3.2: Twist- och kordadistribution längs rotorbladet i UAE III (Simms et al. ,
+1999) och Waterloo (Gertz & Johnson, 2011)
+UAE III
+Waterloo
+Normerad radie (r/R)
+Twist (◦)
+Korda (m)
+Twist (◦)
+Korda (m)
+0.14
+44.67
+0.45
+18.99
+0.30
+0.18
+39.39
+0.45
+19.01
+0.29
+0.23
+32.29
+0.45
+19.00
+0.28
+0.28
+26.56
+0.45
+18.02
+0.26
+0.33
+21.95
+0.45
+16.30
+0.25
+0.38
+18.19
+0.45
+14.94
+0.24
+0.43
+15.10
+0.45
+13.42
+0.23
+0.48
+12.51
+0.45
+11.83
+0.22
+0.53
+10.35
+0.45
+10.03
+0.20
+0.58
+8.50
+0.45
+8.45
+0.19
+0.64
+6.91
+0.45
+6.91
+0.18
+0.67
+5.52
+0.45
+6.54
+0.17
+0.73
+4.32
+0.45
+5.76
+0.16
+0.77
+3.25
+0.45
+5.28
+0.15
+0.85
+2.30
+0.45
+4.24
+0.13
+0.89
+1.45
+0.45
+3.31
+0.12
+0.93
+0.69
+0.45
+2.41
+0.11
+1.00
+0.00
+0.45
+2.01
+0.10
+48
+Kapitel 3 Resultat
+UAE III och Waterloo har utvärderats i studiens modell (SiteOpt) där resultatet i Fi-
+gur 3.1 och Figur 3.2 erhållits. Här syns även experimentellt uppmätta data för experi-
+menten.
+SiteOpt visar överensstämmande resultat vid låga vindhastigheter. Men vid lite högre
+vindhastigheter misslyckas SiteOpt att förutsäga utplaningen av eﬀekt som uppstår.
+Detta är extra tydligt i Waterlooexperimentet (Figur 3.2) där vindhastigheter innan 8
+m/s har väldigt god överensstämmelse men efter det helt avviker från den experimentella
+datan.
+0
+2
+4
+6
+8
+10
+12
+14
+Vindhastighet (m/s)
+0
+5000
+10000
+15000
+20000
+Effekt (W)
+Studiens modell (SiteOpt)
+NREL experimentell data
+BEM-data Chepyala
+Figur 3.1: Resultat av UAE III utvärderat i SiteOpt vid olika vindhastigheter samt
+experimentell data från Ceyhan (2008).
+0
+5
+10
+15
+20
+25
+Vindhastighet (m/s)
+0
+500
+1000
+1500
+2000
+2500
+Effekt (W)
+Studiens modell (SiteOpt)
+Experimentell data
+BEM-data från WT_PERF
+Figur 3.2: Resultat av vindkraftverket beskrivet i Gertz & Johnson (2011) (Waterloo)
+utvärderat i SiteOpt vid olika vindhastigheter samt experimentell data.
+Kapitel 3 Resultat
+49
+Figur 3.2 visar även Waterlooexperimentet utvärderat i den vanligt förkommande Bem-
+programvaran wt_perf av Gertz & Johnson (2011). Detta visar att Bem bör kunna
+förutsäga höga vindhastigheter betydligt bättre än de som studiens modell (SiteOpt)
+producerar. Även om SiteOpt (åtminstone i detta fall) visar bättre överensstämmelse vid
+låga vindhastigheter än wt_perf.
+I Figur 3.1 visas även data genererat med Bem från masteruppsatsen Chepyala (2012)
+(utmarkerat med rött) vilken visar samma avvikande beteende som studiens modell.
+Detta tyder på att Chepyala (2012) gjort samma eller liknande misstag som i denna
+studie. Stora ansträngningar har gjorts för att utröna orsaken till detta och en diskussion
+om möjliga orsaker återﬁnns i 4.2.
+För fullständig loggdata av SiteOpts simulering av UAE III se Appendix B. Här fram-
+kommer att vindhastigheter över 8 m/s även medför högre angreppsvinklar.
+50
+Kapitel 3 Resultat
+3.2
+Optimering av UAE III
+UAE III har använts som utgångspunkt för studiens optimering. I Tabell 3.3 syns hur
+samma speciﬁkationer som i UAE III använts. Nu har korda-, twistdistribution och ving-
+proﬁl tillåtits variera (det vill säga agerat designvariabler) för att nå resultaten som
+presenteras här. Re har satts till att endast utvärderas vid 20 × 105 för att spara tid.
+SiteOpts möjlighet att ha olika vingproﬁler längs radien har inte använts av samma skäl.
+Tabell 3.3: Speciﬁkationer för optimeringen som görs med utgångspunkt i UAE III
+Utgångsvärde
+Fixerat eller variabelt
+Antal blad (st)
+3
+Fixerat
+Rotordiameter (m)
+10.046
+Fixerat
+Hubradie (m)
+0.72
+Fixerat
+Tornhöjd (m)
+17.03
+Fixerat
+Rotationshastighet (RPM)
+71.63
+Fixerat
+Inkopplingshastighet (m/s)
+5
+Fixerat
+Märkeﬀekt (kW)
+19.8
+Fixerat
+Korda (m)
+0.4572
+Variabel längs radien
+Pitch (θp) (◦)
+3
+Fixerat
+Vingproﬁl
+S809
+Variabel, dock samma längs radien
+Re × 105
+20
+Fixerat
+Vindhistogram
+Se 2.7
+Fixerat
+Twist (◦)
+Se tabell 3.2
+Variabelt längs radien
+0
+50
+100
+150
+200
+250
+300
+generation
+5800
+6000
+6200
+6400
+6600
+6800
+7000
+7200
+P (W)
+Optimerat rotorblad
+UAE III
+Figur 3.3: Figur illustrerande hur genomsnittseﬀekten P av den bästa individen i varje
+generation utvecklas med ytterligare generationer i den genetiska algoritmen.
+Kapitel 3 Resultat
+51
+Tabell 3.4: Speciﬁkationer för använd hårdvara
+Hårdvara
+Speciﬁkation
+Processor
+2.8GHz quad-core Intel Core i7
+Minne
+8GB (2 x 4GB) 1333MHz DDR3
+Efter 265 generationer har ett c:a 15 % bättre resultat än UAE III erhållits vilket syns i
+Figur 3.3. Använd hårdvara syns i Tabell 3.4 och med denna tog optimeringen ungefär 7
+dagar vilket betyder att en genomsnittlig generation tog c:a 38 minuter. I Figur 3.3 syns
+även att konvergens inﬁnner sig redan vid ungefär 150 generationer varpå väldigt små
+förbättringar uppnås. Notera att det är genomsnittseﬀekten P uträknat enligt förfarandet
+i 2.8.2 med vinddata från St. Lawrence, Canada. Med modellens svaga förmåga att
+förutsäga eﬀekt vid höga vindhastigheter i åtanke, kan det vara intressant att notera att
+81 % av vinddatan beﬁnner sig innan 10 m/s. Det är även endast den bästa individen i
+varje generation som presenteras i Figur 3.3.
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+Vindhastighet (m/s)
+0
+5000
+10000
+15000
+20000
+Effekt (W)
+UAE III utvärderat i SiteOpt, Re =20e5
+Experimentell data UAE III, Re =20e5
+Optimerat rotorblad, Re =20e5
+Figur 3.4: Eﬀektkurvor för referensfallet UAE III och det optimerade rotorbladet.
+Eﬀektkurvan för det rotorbladet som optimeringen tagit fram ses i Figur 3.4. Notera att
+SiteOpts utvärderade eﬀektkurva avviker lite från den i 3.1 eftersom denna endast är
+utvärderad vid Re = 20 × 105.
+Vingproﬁlen som optimeringen tagit fram visas i Figur 3.5 tillsammans med utgångs-
+punkten S809 för jämförelse och är alltså samma för hela rotorbladet.
+52
+Kapitel 3 Resultat
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+x/c
+−0.15
+−0.10
+−0.05
+0.00
+0.05
+0.10
+0.15
+y/c
+Utgångspunkten S809
+Optimerad vingprofil
+Figur 3.5: Den optimerade vingproﬁlen jämfört med ursprungsproﬁlen S809.
+I Figur 3.6 syns hur korda- och twistdistribution skiljer sig från utgångspunkten UAE
+III.
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+r/R
+−10
+0
+10
+20
+30
+40
+50
+Twist (grader)
+Optimerat rotorblad
+Utgångspunkten UAE III
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+r/R
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+Korda (m)
+Optimerat rotorblad
+Utgångspunkten UAE III
+Figur 3.6: Det optimerade rotorbladets korda- och twistdistribution jämfört med ut-
+gångspunkten UAE III.
+I Figur 3.7 och Figur 3.8 presenteras lyft- och motståndskoeﬃcientdata för den optime-
+rade vingproﬁlen i jämförelse med datan Xfoil ger för S809. Även experimentell data för
+S809 har inhämtats från Somers (1997). Detta ger en indikation på hur mycket Xfoil
+överskattar lyft- och motståndskoeﬃcienter vid högre α vilket framkom i litteraturstu-
+dien. Detta bör tas i beaktande när den optimerade vingproﬁlens data studeras.
+Kapitel 3 Resultat
+53
+0
+5
+10
+15
+20
+25
+30
+35
+α
+0.0
+0.5
+1.0
+1.5
+2.0
+Cl
+S809 Xfoil Cl-data, Re =20e5
+Optimerad vingprofil Xfoil Cl-data, Re =20e5
+Experimentell data, Re =20e5
+Figur 3.7: Lyftkoeﬃcient för den optimerade vingproﬁlen och utgångspunkten S809
+utvärderat i Xfoil samt experimentell data för S809 från Somers (1997).
+0
+5
+10
+15
+20
+25
+α
+0.00
+0.05
+0.10
+0.15
+0.20
+0.25
+Cd
+S809 Xfoil Cd -data, Re =20e5
+Optimerad vingprofil Xfoil Cd -data, Re =20e5
+Experimentell data, Re =20e5
+Figur 3.8: Motståndskoeﬃcient för den optimerade vingproﬁlen och utgångspunkten
+S809 utvärderat i Xfoil.
+Kapitel 4
+Diskussion
+4.1
+Sammanfattning
+I studien har en metodologi utvecklats för att kunna optimera ett vindkraftverks rotor-
+blad för ett användarvalt vindhastighetsförhållande. Givet vindhastighetsdata och via
+den för studien utvecklade programvaran, där Bem-teori implementerats - kan en ge-
+nomsnittseﬀekt erhållas. Detta används som målfunktion i en optimeringsalgoritm av
+slaget genetiska algoritmer, vilket producerar ett optimerat rotorblad.
+Följande punkter sammanfattar studiens metodologi:
+Vingproﬁlsrepresentation Vingproﬁler har representerats genom att 12 diskreta punk-
+ter sammanbundits av kubiska B-splines. Detta har visats vara en avvägning mellan
+mycket detaljer och hög beräkningstid samt få detaljer och inskränkt designrymd.
+Rotorbladssrepresentation Ett vindkraftverks rotorblad har beskrivits med tre ving-
+proﬁler (rot, mellan och topp) där mellanliggande vingproﬁler interpoleras fram.
+Detta resulterar i 12 radiella bladelement. Vingproﬁlerna sattes till en och samma
+i alla positioner vid optimeringen för att påskynda resultaten.
+Vingproﬁlers aerodynamiska egenskaper Programvaran Xfoil har använts för att
+erhålla lyft- och motståndskoeﬃcienter (Cl och Cd). Givet en vingproﬁl, attackvin-
+kel α och Reynolds tal Re kunde detta erhållas till relativt låg beräkningskostnad.
+Möjlighet att utvärdera för lyft- och motståndskoeﬃcient vid ﬂera Re gavs men
+för att åter igen spara tid, utvärderades dessa endast vid Re = 20 × 105.
+Eftersom Xfoil inte kan ge resultat långt efter stallvinkeln αstall görs en extrapo-
+lering med viternaekvationerna, det antas även att vingproﬁlen beter sig som en
+platta vid extremt höga och låga attackvinklar. Denna extrapolering ger då lyft-
+och motståndskoeﬃcienter för hela spannet ±180◦.
+55
+56
+Kapitel 4 Diskussion
+Vindkraftverks eﬀekt Bem-metoden ger ett vindkraftverks uppskattade eﬀekt vid oli-
+ka vindhastigheter. Genom att para denna data med vindhastighetsdata för ett
+speciﬁkt vindförhållande har en genomsnittseﬀekt P kunnat tas fram. Detta har
+sedan använts som målunktion i optimeringsprocessen. I studien användes godtyck-
+ligt vinddata för St. Lawrence i Kanada.
+Optimering En genetisk algoritm har använts via Pythonbiblioteket Deap som genom
+att imitera evolutionen itererar fram vindkraftverk med högre genomsnittseﬀekt.
+Följande resultat kunde sedan presenteras:
+Utvärdering av modell Genom att utgå från ett akademiskt vindkraftverk (Unsteady
+Aerodynamics Experiment Phase III, UAE III) där vingproﬁlen S809 används längs
+hela rotorbladet har metodologins modell utvärderats. Här visas att den för studien
+utvecklade modellen (SiteOpt) dramatiskt överskattar ett vindkraftverks eﬀekt för
+vindhastigheter över 8 m/s, men ger god överensstämmelse innan 8 m/s.
+Resultat av optimering En optimering av slaget genetisk algoritm har sedan utförts.
+Detta har gjorts med hänsyn till den inmatade vinddatan. Denna visas till 81 %
+ligga innan 10 m/s där modellen visar acceptabel överensstämmelse med vindtun-
+neldata. Detta resulterade i en ny vingproﬁl som ses i Figur 3.5 samt en twist- och
+kordadistribution. Detta resultat har enligt modellen ett ökat genomsnittseﬀektut-
+tag över ett år på 15 % jämfört med utgångspunkten UAE III.
+4.2
+Slutsatser
+Följande slutsatser kan dras från resultaten, och presenteras här med viktigast slutsats
+först och sedan i fallande ordning.
+1. Studiens modell (SiteOpt) visar en ökning av genomsnittseﬀekten P på 15 % mot
+referensfallet UAE III efter att optimeringen genomförts. Detta betyder att med
+den föreslagna optimerade vingproﬁlen (Figur 3.5) och korda/twist-distribution
+(Figur 3.6) kan teoretiskt sätt 15 % mer elektricitet tas ut årligen än utgångspunk-
+ten. Detta givet att modellen är en bra representation av verkligheten.
+2. Studiens modell har dessvärre visats vara en dålig representation av verkligheten
+efter c:a 8 m/s. Varför avvikelsen uppstår har inte kunnat fastställas och en annan
+programvara med implementering av BEM har visats ha betydligt bättre överens-
+stämmelse efter 8 m/s. Samma avvikelse har dock hittats i en annan studentuppsats
+(Chepyala, 2012). Följande är eventuella förklaringar till avvikelsen:
+Kapitel 4 Diskussion
+57
+(a) I denna studie har ingen hänsyn tagits till hållfasthetsaspekter eller rotor-
+blads böjbarhet utan ett helt stelt rotorblad antas. Vid höga vindhastigheter,
+beroende på rotorbladets material - kommer en krökning i vindens riktning
+uppstå. Detta gör sannolikt upphov till radiellt ﬂöde. För att Bem ska vara
+giltigt, får detta ej förekomma. Att Chepyala (2012) visar liknande avvikelse
+vid höga vindhastigheter tyder på att en ofullständig modell även använts
+där. Chepyala (2012) har likt denna studien inte tagit hänsyn till böjbara
+rotorblad. Därför är detta att anse som den mest rimliga förklaringen till
+avvikelsen.
+(b) Det har i litteraturstudien framkommit att Xfoil ger dåligt överensstämman-
+de lyft- och motståndskoeﬃcienter efter stallvinkeln astall samt att Xfoil
+underskattar motståndskoeﬃcienten Cd. Vid höga vindhastigheter fås även
+höga angreppsvinklar (se Appendix B). Dessa höga angreppsvinklar har även
+extrapolerats fram vilket gör att mycket hänger på denna extrapolations kor-
+rekthet. Litteraturstudien visade även att Bems största svaghet är dess lyft-
+och motståndskoeﬃcienter. Detta låter som en rimlig förklaringsmodell men
+när dessa felaktigheter försökte kompenseras sågs dessvärre ingen förbättring.
+(c) Det är även tänkbart att ett implementeringsfel av numeriken är problemet då
+koden nära följer den föreslagna implementationen i Hansen (2005). Hansen
+(2005) behandlar endast ekvationerna och ger ingen ledning i hur olika nu-
+meriska misstag ska undvikas. Exempelvis har ﬂera gånger lösningar behövts
+göras för att undvika att dela med noll under lösningen av Bemekvationerna.
+3. Trots modellens avvikelse efter c:a 8 m/s har god överensstämmelse visats vid lägre
+vindhastigheter. När optimeringen gjordes valdes godtyckligt vindförutsättningar-
+na för St. Lawrence i Kanada. 81 % av vinden visar sig här vara förlagd innan 10
+m/s vilket bör betyda att optimeringen ändå till stor del gjorts med en godtagbar
+modell. Det går dock inte att utesluta att resultatet påverkats av avvikelsen.
+4. Vingproﬁlen som av optimeringen gav som resultat (Figur 3.5) har i bakkant ett
+tunt parti. Denna tunna “svans” kan tänkas vara för skör för att vara realiserbar
+på ett riktigt rotorblad. Detta är antagligen direkt relaterat till att inga hållfast-
+hetsaspekter tagits med i optimeringen.
+5. Det optimerade rotorbladet visas i Figur 3.4 tillsammans med utgångspunkten
+UAE III. Här framgår hur avvikelsen efter 8 m/s beter sig. Det är att förvänta
+att det optimerade rotorbladet om realiserat i verkligheten borde ha en liknande
+avvikelse och att detta skulle innebära att det ökade eﬀekttutaget är mindre än de
+15 % som presenterades i resultaten.
+6. Referensfallet UAE III som även används som utgångspunkt i optimeringen gör
+inga anspråk på att vara ett optimerad vindkraftverk. Detta är ett akademiskt
+testfall vilket valdes eftersom empirisk data fanns tillgänglig. Därför är sannolikt
+58
+Kapitel 4 Diskussion
+15 % genomsnittlig eﬀektökning mer än vad som kan förväntas ifall optimeringen
+hade gjorts på ett kommersiellt vindkraftverk.
+7. Referensfallet UAE III har endast en vingproﬁl över hela rotorbladet och det har
+även resultatet från optimeringen. Flera vingproﬁler längs rotorbladet hade san-
+nolikt gett ytterligare eﬀektökningar och var egentligen önskvärt, men eftersom
+optimeringen ungefär växer med O (n) där n är antalet designvariabler - hade op-
+timeringen då tagit ungefär tre gånger så lång tid vilket det tidsmässigt inte fanns
+utrymme för.
+Kapitel 4 Diskussion
+59
+4.3
+Rekommendationer för framtida arbete
+Följande rekommendationer för framtida arbete ges här med viktigast först och sedan i
+fallande ordning.
+1. Det framtagna optimerade rotorbladets egenskaper skulle kunna veriﬁeras om även
+en analys gjordes med cfd.
+2. En modell som även tar hänsyn till rotorbladens deformation vid högre vindhas-
+tigheter (vanligen kallat ﬂuid structure interactions) skulle öka modellens tillförlit-
+lighet avsevärt.
+3. Ytterligare testfall utöver de två i rapporten skulle behövas för att veriﬁera meto-
+den.
+4. Det skulle även vara extra intressant att undersöka metodens möjligheter att göra
+förbättringar på kommersiella vindkraftverk. Ett kommersiellt vindkraftverk är
+att anta redan optimerat. Därför skulle det vara intressant att se hur mycket en
+platsspeciﬁk optimering skulle kunna öka energiuttaget.
+5. Optimeringen skulle med fördel utökas till en ﬂermålsoptimering där även hållfast-
+het togs med. Detta för att vingproﬁler och rotorblad med ej realiserbar geometri
+ska kunna undvikas.
+6. Optimeringen gjordes med antagandet att lyft- och motståndskoeﬃcienter kunde
+antas alltid vara gällande vid Re × 105 = 20. Med mer tid skulle SiteOpt kunna
+utvärdera vid ﬂera Reynolds tal för att undvika detta antagandet men till bekostnad
+på beräkningstid.
+7. Med mer tid skulle även SiteOpt kunna tillåtas optimera fram olika vingproﬁler i
+rotorbladets topp-, mellan- och rotvingproﬁl.
+8. Designvariablerna skulle kunna utökas på ﬂera sätt utan att beräkningskostnaden
+ökade märkbart:
+(a) Löptalet λ skulle kunna optimeras. Ett vindkraftverk som i detta fallet fun-
+gerar med ﬁxerat RPM producerar sällan optimal eﬀekt.
+(b) Fler diskreta punkter som deﬁnierar twist- och kordadistributionen skulle kun-
+na läggas till. Nu används endast tre diskreta punkter vilket är begränsande
+för rotorblad som eventuellt skulle vara bättre med en mer avancerad geome-
+tri.
+9. Metoden beskriven i studien är ett bra exempel på ett problem som skulle kunna
+lösas snabbare om koden parallelliseras. Då skulle istället ﬂera processorkärnor
+(eller till och med datorer) kunna användas samtidigt och optimeringen skulle gå
+väldigt mycket snabbare.
+60
+Kapitel 4 Diskussion
+10. Under uppsatsens slutskede hittades rapporten A Simple Solution Method for the
+Blade Element Momentum Equations with Guaranteed Convergence (Ning, 2013)
+vilken föreslår ett nytt sätt lösa Bem där garanterad konvergens uppnås. Detta
+förfarande skulle vara en bättre implementering av Bem än den som använts i
+denna studie.
+11. αstall uppstår vid olika platser beroende på om angreppsvinkeln ökas eller minskas.
+Detta fenomen kallat dynamisk stall skulle kunna tas hänsyn med en mer avancerad
+modell.
+Litteraturförteckning
+Back, T., Fogel, D.B, & Michalewicz, Z. 2000. Evolutionary Computation 1: Basic Algo-
+rithms and Operators. CRC Press.
+Benini, E. 2002. Optimal Design of Horizontal-Axis Wind Turbines Using Blade-Element
+Theory and Evolutionary Computation. Journal of Solar Energy Engineering, 124.
+Bizzarrini, N., Coiro, D., & Grasso, F. 2011. Genetic Algorithms in Wind Turbine Airfoil
+Design.
+Buhl, M. 2004. TurbSim User’s Guide.
+Burton, T., Jenkins, N., Sharpe, D., & Bossanyi, Ervin. 2005. Wind Energy Handbook.
+Cencelli, N. 2006. Aerodynamic Optimisation of a Small-Scale Wind Turbine Blade for
+Low Windspeed Conditions. M.Phil. thesis, University of Stellenboch.
+Ceyhan, Ö. 2008. Aerodynamic Design and Optimization of Horizontal Axis Wind Turbi-
+nes by Using BEM Theory and Genetic Algortim. M.Phil. thesis, Middle East Technical
+University.
+Chen, Y., Ye, Z., & Liu, X. 2007. Optimization model for rotor blades of horizontal axis
+wind turbines. Journal of Shantou University.
+Chepyala, S. 2012. Genetic algorithm based optimization of wind turbine blades: a com-
+parsion of multi-point optimization and probalistic weighted optimization. M.Phil. the-
+sis.
+Dahl, K., & Fuglsang, P. 1998. Design of the Wind Turbine Airfoil Family RISØAXX.
+Dierckx, P. 1981. Algorithms for Smoothing Data with Periodic and Parametric Splines.
+Computer Graphics and Image Processing, 20.
+Dixon, S. 2014.
+Fluid Mechanics and Thermodynamics of Turbomachinery. Seventh
+edition edn. Elsevier Inc.
+Drela, M. 1989. XFOIL: An Analysis and Design System for Low Reynolds Number
+Airfoils. Low Reynolds Number Aerodynamics, 54.
+Drela, M. 1998. Frontiers of Computational Fluid Dynamics.
+61
+62
+LITTERATURFÖRTECKNING
+Gertz, D., & Johnson, D. 2011. An evaluation testbed for wind turbine blade tip de-
+signs–baseline case. International Journal of Energy Researc, 35.
+Glauert, H. 1935. Aerodynamic Theory, kapitel: Airplane Propellers.
+Grasso, F. 1989. Usage of Numerical Optimization in Wind Turbine Airfoil Design.
+GWEC. 2012. Wind Power is Crucial for Combating Climate Change.
+GWEC. 2014. Global Wind Statistics 2013.
+Hand, M. 2001. Unsteady aerodynamics experiment phase VI: Wind tunnel test conﬁgu-
+rations and available data campaigns.
+Hansen, M. 2005. Aerodynamics of Wind Turbines.
+Kenway, G., & Martins, J. 2008. Aerostructural Shape Optimization of Wind Turbine
+Blades Considering Site-Speciﬁc Winds.
+Maheri, A. 2006. Damping the ﬂuctuating behaviour and improving the convergence rate
+of the axial induction factor in the BEMT-based rotor aerodynamic codes.
+Moriarty, P. 2005. AeroDyn Theory Manual.
+Ning, A. 2013. A Simple Solution Method for the Blade Element Momentum Equations
+with Guaranteed Convergence.
+Ram, K., Lal, S., & Ahmed, M. 2013. Low Reynolds number airfoil optimization for wind
+turbine applications using genetic algorithm.
+Simms, D.A., Hand, M.M., Fingersh, L.J., & Jager, D.W. 1999. Unsteady Aerodynamics
+Experiment Phases II–IV Test Conﬁgurations and Available Data Campaigns.
+Somers, D. 1997. Design and Experimental Results for the S809Airfoil.
+Tangler, J. 2002. The Nebulous Art of Using Wind Tunnel Aerofoil Data for Predicting
+Rotor Performance.
+Tangler, J., & Kocurek, J. 2005. Wind Turbine Post-Stall Airfoil Performance Charac-
+teristics Guidelines for Blade-Element Momentum Methods.
+UEIA. 2014. U.S. Energy Information Administration / Monthly Energy Review March
+2014.
+Vesel, R. 2012. Aero-Structural Optimization of a 5 MW Wind Turbine Rotor.
+Wendler, J., & Marten, D. 2013. Qblade Guidelines.
+Wood, D. 2011. Small Wind Turbines - Analysis, Design, and Application.
+Appendix A: Källkod SiteOpt
+# http://github.com/maxberggren/SiteOpt
+#!/usr/bin/env python
+# encoding: utf-8
+# python v 2.7
+"""
+siteOpt.py
+Created by Max Berggren 2014-05-10
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
+from __future__ import division
+import numpy as np
+from scipy import interpolate
+import subprocess as sp
+from StringIO import StringIO
+from math import pi, atan, acos, cos, sin, tan, exp, sqrt, radians, degrees
+import os
+xfoilPath = os.getcwd() + os.path.sep + "Xfoil.app/Contents/Resources/xfoil"
+def BlendAirfoils(AF1, AF2, percentAF2):
+delX = AF2.x - AF1.x
+newx = AF1.x + delX*percentAF2
+delY = AF2.y - AF1.y
+newy = AF1.y + delY*percentAF2
+return newx, newy
+def AoAsteps(start, stop, step):
+AoAs = []
+AoA = start
+if start <= stop:
+while AoA <= stop:
+AoAs.append(AoA)
+AoA += step
+else:
+while AoA >= stop:
+AoAs.append(AoA)
+AoA -= step
+return AoAs
+class Alarm(Exception):
+pass
+def alarm_handler(signum, frame):
+raise Alarm
+63
+64
+Bilaga Appendix A: Källkod SiteOpt
+def individualNr():
+counter = 0
+while True:
+counter = counter + 1
+yield counter
+def readTUR(fileName):
+with open(fileName) as f:
+content = f.readlines()
+content = "
+".join(content)
+content = content.replace("\n", "")
+content = content.replace("[", " ")
+content = content.replace("]", " ")
+content = content.replace("
+", " ")
+content = content.replace("
+", " ")
+content = content.replace("
+", " ")
+content = content.replace("
+", " ")
+content = content.split(" ")
+content = [x for x in content if x]
+content = [float(x) for x in content]
+content = np.array(content)
+return content
+class Turbine:
+def __init__(self, listOfAFs, R, hubRadius, TSR, ratedPower, B, visc, rho, tol, windSpeeds,
+windFrq, cutIn=5, cutOut=15, noBetween=2, noInterpolatedAFs=1,
+skipBlending=1, metaData=None, indNr=None, RPM=None,
+chord=[0.4572,
+0.4572, 0.4572, 0.4572, 0.4572, 0.4572, 0.4572, 0.4572, 0.4572, 0.4572, 0.4572, 0.4572, 0.4572],
+twist=[44, 44, 36, 24, 20, 16, 13, 10, 9, 4, 2, 1, 0], pitch=0,
+chordData=None, twistData=None,
+evalWindSpeeds=None):
+self.radialPositions = len(listOfAFs) + (len(listOfAFs)-1)*noBetween + ((len(listOfAFs)-1)*noBetween-1+len(listOfAFs))*noInterpolatedAFs
+self.AFs = [None] * self.radialPositions # initiate list of AFs
+self.R = R
+self.hubRadius = hubRadius # radius where the blade begins and hub ends (m)
+self.TSR = TSR # tip speed ratio (a.k.a. the symbol lambda)
+self.RPM = RPM
+self.B = B # number of blades
+self.visc = visc # kinematic viscosity of air
+self.rho = rho # density of air
+self.tol = tol # convergence tolerance for a and aprime
+self.cutIn = cutIn
+self.cutOut = cutOut
+self.windSpeeds = windSpeeds
+self.windFrq = windFrq
+self.ratedPower = ratedPower
+self.chord = chord
+self.twist = twist
+self.pitch = pitch
+self.r = []
+if evalWindSpeeds == None:
+self.evalWindSpeeds = np.linspace(cutIn, cutOut, 10)
+else:
+self.evalWindSpeeds = evalWindSpeeds
+if chordData:
+self.chord = self.interpolChordTwist(chordData)
+if twistData:
+self.twist = self.interpolChordTwist(twistData)
+if indNr:
+self.writeMetaData(metaData, indNr)
+j = 0
+for i in range(len(listOfAFs)): # portion out the main AFs
+self.AFs[int(i*((self.radialPositions-1)/(len(listOfAFs)-1)))] = listOfAFs[j]
+j = j+1
+for i in range(len(listOfAFs)-1): # find the places of the blended AFs
+startIndex = int(i*((self.radialPositions-1)/(len(listOfAFs)-1)))
+nextMainAF = int((i+1)*((self.radialPositions-1)/(len(listOfAFs)-1)))
+betweenStep = int((self.radialPositions/len(listOfAFs))/(noBetween))
+Bilaga Appendix A: Källkod SiteOpt
+65
+h = 1
+for b in range(noBetween+1):
+if not b == 0:
+if not skipBlending:
+xb, yb = BlendAirfoils(listOfAFs[i], listOfAFs[i+1], percentAF2=h*0.3333333)
+AFb = Airfoil(xb, yb, blendInput=1)
+self.AFs[int(startIndex + b*betweenStep)] = AFb
+else:
+self.AFs[int(startIndex + b*betweenStep)] = Airfoil(interpolatedInput=1,
+AF1=listOfAFs[i],
+AF2=listOfAFs[i+1])
+for i in range(len(listOfAFs)-1): # find the places of the intepolated AFs,
+startIndex = int(i*((self.radialPositions-1)/(len(listOfAFs)-1)))
+betweenStep = int((self.radialPositions/len(listOfAFs))/(noBetween))
+for b in range(noBetween+1):
+for k in range(noInterpolatedAFs):
+#print "interp ",startIndex + b*betweenStep + k +1
+interIndex = int(startIndex + b*betweenStep + k +1)
+self.AFs[interIndex] = Airfoil(interpolatedInput=1, AF1=self.AFs[interIndex-1], AF2=self.AFs[interIndex+1])
+self.checkPerformance() # run simulation
+def interpolChordTwist(self, data):
+tck = interpolate.splrep([0, data[1], 1], [data[0], data[2], data[3]],s=0,k=2)
+xnew = np.linspace(0, 1, self.radialPositions)
+ynew = interpolate.splev(xnew,tck,der=0)
+return ynew
+def writeMetaData(self, metaData, indNr):
+with open("TurbineNo"+str(indNr)+".tur", "w+") as f:
+f.write(str(metaData) + ’\n’)
+def avgPower(self):
+if self.power:
+avgPower = 0
+for i, speed in enumerate(self.windSpeeds):
+if speed > self.cutIn and speed < self.cutOut:
+avgPower += self.windFrq[i]*self.powerInterpolate(speed)
+return avgPower
+def powerInterpolate(self, windSpeed):
+try:
+if windSpeed < self.cutIn:
+return 0
+if windSpeed > self.cutOut:
+return 0
+if len(self.evalWindSpeeds) == 1:
+return self.power[0]
+f = interpolate.interp1d(self.evalWindSpeeds, self.power, kind=’cubic’)
+if f(windSpeed) < self.ratedPower:
+return f(windSpeed)
+else:
+return self.ratedPower
+except:
+print "Problems with power curve"
+return 0
+def checkPerformance(self):
+R = self.R # radius (m)
+hubRadius = self.hubRadius # radius where the blade begins and hub ends (m)
+TSR = self.TSR # tip speed ratio (a.k.a. the symbol lambda)
+B = self.B # number of blades
+visc = self.visc # kinematic viscosity of air
+rho = self.rho # density of air
+tol = self.tol # convergence tolerance for a and aprime
+cutIn = self.cutIn
+cutOut = self.cutOut
+RPM = self.RPM
+pitch = self.pitch
+r = np.linspace(hubRadius/R, 1, num=self.radialPositions)*R # radius of blade elements betweeb hub and tip (m)
+self.r = r
+dr = r[1]-r[0] # width of blade elements
+66
+Bilaga Appendix A: Källkod SiteOpt
+rNorm = r/R # normalized radial elements (r/R)
+twist = np.array(self.twist) + pitch # twist distribution accounted for pitch
+chord = np.array(self.chord) # chord distribution
+T = 0.0
+Q = 0.0
+Cp = 0
+powers = []
+Qs = []
+angSpeeds = []
+Cps = []
+for Uinf in self.evalWindSpeeds:
+angSpeed = TSR*Uinf/R # radians/s
+if RPM: # if constant RPM is to be used
+angSpeed = RPM*0.1047 # radians/s
+TSR = angSpeed*R/Uinf
+angSpeeds.append(angSpeed*(9.5493)) # rpm
+T = 0
+Q = 0
+print "Uinf
+Element Radius
+Iter
+a
+aprime
+AoA
+Utot
+locTSR
+phi
+Cl
+Cd
+F
+sigma
+Re*10^5 AngSpd
+phi(deg)
+dQ
+Cn
+for i in range(len(r)-1):
+a = 0
+aprime = 0
+dQ = 0
+dT = 0
+TSRr = TSR*rNorm[i] # local TSR at the blade element (a.k.a. lambda_r)
+sigmaprime = B*chord[i]/(2*pi*r[i]) # local solidity
+#a = (1/4)*(2 + pi*TSRr*sigmaprime - sqrt(4 - 4*pi*TSRr*sigmaprime + pi*sigmaprime**2*(8*twist[i] + pi*sigmaprime)))
+for j in range(200): # max 200 iterations
+if not aprime == -1:
+phi = atan( (1 - a)/( (1 + aprime)*TSRr ) )
+else: # prevent divide by zero
+phi = atan( (1 - a)/( (1 + aprime*1.01)*TSRr ) )
+AoA = phi*(180.0/pi) - twist[i] # degrees
+Utot = sqrt(
+(Uinf*(1 - a))**2 + ( angSpeed*r[i]*(1 + aprime) )**2
+)
+Re = Utot*chord[i]/visc
+Cl = self.AFs[i].Cl(AoA, Re/100000)
+Cd = self.AFs[i].Cd(AoA, Re/100000)
+Cn = Cl*cos(phi) + Cd*sin(phi)
+Ct = Cl*sin(phi) - Cd*cos(phi)
+C_T = sigmaprime*(1 - a)**2*Cn/(sin(phi)**2)
+try:
+Ftip = (2/pi)*acos(exp(-(B*(R-r[i]))/(2*r[i]*sin(phi))))
+Rhub = r[0]
+Fhub = (2/pi)*acos(exp(-(B*(r[i]-Rhub))/(2*r[i]*sin(phi))))
+F = Fhub*Ftip
+except: # First element often fails
+F = 0.5
+np.seterr(all=’raise’)
+if C_T > 0.96*F: # Glauert correction
+newa = (18*F - 20 - 3*sqrt(C_T*(50-36*F) + 12*F*(3*F - 4))) / (36*F - 50)
+else: # Standard BEM therory
+try:
+newa = 1 / ( 1 + (4*F*sin(phi)**2)/(sigmaprime*Cn) )
+except: # prevent divide by zero
+print "error na ras ut"
+Bilaga Appendix A: Källkod SiteOpt
+67
+dQ = 0
+dT = 0
+newa = 0
+break
+try:
+aprime = 1 / (-1 + (4*F*sin(phi)*cos(phi)) / (sigmaprime*Ct))
+except: # prevent divide by zero
+dQ = 0
+dT = 0
+aprime = 0
+break
+diffa = abs(a - newa)
+damper = 0.5
+a = damper*newa + (1 - damper)*a
+if diffa < tol and j > 3:
+break
+#dQ = 4*pi*(r[i]**3)*rho*Uinf*angSpeed*(1 - a)*aprime*dr
+#dQ = 0.5*rho*B*Uinf**2*(1-a)*angSpeed*r[i]*(1+aprime)*chord[i]*(Cl*sin(phi) - Cd*cos(phi)*r[i]*dr/(sin(phi)*cos(phi))
+#dQ = B*0.5*rho*(Utot**2)*Ct*chord[i]*r[i]*dr
+#dQ = 4*aprime*(1 - a)*rho*Uinf*angSpeed*r[i]**3*pi*dr
+dQ = 0.5*rho*B*Uinf*(1-a)*angSpeed*r[i]*(1+aprime)*chord[i]*Ct*r[i]*dr/(sin(phi)*cos(phi)) # calc additional Q
+if j == 199: # convergence fail
+dQ = 0
+dT = 0
+if AoA < -20 or AoA > 90: # if crazy AoA
+dQ = 0
+dT = 0
+Q = Q + dQ # total torQue
+print str(int(Uinf))+"\t"+str(i)+"\t"+str(’%.2f’ % r[i])+"\t"+str(j)+"\t"+str(’%.2f’ % a)+"\t"+str(’%.2f’ % aprime)+"\t"+str(’%.2f’ % AoA)
+Power = Q*angSpeed
+Cp = Power / (0.5*rho*Uinf**3*pi*R**2)
+powers.append(Power)
+Qs.append(Q)
+Cps.append(Cp)
+self.power = powers
+self.torque = Qs
+self.RPMs = angSpeeds
+self.Cps = Cps
+class Airfoil:
+def __init__(self, x=None, y=None, Re=[0.5, 1, 3, 4, 5, 7, 10, 20, 50, 70, 100, 140],
+AoAstart=-3,
+AoAstop=25,
+AoAstep=2,
+Ncrit=9,
+blendInput=0,
+interpolatedInput=0,
+AF1 = None,
+AF2 = None,
+fileName="temp.dat",
+highAngleInterp=1,
+alfa=None,
+Cldata=None,
+Cddata=None,
+AR=None):
+if not interpolatedInput:
+self.interpolatedInput = False
+self.originalx = x
+self.originaly = y
+if not blendInput:
+68
+Bilaga Appendix A: Källkod SiteOpt
+self.x, self.y = np.append(x, 1), np.append(y, 0) # add the constant front
+self.x, self.y = np.insert(self.x, 0, 1), np.insert(self.y, 0, 0) # and back coordinates
+self.x, self.y = self.connectTheDots(self.x, self.y) # interpolate between
+else:
+self.x, self.y = x, y
+self.alfa = AoAsteps(AoAstart, AoAstop, AoAstep)
+self.Cldata = []
+self.Cddata = []
+self.Cmdata = []
+self.Re = []
+self.AoAstop = AoAstop
+self.AoAstart = AoAstart
+self.AR = AR
+if Cldata and Cddata: # if empirical data is to be used instead of XFOIL
+if not len(Re) == 1:
+print "If empirical Cl- and Cddata is used, only one Reynolds can be used matching the data."
+else:
+self.Cldata.append(Cldata)
+self.Cddata.append(Cddata)
+self.alfa = alfa
+self.AoAstop = max(self.alfa)
+self.AoAstart = min(self.alfa)
+self.Re = Re
+else: # if xfoil is to be used
+self.writeDAT(self.x, self.y, fileName) # write to disk so XFOIL can read them
+for i, Rei in enumerate(Re):
+alfa, Cl, Cd, Cm = self.getPolars(Rei*10**5,
+AoAstart,
+AoAstop,
+AoAstep,
+Ncrit,
+airfoil=fileName)
+if Cl:
+self.Cldata.append(Cl)
+self.Cddata.append(Cd)
+self.Cmdata.append(Cm)
+self.Re.append(Rei)
+try:
+self.Cldata = np.array(self.Cldata)
+self.Cddata = np.array(self.Cddata)
+self.Cmdata = np.array(self.Cmdata)
+self.Cldata = self.fillHoles(self.Cldata)
+self.Cddata = self.fillHoles(self.Cddata)
+self.Cmdata = self.fillHoles(self.Cmdata)
+if highAngleInterp:
+self.highAngleInterp()
+# OBS: kass fix kika nare p
+#self.Cddata = self.Cddata*2
+except:
+self.failed = True
+else: # interpolate between two existing AFs Cl and Cd
+self.interpolatedInput = True
+self.AF1 = AF1
+self.AF2 = AF2
+self.alfa = AF1.alfa
+try:
+self.AR = (AF1.AR + AF2.AR)/2
+except:
+if AF1.AR:
+self.AR = AF1.AR
+else:
+self.AR = AF2.AR
+def highAngleInterp(self):
+ClnewdataR = []
+Bilaga Appendix A: Källkod SiteOpt
+69
+CdnewdataR = []
+ClnewdataL = []
+CdnewdataL = []
+CLtemp = []
+CDtemp = []
+for i, each in enumerate(self.Cldata):
+# Todo: fix!
+R = 10.046/2
+chord = 0.4572
+AR = R/chord
+if self.AR:
+AR = self.AR
+print "AR=",AR
+if AR >= 50:
+Cdmax = 2
+else:
+Cdmax = 1.11 + 0.018*AR
+B1 = Cdmax
+stallAlpha = radians(self.alfa[np.argmax(self.Cldata[i])])
+stallAlphaInd = np.argmax(self.Cldata[i])
+Clstall = self.Cldata[i,stallAlphaInd]
+Cdstall = self.Cddata[i,stallAlphaInd]
+B2 = (Cdstall - Cdmax*sin(stallAlpha)**2)/cos(stallAlpha)
+A1 = B1/2
+A2 = (Clstall - Cdmax*sin(stallAlpha)*cos(stallAlpha))*sin(stallAlpha)/(cos(stallAlpha)**2)
+# from alfa-stall to end of vector
+alphas = np.radians(self.alfa[stallAlphaInd:])
+alphas[alphas == 0] = 0.1 # to prevent from divide by zero
+CD = B1*np.sin(alphas)**2+B2*np.cos(alphas)
+CL = A1*np.sin(2*alphas) + A2*np.cos(alphas)**2/np.sin(alphas)
+self.Cldata[i,stallAlphaInd:] = CL
+self.Cddata[i,stallAlphaInd:] = CD
+# from end of vector to alfa = 90
+anglesTo90 = np.linspace(self.AoAstop+1, 89, 40)
+anglesTo90rad = np.radians(anglesTo90)
+CD = B1*np.sin(anglesTo90rad)**2 + B2*np.cos(anglesTo90rad)
+CL = A1*np.sin(2*anglesTo90rad) + A2*np.cos(anglesTo90rad)**2/np.sin(anglesTo90rad)
+# alfa = 90 to 180
+angles90to180 = np.linspace(90, 180, 40)
+angles90to180rad = np.radians(angles90to180)
+CL = np.hstack((CL, 2*np.sin(angles90to180rad)*np.cos(angles90to180rad)))
+CD = np.hstack((CD, B1*np.sin(angles90to180rad)**2))
+#CD = np.hstack((CD, 2*np.sin(angles90to180rad)**2)) WHUT?
+# from alfa = -180 to start of vector
+anglesNeg180toNeg90 = np.linspace(-180, -45, 40)
+anglesNeg180toNeg90rad = np.radians(anglesNeg180toNeg90)
+CLneg18090 = 2*np.sin(anglesNeg180toNeg90rad)*np.cos(anglesNeg180toNeg90rad)
+CDneg18090 = B1*np.sin(anglesNeg180toNeg90rad)**2
+ClnewdataR.append(CL)
+CdnewdataR.append(CD)
+ClnewdataL.append(CLneg18090)
+CdnewdataL.append(CDneg18090)
+self.Cldata = np.hstack((ClnewdataL, self.Cldata, np.array(ClnewdataR)))
+self.Cddata = np.hstack((CdnewdataL, self.Cddata, np.array(CdnewdataR)))
+self.alfa = np.hstack((anglesNeg180toNeg90, self.alfa, anglesTo90, angles90to180))
+def fillHoles(self, data):
+""" filling holes where XFOIL didn’t converge instead of running again """
+for i, each in enumerate(data):
+try:
+firstInd = np.nonzero(each)[0][0]
+lastInd = np.nonzero(each)[0][-1]
+70
+Bilaga Appendix A: Källkod SiteOpt
+fix = each[firstInd:lastInd]
+x, = np.nonzero(fix)
+fixed = np.interp(np.arange(len(fix)), x, fix[x])
+data[i, firstInd:lastInd] = fixed
+except:
+"""
+Probably just zeros
+"""
+return data
+def connectTheDots(self, x, y):
+tck,u = interpolate.splprep([x,y],s=0) # Find the apropiate spline
+unew = np.arange(0,1.005,0.005)
+out = interpolate.splev(unew,tck)
+return out[0], out[1]
+def Cl(self, AoA, Re):
+if self.interpolatedInput: # return halfway of two other AFs
+try:
+return (self.AF1.Cl(AoA, Re) + self.AF2.Cl(AoA, Re)) / 2
+except:
+return 0
+else:
+try:
+if len(self.Re) == 1:
+f = interpolate.interp1d(self.alfa, self.Cldata[0], kind=’linear’)
+return f(AoA)
+else:
+f = interpolate.interp2d(self.alfa, self.Re, self.Cldata, kind=’linear’)
+return f(AoA, Re)[0]
+except:
+return 0
+def Cd(self, AoA, Re):
+if self.interpolatedInput: # return halfway of two other AFs
+try:
+return (self.AF1.Cd(AoA, Re) + self.AF2.Cd(AoA, Re)) / 2
+except:
+return 2
+else:
+try:
+if len(self.Re) == 1:
+f = interpolate.interp1d(self.alfa, self.Cddata[0], kind=’linear’)
+return f(AoA)
+else:
+f = interpolate.interp2d(self.alfa, self.Re, self.Cddata, kind=’linear’)
+return f(AoA, Re)[0]
+except:
+return 2
+def writeDAT(self, x, y, fileName="temp.dat"):
+with open(fileName, "w+") as f:
+decimals = 4
+f.write(fileName + ’\n’) # Write fileName at very top of file
+for i in range(len(x)):
+f.write(str(round(x[i],decimals)) + "
+" + str(round(y[i],decimals)) + ’\n’)
+def getPolars(self, Re, AoAstart, AoAstop, AoAstep, Ncrit=9, airfoil="temp.dat", surpressGUI=1):
+def issueCmd(cmd, echo=True):
+ps.stdin.write(cmd + ’\n’)
+ps = sp.Popen([xfoilPath],
+stdin=sp.PIPE,
+stdout=sp.PIPE,
+stderr=None,
+shell=True)
+try:
+os.remove(str(airfoil) + ’.pol’) # remove file if it already exists
+except:
+"""
+#print "Kunde inte hitta gammal polare"
+"""
+Bilaga Appendix A: Källkod SiteOpt
+71
+issueCmd(’load ’ + str(airfoil))
+if surpressGUI: # make XFOIl surpress the visuals since they can make you go cray cray
+issueCmd(’PLOP’)
+issueCmd(’G’)
+issueCmd(’’)
+issueCmd(’PANE’) # adds points if needed
+issueCmd(’PANE’)
+issueCmd(’OPER’)
+if not Ncrit == 9:
+issueCmd(’vpar’)
+issueCmd(’n ’ + str(Ncrit))
+issueCmd(’’)
+issueCmd(’VISC ’ + str(Re))
+issueCmd(’iter 50’)
+issueCmd(’PACC’)
+issueCmd(str(airfoil) + ’.pol’)
+issueCmd(’’)
+issueCmd(’ASEQ ’+str(AoAstart)+’ ’+str(AoAstop)+’ ’+str(AoAstep))
+#issueCmd(’ASEQ -2.5 -2.0 0.05’)
+#issueCmd(’ASEQ -1.5
+8.0 0.5’)
+#issueCmd(’ASEQ
+8.2
+9.0 0.2’)
+issueCmd(’PACC’)
+issueCmd(’’)
+issueCmd(’quit’)
+outputFromTerminal = ps.stdout.read()
+#print outputFromTerminal
+with open(str(airfoil) + ’.pol’) as f: # read file from XFOIL
+try:
+content = f.readlines()
+if len(content) > 14:
+content = StringIO("\n".join(content[12:]))
+content = np.loadtxt(content)
+alfa = content[:,0]
+CL = content[:,1]
+CD = content[:,2]
+CM = content[:,3]
+CLDict = dict(zip(alfa, CL))
+CDDict = dict(zip(alfa, CD))
+CMDict = dict(zip(alfa, CM))
+CL, CD, CM = [], [], []
+for AoA in AoAsteps(AoAstart, AoAstop, AoAstep):
+try:
+CL.append(CLDict[AoA])
+CD.append(CDDict[AoA])
+CM.append(CMDict[AoA])
+except KeyError:
+CL.append(0)
+CD.append(0)
+CM.append(0)
+print alfa, CL, CD, CM
+return alfa, CL, CD, CM
+else:
+return None, None, None, None
+except:
+return None, None, None, None
+def readDAT(fileName):
+with open(fileName) as f:
+x, y = [], []
+content = f.readlines()
+for row in content:
+try:
+left = float(row.split("
+")[0])
+right = float(row.split("
+")[1].replace("\r\n",""))
+x.append(left)
+y.append(right)
+72
+Bilaga Appendix A: Källkod SiteOpt
+except:
+"""
+Probably a name of the airfoil at top of file
+"""
+return np.array(x), np.array(y)
+# Canada.py
+# -- coding: utf-8 --
+from __future__ import division
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import interpolate
+import subprocess as sp
+import os
+from StringIO import StringIO
+import array
+import random
+from scipy import stats
+from deap import algorithms
+from deap import base
+from deap import creator
+from deap import tools
+import pylab as pl
+import matplotlib.pyplot as plt
+import scipy.interpolate
+from math import pi, atan, acos, cos, sin, tan, exp, sqrt
+from siteOpt import Airfoil, readDAT, AoAsteps, BlendAirfoils, Turbine, individualNr, readDAT
+# Python v 2.7
+#pl.plot(xs, ys)
+#pl.show()
+R = 3.3/2
+hubRadius = 0.144 # radius where the blade begins and hub ends (m)
+TSR = 5.3 # tip speed ratio (a.k.a. the symbol lambda)
+RPM = 200 # set only if constant RPM is to be used! otherwise set to None because this overrides tip speed ratio
+B = 3 # number of blades
+visc = 1.5e-5 # kinematic viscosity of air
+rho = 1.225 # density of air
+tol = 1.e-4 # convergence tolerance for a and adash
+cutIn = 3.6
+cutOut = 25
+ratedPower = 19800 # max generator power (W)
+chord = np.linspace(0.3,0.1,13)
+twist = np.linspace(18,1,13)
+pitch = 0
+# Wind distribution
+windSpeeds = np.array([0.500, 1.500, 2.500, 3.500, 4.500, 5.500, 6.500, 7.500, 8.500, 9.500, 10.500, 11.500, 12.500, 13.500, 14.500, 15.500, 16.500, 17.500, 18.500,
+windObs = np.array([0.009, 0.038, 0.115, 0.105, 0.111, 0.117, 0.090, 0.083, 0.080, 0.056, 0.048, 0.040, 0.026, 0.025, 0.016, 0.013, 0.008, 0.006, 0.004, 0.002, 0.001
+windFrq = windObs / np.sum(windObs) # Normalized so that area under = 1
+cordMax = max(chord)
+cordMin = min(chord)
+Remax = sqrt(cutOut**2 + (TSR*cutOut)**2)*cordMax/visc
+Remin = sqrt(cutIn**2 + (TSR*cutIn)**2)*cordMin/visc
+print "remax", Remax/100000
+print "remin", Remin/100000
+Re = np.linspace(0.3*Remin/100000, Remax/100000, 12) # At wich Re*10^5 to evaluate. The more the better.
+#Re = np.array([5])
+xs,ys = readDAT("S835.dat")
+AFroot = Airfoil(xs, ys, Re=Re, fileName="tempUAEIII.dat")
+AFmid = Airfoil(xs, ys, Re=Re, fileName="tempUAEIII.dat")
+xs,ys = readDAT("S833.dat")
+Bilaga Appendix A: Källkod SiteOpt
+73
+AFtop = Airfoil(xs, ys, Re=Re, fileName="tempUAEIII.dat")
+theTurbine = Turbine([AFroot, AFmid, AFtop], R=R, hubRadius=hubRadius, TSR=TSR,
+ratedPower=ratedPower, B=B, visc=visc, rho=rho, tol=tol,
+windSpeeds=windSpeeds, windFrq=windFrq, cutIn=cutIn,
+cutOut=cutOut, skipBlending=1, RPM=RPM,
+chord=chord, twist=twist, pitch=pitch)
+print "Turbine avg power: " + str(theTurbine.avgPower())
+fig = pl.figure(figsize=(7, 5))
+ax = fig.add_subplot(111)
+ax.set_xlabel(r’Vindhastighet (m/s)’)
+ax.set_ylabel(r’Effekt (W)’)
+p1, = pl.plot(np.linspace(cutIn, cutOut, 10), map(theTurbine.powerInterpolate, np.linspace(cutIn, cutOut, 10)))
+p2, = pl.plot([3.003, 3.396, 3.760, 4.396, 4.795, 5.168, 5.606, 5.997, 6.394, 6.803, 7.174, 7.594, 7.965, 8.382, 8.788, 9.392, 9.992, 10.482, 10.965, 11.4
+p3, = pl.plot([2.884, 3.020, 3.156, 3.292, 3.428, 3.564, 3.700, 3.836, 3.972, 4.107, 4.243, 4.379, 4.515, 4.651, 4.787, 4.923, 5.059, 5.195, 5.330, 5.466,
+pl.legend([p1, p2, p3], [’Studiens modell (SiteOpt)’, ’Experimentell data’, u’BEM-data frWT_PERF’], loc=4)
+x1,x2,y1,y2 = pl.axis()
+pl.axis((0,25,0,2500))
+pl.grid()
+pl.show()
+fig.savefig(’Canada.eps’, dpi=fig.dpi)
+TSRs = [2,3,4,5,6,7,8,9,10,11,12,13]
+Re = np.array([1])
+Cps = []
+cutIn = 3.6
+cutOut = 3.6
+RPM = None
+for TSR in TSRs:
+theTurbine = Turbine([AFroot, AFmid, AFtop], R=R, hubRadius=hubRadius, TSR=TSR,
+ratedPower=ratedPower, B=B, visc=visc, rho=rho, tol=tol,
+windSpeeds=windSpeeds, windFrq=windFrq, cutIn=cutIn,
+cutOut=cutOut, skipBlending=1, RPM=RPM,
+chord=chord, twist=twist, pitch=pitch)
+Cps.append(theTurbine.Cps[0])
+print theTurbine.Cps[0]
+fig4 = pl.figure(figsize=(8, 5))
+ax4 = fig4.add_subplot(111)
+p1, = pl.plot(TSRs, Cps)
+p2, = pl.plot([1.517, 1.670, 1.847, 2.093, 2.216, 2.374, 2.568, 2.776, 2.905, 3.031, 3.185, 3.343, 3.494, 3.633, 3.896, 4.085, 4.284, 4.522, 4.769, 5.062,
+x1,x2,y1,y2 = pl.axis()
+#pl.axis((-3,25,0,0.25))
+pl.legend([p1, p2], ["Studiens modell (SiteOpt) 3,6 m/s", "Experimentell data 3,6 m/s"], loc=8)
+ax4.set_xlabel(r’Tip Speed Ratio $\lambda$’)
+ax4.set_ylabel(u’$C_p$’)
+pl.grid()
+pl.show()
+# GA.py
+# -- coding: utf-8 --
+from __future__ import division
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import interpolate
+import subprocess as sp
+import os
+74
+Bilaga Appendix A: Källkod SiteOpt
+from StringIO import StringIO
+import array
+import random
+from scipy import stats
+from deap import algorithms
+from deap import base
+from deap import creator
+from deap import tools
+import pylab as pl
+import matplotlib.pyplot as plt
+import scipy.interpolate
+from math import pi, atan, acos, cos, sin, tan, exp, sqrt, floor
+from siteOpt import Airfoil, readDAT, AoAsteps, BlendAirfoils, Turbine, individualNr, readTUR
+# Python v 2.7
+# Initiate fixed variables
+R = 10.046/2
+hubRadius = 0.72 # radius where the blade begins and hub ends (m)
+TSR = 8 # tip speed ratio (a.k.a. the symbol lambda)
+RPM = 71.63 # set only if constant RPM is to be used! otherwise set to None
+B = 3 # number of blades
+visc = 1.5e-5 # kinematic viscosity of air
+rho = 1.225 # density of air
+tol = 1.e-4 # convergence tolerance for a and adash
+cutIn = 5
+cutOut = 25
+ratedPower = 19800 # max generator power (W)
+chord = [0.4572, 0.4572, 0.4572, 0.4572, 0.4572, 0.4572, 0.4572, 0.4572, 0.4572, 0.4572, 0.4572, 0.4572, 0.4572]
+twist = [44, 44, 36, 24, 20, 16, 13, 10, 9, 4, 2, 1, 0]
+pitch = 3
+# Wind distribution
+windSpeeds = np.array([0.500, 1.500, 2.500, 3.500, 4.500, 5.500, 6.500, 7.500, 8.500, 9.500, 10.500, 11.500, 12.500, 13.500, 14.500, 15.500, 16.500, 17.500, 18.500,
+windObs = np.array([0.009, 0.038, 0.115, 0.105, 0.111, 0.117, 0.090, 0.083, 0.080, 0.056, 0.048, 0.040, 0.026, 0.025, 0.016, 0.013, 0.008, 0.006, 0.004, 0.002, 0.001
+windFrq = windObs / np.sum(windObs) # Normalized so that area under = 1
+cordMax = max(chord)
+cordMin = min(chord)
+Remax = sqrt(cutOut**2 + (TSR*cutOut)**2)*cordMax/visc
+Remin = sqrt(cutIn**2 + (TSR*cutIn)**2)*cordMin/visc
+print "remax", Remax/100000
+print "remin", Remin/100000
+#Re = np.linspace(0.1*Remin/100000, Remax/100000, 3) # At wich Re*10^5 to evaluate. The more the better.
+Re = np.array([20])
+# Set up GA with package DEAP for a single objective optimization
+creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+creator.create("Individual", np.ndarray, fitness=creator.FitnessMax)
+toolbox = base.Toolbox()
+# Function evaluating rotor anunal yield
+def fitnessFunc(individual):
+individualNumber = str(individualNr.next()) # Counter used in naming files with individual number
+# Split up the genome in nice chunks
+twistAndChord = individual[66:]
+twistData = twistAndChord[:4]
+chordData = twistAndChord[4:]
+foilData = individual[:66]
+foilData = np.split(foilData, 3)
+rootFoil = foilData[0]
+rootFoil = np.split(rootFoil, 2)
+rootFoilx = rootFoil[0]
+rootFoily = rootFoil[1]
+Bilaga Appendix A: Källkod SiteOpt
+75
+midFoil = foilData[1]
+midFoil = np.split(midFoil, 2)
+midFoilx = midFoil[0]
+midFoily = midFoil[1]
+topFoil = foilData[2]
+topFoil = np.split(topFoil, 2)
+topFoilx = topFoil[0]
+topFoily = topFoil[1]
+try:
+AFroot = Airfoil(rootFoilx, rootFoily, Re=Re)
+AFmid = AFroot
+AFtop = AFroot
+top = AFroot.y[3:(floor(len(AFroot.y)/2)-3)]
+bott = AFroot.y[(4+floor(len(AFroot.y)/2)):-3]
+bott = bott[::-1]
+# If a y-coordinate that should be above is below
+if False in (top > bott):
+return [(-99999)]
+"""
+fig = pl.figure(figsize=(9, 3.4))
+ax = fig.add_subplot(111)
+ax.set_xlabel(r’x/c’)
+ax.set_ylabel(r’y/c’)
+pl.plot(AFroot.originalx, AFroot.originaly, ’ko’)
+pl.plot(AFroot.x, AFroot.y, ’r’)
+plt.plot(1, 0, ’ro’)
+x1,x2,y1,y2 = pl.axis()
+pl.axis((x1,x2,y1,y2))
+pl.grid()
+pl.show()
+fig.savefig(’connectTheDots3.eps’, dpi=fig.dpi)
+"""
+AFmid = AFroot
+AFtop = AFroot
+#AFmid = Airfoil(midFoilx, midFoily, Re=Re)
+#AFtop = Airfoil(topFoilx, topFoily, Re=Re)
+except:
+return [(-99999)] # if xfoil fails
+"""
+theTurbine = Turbine([AFroot, AFmid, AFtop], R=R, hubRadius=hubRadius, TSR=TSR,
+ratedPower=ratedPower, B=B, visc=visc, rho=rho, tol=tol,
+windSpeeds=windSpeeds, windFrq=windFrq, cutIn=cutIn,
+cutOut=cutOut, skipBlending=1, RPM=RPM, metaData=individual, indNr=individualNumber,
+chord=chord, twist=twist, pitch=pitch)
+"""
+# Use twist and chorddist from GA
+theTurbine = Turbine([AFroot, AFmid, AFtop], R=R, hubRadius=hubRadius, TSR=TSR,
+ratedPower=ratedPower, B=B, visc=visc, rho=rho, tol=tol,
+windSpeeds=windSpeeds, windFrq=windFrq, cutIn=cutIn,
+cutOut=cutOut, skipBlending=1, RPM=RPM, metaData=individual, indNr=individualNumber,
+chord=chord, twist=twist, pitch=pitch,
+twistData=twistData.tolist(), chordData=chordData.tolist())
+try:
+#print "Turbine avg power: " + str(theTurbine.avgPower()) + " W, Ind no: " + individualNumber + ". " + str(theTurbine.power)
+print "Turbine avg power: " + str(theTurbine.avgPower()) + " W, Ind no: " + individualNumber
+return [(theTurbine.avgPower())]
+except:
+return [(-99999)]
+def addPercent(value, percent):
+return value*(percent/100 + 1)
+def removePercent(value, percent):
+return value*(1 - percent/100)
+diff = 10 # percent
+76
+Bilaga Appendix A: Källkod SiteOpt
+# Generate attributes around a S809 - Root
+# Top side
+toolbox.register("Rx2", random.uniform, removePercent(0.801, diff), addPercent(0.801, diff))
+toolbox.register("Ry2", random.uniform, removePercent(0.038, diff), addPercent(0.038, diff))
+toolbox.register("Rx3", random.uniform, removePercent(0.647, diff), addPercent(0.647, diff))
+toolbox.register("Ry3", random.uniform, removePercent(0.068, diff), addPercent(0.068, diff))
+toolbox.register("Rx4", random.uniform, removePercent(0.413, diff), addPercent(0.413, diff))
+toolbox.register("Ry4", random.uniform, removePercent(0.101, diff), addPercent(0.101, diff))
+toolbox.register("Rx5", random.uniform, removePercent(0.236, diff), addPercent(0.236, diff))
+toolbox.register("Ry5", random.uniform, removePercent(0.089, diff), addPercent(0.089, diff))
+toolbox.register("Rx6", random.uniform, removePercent(0.1, diff), addPercent(0.1, diff))
+toolbox.register("Ry6", random.uniform, removePercent(0.059, diff), addPercent(0.059, diff))
+# Front
+toolbox.register("Rx7", random.uniform, removePercent(0, 0), addPercent(0, 0))
+toolbox.register("Ry7", random.uniform, removePercent(0, 0), addPercent(0, 0))
+# Bottom side
+toolbox.register("Rx8", random.uniform, removePercent(0.1, diff), addPercent(0.1, diff))
+toolbox.register("Ry8", random.uniform, removePercent(-0.056, diff), addPercent(-0.05, diff))
+toolbox.register("Rx9", random.uniform, removePercent(0.236, diff), addPercent(0.2, diff))
+toolbox.register("Ry9", random.uniform, removePercent(-0.094, diff), addPercent(-0.09, diff))
+toolbox.register("Rx10", random.uniform, removePercent(0.413, diff), addPercent(0.3, diff))
+toolbox.register("Ry10", random.uniform, removePercent(-0.107, diff), addPercent(-0.11, diff))
+toolbox.register("Rx11", random.uniform, removePercent(0.647, diff), addPercent(0.5, diff))
+toolbox.register("Ry11", random.uniform, removePercent(-0.056, diff), addPercent(-0.094, diff))
+toolbox.register("Rx12", random.uniform, removePercent(0.801, diff), addPercent(0.8, diff))
+toolbox.register("Ry12", random.uniform, removePercent(-0.020, diff), addPercent(-0.02, diff))
+# Generate attributes around a naca4418 - Mid
+# Top side
+toolbox.register("Mx2", random.uniform, 0.7, 0.9)
+toolbox.register("My2", random.uniform, 0.06, 0.07)
+toolbox.register("Mx3", random.uniform, 0.4, 0.6)
+toolbox.register("My3", random.uniform, 0.1, 0.15)
+toolbox.register("Mx4", random.uniform, 0.2, 0.3)
+toolbox.register("My4", random.uniform, 0.10, 0.15)
+toolbox.register("Mx5", random.uniform, 0.09, 0.11)
+toolbox.register("My5", random.uniform, 0.085, 0.095)
+toolbox.register("Mx6", random.uniform, 0.023, 0.027)
+toolbox.register("My6", random.uniform, 0.048, 0.052)
+# Front
+toolbox.register("Mx7", random.uniform, 0.0001, 0.0002)
+toolbox.register("My7", random.uniform, 0.0001, 0.0002)
+# Bottom side
+toolbox.register("Mx8", random.uniform, 0.012, 0.0128)
+toolbox.register("My8", random.uniform, -0.0001, -0.020)
+toolbox.register("Mx9", random.uniform, 0.0730, 0.0770)
+toolbox.register("My9", random.uniform, -0.02, -0.05)
+toolbox.register("Mx10", random.uniform, 0.19, 0.21)
+toolbox.register("My10", random.uniform, -0.054, -0.056)
+toolbox.register("Mx11", random.uniform, 0.39, 0.41)
+toolbox.register("My11", random.uniform, -0.056, -0.048)
+toolbox.register("Mx12", random.uniform, 0.69, 0.71)
+toolbox.register("My12", random.uniform, -0.048, -0.025)
+# Generate attributes around a naca4418 - Top
+# Top side
+toolbox.register("Tx2", random.uniform, 0.7, 0.9)
+toolbox.register("Ty2", random.uniform, 0.06, 0.07)
+toolbox.register("Tx3", random.uniform, 0.4, 0.6)
+toolbox.register("Ty3", random.uniform, 0.1, 0.15)
+toolbox.register("Tx4", random.uniform, 0.2, 0.3)
+toolbox.register("Ty4", random.uniform, 0.10, 0.15)
+toolbox.register("Tx5", random.uniform, 0.09, 0.11)
+toolbox.register("Ty5", random.uniform, 0.085, 0.095)
+toolbox.register("Tx6", random.uniform, 0.023, 0.027)
+toolbox.register("Ty6", random.uniform, 0.048, 0.052)
+# Front
+toolbox.register("Tx7", random.uniform, 0.0001, 0.0002)
+toolbox.register("Ty7", random.uniform, 0.0001, 0.0002)
+# Bottom side
+toolbox.register("Tx8", random.uniform, 0.012, 0.0128)
+Bilaga Appendix A: Källkod SiteOpt
+77
+toolbox.register("Ty8", random.uniform, -0.0001, -0.020)
+toolbox.register("Tx9", random.uniform, 0.0730, 0.0770)
+toolbox.register("Ty9", random.uniform, -0.02, -0.05)
+toolbox.register("Tx10", random.uniform, 0.19, 0.21)
+toolbox.register("Ty10", random.uniform, -0.054, -0.056)
+toolbox.register("Tx11", random.uniform, 0.39, 0.41)
+toolbox.register("Ty11", random.uniform, -0.056, -0.048)
+toolbox.register("Tx12", random.uniform, 0.69, 0.71)
+toolbox.register("Ty12", random.uniform, -0.048, -0.025)
+# Twist
+toolbox.register("Tmax", random.uniform, 45, 50)
+toolbox.register("Tx", random.uniform, 0.7, 0.9)
+toolbox.register("Ty", random.uniform, 10, 2)
+toolbox.register("Tmin", random.uniform, 1, -1)
+# Chord
+toolbox.register("Cmax", random.uniform, 0.40, 0.42)
+toolbox.register("Cx", random.uniform, 0.4, 0.6)
+toolbox.register("Cy", random.uniform, 0.40, 0.42)
+toolbox.register("Cmin", random.uniform, 0.40, 0.42)
+toolbox.register("individual", tools.initCycle, creator.Individual,
+(toolbox.Rx2, toolbox.Rx3, toolbox.Rx4, toolbox.Rx5, toolbox.Rx6, toolbox.Rx7,
+toolbox.Rx8, toolbox.Rx9, toolbox.Rx10, toolbox.Rx11, toolbox.Rx12,
+toolbox.Ry2, toolbox.Ry3, toolbox.Ry4, toolbox.Ry5, toolbox.Ry6, toolbox.Ry7,
+toolbox.Ry8, toolbox.Ry9, toolbox.Ry10, toolbox.Ry11, toolbox.Ry12,
+toolbox.Mx2, toolbox.Mx3, toolbox.Mx4, toolbox.Mx5, toolbox.Mx6, toolbox.Mx7,
+toolbox.Mx8, toolbox.Mx9, toolbox.Mx10, toolbox.Mx11, toolbox.Mx12,
+toolbox.My2, toolbox.My3, toolbox.My4, toolbox.My5, toolbox.My6, toolbox.My7,
+toolbox.My8, toolbox.My9, toolbox.My10, toolbox.My11, toolbox.My12,
+toolbox.Tx2, toolbox.Tx3, toolbox.Tx4, toolbox.Tx5, toolbox.Tx6, toolbox.Tx7,
+toolbox.Tx8, toolbox.Tx9, toolbox.Tx10, toolbox.Tx11, toolbox.Tx12,
+toolbox.Ty2, toolbox.Ty3, toolbox.Ty4, toolbox.Ty5, toolbox.Ty6, toolbox.Ty7,
+toolbox.Ty8, toolbox.Ty9, toolbox.Ty10, toolbox.Ty11, toolbox.Ty12,
+toolbox.Tmax, toolbox.Tx, toolbox.Ty, toolbox.Tmin,
+toolbox.Cmax, toolbox.Cx, toolbox.Cy, toolbox.Cmin), n=1)
+toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+individualNr = individualNr()
+toolbox.register("evaluate", fitnessFunc)
+toolbox.register("mate", tools.cxTwoPoints)
+toolbox.register("mutate", tools.mutGaussian, mu=0.0, sigma=0.02, indpb=0.1)
+toolbox.register("select", tools.selTournament, tournsize=3)
+def main():
+random.seed(63)
+pop = toolbox.population(n=600)
+hof = tools.HallOfFame(1)
+stats = tools.Statistics(lambda ind: ind.fitness.values)
+stats.register("avg", tools.mean)
+stats.register("std", tools.std)
+stats.register("min", min)
+stats.register("max", max)
+algorithms.eaSimple(pop, toolbox, cxpb=0.5, mutpb=0.1, ngen=10000, stats=stats,
+halloffame=hof, verbose=True)
+return pop, stats, hof
+if __name__ == "__main__":
+main()
+Appendix B: SiteOpt output av
+UAE III
+Uinf
+Element
+Radius
+Iter
+a
+aprime
+AoA
+Utot
+locTSR
+phi
+Cl
+Cd
+F
+sigma
+Re*10^5
+AngSpd
+phi(deg)
+dQ
+5
+0
+0.72
+199
+0.21
+-1.17
+-135.70
+2.39
+1.08
+-1.55
+1.00
+0.64
+0.50
+0.30
+0.73
+7.50
+-88.70
+0.00
+5
+1
+1.08
+8
+-0.05
+-0.05
+-12.71
+9.31
+1.62
+0.60
+-0.37
+0.16
+0.73
+0.20
+2.84
+7.50
+34.29
+-9.68
+5
+2
+1.44
+8
+-0.06
+-0.03
+-12.16
+11.70
+2.16
+0.47
+-0.36
+0.15
+0.88
+0.15
+3.57
+7.50
+26.84
+-17.81
+5
+3
+1.80
+8
+-0.05
+-0.01
+-5.48
+14.30
+2.69
+0.38
+-0.23
+0.05
+0.94
+0.12
+4.36
+7.50
+21.52
+-14.72
+5
+4
+2.15
+8
+-0.05
+-0.01
+-4.78
+16.85
+3.23
+0.32
+-0.22
+0.04
+0.97
+0.10
+5.14
+7.50
+18.22
+-19.67
+5
+5
+2.51
+8
+-0.06
+-0.01
+-3.28
+19.47
+3.77
+0.27
+-0.19
+0.02
+0.99
+0.09
+5.93
+7.50
+15.72
+-19.45
+5
+6
+2.87
+5
+-0.04
+-0.00
+-2.39
+22.08
+4.31
+0.24
+-0.12
+0.01
+0.99
+0.08
+6.73
+7.50
+13.61
+-16.67
+5
+7
+3.23
+4
+0.00
+-0.00
+-1.33
+24.71
+4.84
+0.20
+-0.00
+0.01
+0.99
+0.07
+7.53
+7.50
+11.67
+-6.45
+5
+8
+3.59
+4
+-0.00
+-0.00
+-1.42
+27.35
+5.38
+0.18
+-0.01
+0.01
+0.97
+0.06
+8.34
+7.50
+10.58
+-9.61
+5
+9
+3.95
+9
+0.17
+0.00
+0.99
+29.98
+5.92
+0.14
+0.27
+0.01
+0.97
+0.06
+9.14
+7.50
+7.99
+30.87
+5
+10
+4.31
+10
+0.26
+0.00
+1.51
+32.62
+6.46
+0.11
+0.33
+0.01
+0.93
+0.05
+9.94
+7.50
+6.51
+40.32
+5
+11
+4.66
+10
+0.34
+0.00
+1.35
+35.25
+7.00
+0.09
+0.32
+0.01
+0.81
+0.05
+10.74
+7.50
+5.35
+36.81
+Uinf
+Element
+Radius
+Iter
+a
+aprime
+AoA
+Utot
+locTSR
+phi
+Cl
+Cd
+F
+sigma
+Re*10^5
+AngSpd
+phi(deg)
+dQ
+7
+0
+0.72
+199
+-0.16
+0.42
+-92.11
+9.83
+0.75
+-0.79
+0.07
+1.30
+0.50
+0.30
+3.00
+7.50
+-45.11
+0.00
+7
+1
+1.08
+8
+-0.02
+-0.02
+-3.99
+10.81
+1.12
+0.75
+-0.20
+0.03
+0.68
+0.20
+3.29
+7.50
+43.01
+-6.04
+7
+2
+1.44
+8
+-0.02
+-0.01
+-4.23
+12.94
+1.49
+0.61
+-0.21
+0.03
+0.83
+0.15
+3.94
+7.50
+34.77
+-10.50
+7
+3
+1.80
+6
+0.03
+0.01
+0.40
+15.26
+1.86
+0.48
+0.19
+0.01
+0.91
+0.12
+4.65
+7.50
+27.40
+9.63
+7
+4
+2.15
+6
+0.03
+0.00
+0.35
+17.68
+2.24
+0.41
+0.19
+0.01
+0.94
+0.10
+5.39
+7.50
+23.35
+12.74
+7
+5
+2.51
+7
+0.05
+0.01
+0.97
+20.16
+2.61
+0.35
+0.26
+0.01
+0.96
+0.09
+6.15
+7.50
+19.97
+24.04
+7
+6
+2.87
+7
+0.06
+0.01
+1.37
+22.69
+2.98
+0.30
+0.31
+0.01
+0.97
+0.08
+6.92
+7.50
+17.37
+36.49
+7
+7
+3.23
+8
+0.09
+0.01
+2.08
+25.25
+3.35
+0.26
+0.40
+0.01
+0.97
+0.07
+7.70
+7.50
+15.08
+57.65
+7
+8
+3.59
+8
+0.09
+0.01
+1.66
+27.84
+3.73
+0.24
+0.35
+0.01
+0.95
+0.06
+8.49
+7.50
+13.66
+61.36
+7
+9
+3.95
+13
+0.19
+0.01
+4.09
+30.41
+4.10
+0.19
+0.59
+0.01
+0.92
+0.06
+9.27
+7.50
+11.09
+112.56
+7
+10
+4.31
+8
+0.25
+0.01
+4.44
+33.00
+4.47
+0.16
+0.62
+0.01
+0.86
+0.05
+10.06
+7.50
+9.44
+126.57
+7
+11
+4.66
+5
+0.33
+0.01
+3.76
+35.59
+4.84
+0.14
+0.57
+0.01
+0.72
+0.05
+10.85
+7.50
+7.76
+119.03
+Uinf
+Element
+Radius
+Iter
+a
+aprime
+AoA
+Utot
+locTSR
+phi
+Cl
+Cd
+F
+sigma
+Re*10^5
+AngSpd
+phi(deg)
+dQ
+9
+0
+0.72
+199
+0.04
+-1.53
+-133.88
+7.68
+0.57
+-1.52
+1.00
+0.68
+0.50
+0.30
+2.34
+7.50
+-86.88
+0.00
+9
+1
+1.08
+5
+0.02
+0.03
+0.90
+12.42
+0.86
+0.84
+0.25
+0.02
+0.66
+0.20
+3.78
+7.50
+47.90
+8.75
+9
+2
+1.44
+7
+0.02
+0.02
+1.08
+14.31
+1.14
+0.70
+0.27
+0.02
+0.80
+0.15
+4.36
+7.50
+40.08
+14.49
+9
+3
+1.80
+11
+0.07
+0.03
+5.44
+16.42
+1.43
+0.57
+0.70
+0.01
+0.88
+0.12
+5.00
+7.50
+32.44
+53.22
+9
+4
+2.15
+10
+0.07
+0.02
+4.98
+18.69
+1.71
+0.49
+0.69
+0.01
+0.92
+0.10
+5.70
+7.50
+27.98
+70.62
+9
+5
+2.51
+11
+0.08
+0.02
+5.38
+21.05
+2.00
+0.43
+0.70
+0.01
+0.94
+0.09
+6.42
+7.50
+24.38
+91.85
+9
+6
+2.87
+11
+0.09
+0.01
+5.49
+23.48
+2.28
+0.38
+0.70
+0.01
+0.94
+0.08
+7.16
+7.50
+21.49
+115.06
+9
+7
+3.23
+11
+0.10
+0.01
+6.01
+25.96
+2.56
+0.33
+0.72
+0.02
+0.93
+0.07
+7.91
+7.50
+19.01
+144.23
+9
+8
+3.59
+11
+0.11
+0.01
+5.16
+28.48
+2.85
+0.30
+0.67
+0.01
+0.91
+0.06
+8.68
+7.50
+17.16
+161.65
+9
+9
+3.95
+14
+0.16
+0.01
+7.74
+31.00
+3.13
+0.26
+0.82
+0.02
+0.87
+0.06
+9.45
+7.50
+14.74
+219.48
+9
+10
+4.31
+15
+0.21
+0.01
+7.84
+33.54
+3.42
+0.22
+0.84
+0.02
+0.79
+0.05
+10.22
+7.50
+12.84
+245.65
+9
+11
+4.66
+11
+0.29
+0.01
+6.69
+36.07
+3.70
+0.19
+0.78
+0.01
+0.64
+0.05
+11.00
+7.50
+10.69
+239.03
+Uinf
+Element
+Radius
+Iter
+a
+aprime
+AoA
+Utot
+locTSR
+phi
+Cl
+Cd
+F
+sigma
+Re*10^5
+AngSpd
+phi(deg)
+dQ
+11
+0
+0.72
+199
+-0.59
+0.42
+-78.98
+22.85
+0.46
+-0.56
+-0.37
+1.26
+0.50
+0.30
+6.96
+7.50
+-31.98
+0.00
+11
+1
+1.08
+9
+0.05
+0.09
+4.52
+14.15
+0.69
+0.90
+0.65
+0.01
+0.64
+0.20
+4.31
+7.50
+51.52
+32.76
+11
+2
+1.44
+10
+0.05
+0.05
+5.45
+15.85
+0.92
+0.78
+0.70
+0.01
+0.77
+0.15
+4.83
+7.50
+44.45
+52.51
+11
+3
+1.80
+10
+0.07
+0.04
+10.87
+17.76
+1.15
+0.66
+0.91
+0.04
+0.84
+0.12
+5.41
+7.50
+37.87
+90.16
+11
+4
+2.15
+10
+0.07
+0.03
+10.20
+19.87
+1.38
+0.58
+0.88
+0.03
+0.88
+0.10
+6.06
+7.50
+33.20
+116.33
+11
+5
+2.51
+10
+0.07
+0.02
+10.25
+22.11
+1.62
+0.51
+0.89
+0.03
+0.90
+0.09
+6.74
+7.50
+29.25
+150.90
+11
+6
+2.87
+11
+0.08
+0.02
+10.01
+24.44
+1.85
+0.45
+0.89
+0.03
+0.90
+0.08
+7.45
+7.50
+26.01
+187.84
+11
+7
+3.23
+11
+0.09
+0.02
+10.22
+26.82
+2.08
+0.41
+0.91
+0.03
+0.89
+0.07
+8.18
+7.50
+23.22
+232.47
+11
+8
+3.59
+11
+0.10
+0.02
+8.98
+29.27
+2.31
+0.37
+0.87
+0.02
+0.86
+0.06
+8.92
+7.50
+20.98
+269.30
+11
+9
+3.95
+13
+0.14
+0.02
+11.49
+31.72
+2.54
+0.32
+0.98
+0.03
+0.81
+0.06
+9.67
+7.50
+18.49
+334.89
+11
+10
+4.31
+14
+0.17
+0.02
+11.36
+34.20
+2.77
+0.29
+0.99
+0.03
+0.72
+0.05
+10.43
+7.50
+16.36
+375.89
+11
+11
+4.66
+12
+0.24
+0.02
+9.89
+36.68
+3.00
+0.24
+0.94
+0.02
+0.57
+0.05
+11.18
+7.50
+13.89
+381.38
+Uinf
+Element
+Radius
+Iter
+a
+aprime
+AoA
+Utot
+locTSR
+phi
+Cl
+Cd
+F
+sigma
+Re*10^5
+AngSpd
+phi(deg)
+dQ
+13
+0
+0.72
+199
+-0.06
+-1.36
+-134.63
+14.10
+0.39
+-1.53
+1.00
+0.66
+0.50
+0.30
+4.30
+7.50
+-87.63
+0.00
+13
+1
+1.08
+9
+0.05
+0.12
+8.51
+15.99
+0.58
+0.97
+0.77
+0.03
+0.63
+0.20
+4.87
+7.50
+55.51
+51.49
+13
+2
+1.44
+9
+0.05
+0.07
+9.94
+17.52
+0.78
+0.85
+0.85
+0.03
+0.75
+0.15
+5.34
+7.50
+48.94
+82.53
+13
+3
+1.80
+11
+0.05
+0.04
+16.08
+19.24
+0.97
+0.75
+0.90
+0.08
+0.82
+0.12
+5.86
+7.50
+43.08
+111.62
+13
+4
+2.15
+11
+0.06
+0.03
+15.03
+21.22
+1.16
+0.66
+0.96
+0.07
+0.85
+0.10
+6.47
+7.50
+38.03
+157.86
+79
+80
+Bilaga Appendix B: SiteOpt output av UAE III
+13
+5
+2.51
+11
+0.07
+0.03
+14.82
+23.32
+1.36
+0.59
+1.00
+0.06
+0.87
+0.09
+7.11
+7.50
+33.82
+207.79
+13
+6
+2.87
+11
+0.07
+0.02
+14.28
+25.54
+1.55
+0.53
+1.02
+0.06
+0.87
+0.08
+7.78
+7.50
+30.28
+264.31
+13
+7
+3.23
+11
+0.08
+0.02
+14.21
+27.83
+1.74
+0.47
+1.06
+0.05
+0.85
+0.07
+8.48
+7.50
+27.21
+329.72
+13
+8
+3.59
+11
+0.09
+0.02
+12.69
+30.20
+1.94
+0.43
+1.02
+0.04
+0.82
+0.06
+9.21
+7.50
+24.69
+384.55
+13
+9
+3.95
+14
+0.12
+0.02
+15.03
+32.57
+2.13
+0.38
+1.13
+0.05
+0.76
+0.06
+9.93
+7.50
+22.03
+469.73
+13
+10
+4.31
+13
+0.15
+0.02
+14.69
+34.98
+2.33
+0.34
+1.12
+0.05
+0.67
+0.05
+10.66
+7.50
+19.69
+525.04
+13
+11
+4.66
+14
+0.21
+0.02
+13.02
+37.40
+2.52
+0.30
+1.07
+0.04
+0.52
+0.05
+11.40
+7.50
+17.02
+539.28
+Uinf
+Element
+Radius
+Iter
+a
+aprime
+AoA
+Utot
+locTSR
+phi
+Cl
+Cd
+F
+sigma
+Re*10^5
+AngSpd
+phi(deg)
+dQ
+16
+0
+0.72
+199
+-0.10
+-63.81
+-127.53
+17.72
+0.34
+-1.41
+0.97
+0.82
+0.50
+0.30
+5.40
+7.50
+-80.53
+0.00
+16
+1
+1.08
+10
+0.05
+0.16
+11.39
+17.89
+0.50
+1.02
+0.91
+0.04
+0.62
+0.20
+5.45
+7.50
+58.39
+78.67
+16
+2
+1.44
+10
+0.05
+0.08
+13.84
+19.28
+0.67
+0.92
+0.92
+0.06
+0.74
+0.15
+5.88
+7.50
+52.84
+112.19
+16
+3
+1.80
+10
+0.05
+0.04
+20.56
+20.83
+0.84
+0.83
+0.87
+0.14
+0.80
+0.12
+6.35
+7.50
+47.56
+127.60
+16
+4
+2.15
+10
+0.05
+0.03
+19.59
+22.67
+1.00
+0.74
+0.90
+0.12
+0.82
+0.10
+6.91
+7.50
+42.59
+172.87
+16
+5
+2.51
+10
+0.05
+0.03
+19.30
+24.65
+1.17
+0.67
+0.93
+0.12
+0.84
+0.09
+7.51
+7.50
+38.30
+223.48
+16
+6
+2.87
+11
+0.06
+0.02
+18.56
+26.76
+1.34
+0.60
+0.98
+0.10
+0.83
+0.08
+8.16
+7.50
+34.56
+289.69
+16
+7
+3.23
+11
+0.07
+0.02
+18.31
+28.96
+1.50
+0.55
+1.01
+0.10
+0.81
+0.07
+8.83
+7.50
+31.31
+361.53
+16
+8
+3.59
+12
+0.08
+0.02
+16.34
+31.25
+1.67
+0.49
+1.09
+0.07
+0.78
+0.06
+9.52
+7.50
+28.34
+479.95
+16
+9
+3.95
+12
+0.09
+0.02
+18.86
+33.52
+1.84
+0.45
+1.07
+0.10
+0.72
+0.06
+10.22
+7.50
+25.86
+500.63
+16
+10
+4.31
+13
+0.12
+0.02
+18.29
+35.86
+2.00
+0.41
+1.11
+0.09
+0.63
+0.05
+10.93
+7.50
+23.29
+591.26
+16
+11
+4.66
+16
+0.18
+0.03
+16.15
+38.22
+2.17
+0.35
+1.15
+0.06
+0.48
+0.05
+11.65
+7.50
+20.15
+690.04
+Uinf
+Element
+Radius
+Iter
+a
+aprime
+AoA
+Utot
+locTSR
+phi
+Cl
+Cd
+F
+sigma
+Re*10^5
+AngSpd
+phi(deg)
+dQ
+18
+0
+0.72
+199
+-0.09
+7.39
+-125.92
+19.98
+0.29
+-1.38
+0.95
+0.86
+0.50
+0.30
+6.09
+7.50
+-78.92
+0.00
+18
+1
+1.08
+10
+0.05
+0.18
+14.24
+19.85
+0.44
+1.07
+0.93
+0.06
+0.62
+0.20
+6.05
+7.50
+61.24
+100.70
+18
+2
+1.44
+10
+0.04
+0.09
+17.30
+21.11
+0.59
+0.98
+0.91
+0.09
+0.73
+0.15
+6.43
+7.50
+56.30
+136.11
+18
+3
+1.80
+9
+0.04
+0.05
+24.26
+22.50
+0.73
+0.89
+0.86
+0.20
+0.78
+0.12
+6.86
+7.50
+51.26
+149.82
+18
+4
+2.15
+10
+0.04
+0.03
+23.43
+24.23
+0.88
+0.81
+0.88
+0.18
+0.80
+0.10
+7.38
+7.50
+46.43
+196.11
+18
+5
+2.51
+10
+0.04
+0.03
+23.15
+26.09
+1.03
+0.74
+0.91
+0.18
+0.81
+0.09
+7.95
+7.50
+42.15
+246.67
+18
+6
+2.87
+10
+0.05
+0.02
+22.37
+28.09
+1.17
+0.67
+0.94
+0.16
+0.80
+0.08
+8.56
+7.50
+38.37
+311.79
+18
+7
+3.23
+10
+0.05
+0.02
+22.04
+30.19
+1.32
+0.61
+0.97
+0.15
+0.78
+0.07
+9.20
+7.50
+35.04
+381.75
+18
+8
+3.59
+11
+0.06
+0.02
+19.98
+32.39
+1.47
+0.56
+1.03
+0.12
+0.74
+0.06
+9.87
+7.50
+31.98
+504.43
+18
+9
+3.95
+11
+0.08
+0.02
+22.36
+34.57
+1.61
+0.51
+1.02
+0.15
+0.68
+0.06
+10.54
+7.50
+29.36
+518.01
+18
+10
+4.31
+12
+0.10
+0.02
+21.71
+36.84
+1.76
+0.47
+1.05
+0.14
+0.59
+0.05
+11.23
+7.50
+26.71
+613.70
+18
+11
+4.66
+15
+0.15
+0.03
+19.44
+39.12
+1.91
+0.41
+1.14
+0.10
+0.45
+0.05
+11.92
+7.50
+23.44
+768.00
+Uinf
+Element
+Radius
+Iter
+a
+aprime
+AoA
+Utot
+locTSR
+phi
+Cl
+Cd
+F
+sigma
+Re*10^5
+AngSpd
+phi(deg)
+dQ
+20
+0
+0.72
+199
+-0.11
+3.17
+-123.93
+23.20
+0.26
+-1.34
+0.93
+0.90
+0.50
+0.30
+7.07
+7.50
+-76.93
+0.00
+20
+1
+1.08
+10
+0.05
+0.20
+16.60
+21.84
+0.39
+1.11
+0.94
+0.09
+0.61
+0.20
+6.66
+7.50
+63.60
+124.22
+20
+2
+1.44
+9
+0.04
+0.09
+20.20
+22.99
+0.52
+1.03
+0.90
+0.13
+0.72
+0.15
+7.01
+7.50
+59.20
+161.01
+20
+3
+1.80
+9
+0.04
+0.05
+27.39
+24.26
+0.66
+0.95
+0.86
+0.25
+0.77
+0.12
+7.39
+7.50
+54.39
+176.55
+20
+4
+2.15
+9
+0.04
+0.03
+26.73
+25.87
+0.79
+0.87
+0.88
+0.24
+0.79
+0.10
+7.88
+7.50
+49.73
+224.99
+20
+5
+2.51
+10
+0.04
+0.03
+26.52
+27.62
+0.92
+0.79
+0.90
+0.23
+0.79
+0.09
+8.42
+7.50
+45.52
+276.24
+20
+6
+2.87
+10
+0.04
+0.02
+25.74
+29.52
+1.05
+0.73
+0.92
+0.22
+0.78
+0.08
+9.00
+7.50
+41.74
+341.24
+20
+7
+3.23
+10
+0.05
+0.02
+25.37
+31.52
+1.18
+0.67
+0.95
+0.21
+0.75
+0.07
+9.61
+7.50
+38.37
+409.93
+20
+8
+3.59
+10
+0.06
+0.02
+23.27
+33.63
+1.31
+0.62
+0.99
+0.17
+0.71
+0.06
+10.25
+7.50
+35.27
+531.24
+20
+9
+3.95
+11
+0.07
+0.02
+25.54
+35.72
+1.44
+0.57
+0.99
+0.21
+0.65
+0.06
+10.89
+7.50
+32.54
+540.77
+20
+10
+4.31
+12
+0.08
+0.02
+24.83
+37.91
+1.57
+0.52
+1.02
+0.19
+0.56
+0.05
+11.55
+7.50
+29.83
+633.44
+20
+11
+4.66
+14
+0.12
+0.02
+22.66
+40.11
+1.70
+0.47
+1.08
+0.15
+0.42
+0.05
+12.22
+7.50
+26.66
+783.83
+Uinf
+Element
+Radius
+Iter
+a
+aprime
+AoA
+Utot
+locTSR
+phi
+Cl
+Cd
+F
+sigma
+Re*10^5
+AngSpd
+phi(deg)
+dQ
+22
+0
+0.72
+199
+-0.10
+-1.92
+-132.62
+24.81
+0.24
+-1.49
+0.99
+0.71
+0.50
+0.30
+7.56
+7.50
+-85.62
+0.00
+22
+1
+1.08
+10
+0.05
+0.22
+18.62
+23.85
+0.36
+1.15
+0.93
+0.11
+0.61
+0.20
+7.27
+7.50
+65.62
+148.51
+22
+2
+1.44
+9
+0.04
+0.10
+22.59
+24.91
+0.47
+1.08
+0.90
+0.17
+0.71
+0.15
+7.59
+7.50
+61.59
+190.90
+22
+3
+1.80
+9
+0.04
+0.05
+30.06
+26.06
+0.59
+1.00
+0.87
+0.30
+0.76
+0.12
+7.94
+7.50
+57.06
+207.33
+22
+4
+2.15
+9
+0.04
+0.04
+29.60
+27.58
+0.71
+0.92
+0.88
+0.29
+0.77
+0.10
+8.41
+7.50
+52.60
+258.51
+22
+5
+2.51
+9
+0.04
+0.03
+29.49
+29.23
+0.83
+0.85
+0.90
+0.29
+0.77
+0.09
+8.91
+7.50
+48.49
+310.81
+22
+6
+2.87
+9
+0.04
+0.02
+28.76
+31.03
+0.95
+0.78
+0.92
+0.27
+0.76
+0.08
+9.46
+7.50
+44.76
+376.33
+22
+7
+3.23
+10
+0.04
+0.02
+28.37
+32.93
+1.06
+0.72
+0.93
+0.26
+0.73
+0.07
+10.04
+7.50
+41.37
+444.12
+22
+8
+3.59
+10
+0.05
+0.02
+26.26
+34.96
+1.18
+0.67
+0.97
+0.22
+0.68
+0.06
+10.66
+7.50
+38.26
+566.15
+22
+9
+3.95
+10
+0.06
+0.02
+28.46
+36.96
+1.30
+0.62
+0.97
+0.26
+0.62
+0.06
+11.26
+7.50
+35.46
+568.67
+22
+10
+4.31
+11
+0.07
+0.02
+27.71
+39.06
+1.42
+0.57
+0.99
+0.24
+0.53
+0.05
+11.91
+7.50
+32.71
+658.13
+22
+11
+4.66
+12
+0.11
+0.02
+25.57
+41.17
+1.54
+0.52
+1.04
+0.20
+0.40
+0.05
+12.55
+7.50
+29.57
+805.80
+Uinf
+Element
+Radius
+Iter
+a
+aprime
+AoA
+Utot
+locTSR
+phi
+Cl
+Cd
+F
+sigma
+Re*10^5
+AngSpd
+phi(deg)
+dQ
+25
+0
+0.72
+199
+-0.10
+-1.13
+-135.98
+27.29
+0.22
+-1.55
+1.00
+0.63
+0.50
+0.30
+8.32
+7.50
+-88.98
+0.00
+25
+1
+1.08
+9
+0.05
+0.24
+20.26
+25.88
+0.32
+1.17
+0.94
+0.13
+0.60
+0.20
+7.89
+7.50
+67.26
+176.95
+25
+2
+1.44
+9
+0.04
+0.11
+24.61
+26.87
+0.43
+1.11
+0.90
+0.20
+0.71
+0.15
+8.19
+7.50
+63.61
+225.39
+25
+3
+1.80
+9
+0.04
+0.06
+32.37
+27.92
+0.54
+1.04
+0.87
+0.35
+0.75
+0.12
+8.51
+7.50
+59.37
+241.94
+25
+4
+2.15
+9
+0.04
+0.04
+32.11
+29.34
+0.65
+0.96
+0.88
+0.34
+0.76
+0.10
+8.94
+7.50
+55.11
+296.29
+25
+5
+2.51
+9
+0.04
+0.03
+32.13
+30.91
+0.75
+0.89
+0.90
+0.34
+0.76
+0.09
+9.42
+7.50
+51.13
+349.77
+25
+6
+2.87
+9
+0.04
+0.02
+31.46
+32.61
+0.86
+0.83
+0.91
+0.32
+0.74
+0.08
+9.94
+7.50
+47.46
+416.12
+25
+7
+3.23
+10
+0.04
+0.02
+31.10
+34.42
+0.97
+0.77
+0.93
+0.32
+0.71
+0.07
+10.49
+7.50
+44.10
+483.10
+25
+8
+3.59
+10
+0.05
+0.02
+28.98
+36.37
+1.08
+0.72
+0.96
+0.27
+0.66
+0.06
+11.09
+7.50
+40.98
+607.09
+25
+9
+3.95
+10
+0.05
+0.02
+31.16
+38.28
+1.18
+0.67
+0.96
+0.31
+0.60
+0.06
+11.67
+7.50
+38.16
+600.50
+25
+10
+4.31
+11
+0.07
+0.02
+30.37
+40.29
+1.29
+0.62
+0.98
+0.30
+0.51
+0.05
+12.28
+7.50
+35.37
+686.62
+25
+11
+4.66
+12
+0.10
+0.02
+28.24
+42.31
+1.40
+0.56
+1.02
+0.25
+0.38
+0.05
+12.90
+7.50
+32.24
+832.44

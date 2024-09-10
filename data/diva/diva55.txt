@@ -1,0 +1,5593 @@
+ 
+ 
+Humidification of Inspiration  
+Gas in a Ventilator 
+ 
+ 
+ 
+ 
+ 
+CHRISTIAN LARSSON 
+DAVID YANG 
+ 
+ 
+ 
+ 
+Master of Science Thesis 
+Stockholm, Sweden 2009 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Humidification of Inspiration  
+Gas in a Ventilator 
+ 
+ 
+ 
+Christian Larsson 
+David Yang 
+ 
+ 
+ 
+Examensarbete MMK 2009:06 MDA332 
+KTH  Industriell teknik och management 
+Maskinkonstruktion 
+SE-100 44  STOCKHOLM 
+ 
+ 
+ 
+ 
+ 
+Examensarbete  MMK 2009:06 MDA332 
+ 
+Befuktning av inandningsgas i en ventilator 
+ 
+ 
+ 
+ 
+ 
+Christian Larsson 
+David Yang 
+Godkänt 
+2009-01-26 
+Examinator 
+Mats Hanson 
+Handledare 
+Mikael Hellgren 
+ 
+Uppdragsgivare 
+Maquet Critical Care AB 
+Kontaktperson 
+Erik Cardelius 
+ 
+Sammanfattning 
+Långtidsbehandling med ventilator utan tillräcklig befuktning kan torka ut en patients luftvägar 
+med olika komplikationer som följd. Målet för detta examensarbete var att utveckla en ny teknik 
+för att befukta och värma inandningsgasen. Ett fungerande koncept och en prototyp som styrker 
+konceptet skulle tas fram. 
+ 
+Marknaden för befuktare studerades och de vanligast använda befuktningsmetoderna granskades 
+för att hitta svagheter som behövde åtgärdas. De två vanligaste befuktartyperna är Heated 
+Humidifier och Heat and Moisture Exchanger. Den främsta nackdelen med Heated Humidifier 
+var dess tendens att övermätta luften med kondensutfällning som följd, och med Heat and 
+Moisture Exhanger att inte tillräckliga fukt- och temperaturnivåer nåddes. 
+ 
+Därför togs en ny design fram med målet att kunna styra fukt och temperatur oberoende av 
+varandra. MATLAB och Simulink från The MathWorks användes för att modellera systemet. 
+Komponenter såsom sensorer för temperatur och fukt, värmare och befuktare utvärderades för 
+prototypen. För fukt- och temperaturmätning valdes standardsensorer medan värmaren var av 
+egen design. Nebulisatorn för fuktgenereringen hämtades från en hembefuktare. Styrsystemet 
+och användargränssnittet utvecklades i National Instruments LabView.  
+ 
+Arbetet resulterade i en fungerande prototyp bestående av befuktare, slangsystem och sensorer. 
+Oberoende styrning av temperatur och fuktighet uppnåddes även om en koppling mellan dessa 
+storheter var tydlig under övergångsförlopp. Godtagbara fysiologiska förhållanden nåddes utan 
+kondensutfällning i slangarna. Byte av nebulisatorn, förbättring av regleringen och en metod för 
+att upptäcka kondens är några av förbättringsförslagen. 
+ 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2009:06 MDA332 
+ 
+Humidification of Inspiration Gas in a Ventilator 
+ 
+ 
+ 
+ 
+ 
+Christian Larsson 
+David Yang 
+Approved 
+2009-01-26 
+Examiner 
+Mats Hanson 
+Supervisor 
+Mikael Hellgren 
+ 
+Commissioner 
+Maquet Critical Care AB 
+Contact person 
+Erik Cardelius 
+ 
+Abstract 
+Long term treatment with mechanical ventilation without proper humidification can dry a 
+patient’s airways which causes various complications. The aim of this Master’s thesis was to 
+develop a new technique to humidify and heat the inspired gas. The scope was limited to the 
+design of a new working concept and the creation of a prototype as proof-of-concept. 
+ 
+The ventilator humidifier market was studied, and the most prevalent humidification techniques 
+used today were assessed to identify the weaknesses that needed to be addressed. The two most 
+common designs for humidification were found to be the Heated Humidifier and the Heat and 
+Moisture Exchanger. The Heated Humidifier tended to oversaturate the inspired gas which led to 
+condensation in tubing, while the passive Heat and Moisture Exchanger could not deliver 
+sufficient amounts of heat or moisture. 
+ 
+Therefore, a design for actively controlling both heat and moisture delivery independently 
+through feedback control was created. MATLAB and Simulink from The MathWorks were used 
+to model the system and assess its feasibility. Various components for the prototype were 
+evaluated such as temperature and humidity sensors, heaters, and humidifiers. The choice of 
+sensors ultimately fell on off-the-shelf products while a custom heating solution was created. A 
+nebulizer unit extracted from a consumer grade room humidifier was used for moisture delivery. 
+The user interface and the control system were created on a computer using LabView from 
+National Instruments. 
+ 
+A functional prototype including humidifier, tubing, and sensors was developed. Independent 
+control of temperature and humidity was successfully attained, though the interdependence of the 
+two variables was not completely eliminated during transitions. Acceptable physiological 
+conditions were achieved without tube condensation. Changing the nebulizer, improving system 
+control and developing a condensation detection method are some of the suggested 
+improvements. 
+ 
+Acknowledgements 
+We would like to take this opportunity to thank the countless individuals who helped us in 
+making this Master’s thesis possible. 
+ 
+We would like to thank Mikael Hellgren, our supervisor at the Royal Institute of Technology, for 
+giving us guidance and continuously providing us with feedback on our work.  
+We sincerely thank our supervisor at MCC, Erik Cardelius, who has constantly challenged our 
+minds, offered plenty of suggestions, and encouraged us to do a better job.  
+Many thanks go to Mario Loncar, Research manager at MCC, for giving his support through 
+resources, genuine interest, and encouragement.  
+We wish to express our gratitude towards Bengt Eriksson, researcher at the Department of 
+Machine Design, Royal Institute of Technology, for providing insights on model design and 
+controller synthesis, and also for the expert help on Simulink.  
+We are forever thankful to our examiner Mats Hanson, Professor in Mechatronics at the 
+Department of Machine Design, Royal Institute of Technology, for teaching us how to be great 
+innovative engineers.  
+We are indebted to Magnus Hallbäck, research engineer and fluid/thermodynamics expert at 
+MCC research division, for aiding us in understanding the physics of humidification and in the 
+creation of the system model.  
+We sincerely thank the engineers Christer Ahlmén, Pär Emtell, and Mikael Kock at MCC 
+research department, for giving us support in matters of mechatronics and generously sharing 
+their knowledge with us.  
+We thank doctors Sylvia Göthberg and Mats Wallin on MCC’s research department for teaching 
+us all the physiology needed to carry out this Master’s thesis.  
+A special note of thanks goes to Leif Back, Electronics technician at MCC, for sharing with us 
+his years of experience and useful know-how, and saving us from our hardware mishaps.  
+We thank Stefan Lindström, control expert at MCC, for the valuable tips on practical control 
+engineering and troubleshooting.  
+We thank Pär Moritz, patents expert at MCC, for helping us navigate through the incredible 
+complex world of patents and intellectual properties.  
+We thank Bengt Viltryd, Jukka Kaijalainen, and Staffan Henriksson at MCC R&D Workshop, 
+for excellently realizing our concepts through their incredible craftsmanship.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+January 2009, Stockholm 
+Christian & David 
+Vocabulary 
+ 
+Nebulizer 
+A device that aerosolizes a substance. Jet nebulizers utilize compressed 
+ 
+air to achieve this. Electronic nebulizers use a fast-moving 
+ 
+membrane to produce the mist. 
+Alveoli  
+Small air sacs in the lungs where exchange of carbon dioxide and  
+oxygen occurs. 
+Compliance 
+In lung physiology the ratio between volume change to pressure  
+change, dV/dP. 
+Cilia 
+ 
+Hair-like structures on the walls of the airways, helping cleaning the  
+airways. 
+Y-Piece 
+A plastic component where the inspiratory and expiratory tubing are  
+connected at the patient’s mouth. 
+Acronyms 
+ETT 
+Endotracheal Tube. A plastic tube leading from the patients mouth to 
+his/hers airways. Used during invasive mechanical ventilation to keep the airways 
+free. 
+AH 
+Absolute humidity. The quantity of water in a particular volume of air. 
+ 
+a
+w
+V
+m
+AH =
+ 
+mass of water vapor per cubic meter of air. 
+RH 
+Relative humidity. The ratio of partial pressure of water in a mixture to  
+ 
+the saturated vapor pressure at given temperature.  
+ 
+(
+)
+(
+)a
+H
+H
+p
+p
+RH
+0
+0
+2
+2
+*
+=
+ 
+CAD 
+Computer Aided Design. 
+COTS 
+Commercial Off-The-Shelf. 
+HH 
+Heated Humidifier. Active humidifier that basically heats water that the  
+ 
+inspiration gas passes over. 
+HME 
+Heat and Moisture Exchanger. Passive humidifier that captures expired  
+ 
+heat and moisture to be reused with inspiration gas. 
+aHME 
+Active Heat and Moisture Exchanger. Like the HME but supplied with  
+ 
+extra heat and water. 
+MCC 
+Maquet Critical Care. 
+NI 
+National Instruments, the company behind the simulation software  
+ 
+LabView. 
+STP 
+Standard Temperature and Pressure. 
+VI 
+Virtual Instrument, an interface created in LabView. 
+WOB 
+Work Of Breathing. 
+Expressions 
+In vitro 
+In an artificial environment, for example a plastic test lung. 
+In vivo 
+In the body. 
+ 
+Table of Contents 
+ 
+1 Introduction and Overview ___________________________________________________ 1 
+1.1 The Authors _____________________________________________________________ 1 
+1.2 Maquet Critical Care ______________________________________________________ 1 
+1.3 Background _____________________________________________________________ 1 
+1.4 Problem Statement and Aim ________________________________________________ 1 
+1.5 Method ________________________________________________________________ 2 
+1.6 Delimitations ____________________________________________________________ 3 
+1.7 Requirements Specification _________________________________________________ 3 
+1.8 Test Specifications _______________________________________________________ 4 
+1.9 Distribution of Work ______________________________________________________ 4 
+ 
+2 Background Studies _________________________________________________________ 5 
+2.1 Basic Ventilator Theory ___________________________________________________ 5 
+2.2 Physiology ______________________________________________________________ 6 
+2.3 Physics _________________________________________________________________ 7 
+2.4 Existing Technologies to Humidify Air ______________________________________ 11 
+2.5 Sensor Technology ______________________________________________________ 13 
+2.6 Actuator Technologies ___________________________________________________ 15 
+ 
+3 Ideas for Final Solution _____________________________________________________ 17 
+3.1 The Different Concepts ___________________________________________________ 17 
+3.2 The Modular Solution ____________________________________________________ 18 
+ 
+4 Implementation ____________________________________________________________ 23 
+4.1 Modeling and Control ____________________________________________________ 23 
+4.2 Prototype Design – Mechanics _____________________________________________ 30 
+4.3 Prototype Design – Electronics _____________________________________________ 33 
+4.4 Model – Prototype Tuning ________________________________________________ 39 
+4.5 Prototype Software ______________________________________________________ 41 
+4.6 Verification of Final Prototype _____________________________________________ 43 
+ 
+5 Results ___________________________________________________________________ 45 
+5.1 The Concept ___________________________________________________________ 45 
+5.2 The Prototype __________________________________________________________ 45 
+ 
+6 Discussion and Conclusion __________________________________________________ 47 
+6.1 Discussion _____________________________________________________________ 47 
+6.2 Conclusion _____________________________________________________________ 49 
+ 
+7 Further Development and Recommendations ___________________________________ 51 
+7.1 Prototype Improvements __________________________________________________ 51 
+ 
+8 References ________________________________________________________________ 52 
+ 
+Appendix A. Test Protocols ___________________________________________________ 53 
+Appendix B. Prototype Drawings ______________________________________________ 61 
+Appendix C. Simulink Block Diagram __________________________________________ 64 
+Table of Figures 
+ 
+Figure 1. The Maquet Servo-i ventilator. ___________________________________________ 5 
+Figure 2. Illustration of a ventilators basic components. _______________________________ 5 
+Figure 3. The Fisher & Paykel MR730 heated humidifier. _____________________________ 11 
+Figure 4. The Maquet Servo Humidifier 162. _______________________________________ 12 
+Figure 5. A common thermocouple circuit with cold junction compensation. ______________ 14 
+Figure 6. Schematic drawing of a liquid level sensor. ________________________________ 15 
+Figure 7. Schematic drawing over ultrasonic nebulizer driven with a piezo-element. ________ 15 
+Figure 8. An overview over the modules and their interaction. _________________________ 18 
+Figure 9. A rendered image from the CAD-design of the heater (left) and with routed wires 
+(right). _________________________________________________________________ 19 
+Figure 10. The modified oscillation circuit (left) and ultrasonic transducer (white circle, right). 20 
+Figure 11. The IST MiniSens pt1000-element seen mounted close to the sensor surface of the 
+LinPicco A05. ___________________________________________________________ 22 
+Figure 12. Schematic of heating chamber. _________________________________________ 24 
+Figure 13. Temperature change process for gas and drop. _____________________________ 26 
+Figure 14.  Water transport from drop to surrounding gas. _____________________________ 26 
+Figure 15. Three consecutive tube segments. Output temperature for segment k is input 
+temperature for segment k+1. _______________________________________________ 27 
+Figure 16. Step response in heater for Simulink and second order transfer function 
+approximation. ___________________________________________________________ 28 
+Figure 17. An early mockup. Testing the 230v heater. ________________________________ 30 
+Figure 18. A sketch of the final prototype. _________________________________________ 31 
+Figure 19. The prototype’s two main parts, heater pipe and water container. ______________ 31 
+Figure 20. Rendered assembly from CAD. _________________________________________ 32 
+Figure 21. Prototype delivered from workshop. _____________________________________ 32 
+Figure 22. The Bionaire BU1300 home appliance humidifier. __________________________ 35 
+Figure 23. Nebulizer circuit board modified with heatsink and optocoupler. _______________ 35 
+Figure 24. Voltage following operational amplifier.__________________________________ 36 
+Figure 25. Schematic for amplification circuit. ______________________________________ 37 
+Figure 26. A comparison in step response in heater control signal between the prototype and the 
+Simulink model after tuning. ________________________________________________ 39 
+Figure 27. The VI’s front panel (user interface). ____________________________________ 43 
+Figure 28. Plot showing temperatures during cold start. _______________________________ 44 
+Figure 29. A functional concept scheme. __________________________________________ 45 
+Figure 30. Oscillations in temperature on drop in absolute humidity. ____________________ 46 
+ 
+ 
+Humidification of Inspiration 
+- 1 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+1 Introduction and Overview 
+This chapter provides a background to the problem that is dealt with in this Master’s thesis 
+together with a more detailed problem statement and requirements specification. 
+1.1 The Authors 
+This thesis is written by two Master’s students from the mechatronics specialization at the Royal 
+Institute of Technology in Stockholm, Sweden.  
+ 
+Christian Larsson 
+Enrolled in Mechanical engineering program 2004. 
+ 
+Studies have been focused on hardware design and medicine 
+ 
+technology. 
+David Yang 
+Enrolled in Vehicle Engineering program 2003. 
+ 
+Studies have been focused on control and medicine technology. 
+ 
+1.2 Maquet Critical Care 
+This Master’s thesis is a co-operation between academia and the industry. The work was 
+commissioned by Maquet Critical Care (MCC), and was carried out on site at MCC’s office in 
+Stockholm, Sweden. MCC is a division of Maquet which, in turn, is part of the Getinge Group, 
+one of the worlds leading suppliers of medical equipment with a turnover amounting to 16 
+billion SEK for the fiscal year of 2007. Maquet consists of three divisions: Surgical Workplaces, 
+with equipment such as operation tables, lights etc; Cardiovascular, with instruments and 
+equipment for cardiac and vascular surgery; Critical Care, with products for mechanical 
+ventilation and anesthesia.  
+MCC is most famous for the Servo-i ventilator that has set a new standard in mechanical 
+ventilation.  
+1.3 Background 
+There are many potential causes for a patient’s need for breathing assistance. The patients 
+themselves range from the tiniest premature infants weighing half a kilogram to fully grown 
+adults of great stature. This means the patients’ needs vary greatly and makes it impossible to 
+treat all patients with one universal ventilation program, which in turn places very high demands 
+on the ventilator. The Servo-i ventilator can be equipped with various software and hardware 
+packages to accommodate all classes of patients.  
+When a patient undergoes invasive mechanical ventilation the patient’s natural means of 
+humidifying and heating the inspired air is bypassed by the endotracheal tube (ETT). This 
+quickly becomes a problem as the patient is cooled and dried by the dry inspiration gases 
+(compressed air usually mixed with oxygen). A patient that is kept on invasive mechanical 
+ventilation for longer periods will invariably develop complications to the airways, and thus, a 
+system for humidifying and heating the inspiration gas is needed. Such systems do exist today, 
+but they exhibit some interesting shortcomings. The advantages and disadvantages of these 
+systems will be discussed in Chapter 2.4. 
+1.4 Problem Statement and Aim 
+There are already a number of humidification devices available on the ventilator market. All of 
+these devices use a variation of one of mainly two fundamentally different technical solutions. 
+Both of these solutions come with unique drawbacks. Heat and moisture exchangers have limited 
+ 
+Humidification of Inspiration 
+- 2 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+heating and humidification capabilities, and also increase the work-of-breathing (WOB) for the 
+patient. Heated humidifiers on the other hand tend to over saturate the inspiration gas to the point 
+of condensation, which can drown the patient and also promotes bacterial colonization in the 
+tubes. 
+The aim of this Master’s thesis is to design a new solution that can be integrated into an ongoing 
+research project at MCC (regrettably, the details of this project cannot be disclosed here at the 
+time of writing for reasons of the proprietary nature of the technology and patent reasons). Focus 
+lies on designing a robust humidification concept and building a working prototype to prove its 
+feasibility. 
+The thesis work can be divided into the following three segments 
+• Survey of the market 
+o What technical solutions are available on the market today? 
+o The clinical research frontier 
+• Choose a method for humidification that addresses the following problems 
+o Heating of the inspiration gases 
+o Adding humidity to the inspiration gases 
+o Measuring temperature and humidity 
+o Avoiding condensation in respiration tubes 
+• Build a functional prototype 
+o Choice of sensors, actuators, development environment etc 
+o Designing mechanics, electronics, and logic 
+ 
+The ventilator humidification market shall be studied, and the existing designs shall be assessed. 
+The existing products’ advantages and drawbacks shall be identified. The clinical research 
+frontier shall be surveyed. This knowledge shall be used when creating the new humidification 
+design which is to address the problems in existing designs. The last stage of the thesis is to build 
+a prototype of the new solution. 
+1.5 Method 
+Following is the method that will be used for solving the problem stated above. The method was 
+decided on during the first weeks of the Master’s Thesis and might be subject to change.  
+1. Performing a background study. The study’s focus is the physiology of the problem (why 
+is humidity needed?) and today’s market (what solutions are there today?). This is to 
+understand what is needed by the concept. 
+2. Producing a general system model. A theoretical model of a humidification system to 
+better understand the thermodynamics of the system.  
+3. Developing and testing mock-ups in parallel with point 2, to see what technical solutions 
+seem promising. 
+4. Decide the most promising concept and start an iterative process of making a prototype. 
+5. In parallel with point 4, model the specific system and a controller. 
+6. The development process is completed with a period of verification and calibration of both 
+prototype and controller. 
+ 
+ 
+Humidification of Inspiration 
+- 3 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+1.6 Delimitations 
+As previously stated, the top priority is to develop a working solution. The exact design of the 
+prototype and the choice of hardware and components are less critical. The prototype is not 
+expected to be ready for mass production. All performance-limiting aspects of the prototype 
+shall be discussed, and suggestions for possible improvements shall be provided. These 
+suggestions may be realized in the event that additional time is given, but it is neither obligatory 
+nor prioritized.  
+1.7 Requirements Specification 
+The following is the requirements specification for the prototype developed within the scope of 
+this Master’s Thesis. 
+ 
+1. Performance requirements  
+1.1. 
+The device shall be able to deliver at least 30 mg H2O/L gas to the inspiration air at a 
+flow rate of 15 L/min. 
+1.2. 
+The device should be able to reach operating conditions (37 °C and at least 30 mg 
+H2O/L gas at the patient) within 15 minutes from a cold start. 
+1.3. 
+There shall be no significant bacterial colonization of the device (tubes etc) during a 
+normal intubation cycle for a patient (approximately 24h continuous ventilation). 
+ 
+2. Hardware requirements  
+2.1. 
+Physical dimensions 
+2.1.1. The total weight of the device, including all peripheral components, shall not 
+exceed 3 kg when the water reserve is fully filled. 
+2.1.2. The device shall have such dimensions that it can be readily integrated with the 
+prototype of the ongoing research project. 
+2.2. 
+Electrical 
+2.2.1. The device must be powered from the regular 230 VAC power grid or lower AC 
+or DC voltages.  
+2.2.2. Power consumption should be minimized to allow battery powering of the device.  
+ 
+3. Software requirements  
+3.1. 
+The software/control logic for the device shall be created using tools readily available 
+to MCC research department 
+3.2. 
+The software/control logic for the device shall be easily modifiable so it can be 
+integrated with the ongoing research project. 
+ 
+4. Usage protocol 
+4.1. 
+Water supply administration must be simple. 
+4.1.1. The water supply should last at least 12 hours under normal operation. 
+4.2. 
+The device must have ready routines for startup and easy controls for humidity and 
+heat. The routines for start and stop of humidification shall be designed to eliminate 
+condensation in breathing tubes.  
+ 
+Humidification of Inspiration 
+- 4 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+1.8 Test Specifications  
+A few tests were designed with the patient’s comfort and safety in mind as this development 
+process aims at creating a prototype for a medical product. The tests are summarized here and 
+the test protocols with complete descriptions are attached in Appendix A. 
+1. The device shall reach operating temperature and humidity, 37 °C and at least 20 mg H2O/L 
+gas, within 15 minutes from a cold start (device is unpowered and the whole system is at 
+room temperature ~22 °C). The maximum allowed deviation in temperature is 1 °C at steady 
+state. Accepted overshoot in temperature and humidity is 2 °C and 5 mg H2O/L gas. 
+2. Rapid changes of reference settings for both humidity and temperature shall be tested. 
+Maximum accepted overshoot in temperature is 1 °C and in humidity 5 mg H2O/L gas. 
+Maximum settling time is 15 minutes. 
+3. The outer conditions (gas flow and breathing tube cooling) shall be altered during operation 
+to test that temperature and humidity does not deviate too much. 
+All tests shall be performed using an external calibrated temperature and humidity sensor that 
+can be compared to the values presented by the prototype. 
+1.9 Distribution of Work 
+Most of the work on this thesis was conducted jointly by the two authors, but for reasons of 
+school policy and overall efficiency, some of the responsibilities were divided among the authors. 
+Roughly speaking, the background studies were a joint effort while designing of the technical 
+solution and the prototype realization were carried out independently according to each student’s 
+responsibilities. David’s primary responsibilities were system modeling and control. Christian’s 
+primary responsibilities were hardware and electronics design. Though each student was given 
+distinct areas of work, it must be noted that the two students continuously communicated each 
+other’s progresses, and regularly aided one another to overcome hurdles. All major decisions 
+were also made together as a team. 
+The distribution of work will be most apparent in Chapter 4 according to each student’s 
+responsibilities. Chapters 4.1 and 4.4 are mainly the work of David, while Chapters 4.2 and 4.3 
+are primarily written by Christian.  
+ 
+Humidification of Inspiration 
+- 5 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+2 Background Studies 
+This chapter covers the background study that was done prior to deciding a concept and 
+developing that. The aim is to provide a basic understanding of the application, physiology, 
+physics and sensors as well as actuators.  
+2.1 Basic Ventilator Theory 
+Chapter 2.1 aims to provide the reader with a basic understanding of the application that the 
+developed prototype is intended for.  
+2.1.1 Mechanical Ventilation 
+Mechanical ventilation is used for patients who have difficulties maintaining adequate 
+ventilation. The first ventilators were Negative Pressure Ventilators, creating a negative pressure 
+outside the chest and thereby expanding the lungs and helping the patient to inhale. The Positive 
+Pressure Ventilators have however been dominating since the middle of the 20th century. An 
+oxygen/air gas mixture is provided to the patient at a set pressure. A sealing between gas tube 
+and patient’s airways are needed to avoid leakage. This can be provided using an ETT inserted 
+into the patient’s upper airways and sealed with an inflatable cuff. This is called invasive 
+ventilation. 
+There is also Non-Invasive Ventilation (NIV) often performed using a mask strapped over the 
+mouth and nose or nasal prongs or tube inserted via the nose. Non-invasive ventilation is 
+common on conscious patients who can breathe spontaneously. 
+2.1.2 The Maquet Servo-i and NAVA 
+The Servo-i ventilator from Maquet is the latest in the Servo-series of ventilators, following the 
+successful Servo 900 and Servo 300. A Servo-i, see Figure 1, with full software package can 
+ventilate patients ranging from prenatal children to grown adults.  
+ 
+ 
+Figure 1. The Maquet 
+Servo-i ventilator.  
+ 
+Figure 2. Illustration of a ventilator’s basic components.  
+ 
+ 
+A positive pressure ventilator, such as the Servo-i, generally consists of three valves to provide 
+the basic functionality. Two valves mix the inspiration gas to the patient, controlling 
+inspirational pressure. The third valve controls expiration pressure, see Figure 2.  
+ 
+Humidification of Inspiration 
+- 6 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+ 
+A ventilator with the basic components as in Figure 2 can ventilate patients in many different 
+ways (ventilation modes).  One such mode worth mentioning is the Continuous Positive Airway 
+Pressure (CPAP) mode where the ventilator provides a flow of gas to maintain a specified 
+pressure. This aids the patient in keeping an elevated pressure in the airways to open them.  
+ 
+The pressurized gases are supplied through gas outlets in the hospital walls if available, 
+otherwise using gas tubes or a compressor for the air. The gases are considered dry.  
+ 
+Neurally Adjusted Ventilation Assist (NAVA) is the latest module added to the Servo-i. It allows 
+the ventilation to be controlled by the patient’s neural signals from the respiratory center to the 
+diaphragm, read by a series of electrodes on a tube in the esophagus.  
+2.2 Physiology 
+A basic understanding of the physiology of breathing and the human airways was sought. This to 
+provide a deeper understanding of the need for humidification and warming of the gas, as well as 
+the consequences for suboptimal levels of both humidity and temperature.  
+The fundamental concept for active humidification in intensive care is that the patient’s mouth 
+and nose is bypassed by an ETT, disrupting the function of the body’s natural humidification and 
+warming of inspiration gases. 
+2.2.1 Optimal Conditions 
+The authors of several articles agree on that the optimal conditions for inspired gas delivered to 
+an intubated patient is at body core temperature (~37 °C) and fully saturated (100% RH 
+translating to 44 mg H2O/L gas at 37 °C) [1, 2, 3]. “Inspired gas at body temperature and 
+saturated is thermodynamically neutral to the intubated airway, and thus may be considered the 
+optimal condition for ventilation lasting more than a few hours”, Ryan [1].  
+2.2.2 Physiological Complications – Overhumidification  
+The physiological effects caused by exposure to humidity levels higher than the saturation point 
+in core temperature gas are not well studied. Delivering higher levels of water in molecular form 
+(vapor) requires an increased gas temperature, causing thermal injury before overhydration. A 
+suggested maximum airway mucosa temperature is 43 – 45 °C, Williams [3]. Increased water 
+content without increased temperature is however possible using humidifiers creating an aerosol 
+where the water can remain in liquid phase as droplets. This causes the risk of flooding the 
+alveoli (drowning the patient) decreasing the alveolar-arterial oxygen exchange rate. Other 
+possible complications mentioned in Williams [3] are osmotic challenges to mucosal cell 
+function because of changed saline concentration, decreased vital function and compliance 
+among others.  
+Aerosol humidifiers have much in common with the nebulizers creating a mist of liquid 
+medicine that a patient can inhale. A study has been performed, Harvey [5], on the lung deposits 
+of an aerosol, showing that large deposits occur in the upper airways depending on particle size. 
+This can be related to the problems of overhydration using an aerosol humidifier. 
+2.2.3 Physiological Complications – Underhumidification  
+While overhydration is less common, underhumidification is more frequently occurring as a 
+result of insufficient humidification of dry inspiration gases. It has therefore been more 
+extensively studied. Lower humidity levels cause water and heat loss in the airways. The heat 
+loss consists of 1) heating the inspired air if air temperature is lower than body core temperature 
+ 
+Humidification of Inspiration 
+- 7 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+and 2) vaporizing water supplied by airway. The second being the most important as the 
+vaporization energy of water is much higher than the latent heat of air.  
+ETT occlusion is the most critical complication related to moisture loss, Tobin [4] (also a risk 
+when overhydration occur, Williams [3]). This is a very critical condition which can require 
+urgent replacement of ETT. Other mentioned complications are increased airway resistance, 
+decreased compliance, loss of cilia function and cilia destruction. 
+A suggested lower limit on AH that a humidifier should deliver is 30 mg H2O/L gas, Tobin [4]. 
+2.3 Physics 
+2.3.1 The Physics of Humid Air 
+In order to design a controlled system for air humidification, an understanding of the involved 
+thermodynamics is needed. The most important calculations are the heating of air, heating of 
+water, vaporization of water, heating of vapor and the gas mixtures.  
+To begin with, air needs to be defined. Most hospitals are equipped with outlets for compressed 
+air and oxygen on the walls. The compressed air comes from a large central compressor, and the 
+oxygen is supplied from pressurized containers. In case a central compressor is unavailable, it is 
+possible to connect a portable compressor to the ventilator.  
+ 
+Table 1. Molar mass table of gases involved in mechanical ventilation. 
+Substance Molar mass (g/mol) 
+N2 28.02 
+O2 32.00 
+Ar 39.94 
+CO2 44.01 
+H2 2.02 
+H2O 18.02 
+ 
+Dry air consists of 78.09% N2, 20.95% O2, 0.93% Ar and small amounts of CO2, H2, Ne, He and 
+Kr. The approximate molar mass of dry air is thus (see Table 1): 
+mol
+g
+mg
+/
+95
+.
+28
+94
+.
+39
+0093
+.0
+32
+2095
+.0
+02
+.
+28
+7809
+.0
+=
+⋅
++
+⋅
++
+⋅
+=
+ 
+Measures of Humidity 
+Humidity can be measured in many different ways with the two most common being Relative 
+Humidity (RH) and Absolute Humidity (AH). They are defined as follows: 
+ 
+V
+m
+AH
+w
+=
+ 
+(2.1) 
+Absolute humidity is the mass of water per volume air, usually expressed in mg H2O/L gas when 
+discussing humidity in inspiration air.  
+ 
+%
+100
+*
+2
+2
+⋅
+=
+O
+H
+O
+H
+p
+p
+RH
+ 
+(2.2) 
+Relative humidity is the most commonly used measurement of humidity in daily situations. It is 
+defined as the partial pressure of water divided by the saturation vapor pressure at that specific 
+temperature, given in percent. The saturation vapor pressure varies with both temperature and 
+total pressure of the gas. As a consequence, one particular AH level can correspond to different 
+RH levels depending on the circumstances.  
+For the sake of calculations, the compressed air shall be assumed to be 20 °C and 10% RH when 
+decompressed. 
+ 
+Humidification of Inspiration 
+- 8 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+Another useful quantity is the mixing ratio, or the humidity ratio defined below. 
+ 
+d
+w
+m
+m
+x
+MR
+=
+=
+ 
+(2.3) 
+Where 
+w
+m  is the mass of water in a specific volume containing the dry gas of mass 
+d
+m . The 
+variable x is often used to denote MR, and will be used through this report.  
+Assumptions 
+The calculations in this report can be seen as estimations to predict testing results and to decide 
+for which method is better. Therefore air and humid air are assumed to follow the ideal gas law: 
+ 
+T
+R
+n
+V
+p
+⋅
+⋅
+=
+⋅
+ 
+(2.4) 
+Where  
+p 
+is the absolute pressure  
+[N/m2] 
+ 
+V 
+is the volume of the gas  
+[m3] 
+ 
+n 
+number of moles in the gas  
+[mol] 
+ 
+R 
+is the universal gas constant  
+[
+)
+/(
+K
+kg
+J
+⋅
+] 
+ 
+T 
+is the absolute temperature  
+[K] 
+ 
+To simplify the calculations, the required energy to properly humidify the inspiration gas is 
+approximated as the sum of energy needed to raise the water temperature from 20 °C to 100 °C, 
+vaporization energy of said water at 100 °C, and heating of dry air from 20 °C to 37 °C. 
+Specific Heat and Enthalpy 
+Enthalpy is used when calculating the amount of energy needed to raise or lower the temperature 
+of a substance. The specific heat capacity (also known as specific heat) is a measure of energy 
+capacity per unit mass, and can be defined for either processes under constant pressure, 
+p
+C , or 
+constant volume 
+v
+C . The dimension for specific heat capacity is 
+)
+/(
+K
+g
+J
+⋅
+. Specific heat 
+capacities are unique for every material, and tables for various substances can be found in 
+literature. Table 2 below presents the three most important specific heat capacities used in this 
+report. 
+Table 2. Values of specific heat capacity for water and air. 
+Element / Gas 
+p
+C  [
+)
+/(
+K
+g
+J
+⋅
+] 
+Water in liquid phase, 
+pW
+c
+ 4.18 
+Vapor, 
+pV
+c
+ 
+1.84 
+Dry air, 
+pA
+c
+ 
+1.00 
+ 
+Thus, the energy required to raise the temperature of dry gas is 
+ 
+A
+pA
+m
+t
+c
+H
+⋅
+∆
+⋅
+=
+ 
+(2.5) 
+The Vaporization of Water 
+When the temperature of water is raised to 100 °C water’s partial pressure reaches one 
+atmosphere. The atmospheric pressure can no longer keep the water in liquid form and any 
+additional energy supplied will be used to evaporate the water. This process will continue until 
+all the liquid water has transitioned to a gaseous state. The heat of vaporization of water, 
+0r [J/g], 
+is dependent on temperature and pressure. However, since vaporization is assumed to take place 
+at 100° and 1 atmosphere’s pressure in these calculations, 
+0r  is assumed to be 2256 J/g, Dean 
+[6]. Therefore, the energy requirement to heat water from 20 °C to 100 °C is 
+ 
+Humidification of Inspiration 
+- 9 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+ 
+g
+J
+h
+/
+334
+)
+20
+100
+(
+18
+.4
+=
+−
+⋅
+=
+ 
+The vaporization contribution is  
+ 
+g
+J
+r
+h
+/
+2256
+0 =
+=
+ 
+Thus, we can see that phase transitions for water involve much more energy than merely 
+changing the temperature within the same phase. 
+The Heating and Cooling of Humid Air 
+The best way to find the needed amount of energy for heating and cooling of humid air is to 
+calculate the absolute amount of energy in the two different states. The enthalpy for humid air is 
+ 
+)
+(
+t
+c
+r
+x
+t
+c
+H
+pV
+o
+pA
+⋅
++
+⋅
++
+⋅
+=
+ 
+(2.6) 
+ 
+But if the air is supersaturated with water, 
+''x
+x ≥
+, the equation is as follows 
+ 
+t
+c
+x
+x
+t
+c
+r
+x
+t
+c
+H
+pW
+pV
+pA
+⋅
+⋅
+−
++
+⋅
++
+⋅
++
+⋅
+=
+)''
+(
+)
+(''
+0
+  
+2.3.2 Heat and Mass Transport 
+The core problem of this Master’s Thesis is a matter of heating a fluid and adding water to it. In 
+order to determine the heat exchange and mass transport between for example a heater and a 
+passing fluid, fluid dynamics must be studied. Fluid dynamics is a complex field of studies. 
+Problems must be very strictly defined in order to safely compare one set of results against 
+another. But when it is used consistently, it can prove to be a very powerful tool to determine 
+whether one solution is more promising than another.  
+Heat Transfer Due to Conduction 
+There will always be diffusion between a wet surface and the surrounding air unless the air is 
+saturated with water already. This will give a mass transport of water at the same time as the 
+water is vaporized giving a heat loss for the surface. The heat transfer from the surface can be 
+calculated as 
+ 
+⋅
+⋅
+⋅
+=
+cd
+o
+cd
+m
+r
+Q
+ 
+(2.7) 
+ 
+The difficulty here is to determine the mass transport, 
+d
+m
+⋅
+. According to Ekroth [7] there are a 
+number of definitions of mass transfer rates. The one most useful here is 
+ 
+)
+''
+(
+x
+x
+A
+m
+cd
+cd
+−
+⋅
+⋅
+=
+⋅
+σ
+ 
+(2.8) 
+ 
+Where A is the surface area where mass transport occurs, and 
+)
+''
+(
+x
+x −
+is the difference in water 
+content between the saturated air close to the surface and the surrounding air. 
+cd
+σ
+ is the mass 
+transfer rate, further explained in Total Heat Transfer below. It is assumed that the air closest to 
+the surface is saturated with water vapor. 
+Equation (2.7) and (2.8) gives  
+ 
+)
+''
+(
+x
+x
+A
+r
+Q
+cd
+o
+cd
+−
+⋅
+⋅
+⋅
+=
+⋅
+σ
+ 
+(2.9) 
+which is the equation for heat transfer due to diffusion 
+Heat Transfer Due to Convection 
+For the calculation of heat transfer due to convection it is assumed that the mass transport comes 
+from the turbulent mixing of air close to the surface. This gives that an amount of dry air 
+switches place with air that is saturated with vapor and has reached the temperature of the wet 
+surface. According to Ekroth [7] the heat exchange can be calculated as 
+ 
+Humidification of Inspiration 
+- 10 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+ 
+)
+''
+(
+t
+t
+A
+Q
+c
+c
+−
+⋅
+⋅
+=
+⋅
+α
+ 
+(2.10) 
+Looks quite similar to Equation (2.8) but the driving force is the difference in temperature and 
+c
+α  is a heat transfer coefficient. Determining 
+c
+α  is however very complex.  
+Heat Transfer Due to Radiation 
+The heat transfer per unit are due to radiation is given in Warhaft [8] as follows 
+ 
+4
+T
+Eb
+⋅
+= σ
+ 
+ 
+(2.11) 
+Where 
+4
+2
+8
+10
+67
+.5
+K
+m
+W
+−
+⋅
+=
+σ
+ is the Stefan-Boltzmann constant. 
+Assuming the peak temperature never exceeds 400K and the hot surface’s area is in the order of 
+magnitude of 10-3m, the radiation component’s order of magnitude should be 100 W. Therefore 
+the radiation’s contribution to heat transfer will be neglected. 
+Total Heat Transfer 
+Consequently, summing Equations (2.9) and (2.10) gives the total heat transfer rate 
+ 
+)
+''
+(
+)
+''
+(
+t
+t
+A
+x
+x
+A
+r
+Q
+Q
+Q
+c
+cd
+o
+c
+cd
+tot
+−
+⋅
+⋅
++
+−
+⋅
+⋅
+⋅
+=
++
+=
+⋅
+⋅
+⋅
+α
+σ
+ 
+(2.12) 
+ 
+According to Ekroth [7] Lewis’ relation can be used to determine σ  as 
+ 
+x
+p
+c
+cd
+c
++
+≈
+1
+α
+σ
+ 
+(2.13) 
+ 
+where 
+x
+p
+c
++
+1
+ is the specific heat of humid air based on the dry airs specific heat and the water 
+content: 
+ 
+pV
+pA
+x
+p
+c
+x
+c
+c
+⋅
++
+=
++
+1
+ 
+(2.14) 
+ 
+With Equation (2.13) and (2.14) inserted into (2.12) the total heat transfer rate can be found, the 
+only unknown variable is the coefficient for heat transfer, 
+c
+α . 
+Calculation of the Heat Transfer Coefficient 
+It is when calculating 
+c
+α  that the most critical assumptions have to be made. As will be shown, 
+c
+α  is based on three dimensionless quantities. According to Ekroth [7] 
+c
+α  can be found using 
+the following equation 
+ 
+L
++u
+c
+λ
+α
+⋅
+=
+ 
+(2.15) 
+c
+α  is obviously based on the Nusselt number, +u, the thermal conductivity of the medium, λ , 
+and a characteristic length, L. The characteristic length can for example be the diameter of the 
+tube that the medium flows through. It is however hard to find a good definition of the 
+characteristic length, most important is that it is defined in the same way all times when doing 
+comparisons. The Nusselt number is in turn based on the two other dimensionless numbers, 
+Reynolds and Prandtl, as 
+ 
+Pr
+Re
+0395
+.0
+8.0 ⋅
+⋅
+=
++u
+ 
+(2.16) 
+Where 
+ 
+Humidification of Inspiration 
+- 11 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+ 
+υ
+L
+v ⋅
+=
+Re
+ 
+(2.17) 
+ 
+λ
+µ
+p
+c
+⋅
+=
+Pr
+ 
+(2.18) 
+v is the velocity of the fluid, υ  is the fluids kinematic viscosity, µ  is the dynamic viscosity of 
+the fluid, and 
+p
+C  is the specific heat capacity of the fluid. It can be seen that Reynolds number 
+deals with the flow conditions and Prandtl number is more fluid-specific.  
+Using Equations (2.17) and (2.18) in (2.16) and that inserted in Equation (2.15) gives: 
+ 
+L
+c
+L
+v
+p
+c
+λ
+λ
+µ
+υ
+α
+⋅
+
+
+
+
+
+⋅
+⋅
+
+
+
+
+
+⋅
+⋅
+=
+8.0
+035
+.0
+ 
+(2.19) 
+which can be calculated knowing fluid-specific data, the fluid’s velocity and the characteristic 
+length. Again, the characteristic length is the one associated with most uncertainty. The notions 
+presented in this chapter will form the basis for the theoretical study in Chapter 4.1. 
+2.4 Existing Technologies to Humidify Air 
+There are today two commonly practiced techniques for humidification of inspiration gas to a 
+patient undergoing mechanical ventilation. These are the Heated Humidifier (HH) and the Heat 
+and Moisture Exchanger (HME) described below. 
+2.4.1 Heated Humidifier 
+A HH is an active humidifier and works like a heated pass-over humidifier. It is basically a 
+hotplate with a cup of water on it. Fisher & Paykel is one of the largest manufacturers in the 
+market; their MR730 is shown in Figure 3. 
+ 
+ 
+Figure 3. The Fisher & Paykel MR730 heated humidifier. 
+ 
+The dry inspiration gas is passed through the humidification chamber (passing close the heated 
+water surface). Temperature and humidity is controlled by the temperature of the water buffer 
+and, if available, the control signal to a heated inspiration tube from HH to patient. Feedback 
+control is achieved using a temperature sensor in the tubes close to the patient.  
+A higher temperature than 37 °C is needed in the humidification chamber to achieve 37 °C at the 
+end of the patient tubing. The air in the humidification chamber becomes close to saturated at 
+that higher temperature and contains more water than possible at 37 °C, causing condensation in 
+the patient tubes as the gas cools down. This is the biggest disadvantage with HHs as water traps 
+ 
+Humidification of Inspiration 
+- 12 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+have to be used and maintained. However, reaching the desired 37 °C and 100% RH is not a 
+problem using a HH. 
+2.4.2 Heat and Moisture Exchanger 
+A HME is a passive humidifier and works by recycling the energy and moisture of the patient’s 
+exhaled gas back to the patient on inhalation. This effect is achieved by using a filter in the 
+ventilator tubing close to the patient’s mouth, see Figure 4. The filter will act as a buffer for heat 
+and water exhaled by the patient.  
+ 
+ 
+Figure 4. The Maquet Servo Humidifier 162. 
+ 
+The inspiration gas will always have a lower temperature and less absolute humidity than the 
+exhaled air. This is due to heat loss to the surroundings and that not all exhaled water is trapped 
+by the filter.  
+It is impossible to reach the desired 37 °C and 100% RH with a HME but it is still a widely 
+practiced solution. This is first and foremost due to the simplicity of a passive humidifier. A 
+HME is regularly changed with 24- or 48-hour intervals of ventilator treatment due to filter 
+degradation and the problem of bacterial colonization of the filter. Other disadvantages worth 
+mentioning are the pressure drop caused by the filter, the added dead-space and that the filter has 
+to be placed close to the patient adding weight to the tubing.  
+2.4.3 Active Heat and Moisture Exchanger 
+Combining the advantages of the HME and the HH described above gives an active HME 
+(aHME). There are a number of aHMEs commercially available but none has yet become widely 
+adapted in hospitals despite their very promising results [9, 10]. There are different designs but 
+one worth mentioning is the Humid-Heat® system from Louis Gibeck1. It works like a HME 
+positioned close to the patient but with active water supply and a heating element in the filter. 
+This makes it possible to reach 100% RH and 37 °C without the problem of condensation in the 
+tubes. Another interesting concept is the HME Booster® from Inspiration Medical2. 
+2.4.4 Other Industries  
+Ultrasonic nebulization of water is used for humidification and cooling of indoor environments 
+(server halls for example) as well as atomizing of liquid medicine for inhalation. The cooling 
+effect is caused by the small droplets of water quickly starting to evaporate in the surrounding 
+air, lowering the temperature and increasing humidity. The main difference between nebulizer 
+units intended for different uses are often transducer size and numbers, further explained in 
+Chapter 2.6.1. 
+                                                 
+1 http://www.hudsonrci.com/  
+2 http://www.inspiration-medical.com/  
+ 
+Humidification of Inspiration 
+- 13 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+2.5 Sensor Technology  
+2.5.1 Temperature Sensors 
+Platinum Resistance Thermometers (pRT) 
+Resistance thermometers are temperature sensors utilizing that the resistance through a metal 
+changes with temperature. Platinum is the most common metal used because of its linear relation 
+between temperature and resistance and its chemical inertness. Other metals such as Nickel are 
+also available but with a lower maximum temperature rating. The platinum elements are 
+commonly rated up to 660 °C.  
+The most common pRT sensors in industry is the pt100 (pt for platinum) with a nominal 
+resistance of 100 Ω at 0 °C (also available with nominal resistance of 0.5, 1, 10 kΩ and more). 
+The change in resistance with temperature for the pt100 is 0.385 Ω/°C.  
+One way to manufacture these elements is using a thin layer of platinum on a substrate plate. The 
+desired nominal resistance is achieved through laser trimming a platinum path that goes back and 
+forth on the plate. The platinum is then covered to protect from mechanical and chemical 
+damage.  
+A current must run through the sensor to measure the resistance which gives raise to the problem 
+of self-heating. Choosing a low current (typ. <1 mA) for measurement minimizes this problem.  
+Thermistors 
+Thermistors have many properties in common with the pRT as both have a temperature 
+dependent resistance. There are basically two types of thermistors, the PTC and the NTC 
+(Positive or Negative Temperature Coefficient). The PTC’s resistance increases with increasing 
+temperature and the NTC’s decreases. Unlike the pRTs the thermistors can be made of ceramics 
+or polymers instead of metals and they have a non linear relation between temperature and 
+resistance. Some thermistors can however exhibit close to linear behavior over smaller 
+temperature ranges and a high accuracy is possible in that range. Other thermistors can exhibit 
+closer to a switching behavior (sudden increase of resistance at a specific temperature) which can 
+be attractive in for example heating elements that are design to maintain a specific temperature. 
+Thermocouples 
+A very common temperature sensor in the industry is the thermocouple as the sensor is cheap 
+and interchangeable. It is intended for applications with a wider temperature range than the 
+pRTs, thermocouples can for example measure in the range -270 to 1370 °C (type K) [11] but 
+with an uncertainty higher than 1 °C. The sensor utilizes that two metals in junction creates a 
+voltage difference between them that varies with temperature. The voltage difference depends on 
+the metals and is very small (tens of µV/°C), some metal junctions are standardized into 
+thermocouple types.  
+The measurement device is however more complex than for pRTs because the need for Cold 
+Junction Compensation (CJC).  
+ 
+ 
+Humidification of Inspiration 
+- 14 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+ 
+Figure 5. A common thermocouple circuit with cold junction compensation. 
+ 
+Since the voltage measured, Vout in Figure 5, is related to the difference in temperature between 
+the hot and cold junction and not the absolute temperature; knowledge of the cold junction 
+temperature is needed. That is often measured using a thermistor or pRT. The uncertainty in 
+measuring the cold junction temperature together with the thermocouple’s unlinear behavior 
+makes it difficult to reach tolerances better than 1 °C.  
+2.5.2 Humidity Sensors 
+Capacitive Humidity Sensors 
+A capacitive humidity sensor is built like a regular capacitor with two electrodes and a dielectric, 
+commonly a polymer or oxide metal [12]. The electrode subjected to measured gas is 
+transmissive to water vapor that can enter the dielectric and change the dielectrical constant, ε. 
+As the capacitance of an ideal parallel plate capacitor is 
+ 
+d
+A
+C
+⋅
+= ε
+ 
+(2.20) 
+where A is the area of the plates and d the distance between them, the capacitance increases with 
+increasing dielectrical constant.  
+The capacitance of available industrial sensors is in the range of a few hundred pF over the 
+whole humidity range. The small capacitances introduce problems with wiring lengths when 
+measuring; the sensors have to be calibrated for the specific application. There are numbers of 
+ways to read the capacitance value from the sensor; one is to apply a pulsed voltage and the 
+sensor will act as a filter, the capacitance is found from the voltage over the sensor.  
+The capacitive humidity sensors are the most commonly available humidity sensors and they are 
+often combined with sensor IC’s on the same substrate. These IC’s are calibrated with the sensor 
+and can for example give a voltage that is linear to relative humidity as output. 
+Resistive Humidity Sensors 
+Also the resistive humidity sensors utilize that the electrical characteristics of a hygroscopic 
+medium changes with the relative humidity it is subjected to. The resistive humidity sensors have 
+resistance in the range of 1 k – 100 MΩ and they exhibit an exponential relation between 
+humidity and resistance. As the hygroscopic medium absorbs the water vapor ionic functional 
+groups are disassociated and the electrical conductivity of the sensor increases. 
+An advantage of the resistive humidity sensors are their interchangeability that are higher than 
+with capacitive humidity sensors. 
+2.5.3 Water Level Sensor 
+There are various methods for measuring a liquids presence or level, from a float controlling a 
+mechanical switch to measuring the distance to a liquid surface using ultrasound.  
+ 
+Humidification of Inspiration 
+- 15 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+One especially interesting technique utilizes the difference in refraction index for air and water, 
+see Figure 6 for an illustration of such a unit.  
+ 
+ 
+Figure 6. Schematic drawing of a liquid level sensor. 
+ 
+The light emitted from the LED is reflected twice by the sensor dome when no liquid is present 
+on the outside of the dome. But some amount of the emitted light is refracted when liquid is 
+present because of a different refractive index of the dome boundary. When the photo-transistor 
+receives less light than a certain threshold the output signal is changed, indicating that a liquid is 
+present. These sensors require no maintenance or adjustments when installed at the desired liquid 
+level.  
+2.6 Actuator Technologies 
+The actuators in a system like this are of two types: 1) heat actuators converting electrical energy 
+to thermal and 2) humidity actuators creating a water aerosol from water and electrical energy. 
+The first type needs no closer explanation as it generally, and in the prototype, consists of a 
+resistance with a high current passed through it. The second type is more interesting and a basic 
+understanding of its principle is provided here. 
+2.6.1 Humidity Actuators 
+Creation of an aerosol can be done in many ways; one common way in nebulizers for industrial 
+and home appliance use as well as nebulizers for medical use is the ultrasonic nebulizer, 
+schematically shown in Figure 7.  
+ 
+ 
+Figure 7. Schematic drawing over ultrasonic nebulizer driven with a piezo-element. 
+ 
+ 
+Humidification of Inspiration 
+- 16 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+The piezo crystal in Figure 7 is part of the ultrasonic transducer creating the oscillations in the 
+water bath. Because of the nature of a piezo material (explained shortly below) oscillations 
+related to input voltage frequency and amplitude will propagate through the water from the 
+oscillator plate. The oscillations are in the ultrasonic spectrum (above 20 kHz, usually ~1.7 
+MHz).  The water is unable to follow these high frequency oscillations because of its high 
+inertia, causing small water droplets (as small as 1 µm) to be torn off the water surface. The 
+droplet size varies but only the smaller droplets can follow passing air.  
+Brief Explanation of the Piezo Effect 
+The piezo effect is exhibited by some materials with crystal structures. These materials give rise 
+to an electric potential when mechanical stress is applied and vice versa giving a mechanical 
+displacement as a reaction to electrical potential. Both of these effects are used in ultrasonic 
+transducers. The materials are electrically neutral when no stress is applied, the charges are 
+symmetrically distributed and that symmetry is disrupted as the materials shape is changed, 
+causing the electrical potential.  
+ 
+Humidification of Inspiration 
+- 17 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+3 Ideas for Final Solution 
+This chapter covers the work with deciding on a humidification concept done prior to the 
+development process. After the decision followed a period of evaluation and testing of separate 
+modules which is shortly described. 
+3.1 The Different Concepts 
+There has been no shortage of ideas in the search for the optimal way to humidify the inspiration 
+gas. The main difficulty was making the right compromise regarding the complexity of the 
+concept, the production cost and development time, without accurate knowledge of the 
+determinants.  
+A list of concepts and their advantages and disadvantages was made and one concept was chosen 
+to be developed further. This concept is described below. However, the list of other concepts has 
+been omitted due to proprietary reasons.  
+3.1.1 Determining Factors 
+The most important factors to consider when choosing concept are described here. 
+• Safety for patient/operator. Safety is always highest priority, especially in a medical 
+product. A patient hovering between life and death cannot be subjected to too high 
+temperatures or humidity levels. Factors such as surface temperatures of tubes etc must be 
+considered for the safety of both operator and patient. 
+• Complexity. A low system complexity is always preferable as long as the system fulfills the 
+specifications.  
+• Component cost. This is usually not an important factor in developing prototypes, but with 
+the goal to make this part of a product it has to be considered. Standard components are 
+favored. 
+• 0ecessary development time. The Master’s Thesis is limited in time to 20 weeks, giving 
+that it’s not possible to dive deep down in all technical subjects. Commercial Off-The-Shelf 
+(COTS) solutions have to be used in some cases to save time. 
+• Single-use versus multiple-use. All parts that are in contact with the patient or can be 
+contaminated by the patient must be single-use (or autoclavable) generally speaking. This 
+implies that placing all actuators and sensors close to the patient might make the product very 
+expensive for hospitals. Only the components that must be in the contaminated zone should 
+be there. 
+• Physical dimensions and weight. There are different restrictions on the physical dimensions 
+depending on where the parts are placed. The most critical part is the patient tubing where 
+flexibility and low weight is desired. 
+3.1.2 Chosen Concept 
+The choice of concept to develop further is a compromise of all factors above. The concept 
+basically consists of a nebulizer and heater inside the ventilator. These produce a humidified air 
+stream that is heated over target temperature and cools down in the tubing to the patient. The 
+cool down allows a low RH (high temperature) in the beginning of the tube that increases closer 
+to patient (lower temperature) helping in condensation avoidance.  
+The choice is further motivated as follows: 
+• Using a nebulizer in the ventilator gives the ability to control the absolute humidity with a 
+weaker correlation to the temperature. Unlike using for example a water boiler where 
+absolute humidity and temperature are strongly correlated. 
+ 
+Humidification of Inspiration 
+- 18 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+• Placing the heater inside the ventilator instead of closer the patient is more secure if the unit 
+malfunctions, avoiding hot surfaces close to the patient.  
+• This concept would only require sensors, and no actuators, to be situated in the tubing to the 
+patient, allowing flexible tubes to be used. No water or higher electrical currents has to be 
+passed close to the patient.  
+• Separating the water supply and heater from each other allows for testing different methods 
+for both heating and water addition.  
+• This concept gives the ability to completely avoid condensation in the tubes (as the humidity 
+can be controlled independently of the temperature), minimizing the necessary maintenance 
+for the hospital staff. 
+3.2 The Modular Solution 
+A modular design method was chosen for the continued work as the concept was decided. 
+Designing using separate modules for different functions comes with a number of advantages. 
+The ability to swap a module without having to redesign the complete prototype is the main 
+advantage. The final prototype can later be designed as an integrated unit consisting of the 
+different modules chosen.  
+3.2.1 An Overview of the Modules 
+ 
+Figure 8. An overview over the modules and their interaction. 
+ 
+The objective is an air stream with controlled temperature and humidity. This is achieved using 
+modules that 
+• 
+Add water to the air stream in form of an aerosol. 
+• 
+Heats the water and air mixture to create water vapor and obtain the desired temperature. 
+• 
+Measure temperature and humidity to give feedback data. 
+The modules and their interaction are seen in Figure 8. The most important technical solutions 
+that have been evaluated for these three modules are described below in Chapter 3.2.2 – 3.2.4. A 
+solution for each module is chosen to be integrated into the final prototype. That solution and the 
+work with implementing it can be studied in Chapter 4. 
+ 
+Humidification of Inspiration 
+- 19 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+3.2.2 Modules for Heating 
+The heater serves two purposes in this system: 1) Vaporizing the liquid water creating steam, 2) 
+Heating the gas mixture to approximately 37 °C at the patient. This is done in the ventilator 
+because of the amount of energy needed for converting water to steam. Three heaters were 
+evaluated and those are described shortly in this chapter.  
+Heater From a Heat Gun 
+A COTS air heater from a Leister3 heat gun was used to quickly test the idea. The heat element 
+had high ratings (450 W at 230 V) for the application where roughly 100 W was desired even 
+though it was the weakest heat gun available. A phase controlled power regulator (model PAC-
+24) from United Automation was used to control the system.  
+The Leister heater proved very efficient for the task thanks to its low thermal mass (ceramic 
+housing) and that its heater wires are exposed to the air stream. The high power rating made it 
+difficult to control the end temperature. 
+Aluminum Heater with Cartridge Heating Element 
+This heater module consisted of a round aluminum piece with drilled holes for the air stream as 
+well as a Rotfil5 cartridge heater. It was designed to resemble the Leister heater but with a more 
+suitable power rating. Aluminum was chosen for its good thermal conductivity which however 
+lead to problems with melting of the surrounding plastic tube. The heater was more easily 
+controlled with the PAC-2 than the Leister since the Rotfil element was rated at 110 W at 230 V. 
+An advantage was the more accurate temperature control, but the Leister-heater had a more 
+efficient heat transfer to the passing air and a lower risk of melting surrounding plastic tube. 
+Heater Made of Heating Wires and Plastic Housing 
+The final heater design was a combination of the advantages of the two previous tested, see 
+Figure 9. A grid of heating wires in the air stream held firmly in position by a plastic housing 
+combined the advantages of a low thermal mass with a low power rating. Choosing the heater 
+wire and its length made it possible to achieve a suitable power rating at low voltages. 
+ 
+ 
+ 
+ 
+Figure 9. A rendered image from the CAD-design of the heater (left) and with routed wires 
+(right). 
+ 
+                                                 
+3 http://www.leister.com  
+4 http://www.farnell.com art.nr 1213112  
+5 http://www.rotfil.com/  
+ 
+Humidification of Inspiration 
+- 20 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+This heater module was chosen for the final prototype, it is further described in Chapter 4.2.2 
+and 4.2.3. 
+3.2.3 Modules for Aerosol Generation 
+The purpose of this module is to create an aerosol consisting of water particles small enough to 
+follow the air stream. The phase transition from water to vapor is achieved by the heater. Two 
+factors were important in the choice of aerosol generator: 1) droplet size (small size is desirable) 
+and 2) ability to accurately control the amount of generated aerosol. 
+The Injector Solution 
+Fuel injection in combustion engines creates a mist through pressurizing the liquid and spraying 
+it through a nozzle. The same principle was evaluated for this purpose. A circuit built around the 
+LM19496 from National Semiconductor powered an injector from a car engine. The injector was 
+controlled with Pulse Width Modulation (PWM) and fed with water pressurized to 2 bars. Visual 
+inspection of the created mist gave the conclusion that the water droplets were too big to be 
+carried by the air stream instead of ending on the tubing walls. A risk of fluctuating humidity in 
+the resulting air stream was seen as a result of the low control signal frequency needed. Feeding 
+the injector with higher water pressure would create smaller droplets but increase the complexity 
+of the system. Using an injector would however provide a solution with good accuracy of added 
+water. 
+Ultrasonic Nebulizer  
+A basic understanding of the ultrasonic nebulizer is provided in Chapter 2.6.1. This technique is 
+used at MCC to deliver drugs as an aerosol to patients undergoing mechanical ventilation. It is 
+also found in industrial and home appliance nebulizers which’s purposes are to humidify air. A 
+home appliance humidifier (the Bionaire7 BU1300W) was used as a donor of transducer and 
+driving circuitry (seen in Figure 10) to achieve the desired amounts of nebulized water per unit 
+time. The stochastic behavior of the nebulizer resulted however in difficulties controlling the 
+amount of nebulized liquid. Tests showed that the nebulizer performance depended on the water 
+level above the transducer (highest performance with water level approximately 20 mm above 
+transducer). This is probably because of the ultrasonic transducer having a focus point at a 
+specific distance. Control of water level was therefore necessary.  
+ 
+ 
+ 
+ 
+Figure 10. The modified oscillation circuit (left) and ultrasonic transducer (white circle, right). 
+ 
+                                                 
+6 http://www.farnell.com art.nr 1564728 
+7 http://www.bionaireuk.co.uk/  
+ 
+Humidification of Inspiration 
+- 21 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+This solution was chosen to the final prototype for its low complexity, its long-term stability and 
+simple electrical interface. 
+Micropump/Nebulizer 
+This technique is used by the company Aerogen8 in their nebulizer series Aeroneb. Unlike the 
+ultrasonic nebulizer described above with the liquid buffer and mist on the same side of 
+transducer, the micropump separates the mist from the liquid. The pump utilizes a fine-meshed 
+net that oscillates with 100 kHz in contact with the liquid, according to Aerogen [13]. The high 
+inertia of the water causes it to be pushed through the net and an aerosol consisting of very small 
+droplets is created. A degradation of performance after time was noticed when testing the 
+micropumps. This in combination with their low performance (2-3 elements would be needed) 
+favored other solutions. The uniform and small droplet size in the mist is however very 
+interesting.  
+3.2.4 Temperature and Humidity Sensors  
+Temperature and humidity are the two quantities that needs to be measured. Humidity is often 
+measured in RH but knowing the temperature in the same spot makes it possible to calculate the 
+AH. Important factors for both sensors are the rise times and for the humidity sensors the ability 
+to fast recovery from condensation. 
+Units with Sensors for Both Temperature and Humidity 
+The Sensirion SHT11 
+The SHT11 module from Sensirion9 has both temperature and humidity sensors and returns the 
+results through a custom digital interface. The module seemed promising, especially as there 
+were ready circuits to read the digital data developed at MCC. It did however prove to have long 
+rise times and it took long time for the unit to recover when condensation had occurred.  
+ 
+The IST LinPicco A05 
+The LinPicco A05 module (see Figure 11) from IST10 measures RH and returns an analog 
+voltage signal well suited to the chosen development environment (see Chapter 4.3.1). Its 
+physical dimensions are greater than those of the SHT11 but having the RH-sensor directly 
+exposed to surrounding air makes it react faster to changes and it recovers faster from 
+condensation. The LinPicco also has a pt1000-element on the circuit board but with no signal 
+conditioning. An amplification circuit to read the temperature was designed but the sensor’s rise 
+time was too long, likely caused by the high thermal mass of the circuit board. The LinPicco A05 
+was chosen as RH-sensor for the final prototype.  
+ 
+A problem with all commercially available RH sensors that were found was their low accuracy. 
+Especially at the two extremes 0 and 100% RH. The LinPicco is for example rated at < 3% RH 
+accuracy between 15 – 85% RH, and undefined accuracy outside that range. This made it 
+impossible to measure close to the heater or patient as the RH is very low/high at those positions.  
+Temperature Sensors 
+Other pt1000 elements can be used with the amplification circuit designed to read the value of 
+the LinPicco pt1000 element. Shorter rise times were desired, the rise time of such an element is 
+mostly dependent on its mass.  
+                                                 
+8 http://www.aerogen.com/  
+9 http://www.sensirion.com/ 
+10 http://www.ist-ag.com  
+ 
+Humidification of Inspiration 
+- 22 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+The IST MiniSens 
+The MiniSens pt1000-element, see Figure 11, from IST is part of the platinum thin-film 
+temperature sensor family. Measuring 1.6x1.2mm in size is it one of the smallest pt1000-
+elements available, giving very fast rise times.  
+ 
+ 
+Figure 11. The IST MiniSens pt1000-element seen mounted close to the sensor surface of the 
+LinPicco A05. 
+ 
+The MiniSens element has a rise time of 
+2.1
+63
+.0
+=
+T
+s in an air stream with speed 1 m/s. This can 
+be compared to a slightly bigger element with the dimensions 5x3.8mm having a rise time of 
+s
+T
+10
+63
+.0
+=
+. The former MiniSens element was chosen to be the temperature sensor of the final 
+prototype. 
+ 
+Humidification of Inspiration 
+- 23 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+4 Implementation 
+This chapter covers the theoretical and practical work done to create the proof-of-concept 
+prototype for the humidification technique developed in the previous chapter.  
+4.1 Modeling and Control 
+Chapter 4.1 treats the development of the theoretical modeling of the system and the controller 
+design. 
+4.1.1 System Modeling 
+A system model was created in Simulink to simulate the dynamics of the system when creating 
+the controller. All the details regarding the system modeling, such as theory and modeling 
+process are presented in this chapter. The modeling is built upon several basic assumptions and 
+approximations in order to keep the complexity at a reasonable level. Each simplification will be 
+presented and justified in the following subsections.  
+Nomenclature 
+Following is the nomenclature used throughout this chapter. 
+Representation Description 
+SI unit 
+s
+Q&  
+External heat supply rate 
+[J/s] 
+h
+U  
+Voltage applied to heating coil 
+[V] 
+h
+R  
+Heating coil resistance 
+[Ω] 
+in
+g
+T  
+Temperature of inlet gas 
+[K] 
+out
+g
+T
+ 
+Temperature of outlet gas 
+[K] 
+h
+T  
+Temperature of heating coil 
+[K] 
+in
+w
+T  
+Temperature of inlet water 
+[K] 
+vap
+w
+T
+ 
+Temperature of water vapor 
+[K] 
+a
+T  
+Ambient temperature 
+[K] 
+h
+m  
+Mass of heating coil 
+[kg] 
+h
+w
+m ,  
+Mass of water on the heater 
+[kg] 
+in
+h
+w
+m ,
+&
+ 
+Water flow onto the heater 
+[kg/s] 
+out
+h
+w
+m ,
+&
+ 
+Water flow away from heater due to evaporation 
+[kg/s] 
+g
+p
+C ,  
+Specific heat of air, constant pressure 
+[J/(kg·K)] 
+w
+p
+C ,  
+Specific heat of water, constant pressure 
+[J/(kg·K)] 
+v
+p
+C ,  
+Specific heat of vapor, constant pressure 
+[J/(kg·K)] 
+h
+p
+C ,  
+Specific heat of heating coil material, constant pressure [J/(kg·K)] 
+H
+v
+∆
+ 
+Heat of vaporization, water 
+[J/kg] 
+c
+V  
+Volume of heating chamber 
+[m3] 
+gf  
+Gas flow 
+[m3/s] 
+g
+ρ  
+Density of air 
+[kg/m3] 
+ 
+Humidification of Inspiration 
+- 24 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+g
+µ  
+Dynamic viscosity, air 
+[N·s/m2] 
+g
+ν  
+Kinematic viscosity, air 
+g
+g
+g
+ρ
+µ
+ν
+=
+ 
+[m2/s] 
+ak  
+Thermal conductivity of air 
+[W/(m·K)] 
+ck  
+Thermal conductivity of chamber 
+[W/(m·K)] 
+cx  
+Thickness of chamber walls 
+[m] 
+c
+α  
+Heat transfer coefficient, heating coil 
+[W/(m2·K)] 
+t
+m  
+Mass of tube segment 
+[kg] 
+tV  
+Volume of tube segment 
+[m3] 
+t
+p
+C ,  
+Specific heat of tube material 
+[J/(kg·K)] 
+tT  
+Temperature of tube segment 
+[K] 
+i
+t
+α  
+Heat transfer coefficient, inside of tube 
+[W/(m2·K)] 
+o
+t
+α  
+Heat transfer coefficient, outside of tube 
+[W/(m2·K)] 
+Subsystems 
+The system model was initially created in several subsystems, representing the different logical 
+modules that the whole system is comprised of. These are the heater subsystem, tube subsystem, 
+and the water supplier subsystem. 
+Heater Subsystem 
+The heater subsystem represents the heating module of the humidifier, regulating the final 
+inspiration temperature delivered to the patient. The heater is also responsible for vaporizing the 
+incoming water. 
+Assumptions and Simplifications 
+The system is represented as a control volume inside a hollow cylinder (see Figure 12). This 
+control volume consists of a constant gas volume 
+0
+=
+c
+V&
+, and a heating coil with a known 
+constant mass 
+( )
+const
+t
+mh
+=
+. Additionally, the control volume has boundaries in the form of the 
+walls of the cylinder, made of a material that has a low thermal conductivity 
+ck , and two abstract 
+boundaries at the inlet and outlet respectively. This control volume is called the heating chamber, 
+or chamber. The specific heat capacities of the gas, heating coil, and chamber walls are assumed 
+to be constant with no variations due to temperature, 
+( )
+p
+p
+C
+t
+C
+=
+. 
+ 
+Figure 12. Schematic of heating chamber. 
+ 
+ 
+Humidification of Inspiration 
+- 25 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+There are four ways for energy to enter, alternatively leave the chamber. These are the chamber’s 
+inlet, outlet, heating coil, and chamber walls. Energy transport at the inlet and outlet is primarily 
+a result of mass transport. Energy transport at the heating coil and the chamber walls is due to 
+temperature gradients, which result in conduction and convection. The heat transfer coefficient 
+c
+α  for convection is the same as the one established in Chapter 2.3. Further assumptions are 
+made as follows.  
+The heating coil is assumed to have an insignificant length in the flow axis, where gas that 
+passes the heating coil immediately reaches final temperature.  
+ 
+ 
+This final gas temperature is then assumed to be preserved to the outlet. The chamber walls are 
+assumed to create a linear temperature gradient in the radial direction from the chamber’s center. 
+The outside of the heating chamber is assumed to maintain ambient temperature. All water 
+supplied to the heater system comes from the water supplier subsystem and is assumed to attach 
+itself to the heating coil, where the energy exchange due to temperature differences is assumed to 
+be instantaneous. Water from the heater can only exit by evaporation. The water evaporating 
+from the heating coil is assumed to leave the coil at the same temperature as the heating coil. 
+ 
+out
+h
+w
+in
+h
+w
+h
+w
+m
+m
+m
+,
+,
+,
+&
+&
+&
+−
+=
+ 
+(4.1) 
+ 
+h
+vap
+w
+T
+T
+=
+ 
+(4.2) 
+This process can then be represented as two differential Equations, (4.3) and (4.4), with the 
+dimensions [J/s]. Thus, steady state implies a dynamic equilibrium of energy entering and 
+leaving the system. 
+ 
+The power balance of the heating coil can thus be written as follows. 
+ 
+(
+)
+(
+)
+(
+)
+(
+)
+H
+T
+C
+m
+T
+C
+m
+T
+T
+Q
+T
+C
+m
+C
+m
+dt
+d
+v
+h
+v
+p
+out
+h
+w
+in
+w
+w
+p
+in
+h
+w
+in
+g
+h
+c
+s
+h
+w
+p
+h
+w
+h
+p
+h
+∆
++
+−
++
+−
+−
+=
++
+,
+,
+,
+,
+,
+,
+,
+&
+&
+&
+α
+ 
+(4.3) 
+The left hand side represents the change in energy of the heating coil, and the right hand side is 
+comprised of the physical factors that affect the coil. 
+Further developing the left hand side yields 
+ 
+(
+)
+(
+)
+dt
+dT
+C
+m
+T
+C
+m
+T
+C
+m
+dt
+dT
+C
+m
+T
+C
+m
+C
+m
+dt
+d
+h
+w
+p
+h
+w
+h
+w
+p
+h
+w
+h
+h
+p
+h
+h
+h
+p
+h
+h
+w
+p
+h
+w
+h
+p
+h
+,
+,
+,
+,
+,
+,
+,
+,
+,
++
++
++
+=
++
+&
+&
+ 
+(4.4) 
+But 
+0
+=
+h
+m&
+. Further substituting 
+h
+w
+m ,
+&
+ with Equation (4.1) and grouping into water flow terms 
+gives 
+ 
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+H
+T
+C
+C
+m
+T
+T
+C
+m
+T
+T
+Q
+dt
+dT
+C
+m
+C
+m
+v
+h
+v
+p
+w
+p
+out
+h
+w
+h
+in
+w
+w
+p
+in
+h
+w
+g
+h
+c
+s
+h
+w
+p
+h
+w
+h
+p
+h
+∆
+−
+−
++
+−
++
+−
+−
+=
+=
++
+,
+,
+,
+,
+,
+,
+,
+,
+&
+&
+&
+α
+ 
+(4.5) 
+This is the first of the governing equations of the system. 
+The external heat supply is in the form of electrical energy. Since the heating coil is a purely 
+resistive element where Ohm’s law is applicable, it can be written as follows 
+ 
+h
+h
+s
+R
+U
+Q
+2
+=
+&
+. 
+(4.6) 
+The differential equation governing the control volume is in turn as follows. 
+ 
+(
+)
+(
+)
+(
+)
+c
+c
+c
+g
+h
+v
+p
+out
+h
+w
+in
+g
+h
+c
+g
+in
+g
+g
+p
+g
+g
+g
+g
+p
+g
+c
+A
+dx
+dT
+k
+T
+T
+C
+m
+T
+T
+T
+T
+C
+f
+dt
+dT
+C
+V
+−
+−
++
+−
++
+−
+=
+,
+,
+,
+,
+&
+α
+ρ
+ρ
+ 
+(4.7) 
+The left hand side represents the change in energy of the chamber while the terms on the right 
+hand side are the physical factors affecting the energy content of the chamber. Thus, the two 
+ 
+Humidification of Inspiration 
+- 26 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+differential Equations (4.5) and (4.7) are linked by the convection term 
+(
+)
+in
+g
+h
+c
+T
+T −
+α
+ and the 
+water vapor 
+h
+v
+p
+out
+h
+w
+T
+C
+m
+,
+,
+&
+. 
+Water Supplier Subsystem 
+The water supplier subsystem is the module where the water enters the air stream. The water is 
+supplied by a nebulizer in the form of small droplets. The water supplier is located upstream 
+relative to the heater subsystem. Consequently, the water supplier will affect the initial 
+conditions for the heater. Modeling and simulation of the droplets have been performed based on 
+Hallbäck [14].  
+The difference in vapor concentration close to the drop’s surface and the surrounding gas will 
+promote evaporation. The energy needed will be taken from the drop which is subsequently 
+cooled. Figure 13 and Figure 14 show the simulation results for initial conditions 
+0
+,
+40
+,
+20
+,
+20
+=
+=
+°
+=
+°
+=
+AH
+m
+D
+C
+T
+C
+T
+d
+d
+g
+µ
+. 
+ 
+0
+0.05
+0.1
+0.15
+0.2
+16
+17
+18
+19
+20
+Drop evaporation in air
+Time [s]
+Temperature C
+ 
+ 
+Gas temp
+Drop temp
+Figure 13. Temperature change process for 
+gas and drop. 
+ 
+0
+0.05
+0.1
+0.15
+0.2
+0
+0.2
+0.4
+0.6
+0.8
+1
+Water mass balance
+Time [s]
+Water content []
+ 
+ 
+Drop
+Vapor
+Figure 14.  Water transport from drop to 
+surrounding gas. 
+ 
+Figure 13 clearly shows a rapid drop in temperature for the water. However, the heating coil in 
+the heater subsystem represents a greater thermal mass than the water drops, and thus the cooling 
+for the water and heater combined is small. Also, the low temperature gradient between the water 
+drop and surrounding gas means the amount of vapor transported to the gas during this short 
+time is very limited. Furthermore, since the real distance between the nebulizer and heater is very 
+short, the process is likely to be shorter than the simulated 0.2 seconds. Therefore, the cooling 
+and evaporation effects of the water supplier shall hereon be neglected, and the water supplier 
+subsystem will be described simply as a function whose output is the water input to the heater 
+subsystem. 
+ 
+( )
+u
+f
+min
+h
+w
+=
+,
+&
+ 
+(4.8) 
+where u is the control signal to the nebulizer. 
+Tube Subsystem 
+The tube subsystem is comprised of n finite tube elements linked together in series as shown in 
+Figure 15. Each tube segment has an identical set of physical properties such as tube mass, gas 
+volume, and material characteristics.  
+ 
+Humidification of Inspiration 
+- 27 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+ 
+Figure 15. Three consecutive tube segments. Output temperature for segment k is input 
+temperature for segment k+1. 
+ 
+n
+k
+m
+m
+t
+k
+t
+,
+,2,1,0
+,
+K
+=
+=
+ 
+n
+k
+V
+V
+t
+k
+t
+,
+,2,1,0
+,
+K
+=
+=
+ 
+n
+k
+C
+C
+t
+p
+k
+t
+p
+,
+,2,1,0
+,
+,
+,
+K
+=
+=
+ 
+The power balance for a segment can be written as follows. 
+ 
+(
+)
+1,
+0
+,
+1,
+1,
+,
+0
+,
+,
+1,
+,
+t
+g
+i
+t
+g
+g
+p
+g
+g
+g
+g
+p
+g
+g
+g
+g
+p
+g
+t
+T
+T
+T
+C
+f
+T
+C
+f
+dt
+dT
+C
+V
+−
+−
+−
+=
+⋅
+⋅
+α
+ρ
+ρ
+ρ
+ 
+(4.9) 
+ 
+(
+)
+(
+)
+a
+t
+o
+t
+t
+g
+i
+t
+t
+t
+p
+t
+T
+T
+T
+T
+dt
+dT
+C
+m
+−
+−
+−
+=
+1,
+0,
+1,
+0
+,
+0
+,
+1,
+,
+α
+α
+ 
+(4.10) 
+The left hand side of Equation (4.9) is the energy change rate in a tube segment’s control 
+volume; the first term on the right hand side is the energy flow rate into the segment by gas flow; 
+the second terms is the energy flow rate out of the segment due to gas flow; the third term is the 
+energy loss to the tubing due to convection. Equation (4.10) is the power balance for the tube 
+material. The first term on the right hand side is identical to the convective term in Equation 
+(4.9), but has the opposite sign, meaning the heat loss due to convection in the air stream is a 
+heat gain term in the tube material. The second convective term in Equation (4.10) is the tube’s 
+heat loss due to the tube’s interaction with the surroundings. 
+The output of tube segment k is 
+1
+, +
+k
+g
+T
+, which in turn is the input to the next tube segment 
+1
++
+k
+. 
+The tube temperature 
+k
+tT , is an internal state. 
+Complete System 
+The complete system is a combination of the three subsystems described above: the water 
+supplier subsystem, the heater subsystem, and the tube subsystem in that order. The water 
+supplier’s solution enters the heater as input, and the heater’s solution in turn is fed into the tube 
+subsystem. The state variables for the whole system are the outputs from the tube subsystem. 
+The final system was modeled in Simulink11. The variable-step ode45 (Dormand-Prince) solver 
+was used with a relative tolerance of 
+5
+10−. The step responses for the model clearly reveal the 
+higher order nature of the system (a step in control signal does not produce an immediate change 
+in the derivative of the output).   
+                                                 
+11 Zero crossing control had to be globally disabled for the model primarily due to problems with mass transport 
+when the calculated vaporization rate was greater than the actual water supply rate.  
+ 
+Humidification of Inspiration 
+- 28 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+4.1.2 Controller Design 
+The original model is highly nonlinear with discontinuities, and is fairly complex and 
+cumbersome in its entirety. Therefore, a linear time-invariant 2x2 Multiple-Input, Multiple-
+Output (MIMO) transfer matrix G was created to decently approximate the system in its most 
+likely range of operation as a starting point when designing the controller.  
+ 
+( )
+
+
+
+
+
+
+
+
+
+
+
+
++
++
++
+⋅
++
++
+⋅
+=
+a
+s
+k
+s
+s
+k
+s
+s
+k
+s
+G
+2
+2
+1
+1
+2
+2
+1
+1
+2
+0
+0
+2
+2
+0
+0
+0
+2
+2
+ω
+ξω
+ω
+ω
+ξω
+ω
+ 
+(4.11) 
+ 
+The operating envelope is assumed to be in the temperature range 35 °C – 39 °C and humidity 
+range 20 – 40 mg H2O/L gas. Input 1 is the heater and input 2 is water supply. Output 1 is the 
+heated gas temperature, and output 2 is the gas humidity level. Figure 16 shows a sample 
+comparison between the Simulink model’s step response and the transfer matrix. The two step 
+responses are significantly different. Nevertheless, it is roughly speaking the best second order 
+approximation possible. 
+ 
+0
+100
+200
+300
+400
+500
+600
+0
+1
+2
+3
+4
+5
+Step responses for model and approximation
+Time [s]
+∆T [K]
+ 
+ 
+Simulink
+Transfer function
+ 
+Figure 16. Step response in heater for Simulink and second order transfer function 
+approximation. 
+ 
+The gas temperature in the model was observed to have a higher-order relationship to the system 
+inputs. For simplicity, this has been approximated as two second order transfer functions for the 
+first row of transfer matrix G in Equation (4.11). The gain k0 has a positive sign while k1 is 
+negative. Supplying power to the heater will increase the temperature whereas supplying water 
+will lower the temperature. Although the temperature plays a very large role in the vaporization 
+process, the heater’s relationship to humidity output has been omitted in this model, since the 
+water supplied is assumed to be fully vaporized after passing the heater when running within the 
+operating envelope. The humidity to humidifier relationship is approximated as a first order 
+transfer function. The complete humidifier system has a significant thermal mass which makes 
+the temperature response sluggish. The nebulizer unit on the other hand has little inertia and can 
+thus quickly ramp up the rate of water mist creation. Furthermore, the time for the mist to travel 
+from the nebulizer to the patient is significantly shorter than the system’s temperature rise times. 
+This is reflected in the poles of the different elements of the transfer matrix. 
+ 
+Humidification of Inspiration 
+- 29 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+The plant G in Equation (4.11) is not diagonal. Testing a simple decentralized controller with 
+input 1 paired with output 1, and input 2 paired with output 2, does unfortunately not produce 
+satisfactory performance since the variable interactions are too pronounced. It is therefore 
+necessary to use more elaborate methods. Static decoupling was the chosen design approach. 
+Decoupled control is a regularly used method for controlling MIMO systems, and one of the first 
+methods taught in multi-variable control engineering classes. It can be found in most books on 
+multi-variable control, such as Chapter 8.3 in Glad [15].  
+ 
+First, the plant G was redesigned with a pre-compensator W1 in order to attain an as diagonal as 
+possible shaped plant 
+( )
+( )
+( )
+( )
+1
+~
+~
+~
+W
+s
+G
+s
+G
+s
+u
+s
+y
+=
+=
+. In this case, since static decoupling was used, 
+( )
+0
+1
+1
+−
+= G
+W
+, hence 
+ 
+( )
+( )
+( )
+
+
+
+
+
+
+
+
+
+
+
+
++
++
++
+=
+=
+=
+
+
+
+
+
+
+
+
+
+
+
+
+−
+a
+s
+a
+s
+s
+G
+s
+G
+s
+G
+A
+B
+A
+B
+2
+2
+0
+0
+2
+2
+0
+1
+2
+2
+1
+1
+0
+0
+2
+0
+~
+0
+0
+ω
+ξω
+ω
+ 
+(4.12) 
+Where Bk and Ak are polynomials. 
+Second, a diagonal controller ( )
+
+
+
+
+
+
+
+
+
+
+
+
+=
+2
+2
+1
+1
+0
+0
+~
+R
+S
+R
+S
+s
+F
+ was designed for ( )s
+G~
+ so that 
+y
+F
+u
+~
+~
+~
+−
+=
+.  
+Since both ( )s
+F~
+ and ( )s
+G~
+ are diagonal, it is possible to treat the resulting closed loop as two 
+separate scalar processes. The closed loop polynomials for the shaped plant are 
+( )
+2,1
+,
+=
++
+=
+n
+S
+B
+R
+A
+s
+A
+n
+n
+n
+n
+n
+cl
+. 
+Two 
+closed 
+loop 
+polynomials 
+2,1
+,
+=
+n
+A
+n
+d
+ where 
+(
+)
+(
+)
+n
+cl
+n
+d
+A
+A
+,
+,
+deg
+deg
+=
+ are designed as desired by pole placement. The unknown parameters of the 
+control structures are found by solving the Diophantine equations 
+( )
+2,1
+,
+,
+=
+=
+n
+A
+s
+A
+n
+d
+n
+cl
+. 
+Lastly, the controller for the original plant G is now given by 
+( )
+( ) ( )s
+F
+s
+W
+s
+F
+~
+1
+=
+. It is now 
+possible to control the states y1 and y2 independently. 
+The practical implementation of this controller design on the prototype is described in Chapter 
+4.4.  
+ 
+Humidification of Inspiration 
+- 30 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+4.2 Prototype Design – Mechanics 
+The focus of this Master’s thesis was not to design and build the perfect prototype in mechanical 
+aspects. But it was necessary to design a prototype that was robust and could demonstrate the 
+working principle of the concept. This chapter describes the work done with the mechanical 
+design, from the first mockup to the finished prototype. 
+4.2.1 The Early Designs 
+The first designs were all fast mockups made for testing different concepts. Some of the 
+evaluated modules can be seen in Chapter 3 describing different modules for heating, water mist 
+generation etc. All parts during the mockup stadium of development were built of parts found in 
+the MCC laboratory. The only parts designed using CAD software were a heater and a plastic 
+tube for positioning the sensors in the air stream.   
+ 
+ 
+Figure 17. An early mockup. Testing the 230v heater. 
+ 
+Figure 17 shows one of the early mockups made to understand the heat exchange between the 
+heater and an air flow. It used a 230v heater from a heat air gun (described in Chapter 3.2.2).  
+4.2.2 Design Using CAD-Software 
+A prototype specially designed for the chosen solution was needed when it had been verified to 
+work using mockups. Some sketches were made on paper to be able to discuss the design and 
+avoid obvious mistakes when designing in CAD. Figure 18 shows the prototype from the side 
+cut in half, the small arrows indicate airflow.  
+ 
+Humidification of Inspiration 
+- 31 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+ 
+Figure 18. A sketch of the final prototype. 
+ 
+The key factors when deciding on this design was: Robustness and simplicity to build in the 
+workshop. There were no time for waiting on production of the prototype and no failures such as 
+dimensioning too weak etc could be accepted. This prototype roughly consists of two plastics 
+parts, one aluminum part plus a number of smaller details.  
+ 
+The CAD software Solid Edge v20 by UGS12 was chosen for it being well known to the students. 
+The parts that were to be used in the prototype and which design was already given was mainly 
+the ultrasonic nebulizer (see Figure 10) and the standard breathing tube connectors. These were 
+modeled as parts in Solid Edge to be used in an assembly view to see that everything fitted. One 
+factor that limited the design was the available material in the workshop at Maquet. The design 
+was adapted to this in order to avoid waiting for material deliveries.  
+ 
+ 
+Figure 19. The prototype’s two main parts, heater pipe and water container. 
+ 
+The heater pipe (left in Figure 19) is where the air mixed with water mist passes through the 
+heater. The water becomes vaporized by the hot heater wires and the gas mixture is heated. 
+Having the heater pipe vertical allows excessive water droplets to return to the water buffer 
+below. The heater’s power cable is routed through a hole in the vertical wall; a set screw pushes 
+                                                 
+12 http://www.plm.automation.siemens.com/se_se/products/velocity/solidedge/index.shtml  
+ 
+Humidification of Inspiration 
+- 32 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+it towards the inner wall. A cutout in the bottom of the heater pipe allows fitting a net that stops 
+the larger droplets from reaching the heater causing oscillations in gas humidity content.  
+ 
+The largest part is the water container (right in Figure 19) that holds the nebulizer. The bottom is 
+designed to be compatible with the nebulizer chosen, deciding the diameter of the largest cutout 
+and the bolt pattern. The two smaller vertical cutouts are for gas inlet and water level 
+surveillance as well as water refilling. A horizontal pipe connects the cutouts making the water 
+level even in all cutouts.  
+ 
+The other parts that were designed in CAD are mentioned below: 
+• Heater. See Figure 9 in Chapter 3.2.2. The idea was to make a skeleton holding a net of 
+heating wires. The challenge was fitting enough length of heating wire while not risking the 
+strength of the material. An o-ring was used for sealing to the inner wall of the heater pipe, 
+preventing air and water to pass outside the heater.  
+• Water level plug. A plastic plug was made to fit in the middle hole in the water unit. This 
+plug holds the water level sensor and a nozzle for water refilling. 
+• Base plate. A thick aluminum plate was made as a base for the prototype. 
+ 
+Below are pictures of the prototype as a complete rendered assembly (Figure 20) and as it came 
+from the workshop (Figure 21): 
+ 
+ 
+Figure 20. Rendered assembly from CAD.  
+ 
+Figure 21. Prototype delivered from workshop. 
+ 
+The differences in design seen between Figure 20 and 21 is that the water unit from the 
+workshop has rounded edges instead of sharp corners as in the model. This is because of the 
+limited availability of materials. That part was made out of a 90 mm diameter plastic bar.  
+Drawings to all parts that were made in the workshop can be found in Appendix B. 
+4.2.3 Choice of Materials 
+There are a number of important factors to consider when choosing materials, for instance cost, 
+difficulty to manufacture, resistance to temperature, resistance to chemicals, electrical and 
+thermal conductivity and their medical classification. The materials being approved to use in 
+medical equipment would have been more important if this was a prototype closer to production.  
+ 
+The most critical requirements on the materials are that some of the parts are exposed to high 
+temperatures, especially the heater as the heater wires can reach ~200 °C. The gas mixture 
+ 
+Humidification of Inspiration 
+- 33 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+leaving the heater pipe can be ~90 °C with high absolute humidity. The parts positioned before 
+the heater (the water unit, drop stop net and water level plug) are not exposed to high 
+temperatures. The manufacturing challenges, the mechanical strength and the price were more 
+important for those components.  
+ 
+The heater is a skeleton holding the heater wires as described in the previous section. The idea is 
+exposing the heater wires to the air stream as much as possible but every turn of the wires has to 
+pass through the skeleton walls. These wires can easily reach temperatures in the range of 150 – 
+200 °C during normal operating conditions. A metal would have been the primary choice for the 
+skeleton unless it hade short circuited the heater wires. A plastic was therefore sought (ceramics 
+would have been well suited but costly and difficult to manufacture). A plastic capable of 
+handling over 200 °C without loosing its mechanical properties is PEEK (Polyetheretherketone). 
+The PEEK is an expensive plastic but it has extraordinary characteristics such as a higher glass 
+transition temperature at 275 °C and a melting point at 340 °C13.  
+ 
+The other plastic parts of the prototype (mainly the heater pipe and water unit) were made of 
+PMMA (poly(methyl methacrylate)) for three reasons: Optical properties, availability in 
+workshop and simplicity to manufacture. It was doubtful whether PMMA would work as 
+material in the heater pipe because of its low melting temperature of 100 °C [16]. Earlier 
+experiments had shown that the gas mixture leaving the heater could reach 90 °C. PMMA was 
+tested, being the most suited plastic available. No visible effects were found after hours of 
+testing. Manufacturing the bigger parts in PMMA has another advantage; the whole prototype 
+becomes transparent making it possible to see what happens inside. This has proven very 
+valuable when evaluating the prototype. 
+4.3 Prototype Design – Electronics 
+Designing the electronics in the mockups and prototypes has been an important part of this 
+Master’s thesis. Conditioning of both measured signals and control signals were the central 
+objectives.  
+4.3.1 Choice of Development Environment 
+The first idea was to make an electronics solution containing a microprocessor gathering 
+measurement data and calculating control signals. This would have been interesting and 
+instructive but time expensive. To get started quickly, regardless the final solution, a COTS 
+system for measurement and actuation of control signals was used.  
+The virtual instrumentation and testing software LabView from National Instruments14 (NI) was 
+available at MCC. A DAQ (Data AQuisiton) unit was needed to make the interface between 
+LabView and prototype, the chosen DAQ was a NI USB 6008. It had sufficient performance in 
+terms of sampling rate and number of analog and digital inputs/outputs. The NI LabView 
+combined with this DAQ can be seen as a replacement of a microcontroller. The main advantage 
+with this replacement is the graphical programming. Also troubleshooting the system is 
+simplified as all signals can be examined while the system is running. A disadvantage is however 
+that the PC with LabView controls the speed of all measurements and control loops (signals has 
+to be sampled by the DAQ, sent to the PC, controls signals calculated and sent back to the DAQ 
+which actuates them) resulting in a rather slow system. Measuring an input signal and calculating 
+a new control signal can take tens of milliseconds (depending on the PC) compared to a few 
+milliseconds on a microcontroller.  
+                                                 
+13 http://www.boedeker.com/peek_p.htm  
+14 http://www.ni.com/  
+ 
+Humidification of Inspiration 
+- 34 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+It is possible to write code for a microcontroller based on the block diagram in LabView, giving 
+better control over execution times. Such a microcontroller could later replace the LabView 
+solution if desired.  
+ 
+It was valuable for MCC to have the system in LabView to simplify integration with other 
+projects as well as further development of the prototype. 
+4.3.2 The Heater and its Controller 
+This chapter describes the work done with the final heater and control assembly. The final heater 
+can be modeled as a resistor as it consists of a net of heating wires. The heater wire used is 
+Nikrothal 80 from Kanthal15 with a diameter of 0.5 mm. An idea was to use 1 mm diameter wire 
+but that failed because the difficulties in bending sharp corners. Two wires of diameter 0.5 mm 
+were used instead and routed next to each other. The resistance per meter for the 0.5 mm 
+diameter wire is 5.55 Ω. The wires are routed forth and back through 74 holes, each stretch being 
+24 mm plus a few mm in every turn. This gives a total of almost 4 meter wire (2 wires of 2 m 
+length) being used. The two wires can be modeled as two resistors in parallel. Each wire having 
+a resistance of 
+Ω
+=
+Ω
+⋅
+1.
+11
+55
+.5
+2
+and these two in parallel gives the total resistance of  
+ 
+Ω
+=
++
+⋅
+=
+55
+.5
+1.
+11
+1.
+11
+1.
+11
+1.
+11
+w
+R
+ 
+(4.11) 
+which could be verified through measurement on the final heating assembly.  
+ 
+A rough estimation of maximum power needed is 100 W. The voltage needed for that power 
+with the given resistance was calculated as 
+ 
+V
+ 6.
+23
+55
+.5
+100
+=
+⋅
+=
+⋅
+=
+R
+P
+U
+ 
+(4.12) 
+A 24 V supply capable of delivering more than 100W was provided by MCC.  
+ 
+The next problem is to convert the LabView control signal to a power level supplied to the 
+heater. The DCM24-40 from United Automation was chosen as power controller for its simple 
+input signal. It controls the heater through PWM of the 24 V line. The pulse width is controlled 
+by a 0-5 VDC signal that’s generated by the DAQ and LabView.  
+The DCM24-40 is very similar in control to the PAC-2 230 VAC module that was used earlier 
+for testing the 230 V heater modules. They differ in how they internally control the power to the 
+load. The DCM24-40 uses PWM of a DC line and the PAC-2 uses phase angle control of an AC 
+line.  
+4.3.3 The Nebulizer and its Controller 
+An ultrasonic nebulizer was chosen as the aerosol generator in the system. Left was the choice of 
+ultrasonic transducer and driving circuitry. Companies working with industrial humidification 
+(such as humidification of server rooms etc) had their solutions but those were made for higher 
+liquid flows than this application needed. The fastest solution was to find a home appliance 
+humidifier in the closest home electronics department.  
+The needed amount of nebulized water per unit time was necessary to know. Air fully saturated 
+with water vapor at 37 °C has an absolute humidity of 44 mg H2O/L gas. Calculating with a flow 
+of 40 L air per minute would cover all operational conditions. This gives 
+ 
+[
+]
+[
+]
+[
+]
+[
+]
+h
+O
+H
+L
+h
+O
+mgH
+air
+L
+gas
+L
+O
+mgH
+/
+1.0
+/
+10
+6.
+105
+60
+min
+/
+40
+/
+44
+2
+2
+3
+2
+≈
+⋅
+=
+⋅
+⋅
+ 
+(4.13) 
+                                                 
+15 http://www.kanthal.com/  
+ 
+Humidification of Inspiration 
+- 35 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+The choice of humidifier fell on a Bionaire16 BU1300, see Figure 22, which is rated at 0.17 L 
+nebulized water per hour. The humidifier had a rotary potentiometer to control the amount of 
+nebulized water.  
+ 
+ 
+Figure 22. The Bionaire BU1300 home appliance humidifier. 
+ 
+Disassembling the BU1300 gave an ultrasonic transducer connected to a small circuit board, 
+Figure 23, generating the high frequency signal that drives the transducer.  
+ 
+ 
+Figure 23. Nebulizer circuit board modified with heatsink and optocoupler. 
+ 
+The circuit board is powered from a transformer giving 25 VAC from 230 VAC mains. The 
+alternating current is directly rectified on the circuit board and used to power the oscillation 
+circuitry. The rotary potentiometer varied between 0 – 5 kΩ and seemed to be a part of the 
+oscillation circuit. A way to control this resistance from LabView was needed, and all that was 
+available were 0 – 5 VDC control signals.  
+The solution was to use an optocoupler that consists of a LED (Light Emitting Diode) and an 
+LDR (Light Dependent Resistance) molded together in a single unit. Powering the LED from 
+LabView will vary the resistance of the LDR that can be connected instead of the rotary 
+                                                 
+16 http://www.bionaireuk.co.uk/  
+ 
+Humidification of Inspiration 
+- 36 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+potentiometer. The problem with these optocouplers was the nonlinearity between current 
+applied to the LED and resistance of the LDR. The resistance interval of interest was 0 – 5 kΩ 
+and the optocoupler (easily available) closes to this was the NSL-32SR3 from Silonex17 with a 
+resistance interval of 60 Ω – 25 MΩ. The concern was whether the needed amount of water 
+would be nebulized with a lowest resistance of 60 Ω instead of 0 Ω. Some tests proved that the 
+performance was still enough.  
+20 mA current through the LED at 5 V control signal with a voltage drop of 2.5 V through the 
+LED gave the following resistor in series with the LED: 
+ 
+125
+10
+20
+5.2
+5
+3 =
+⋅
+−
+=
+−
+R
+Ω 
+(4.14) 
+The optocoupler and the 125 Ω resistance was soldered to the circuit board so it could be 
+controlled using a 0 – 5 VDC signal that is galvanic isolated from the nebulizer unit. 
+The Signal to the Transducer 
+The inside of the BU1300, mainly the circuit board, gave an impression of low quality not built 
+to last long. One of the circuit board resistors reached a temperature of over 110 °C when 
+operating the humidifier as an example. It would’ve been interesting to build an oscillation 
+circuit to power the transducer but that was out of the scope for this Master’s thesis. The signal 
+generated by the oscillation circuit to the transducer was studied with an oscilloscope which gave 
+the following conclusions: 
+The signal consists of a 100 Hz (rectified 50 Hz) AC signal with 6 V amplitude when the 
+controlling resistance is high (>1MΩ). A 1.7 MHz (in the ultrasonic spectrum) signal is 
+superpositioned on the 100 Hz signal and the amplitude of that signal is raised as the controlling 
+resistance is lowered. Running at full speed (controlling resistance about 60Ω) gives an 
+amplitude of about 30 V to the transducer.  
+Amplification of Control Signal 
+As the NI DAQ can deliver up to 5 mA on its analog outputs a basic amplification circuit was 
+needed. A voltage following amplifier being able to deliver higher currents was used. One of the 
+four operational amplifiers in the TS92518 was used and connected as shown in Figure 24: 
+ 
+ 
+Figure 24. Voltage following operational amplifier. 
+ 
+This gives a voltage amplification of the control signal with gain 1 which was desired. 
+                                                 
+17 http://www1.silonex.com/  
+18 http://www.farnell.com art. nr. 1094395 
+ 
+Humidification of Inspiration 
+- 37 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+4.3.4 Electronics for Reading Measured Quantities 
+The two sensor signals needing additional circuitry to be measurable were the signals from the 
+two pt1000 temperature elements. The relation between temperature and element resistance is as 
+follows 
+ 
+1000
+85
+.3
++
+⋅
+= t
+R
+ 
+(4.15) 
+The maximum and minimum resistance that should be measurable is needed when designing the 
+measurement circuitry. A reasonable temperature range is 10 – 60 °C which in Equation (4.15) 
+gives a range of resistance from 1038.5 – 1231 Ω. This is simplified to 1050 – 1250 Ω (13 - 65 
+°C) when designing the amplification circuit.  
+The schematic for this circuitry is seen in Figure 25 and explained below 
+ 
+ 
+Figure 25. Schematic for amplification circuit. 
+ 
+It consists of three operational amplifiers, two non-inverting with negative feedback (1 & 2) and 
+one with differential amplification (3). The pt1000 element is connected to the negative feedback 
+loop of the first amplifier.  
+The gains of the different amplifiers are as follows: 
+ 
+1
+1050
+1000
+1050
+1
++
++
+=
+U
+R
+R
+R
+U
+pt
+out
+ 
+(4.16) 
+ 
+2
+2
+20
+20
+20
+2
+2
++
++
+⋅
+=
++
+=
+U
+U
+R
+R
+R
+U
+k
+k
+k
+out
+ 
+(4.17) 
+ 
+(
+)
+(
+)
+2
+1
+2
+1
+6
+150
+3
+25
+out
+out
+out
+out
+k
+k
+out
+U
+U
+U
+U
+R
+R
+U
+−
+⋅
+=
+−
+=
+ 
+(4.18) 
+Where 
+x
+U +  or 
+x
+U − refers to the potential at the positive or negative input of amplifier x. 
+1000
+pt
+R
+ 
+varies linearly with temperature giving that 
+1
+out
+U
+ and 
+3
+out
+U
+ also varies linearly with temperature. 
+The gain of amplifier 1 is 
+ 
+1050
+1000
+1050
+1
+R
+R
+R
+K
+pt
++
+=
+ 
+(4.19) 
+Which is 2 for 
+1000
+pt
+R
+ = 1050 Ω and 2.19 for 
+1000
+pt
+R
+ = 1250 Ω. 
+ 
+ 
+Humidification of Inspiration 
+- 38 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+ref
+U
+ is 1 V and created with a voltage divider. This gives the following range of 
+1
+out
+U
+ 
+ 
+V
+U
+V
+U
+U
+U
+out
+ref
+out
+ref
+19
+.2
+2
+19
+.2
+2
+1
+1
+≤
+≤
+⇒
+≤
+≤
+ 
+As seen in Equation (4.17) amplifier 2 has a fixed gain of 2, giving 
+ 
+V
+U
+U
+ref
+out
+2
+2
+2
+=
+⋅
+=
+ 
+ 
+The differential amplifier 3 is amplifying the difference between 
+1
+out
+U
+ and 
+2
+out
+U
+ with a gain of 
+25. The difference varies between
+0
+2
+2
+=
+−
+V with 
+1000
+pt
+R
+ = 1050 Ω and 
+19
+.0
+2
+19
+.2
+=
+−
+V 
+when
+1000
+pt
+R
+ = 1250 Ω. This difference amplified by 25 gives  
+ 
+V
+U
+V
+out
+75
+.4
+0
+3 ≤
+≤
+ 
+as 
+1000
+pt
+R
+ varies.  
+ 
+A change in temperature of about 50 °C (difference in resistance of about 200 Ω) is transformed 
+to a change in voltage of about 5 V which is suited for measuring with the NI DAQ.  
+Calibration of Sensors  
+No calibration of the temperature sensors would be needed in an ideal world with ideal 
+components. This was not the case. A calibration was needed because of several factors such as 
+• The wires and connectors add resistance to the measured pt1000 resistance. 
+• The offsets of the operational amplifiers. 
+• The tolerances of the resistors in the amplification circuits. 
+ 
+It was reasonable to first calculate the resistance of the pt1000 element and then go from there to 
+temperature. Inserting Equation (4.16) and (4.17) into (4.18) and solving for 
+1000
+pt
+R
+ gives the 
+following 
+ 
+1050
+20
+20
+20
+150
+6
+3
+1050
+1000
+R
+R
+R
+R
+R
+R
+U
+U
+R
+R
+k
+k
+k
+k
+k
+ref
+out
+pt
+−
+
+
+
+
+
+
+⋅
++
+⋅
+=
+ 
+(4.20) 
+The values of the resistors were measured individually and inserted into this equation to 
+minimize the problem of the resistor tolerances. The actual resistance of the pt1000 elements 
+including cabling was measured with a multimeter and compared with the value calculated with 
+Equation (4.20). The difference was at most 4 Ω and it was compensated for using a constant.  
+ 
+Equation (4.15) was used in LabView to go from resistance to temperature and another constant 
+was introduced to compensate for small errors in temperature. The two pt1000 elements that 
+were part of the prototype were put in a glass container together with two K-type sensors 
+connected to a Fluke 80TK thermocouple module calibrated by MCC test division. The 
+prototype’s sensors were calibrated against the K-type sensors at room temperature and the 
+calibration was verified at a higher temperature as well. A maximum error of 1 °C difference 
+between the pt1000 element readings and the K-type temperature sensor was tolerated. 
+4.3.5 Water Refilling System 
+A system for regulating the water level was necessary as the nebulizer performed best with a 
+specific water level. The initial idea was to use a passive system, utilizing an air-tight box with 
+refill water positioned above the humidifier, having an air inlet and water outlet. Water would 
+only be able to leave the box if air entered. The air inlet would be connected to a tube ending at 
+the desired water level. This would enable air to enter the box if the water level sunk below 
+ 
+Humidification of Inspiration 
+- 39 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+desired level. The water flow from the box would be stopped as the water level increased, 
+stopping the flow of air into the box. This idea was however discarded due to problems with the 
+practical implementation, and that it required a special refill water box.  
+ 
+A system using infusion bags that already are used at hospitals is more attractive. Positioning the 
+bag higher than the humidifier and using a valve on the tube to the humidifier enables controlling 
+the liquid flow. A soft silicon tube together with a valve that pinches the tube from the outside 
+was used. Therefore the valve is never in contact with the water, and the bag and tubing can be 
+of single-use and easily replaced.  
+The control signal to the pinch-valve is obtained from the water level sensor described in 
+Chapter 2.5.3, a LLE101000 from Honeywell19. The level sensor signal is low-pass filtered to 
+avoid disturbances caused by waves from the nebulizer. The pinch-valve chosen was one found 
+in the MCC laboratory, needing 24 V. This signal was given by a relay controlled by the DAQ, 
+connecting the valve to the same 24 V source as the heater.  
+4.4 Model – Prototype Tuning 
+This chapter aims to present the process of calibrating the system model developed in Simulink 
+with the physical prototype and the actual controller design process. 
+4.4.1 Prototype Step Responses 
+In order to determine the validity of the model described in Chapter 4.1, the prototype was 
+subjected to a series of step responses. Figure 26 is a sample comparison plot between the step 
+response for the model and the actual prototype. The goal was to tune the Simulink model as 
+close as possible to the actual prototype to justify the use of the controller design method 
+described in Chapter 4.1.2. 
+ 
+0
+200
+400
+600
+0
+1
+2
+3
+4
+5
+Temperature step response 0V − 1V
+Time [s]
+∆ T [K]
+ 
+ 
+Prototype
+Simulink
+ 
+Figure 26. A comparison in step response in heater control signal between the prototype and the 
+Simulink model after tuning. 
+ 
+The model’s parameters were adjusted to fit the prototype’s step responses more closely. The 
+model was ultimately deemed acceptable when the errors for the time constants and steady state 
+gains for the prototype and the Simulink model were both below 5%. Consequently, the 
+simplified transfer matrix ( )s
+G
+ in Equation (4.9) was updated with new gains k0, k1, k2, and 
+poles 
+0
+ω , 
+1
+ω , a, to match the prototype and is as follows. 
+                                                 
+19 http://sensing.honeywell.com/  
+ 
+Humidification of Inspiration 
+- 40 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+ 
+( )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
++
++
++
+−
++
++
+=
+40
+1
+1
+0
+9600
+1
+480
+11
+3200
+3
+9600
+1
+480
+11
+2400
+1
+2
+2
+s
+s
+s
+s
+s
+s
+G
+ 
+(4.21) 
+ 
+4.4.2 Controller Synthesis in MATLAB and Simulink 
+The updated plant model ( )s
+G
+ was pre-multiplied with the new pre-compensator W1 to create 
+the diagonal plant 
+( )s
+G~
+. The controller structures were selected as a PID-controller with an 
+additional low-pass filter for the first state variable, and a PI-controller for the second state 
+variable. Pole placement was carried out on the diagonal system, where a well damped closed 
+loop system was favored as opposed to a fast and poorly damped system. Rapid temperature and 
+humidity changes were believed to have the ability to upset an intubated patient whereas slow 
+changes were easier to adapt to. The gain parameters for controller ( )s
+F~
+ were obtained through 
+solving of the Diophantine equations. 
+ 
+The diagonal controller was then post-multiplied with W1 for use with the original plant ( )s
+G
+. 
+After a few iterations, the closed loop poles were decided as 
+01
+.0
+0 =
+ω
+ and 
+03
+.0
+=
+a
+ as a 
+reasonable tradeoff between speed and relative damping, and resulted in the following controller. 
+ 
+ 
+( )
+(
+)
+
+
+
+
+
+
+
+
+
+
+
+
++
++
++
+⋅
++
++
+=
+−
+s
+s
+s
+s
+s
+s
+s
+s
+s
+F
+0009
+.0
+035
+.0
+0
+002025
+.0
+7875
+.0
+01708
+.0
+10
+4.2
+005329
+.0
+2504
+.0
+5
+2
+ 
+(4.22) 
+ 
+( )s
+F
+ was then discretized to the z-plane with the Tustin approximation in Equation (4.21) for 
+use with the custom LabView VI. Ts = 0.25s. 
+ 
+(
+)
+(
+) ( )z
+s
+z
+T
+z
+sx
+s
+1
+1
+2
++
+−
+≈
+ 
+(4.23) 
+The discretization was carried out on MATLAB R2006b with the function c2d found in the LTI 
+Toolbox. 
+ 
+Unfortunately, the controller proved to be unsatisfactory when used with the prototype. The most 
+significant shortcoming of the controller was its tendency of significant sustained oscillations 
+around the humidity setpoint. At its worst, the oscillations could grow to as much as ±10 mg 
+H2O/L gas. Furthermore, the discretized temperature controller showed an inability to home in 
+on the setpoint. The cause for these shortcomings was concluded to be inadequate modeling of 
+the transfer matrix G, and numerical difficulties in MATLAB when discretizing the controller F.  
+It was then decided that the final controller for the prototype would be designed manually 
+directly in LabView while the controller previously designed in MATLAB would be consulted 
+as a guideline for the final shape of the controller. 
+ 
+Humidification of Inspiration 
+- 41 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+4.4.3 Manual Controller Tuning in LabView 
+The limitations of the controller in Chapter 4.4.2 led to a change in the controller design 
+approach. The following procedure was instead utilized for the final design on LabView.  
+ 
+1. Manually tune the PID-controllers for temperature and humidity with the Ziegler-Nichols 
+method separately. 
+2. Design an additional decoupling controller for the system manually. Use the decoupled 
+controller in Equation (4.22) as a guide for overall shape of controller. 
+3. Fine-tune the original temperature and humidity controllers with the decoupling 
+controller in place. 
+4. Add pre-filters as needed 
+ 
+A decoupling controller for the heater that regulates on the humidity error was created, but the 
+gain for this controller was set very low to have little impact. However, an additional feed-
+forward controller was added to the heater. This controller feeds a significant signal contribution 
+to the heater that is dependent on the humidity setpoint. As a direct result of this, the risk of the 
+heater being shut off while the nebulizer is active was greatly eliminated, decreasing the 
+temperature overshoot in the negative error direction, and also guaranteeing proper vaporization 
+of the mist. However, this led to a noticeable increase in the overshoot in the positive direction 
+and a slower return to the reference from this overshoot. Nevertheless, this was preferred to the 
+risk of heavy condensation. 
+ 
+A first order pre-filter with time constant 
+30
+=
+τ
+ was added to the humidifier. The soft 
+transitions in setpoint changes offered by the pre-filter were able to decrease the humidity 
+overshoot significantly. A second order model following controller coupled with a second order 
+reference pre-filter was attempted but was unsuccessful. The first order pre-filter for the 
+nebulizer was added to the heater as well, but it did not have the same noticeable improvement 
+as the humidity pre-filter. Naturally, this is because the dynamics of the heater differs 
+significantly from the nebulizer.  
+4.5 Prototype Software 
+The prototype software is exclusively developed using LabView as mentioned in Chapter 4.3.1. 
+The details of collecting measured data and doing simple conversions (as for converting 
+temperature and humidity signals to measured values) will not be shown here as only basic linear 
+conversions are used. Two other conversions are however of a higher interest: 
+ 
+1. Calculating AH knowing temperature and RH in the same position 
+2. Calculating RH knowing temperature and AH in gas stream 
+ 
+The first conversion is needed since only temperature and RH sensors are available, and AH is 
+needed for humidity control as well as the second conversion. The second’s purpose is to find the 
+RH close to patient, knowing the temperature at the patient and the AH previously in the tubing.  
+ 
+The absolute humidity can, according to  [17], be calculated as 
+ 
+[
+]
+L
+O
+H
+mg
+T
+p
+C
+AH
+O
+H
+/
+2
+2
+⋅
+=
+ 
+(4.24) 
+Where
+J
+gK
+C
+/
+679
+.
+216
+=
+, 
+O
+H
+p
+2  is the water vapor pressure and T the temperature in Kelvin. 
+This equation assumes that the water vapor behaves as an ideal gas. The vapor pressure is found 
+ 
+Humidification of Inspiration 
+- 42 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+from the definition of RH (found in Chapter 2.3.1), knowing the saturation vapor pressure at that 
+temperature. The latter can be calculated using [18] 
+ 
+(
+)(
+)
+T
+T
+a
+a
+a
+a
+a
+a
+c
+O
+H
+c
+e
+p
+p
+/
+5.7
+6
+4
+5
+5.3
+4
+3
+3
+5.1
+2
+1
+2
+τ
+τ
+τ
+τ
+τ
+τ
+⋅
++
+⋅
++
+⋅
++
+⋅
++
+⋅
++
+⋅
+•
+⋅
+=
+ 
+(4.25) 
+which is valid between 0 and 360 °C. 
+O
+H
+p
+2
+•
+ is the saturation vapor pressure, 
+cT
+T /
+1−
+=
+τ
+ and 
+subscript c indicates the critical point. The constants are 
+ 
+80122502
+.1
+9618719
+.
+15
+6807411
+.
+22
+7866497
+.
+11
+84408259
+.1
+85951783
+.7
+22064
+096
+.
+647
+6
+5
+4
+3
+2
+1
+=
+−
+=
+=
+−
+=
+=
+−
+=
+=
+=
+a
+a
+a
+a
+a
+a
+kPa
+p
+K
+T
+c
+c
+ 
+Using the definition of RH, Equation (2.2), in Equation (4.24) yields 
+ 
+(
+)[
+]
+L
+O
+H
+mg
+T
+p
+RH
+C
+AH
+O
+H
+/
+%
+100
+/
+2
+2 ⋅
+⋅
+=
+•
+ 
+(4.26) 
+This solves the first situation mentioned above, the second is solved using a transformed (4.26) 
+ 
+%
+100
+2
+⋅
+⋅
+⋅
+=
+•
+C
+T
+p
+AH
+RH
+O
+H
+ 
+(4.27) 
+Calculating this, most of all the saturation vapor pressure, is time consuming for the computer 
+running the software. Equation (4.25) could be replaced by a lookup-table to speed up the 
+computing.  
+ 
+The controller runs in a timed block with 250 ms execution interval and the measurement 
+routines are executed each 100 ms. This was on the limit of what the computer could do.  
+ 
+ 
+Humidification of Inspiration 
+- 43 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+ 
+Figure 27. The VI’s front panel (user interface). 
+ 
+The VI consists of a block diagram and a front panel (the user interface) as shown in Figure 27. 
+The user interface is designed for easy evaluation and adjustments to the system, and it’s 
+(obviously) not intended for an end-user. The upper box contains mostly the measurement plots 
+(red plots are connected to sensors between patient and humidifier and calculated AH, and blue 
+plots are connected to the temperature sensor close to patient and the calculated RH).  
+The lower part of the user interface contains the settings for the controller and data logging. The 
+control signals can also be manually adjusted for testing purposes. 
+4.6 Verification of Final Prototype 
+As the final prototype presented the desired behavior according to its sensors, verification by a 
+calibrated and independent measurement unit was needed. That unit should be mounted to 
+measure the quantities a patient would experience. MCC provided a calibrated Testo 650 unit 
+with a probe for temperature and humidity measurement. The values could be compared through 
+logging data with both the Testo and the NI LabView interface during a number of tests. These 
+tests are described in Chapter 1.8 and the protocols along with plots are found in Appendix A. 
+ 
+The Testo measurement probe was inserted into the end of the patient tubing and its values 
+compared with the temperature sensor and calculated RH at the same position. An example plot 
+from a cold-start test showing temperature data from LabView and Testo is seen in Figure 28. 
+ 
+Humidification of Inspiration 
+- 44 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+0
+500
+1000
+1500
+20
+25
+30
+35
+40
+Temperature, cold start
+Time [s]
+Temperature [C]
+ 
+ 
+Temp
+Temp (filtered)
+Temp Testo
+Temp Testo (filtered)
+Reference
+ 
+Figure 28. Plot showing temperatures during cold start. 
+ 
+The reference (black curve) is increased gradually by the preprogrammed start-up routine to 37 
+°C. The LabView measured temperature can be seen approaching the reference with a maximum 
+overshoot of about 1 °C. The temperature measured through LabView and Testo follows each 
+other, but with an offset of about 1.1 – 1.3 °C (the Testo probe has a longer rise time, causing 
+them to be correspond during heat up). There were no offset between the sensors in calm air but 
+the offset occurred as soon as there was a flow of air. This effect is most likely caused by an 
+unexpected self heating of the small pt1000 element causing a problem as it was calibrated in 
+calm air. At this phase of prototype development it was however too late to redesign the 
+measurement circuit.  
+ 
+Both temperature and humidity were filtered using MATLAB (especially the humidity data from 
+Testo needed filtering). Both filtered and unfiltered data are shown in all plots (as in Figure 28). 
+The filtered data is used for measuring overshoot, settling times etc. The plots in the test 
+protocols in Appendix A shows a discrepancy between the two measured RH values of about 
+10% RH. This is assumed to be caused by differences between the two sensors since both are 
+factory calibrated. The Testo probe seems unsuited for measuring gas streams with such high 
+flow velocities in a small diameter tube, causing the severe oscillations in read values. 
+ 
+Humidification of Inspiration 
+- 45 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+5 Results 
+The results of this Master’s thesis can be divided into two parts. The first being the answer to the 
+question of issue, finding a working humidification concept. The second is the realization of the 
+first, namely the design and making of a functional prototype demonstrating the concept. 
+5.1 The Concept 
+This is the resulting concept in brief description, illustrated in Figure 29. A mist generator and a 
+heater (vaporizer) inside ventilator, heating the gas above target temperature to compensate for 
+tube cooling. A RH and temperature sensor placed where temperature is lower (measurable RH), 
+used for calculating the AH for humidity feedback. Temperature feedback is provided by a 
+sensor close to patient. The heat losses through tubing walls create a temperature fall used for 
+avoiding condensation (keeping the tubing walls at higher temperature than gas dew point). 
+ 
+ 
+Figure 29. A functional concept scheme. 
+5.2 The Prototype 
+A fully functional prototype capable of demonstrating the chosen concept was developed. The 
+prototype performance was shown by a number of practical tests, found in Appendix A. The test 
+results are given in a short summary below. 
+ 
+• Cold start to 37 °C and 20 mg H2O/L gas is accomplished in less than 12 minutes.  
+• Response to a step in humidity (20 – 35 mg H2O/L gas and vice versa) is accomplished in 
+less than 5 minutes. 
+• Rapid changes of gas humidity content causes temperature oscillations because of the great 
+change in gas energy content. 
+o Especially a rapid decrease in humidity content causes a severe temperature drop with 
+following overshoot in temperature.   
+• Changes in reference gas temperature have none or very little influence over absolute 
+humidity level as the humidity control is a faster system than temperature control. 
+ 
+The prototype’s behavior in all test cases can be studied in Appendix A. A test that exhibits 
+important characteristics of the controller is the drop in humidity causing temperature 
+oscillations. The test result is seen in Figure 30 and further explained here. 
+ 
+ 
+Humidification of Inspiration 
+- 46 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+0
+500
+1000
+1500
+34
+35
+36
+37
+38
+39
+40
+Temperature, step in AH 35 −> 20
+Time [s]
+Temperature [C]
+ 
+ 
+Temp filtered
+Temp Testo filtered
+Reference
+ 
+0
+500
+1000
+1500
+15
+20
+25
+30
+35
+40
+AH, step in AH 35 −> 20
+Time [s]
+AH [mg H2O / L gas]
+ 
+ 
+AH filtered
+Reference
+ 
+Figure 30. Oscillations in temperature on drop in absolute humidity. 
+ 
+The humidity is reduced slowly by the reference trajectory planner but the humidity is still a 
+faster system than temperature. The initial 1.4 °C decrease in temperature is caused by 
+• Greatly decreased energy content of gas, increasing the effect of tube cooling on gas 
+temperature. 
+• Decreased heater control signal caused by reduced need of water vaporization. 
+ 
+This decrease is followed by an overshoot in temperature caused by 
+• The temperature error integral growing too large resulting in an exaggerated control signal. 
+• Response from heater control signal to temperature response in end of tubing is very slow.  
+ 
+A five hour long test was performed to evaluate rate of condensation when running the 
+humidifier at acceptable physiological conditions (references were 37 °C and 35 mg H2O/L gas). 
+The measured oscillations in LabView were ±0.5 °C and ±5 mg H2O/L gas. The Testo measured 
+38 – 38.5 °C and 85-95% RH suggesting a AH higher than 40 mg H2O/L gas. Condensation 
+occurred after one third of unheated tubing. The condensation spread remained constant (the last 
+two thirds of unheated tubing) but the water droplet size seemed to increase very slowly. A 
+longer test would be needed to determine whether the droplets would continue to increase or if 
+equilibrium was attained. 
+ 
+ 
+Humidification of Inspiration 
+- 47 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+6 Discussion and Conclusion 
+6.1 Discussion 
+6.1.1 Results Discussion 
+A fully functional prototype capable of demonstrating the chosen concept was developed. The 
+prototype’s performance indicates some interesting characteristics. These are shown by a number 
+of practical tests found in Appendix A.  
+Performance Requirements 
+The desired conditions are, as established in Chapter 2.2, 37 °C and 44 mg H2O/L gas delivered 
+to the patient’s airways. The prototype could reproduce these conditions but with unacceptable 
+amounts of condensation in tubing. The reference instrument (Testo) did however report higher 
+humidity and temperature levels than the prototype’s sensors, suggesting that the prototype 
+delivered more humidity than what was reported by the sensors. That can in some degree explain 
+the early detection of condensation. Mild condensation was detected during long term tests when 
+running at 35 mg H2O/L gas (corresponds to approximately 80% RH at 37 °C). The Testo 
+however reported at the same time an absolute humidity exceeding 40 mg H2O/L (slightly under 
+90% RH, 37 °C). Performance in other respects, such as response times and start-up time, 
+satisfied the requirements. 
+Temperature and Humidity Control 
+Temperature and humidity can be controlled independently on the prototype. However, it is still 
+apparent that the two states affect each other. To obtain perfect decoupling, more effort is 
+required on system modeling and control design. The temperature can be controlled with a 
+precision of approximately ±0.5 °C. The humidity on the other hand can only be controlled to ±5 
+mg H2O/L gas when the humidity reference is set to 20 mg H2O/L, and ±10 mg H2O/L for a 
+reference of 40 mg H2O/L. The reason for poor humidity control performance is believed to be 
+due to the inherent characteristics of the nebulizer.  
+Condensation Avoidance 
+There is no condensation detection method in place on the prototype. Thus condensation can and 
+will form in the system if the humidity controls are not set appropriately. The prototype must be 
+manually adjusted once condensation is detected. 
+Avoidance of Bacterial Colonization 
+Unfortunately, stress tests of sufficiently long duration have not been performed on the 
+prototype. Therefore it is impossible to make any claims about bacterial colonization. However, 
+the concept developed within this thesis should not be more prone to bacterial growth compared 
+with a conventional ventilator without humidification added assuming condensation is avoided. 
+The water container is however a source for bacterial growth and it needs to be dried and cleaned 
+after being used.  
+6.1.2 Prototype Discussion 
+6.1.2.1 Integration with Ventilator 
+The prototype is easily interfaced with any source of air flow. Unfortunately, the physical size 
+does not adequately meet the physical dimensions requirements. There is however significant 
+ 
+Humidification of Inspiration 
+- 48 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+room for improvement. One of the prime candidates for improvement is the design of the water 
+buffer. The big lateral protrusion of the water basin in the current design could likely be trimmed 
+down to half of its current size.  
+Beside the main unit that can be placed inside the ventilator, two sensor modules on the 
+inspiration tube are needed to complete the machine. One module is preferably positioned close 
+to the ventilator measuring temperature and relative humidity in order to calculate the absolute 
+humidity. The second sensor module should be placed as close to the patient as possible to 
+accurately measure the temperature of the gas supplied to the patient. Ideally, the second sensor 
+should be unobtrusively embedded into the mouthpiece closest to the patient. 
+ 
+The current prototype utilizes a heated tube from the ventilator to the first sensor module, and a 
+regular non-heated breathing tube at the end. It should be possible to replace the heated tube with 
+a shorter well-insulated tube to achieve similar performance characteristics. The tube exchange 
+in itself will not pose a problem since the connectors conform well to the established standards in 
+the ventilator market.  
+ 
+The prototype control consists of a VI in LabView running on a PC. This VI could with minor 
+modifications be redesigned as a function block with reference temperature and humidity as 
+input data. In that way the humidifier control could be streamlined with a larger ventilator 
+control system. 
+6.1.2.2 Choice of Components and Materials 
+The heater and the nebulizer are the absolutely central parts of the prototype. Other important 
+parts are the temperature and humidity sensors as well as the water level sensor.  
+The heater has been through the most design iterations and the final heater appears to perform 
+well. However, the melting point of the PEEK plastic is a point of concern that has not been fully 
+evaluated.  
+Unfortunately, only one kind of nebulizer has been investigated. The random behavior of this 
+nebulizer obviously encourages the search for better alternatives.  
+The temperature sensors performed very well with a very short rise time (see Appendix A). In 
+fact, the rise time might be unnecessary short. A sensor with longer response time would have 
+the advantage of acting as a natural low-pass filter smoothing out the oscillations caused by the 
+stochastic nebulization of water. 
+The relative humidity sensor and its loss of accuracy close to its measurement limits is the 
+primary reason for placing that sensor between the patient and the ventilator. All of the examined 
+humidity sensors exhibited similar characteristics though. A sensor capable of accurately 
+measuring at low RH levels would be ideal, since it could be placed close to the heater and 
+possibly eliminating the need for sensors in the tube of any kind, save for one temperature sensor 
+at the patient. 
+6.1.3 Environmental Implications 
+Hygiene and safety requirements are very stringent in clinical settings. Therefore, autoclaves are 
+used to sterilize used instruments. However, making an instrument autoclavable will often add 
+enormously to the material and production costs. In addition, acquiring and operating an 
+autoclave is also costly, hence the reason for many medical tools being of disposable single-use 
+design today. On the other hand, single-use items are likely to have a more considerable 
+environmental impact.  
+The overall design of the prototype is a combination of single-use and multiple-use/permanent 
+parts. The main unit of the prototype, consisting of the water basin, nebulizer, and heater, is 
+thought to be permanent, though it is uncertain if the acrylic of the water basin will withstand 
+ 
+Humidification of Inspiration 
+- 49 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+autoclave cycles. The heated tube and its sensors are currently not designed to be used multiple 
+times. As a result, using this prototype is very expensive since a large portion of the bill of 
+materials for the prototype is due to the sensors. The best way to cut down on both operating cost 
+and environmental impact would be to redesign the tube to ensure the sensors are permanent and 
+need not to be replaced. Methods for ensuring that no bacterial growth occurs, or cutting costs of 
+sensors should be developed. 
+6.2 Conclusion 
+6.2.1 Market Survey 
+It has become apparent during the work on this Master’s thesis that a considerable amount of 
+research in this field has already been done. The HH and HME are the most commonly practiced 
+humidification techniques used today in hospitals. These two techniques are already well 
+established within the ventilator market with well-known advantages and disadvantages. There is 
+however a plethora of interesting solutions that seem promising. This is especially true for the 
+various aHME solutions. Few solutions have however been found that can function integrated 
+with a ventilator. Most humidifier products are controlled separately (or no control for passive 
+humidifiers). The prototype developed for this Master’s thesis was designed from the very start 
+to be integrated with a ventilator, and this is believed to be one of its primary strengths. 
+ 
+The problem dealt with in this Master’s thesis has been known for a long time, and many 
+companies have endeavored to develop the perfect humidifier. This is reflected by the large 
+number of patents covering the subject. This became apparent during the final stage of the 
+development process, when MCC’s patent expert found a patent (Patent No. US 6,918,389 B2) 
+covering many of the ideas that were utilized in the prototype. Some of the features mentioned in 
+this patent are: 
+• A humidification apparatus comprising a humidification chamber that the air passes through. 
+The apparatus is connected to the patient with breathing tubes. 
+• Using two sensors for absolute humidity, one at the humidifier and one closer to patient. 
+Condensation is detected using the difference between the absolute humidity sensors.  
+• Use of a heated breathing tube to avoid condensation. 
+• Overheating the gas in the humidifier and having a controlled temperature profile along the 
+tube to minimize condensation and approach the desired temperature. 
+It was a surprise that this patent existed and covered so much of the prototype ideas. The patent 
+confirmed that some of the ideas were indeed valuable but it complicates the possible future use 
+of the developed prototype.  
+6.2.2 Concept Conclusion 
+The concept provides the ability to 
+• Control the temperature and humidity of the patient’s inspired gas independently of each 
+other. 
+• Avoid tube condensation through heating the tube over the inspiration gas’s dew point.  
+• Have flexible tubing from ventilator to patient. 
+• Reduce the need for bulky and heavy devices close to the patient. 
+• Avoid extra deadspace and added WOB to the patient. 
+If the technical obstacles in realizing the concept are overlooked, only a temperature sensor close 
+to the patient is required for control (assuming that the humidity is measured inside the 
+ventilator). This makes the humidifier almost completely transparent to the end user, the only 
+revealing sign being the temperature sensor. A ventilator equipped with the humidifier could for 
+ 
+Humidification of Inspiration 
+- 50 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+example be used with regular tubes and without sensor, providing none or a very basic level of 
+humidity. Adding tubing with heater wires and temperature sensor would enable the full 
+functionality of the humidifier.  
+6.2.3 Prototype Conclusion 
+The performance requirements were on the whole fulfilled, with a few minor reservations. The 
+size requirements were unfortunately not satisfied, but there is room for improvement. Many of 
+the components used in the prototype could be replaced with substitutes, which could result in 
+lowered costs but also improved performance. The sturdiness of the device can and should be 
+improved in order to raise the safety. 
+6.2.4 Modelling Conclusion 
+The Simulink model developed was on the whole successful. The simulations are good enough 
+to predict the general behavior of the prototype. The model can be adjusted easily enough to 
+simulate other humidifier designs and get a general idea without having to actually build them.  
+There are however several simplifications in the current model that turned out to be 
+inappropriate. First among these is the assumption that all supplied water would stick to the 
+heating coil. This was easily proven by a simple inspection, where the mist could at times be 
+detected in the gas stream after the heater. This means the true behavior of the supplied water is a 
+more complex thermo/fluid-dynamic interaction. The second inadequacy of the model is the 
+nebulizer’s water generation. The real nebulizer proved to be not only time-variant but also 
+exhibit severe stochastic behavior.  
+6.2.5 Method Conclusion  
+The method found in Chapter 1.5 was the initial idea of how the development would be carried 
+out. It was however subjected to minor changes during the process, because of a number of 
+reasons. 
+The idea to develop the prototype using an iterative procedure, with every iteration lasting for 
+approximately 2 weeks, was unfeasible due to long manufacturing times. In the end only one 
+prototype was created, and all efforts went into making it work. Fortunately, it turned out to be 
+successful. 
+ 
+ 
+ 
+ 
+ 
+Humidification of Inspiration 
+- 51 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+7 Further Development and Recommendations 
+The work performed has been a question of priorities from the choice of concept to the final 
+prototype. Potentially interesting ideas and promising technical solutions have been rejected in 
+the attempt to build a complete system during the limited time. A few suggestions to further 
+development are found below. 
+7.1 Prototype Improvements 
+Following are some recommendations to improve the existing prototype: 
+1. Adding the heated tubing to system control. The heated tube in the prototype is supplied 
+with a constant voltage. Controlling the energy supplied to the tube would enable much faster 
+response from input to output as the response is faster from the tube than from the main 
+heater. This could be used to even out the oscillations in temperature found during tests.  
+2. Other tubing concepts. Well insulated passive tubes (no heating) were proven to work, but 
+at the cost of reduced flexibility and shorter maximum length of the tubes as well as longer 
+temperature response times. Passive tubes could be made cheaper than active though.  
+3. Better aerosol generator. An interesting solution is the micropump from Aerogen, 
+mentioned in Chapter 3.2.3. Using such smaller aerosol generators producing a more 
+homogenous mist would enable a more compact design, adding the mist through the tubing 
+wall just before the heater. It should be possible to achieve a more even rate of water supply 
+than the current nebulizer, which should also enable better control.  
+4. Condensation detection/avoidance system. Intelligence could be added to the system to 
+avoid condensation in tubes, automatically lowering the humidity if condensation is found. 
+This could be realized in different ways: 1) Measuring AH at beginning and end of tubing. If 
+there is an AH discrepancy, it can be deduced condensation has occured. 2) Measuring tube 
+wall temperature, deciding lowest allowed dew point for the gas. 3) Optical measurements 
+detecting water droplets on a piece of the tube inner wall (utilizing the difference in 
+refractive index between air and water).  
+5. A more compact design. The prototype’s current design is bulky to allow for easy 
+alterations in function. The outer dimensions could easily be halved using the same 
+components.  
+6. Improved control design. It is believed the prototype’s control performance can be 
+improved by using a Linear-Quadratic-Gaussian (LQG) control design on an improved 
+model of the prototype. A Kalman filter should effectively reduce the noise when estimating 
+the state while the linear-quadratic regulator can be optimized to penalize the temperature 
+and humidity errors. 
+7. Alternative humidity measurement. Using methods capable of detecting humidity closer to 
+0 or 100% RH would eliminate the need of a sensor positioned in between the ventilator and 
+patient. The humidity sensor could then be placed either inside the ventilator or close to the 
+patient where temperature is measured in the current prototype. 
+ 
+ 
+ 
+ 
+ 
+Humidification of Inspiration 
+- 52 -  
+Christian Larsson 
+Gas in a Ventilator 
+ 
+David Yang 
+8 References 
+1. Energy balance in the intubated human airway is an indicator of optimal gas 
+conditioning. Ryan, Stuart 0 et al., Auckland : Lippincott Williams & Wilkins, 2002, 
+Critical Care Medicine, Vol. 30, Issue 2. 
+2. Relationship between the humidity and temperature of inspired gas and the function of 
+the airway mucosa. Williams, Robin et al. Otahuhu : Lippincott Williams & Wilkins, 
+1996, Critical Care Medicine, Vol. 24, Issue 11. 
+3. The effects of excessive humidity. Williams RB. Auckland, 1998, Respiratory care clinics 
+of North America, Vol. 4, Issue 2. 
+4. Martin J Tobin. Principles & Practice of Mechanical Ventilation. McGraw-Hill 
+Medical Publishing Division, 2006. 0-07-144767-9. 
+5. Comparison of jet and ultrasonic nebulizer pulmonary aerosol deposition during 
+mechanical ventilation. Harvey CJ et al. London, 1997, The European Respiratory 
+Journal, Vol. 4, Issue 4.   
+6. John A. Dean. Lange’s Handbook of Chemistry. McGraw-Hill Companies. 0-07-
+016384-7. 
+7. Ekroth, Ingvar and Granryd, Eric. Tillämpad termodynamik. Stockholm : Institutionen 
+för Energiteknik, 2005. 91-7170-067-6. 
+8. Warhaft Zellman. An Introduction to Thermal-Fluid Engineering: The Engine and the 
+Atmosphere. New York: Cornell University, 1998. 05-2158-100-1. 
+9. In vitro and in vivo evaluation of a new active heat and moisture exchanger. Davide 
+Chiumello et al. Milan, 2004, Critical Care, Vol. 8, Issue 5. 
+10. A new device for 100 per cent humidification of inspired air. Anders Larsson et al. 
+Hellerup, 2000, Critical Care, Vol. 4, Issue 1. 
+11. Pico Technology. Thermocouple application note from Pico Technology. Pico 
+Technology. 
+[Online] 
+[Cited: 
+December 
+18, 
+2008] 
+http://www.picotech.com/applications/thermocouple.html 
+12. Sensors. Choosing a Humidity Sensor: A Review of Three Technologies. Sensors – 
+Home 
+Page. 
+[Online] 
+[Cited: 
+December 
+18, 
+2008] 
+http://www.sensorsmag.com/articles/0701/54/main.shtml 
+13. Aerogen. OnQ – How does it work?. Aerogen – HOME Micropump +ebulizers, Aeroneb 
+Go, Pro, Solo, Lab, Vibrating Mesh Technology. [Online] [Cited: September 19, 2008] 
+http://www.aerogen.com/how-does-it-work.html 
+14. Hallbäck, Magnus. Förångning av droppar. 2002. Internal report. 
+15. Glad, Torkel and Ljung, Lennart. Reglerteori: Flervariabla och olinjära metoder. 
+Lund : Studentlitteratur, 2003. 978-91-44-03003-6. 
+16. Polymerweb. Plastic material properties – PMMA Polymethylmethacrylate (Acrylic). 
+Online database of plastic materials, equipment, processors, moldmakers and other 
+useful resources for the plastic industry!. [Online] [Cited: November 11, 2008] 
+http://www.polymerweb.com/_datash/pmma.html 
+17. Vaisala. Vaisala Humidity Calculator - Help. Vaisala - Weather monitoring systems and 
+instruments for industrial measurements. [Online] [Cited: January 9, 2009.] 
+http://www.vaisala.com/humiditycalculator/help/index.html 
+18. Kaye and Laby. Vapour pressure of water at temperatures between 0 and 360 °C 3.4.2. 
+Kaye&Laby Tables of Physical & Chemical Constants. [Online] [Cited: January 9, 2009] 
+http://www.kayelaby.npl.co.uk/chemistry/3_4/3_4_2.html 
+  	
+
+
+	
+
+
+
+
+	
+
+ !"#$% &'$
+()*"+," &$- *++.&
+
+/
+(.0#$+, *,$,1+,
+21+13401+$ $+",5 ,".&$6)1*1$,)1$!1&,"0 ,.*$"+$+, *,1#$6",).5,$41"&'$5+1#$*171&,089$:, *,$3.#1$"+$
+5+1#$,.$*1 7)$;<$=($ &#$$3'$>?-$' +9$@)1$+, *,$3.#1$+,1A+$5A$,)1$*1B1*1&71+$ 5,.3 ,"7 0089$
+CD
+/
+@)1$+8+,13$+) 00$*1 7)$+,1 #8+, ,1$E3 F"353$.+7"00 ,".&$"&$,13A1* ,5*1$9G$=($ &#$)53"#",8$$3'$
+>?-$' +H$6",)"&$G$3"&5,1+9$I F"353$ 00.61#$.!1*+)..,$"&$,13A1* ,5*1J$$=(9$
+C
+
+/
+K
+LKK
+MKKK
+MLKK
+NK
+NL
+OK
+OL
+PK
+QRSTRUVWXURYZ[\]^Z_WVUW
+Q`SRZa_b
+QRSTRUVWXURZacb
+Z
+Z
+QRSTZd`]WRUR^
+QRSTZQR_W\Zd`]WRUR^
+eRdRURf[R
+
+K
+LKK
+MKKK
+MLKK
+NK
+OK
+PK
+LK
+gK
+cV][X]VWR^ZVf^ZSRV_XUR^ZehYZ[\]^Z_WVUW
+Q`SRZa_b
+ehZaib
+Z
+Z
+ehZd`]WRUR^
+ehZQR_W\Zd`]WRUR^
+
+K
+LKK
+MKKK
+MLKK
+L
+MK
+ML
+NK
+NL
+OK
+jhYZ[\]^Z_WVUW
+Q`SRZa_b
+jhZaSkZhNlZmZnZkV_b
+Z
+Z
+jhZd`]WRUR^
+eRdRURf[R
+
+
+$
+o++53"&'$,) ,$,)1$A*.,.,8A1p+$.6&$,13A1* ,5*1$31 +5*131&,$"+$7.**17,q$,)1$+8+,13$*1 7)1+$+,1 #8$
++, ,1$ B,1*$ AA*.F$r<+$Es$3"&H9$>53"#",8$*1 7)1+$+,1 #8+, ,1$ B,1*$;+$Esr$3"&H9$t.$
+.4+1*! 401$.!1*+)..,$"&$)53"#",89$@13A1* ,5*1$.!1*+)..,$"+$9$=(9$$
+$
+$
+$
+$
+$
+$
+$
+$
+$
+$
+$
+
+
+	
+
+
+/
+?u
+v
+/
+@13A1* ,5*1$+1&+.*+$&11#+$7 0"4* ,".&
+ 	
+ 
+
+ 
+
+
+  !"#$%!&'
+()*#+,#!&-!*++.& /
+01231*!,4*1+,1356*.278,.79:( ;1+12<=1+!+#,4!,#.&>)1*1,)1).+3#,!=+,!66?.&+#$1*+#,!33*.3*#!,1,.#&?*1!+1,)1
+,1231*!,4*1+433=#1$,.3!,#1&,@0)1+A+,12)!+*1!?)1$+,1!$A+,!,178:(!&$B2'CD-'!+
+<16.*1,1+,#++,!*,1$@
+EF/
+0)1+A+,12+)!==*1!?)+,1!$A+,!,179:(G2!H#242.+?#==!,#.&#&,1231*!,4*1@B:(!&$)42#$#,A
+2'CD-'!+I>#,)#&B2#&4,1+@J!H#242!==.>1$."1*+)..,#&,1231*!,4*1K:(@
+E/
+L
+MLL
+NLLL
+NMLL
+OLLL
+PQ
+PR
+SL
+SO
+TUVWUXYZ[XU\]^ZUW]_X`V]Pa]bc]Pd]eUf]g
+ThVU]i^j
+TUVWUXYZ[XU]igj
+]
+]
+TUVW]_hkZUXUe
+TUVW]TU^Z`]_hkZUXUe
+lU_UXUmnU
+
+L
+MLL
+NLLL
+NMLL
+OLLL
+SM
+ML
+MM
+QL
+QM
+aL
+aM
+gYkn[kYZUe]Yme]VUY^[XUe]lo\]^ZUW]_X`V]Pa]bc]Pd]eUf]g
+ThVU]i^j
+lo]ipj
+]
+]
+lo]_hkZUXUe
+lo]TU^Z`]_hkZUXUe
+
+L
+MLL
+NLLL
+NMLL
+OLLL
+NM
+OL
+OM
+PL
+PM
+qo\]^ZUW]_X`V]Pa]bc]Pd]eUf]g
+ThVU]i^j
+qo]iVf]oOr]s]t]fY^j
+]
+]
+qo]_hkZUXUe
+lU_UXUmnU
+
+
+
+D"1*+)..,#&,1231*!,4*1K@B:(@
+u1,,=#&',#21Kvw+Gx@B2#&I@
+y<+.=4,1)42#$#,A=1"1=>!+4&!661?,1$<A,)1,1231*!,4*1?)!&'1@;1=!,#"1)42#$#,A>!+=.>1*1$
+!+1H31?,1$>)1&,1231*!,4*1*#+1+@
+
+
+
+
+
+
+
+
+
+
+
+/
+Dz
+{/
+  	
+ 
+
+ 
+
+
+ ! "#$%&'#()
+*+,%-.%#(/#,--0( 1
+23453,#.6,3-.3578,049.0:;* <3-34=>3-#-%.6#.%0(?+3,3.+3+0-5%.#>-.#88@0(-%&3,-%.#55,05,%#.3.0&3@,3#-3.+3
+.3453,#.6,3-655>%3&.05#.%3(.A2+3-B-.34+#-,3#@+3&-.3#&B-.#.39;*#(&:4)CD/)#-
+=380,3.3-.%--.#,.3&A
+EF1
+2+3-B-.34-+#>>,3#@+-.3#&B-.#.3:;*G4#H%4640-@%>>#.%0(%(.3453,#.6,3A:;*#(&+64%&%.B
+4)CD/)#-I?%.+%(:4%(6.3-AJ#H%464#>>0?3&0$3,-+00.%(.3453,#.6,3K;*A
+E1
+L
+MLL
+NLLL
+NMLL
+OLLL
+PQ
+PR
+PS
+QL
+TUVWUXYZ[XU\]^ZUW]_X`V]Pa]bc]PM]dUe]f
+TgVU]h^i
+TUVWUXYZ[XU]hfi
+]
+]
+TUVW]_gjZUXUd
+TUVW]TU^Z`]_gjZUXUd
+kU_UXUlmU
+
+L
+MLL
+NLLL
+NMLL
+OLLL
+MM
+RL
+RM
+aL
+aM
+SL
+SM
+fYjm[jYZUd]Yld]VUY^[XUd]kn\]^ZUW]_X`V]Pa]bc]PM]dUe]f
+TgVU]h^i
+kn]hoi
+]
+]
+kn]_gjZUXUd
+kn]TU^Z`]_gjZUXUd
+
+L
+MLL
+NLLL
+NMLL
+OLLL
+OL
+OM
+PL
+PM
+pn\]^ZUW]_X`V]Pa]bc]PM]dUe]f
+TgVU]h^i
+pn]hVe]nOq]r]s]eY^i
+]
+]
+pn]_gjZUXUd
+kU_UXUlmU
+
+
+
+D$3,-+00.%(.3453,#.6,3KA:;*
+t3..>%().%43K-Gu:4%(I
+2+3#=-0>6.3+64%&%.B>3$3>%--6@@3--86>>B+3>&@0(-.#(.=B.+3-B-.34A2+3,3>#.%$3+64%&%.B
+%(@,3#-3-#(&80>>0?-.3453,#.6,3#-3H53@.3&A
+
+
+
+
+
+
+
+
+
+
+
+1
+Dv
+w1
+  	
+ 
+
+ 
+ 
+  !"#$%&!'(%
+)*+#,-#!'%.!+,,/' 0
+12,/34-5%*46#$#-7%,-589%:+/6%%-/%;<%6(%=>.%(!, ?5,56235,%!%,#-4!-#/'%@*5+5%!%*#(*5+%35"53%/:%*46#$#-7%#,%$5,#+5$A%B/+%#',-!'C5%!:-5+%!%C/3$%
+,-!+-%@*5'%*46#$#-7%#,%,5-%-/%%6(%=>.%(!,%!'$%-*5%8!-#5'-%*!,%'55$,%:/+%*#(*5+%?=A%
+DE0
+F*5%!2,/34-5%*46#$#-7%35"53%,*/43$%,5--35%!-%;<%GH%I%6(%=>.%(!,%@#-*#'%<%6#'4-5,A%J!K#646%
+-5685+!-4+5%/,C#33!-#/',%!CC58-5$%!+5%%L)A%
+D0
+M
+NMM
+OMM
+PMM
+QMM
+RS
+RP
+RT
+RQ
+RU
+OM
+VWXYWZ[\]ZW^_`\WY_ab_cd_NM_ef_RS
+VaXW_g`h
+VWXYWZ[\]ZW_gih
+_
+_
+VWXY_jak\WZWl
+VWXY_VW`\m_jak\WZWl
+nWjWZWboW
+%
+M
+NMM
+OMM
+PMM
+QMM
+OM
+SM
+PM
+TM
+QM
+UM
+pMM
+i[ko]k[\Wl_[bl_XW[`]ZWl_nd^_`\WY_ab_cd_NM_ef_RS
+VaXW_g`h
+nd_gqh
+_
+_
+nd_jak\WZWl
+nd_VW`\m_jak\WZWl
+%
+M
+NMM
+OMM
+PMM
+QMM
+NM
+RM
+OM
+SM
+cd^_`\WY_ab_cd_NM_ef_RS
+VaXW_g`h
+cd_gXr_dNs_t_u_r[`h
+_
+_
+cd_jak\WZWl
+nWjWZWboW
+%
+%
+%
+=46#$#-7%,5--3#'(%-#65v%,%Gw%6#'I%
+J!K#646%65!,4+5$%-5685+!-4+5%/,C#33!-#/',v%Ax%L)%
+y'C+5!,#'(%*46#$#-7%C/'-5'-%/:%-*5%(!,%(#"5,%!'%#'#-#!3%#'C+5!,5%#'%65!,4+5$%-5685+!-4+5%G-*5%(!,%
+C!'%C!++7%6/+5%5'5+(7I9%-*5%C/'-+/335+%C/685',!-5,%:/+%-*#,%#'C+5!,5%C!4,#'(%!%3#(*-%/,C#33!-#/'A%
+%
+%
+%
+%
+%
+%
+
+
+
+0
+>z
+{0
+  	
+ 
+
+ 
+ 
+  !"#$%&!'(%
+)*+#,-#!'%.!+,,/' 0
+12,/34-5%*46#$#-7%,-589%:+/6%;%-/%%6(%<=.%(!, >5,56235,%!%,#-4!-#/'%?*5+5%-*5%*/,8#-!3%,-!::%,4$$5'37%'55$,%-/%$5@+5!,5%-*5%,4883#5$%*46#$#-7A%
+1%8+/2!235%+5!,/'%@!'%25%-*!-%@/'$5',!-#/'%#'%2+5!-*#'(%-425,%#,%:/4'$A%
+BC0
+D*5%!2,/34-5%*46#$#-7%35"53%,*/43$%,5--35%!-%%EF%G%6(%<=.%(!,%?#-*#'%%6#'4-5,A%H!I#646%
+-5685+!-4+5%/,@#33!-#/',%!@@58-5$%!+5%%J)A%
+B0
+K
+LKK
+MKKK
+MLKK
+NO
+NL
+NP
+NQ
+NR
+NS
+OK
+TUVWUXYZ[XU\]^ZUW]_`]ab]NL]cd]eK
+T_VU]f^g
+TUVWUXYZ[XU]fhg
+]
+]
+TUVW]i_jZUXUk
+TUVW]TU^Zl]i_jZUXUk
+mUiUXU`nU
+%
+K
+LKK
+MKKK
+MLKK
+OK
+LK
+PK
+QK
+RK
+SK
+hYjn[jYZUk]Y`k]VUY^[XUk]mb\]^ZUW]_`]ab]NL]cd]eK
+T_VU]f^g
+mb]fog
+]
+]
+mb]i_jZUXUk
+mb]TU^Zl]i_jZUXUk
+%
+K
+LKK
+MKKK
+MLKK
+ML
+eK
+eL
+NK
+NL
+OK
+ab\]^ZUW]_`]ab]NL]cd]eK
+T_VU]f^g
+ab]fVp]beq]r]s]pY^g
+]
+]
+ab]i_jZUXUk
+mUiUXU`nU
+%
+%
+%
+<46#$#-7%,5--3#'(%-#65t%%,%E%6#'G%
+H!I#646%65!,4+5$%-5685+!-4+5%/,@#33!-#/',t%%u#+,-%/,@#33!-#/'t%A%J)%%
+%
+v5@/'$%/,@#33!-#/'t%%J)%
+%
+D*5%-5685+!-4+5%:!33,%+!8#$37%!,%-*5%6!I#646%8/,,#235%5'5+(7%@/'-5'-%/:%-*5%(!,%$5@+5!,5,%?#-*%
+$5@+5!,#'(%*46#$#-7%@/'-5'-A%w5@!4,5%/:%-*5%3/'(%$53!7%:+/6%*5!-5+%@/'-+/3%,#('!3%-/%-5685+!-4+5%
++5,8/',59%-*5%-5685+!-4+5%$5@3#'5,%6/+5%-*!'%$5,#+5$A%D*#,%+5,43-,%#'%-*5%@/'-+/335+%
+/"5+@/685',!-#'(%!'$%@!4,#'(%!%,5@/'$%/"5+,*//-A%%
+%
+%
+%
+%
+
+
+
+0
+x=
+y0
+>!8#$%$5,#+5$%$5@+5!,5,%#'%*46#$#-7%
+'55$,%-/%25%6!'!(5$%$#::5+5'-37%27%@/'-+/335+
+  	
+ 
+
+ 
+ 
+  !"#$%&!'(%
+)*+#,-#!'%.!+,,/' 0
+1+2!-*#'(%-342%5!'#637!-#/'8//7#'( 92,-%#,%$2,#('2$%-/%+2,25472%!%,#-3!-#/'%:*2+2%-*2%-34#'(%#,%,34;28-2$%-/%8*!'(#'(%2<-2+'!7%
+8/'$#-#/',=%>/+%#',-!'82%6!+2'-,%7#?-#'(%-*2#+%4!4@%?+/5%-*2%42$%-/%-*2#+%!+5,=%>#+,-%6!+-%/?%-*2%
+-34#'(%A42?/+2%?#+,-%,2',/+B%:!,%:/3'$2$%-:/%-3+',%!+/3'$%!%4!+2%!+5%-/%8//7%-*2%-34#'(=%9*2%
+,28/'$%,*/+-2+%6!+-%/?%-*2%-34#'(%A42-:22'%-*2%-:/%,2',/+,B%:!,%42'-%#'%-:/%CD%-3+',=%9*2%,@,-25%
+*!$%+2!8*2$%,-2!$@%,-!-2%EF%D)%!'$%G%5(%HI.%(!,%42?/+2%-2,-%:!,%,-!+-2$=%
+JK0
+L!<#535%/,8#77!-#/',%!77/:2$%8!3,2$%4@%-*2%8*!'(#'(%8/'$#-#/',%!+2M%
+92562+!-3+2M%%D)%
+H35#$#-@M%G%5(%HI.%(!,%
+J0
+N
+ONN
+PNNN
+PONN
+QR
+QO
+QS
+QT
+QU
+QV
+RN
+WXYZX[\]^[X_`]^aX`Y\bcZ^d\]ceb
+WcYX`fgh
+WXYZX[\]^[X`fih
+`
+`
+WXYZ`jcd]X[Xk
+WXYZ`WXg]e`jcd]X[Xk
+lXjX[XbmX
+%
+N
+ONN
+PNNN
+PONN
+ON
+SN
+TN
+UN
+i\dm^d\]Xk`\bk`YX\g^[Xk`ln_`]^aX`Y\bcZ^d\]ceb
+WcYX`fgh
+ln`foh
+`
+`
+ln`jcd]X[Xk
+ln`WXg]e`jcd]X[Xk
+%
+N
+ONN
+PNNN
+PONN
+PO
+pN
+pO
+QN
+QO
+qn_`]^aX`Y\bcZ^d\]ceb
+WcYX`fgh
+qn`fYr`nps`t`u`r\gh
+`
+`
+qn`jcd]X[Xk
+lXjX[XbmX
+%
+%
+%
+L!<#535%52!,3+2$%/,8#77!-#/'%#'%-2562+!-3+2M%=v%D)%
+%
+*35#$#-@M%%5(%HI.%(!,%
+%
+9*2%42*!"#/+%#,%w3#-2%,#5#7!+%-/%-*!-%/?%-2,-%G%:*2'%-*2%*35#$#-@%:!,%$28+2!,2$%+!6#$7@=%
+9*2%8//7#'(%/?%-*2%(!,%8!3,2$%4@%8/'-!8-%:#-*%4!+2%,x#'%!'$%2<-+!%-3+4372'82%8!3,2$%4@%-*2%42'$,%
+#,%!66!+2'-=%%
+y4,/73-2%*35#$#-@%#,%5/+2%/+%72,,%3'!??28-2$%4@%-*2%8//7#'(%/?%-*2%-342,=%z27!-#"2%*35#$#-@%
+?/77/:,%/,8#77!-#/',%#'%-2562+!-3+2%!,%2<628-2$=%
+%
+
+
+
+0
+{I
+|0
+  	
+ 
+
+ 
+ 
+  !"#$%&!'(%
+)*+#,-#!'%.!+,,/' 0
+)*!'(1%/2%23/45%6%-/%%.7#' 81,17931,%!%,#-:!-#/'%4*1+1%$1"#;1,%,:<<3=#'(%-*1%<+/-/-=<1%4#-*%(!,%23/4%7!32:';-#/',%<+/"#$#'(%
+!%>?@>AB%!#+23/4%-*!'%$1,#+1$C%D*1%,=,-17%*!,%+1!;*1$%,-1!$=%,-!-1%!-%E%F)%!'$%6%7(%GH.%(!,%
+4*1'%-1,-%#,%,-!+-1$C%
+IJ0
+K!L#7:7%/,;#33!-#/',%!33/41$%;!:,1$%9=%-*1%;*!'(#'(%;/'$#-#/',%!+1M%
+D17<1+!-:+1M%%F)%
+G:7#$#-=M%6%7(%GH.%(!,%
+I0
+N
+ONN
+PNN
+QNN
+RNN
+SNNN
+TQ
+TU
+TR
+TV
+PN
+WXYZX[\]^[X_`a]XZ`bc`defg`Sh`ij`SU`klYbc
+WbYX`man
+WXYZX[\]^[X`mon
+`
+`
+WXYZ`dbe]X[Xp
+WXYZ`WXa]f`dbe]X[Xp
+qXdX[XcrX
+%
+N
+ONN
+PNN
+QNN
+RNN
+SNNN
+hN
+hh
+QN
+Qh
+UN
+Uh
+RN
+o\er^e\]Xp`\cp`YX\a^[Xp`qs_`a]XZ`bc`defg`Sh`ij`SU`klYbc
+WbYX`man
+qs`mtn
+`
+`
+qs`dbe]X[Xp
+qs`WXa]f`dbe]X[Xp
+%
+N
+ONN
+PNN
+QNN
+RNN
+SNNN
+ON
+Oh
+TN
+Th
+us_`a]XZ`bc`defg`Sh`ij`SU`klYbc
+WbYX`man
+us`mYv`sOw`l`k`v\an
+`
+`
+us`dbe]X[Xp
+qXdX[XcrX
+%
+%
+%
+K!L#7:7%71!,:+1$%/,;#33!-#/'%#'%-17<1+!-:+1M%Cx%F)%
+%
+*:7#$#-=M%%7(%GH.%(!,%
+%
+D*1%;/'-+/331+%7!'!(1$%-*1%;*!'(#'(%/:-1+%;/'$#-#/',%4133C%
+D*1%#';+1!,1%#'%71!,:+1$%-17<1+!-:+1%4*1'%-*1%(!,%23/4%#,%#';+1!,1$%#,%1L<3!#'1$%9=%-*1%(!,%
+*!"#'(%,*/+-1+%;//3#'(%-#71%#'%-:9#'(C%
+%
+%
+%
+%
+
+
+
+0
+Hy
+z0
+  	
+ 
+
+ 
+ 
+  !"#$% &'$
+()*"+," &$- *++.& /
+() &'0$.1$12.34$5$,.$6$-7"& 80+07920+$ $+",: ,".&$3)0*0$#0!";0+$+:<<2="&'$,)0$<*.,.,=<0$3",)$' +$12.3$7 21:&;,".&+$<*.!"#"&'$
+ $>?@AB$ "*12.3$,) &$#0+"*0#C$D)0$+=+,07$) +$*0 ;)0#$+,0 #=$+, ,0$ ,$6E$F($ &#$5$7'$GH-$' +$
+3)0&$,0+,$"+$+, *,0#C$
+IJ/
+K L"7:7$.+;"22 ,".&+$ 22.30#$; :+0#$9=$,)0$;) &'"&'$;.&#",".&+$ *0M$
+D07<0* ,:*0M$$F($
+G:7"#",=M$5$7'$GH-$' +$
+I/
+N
+ONN
+PNNN
+PONN
+QR
+QS
+QT
+QU
+VN
+VP
+WXYZX[\]^[X_`a]XZ`bc`defg`PO`hi`PQ`jkYbc
+WbYX`lam
+WXYZX[\]^[X`lnm
+`
+`
+WXYZ`dbe]X[Xo
+WXYZ`WXa]f`dbe]X[Xo
+pXdX[XcqX
+$
+N
+ONN
+PNNN
+PONN
+ON
+OO
+RN
+RO
+SN
+SO
+TN
+n\eq^e\]Xo`\co`YX\a^[Xo`pr_`a]XZ`bc`defg`PO`hi`PQ`jkYbc
+WbYX`lam
+pr`lsm
+`
+`
+pr`dbe]X[Xo
+pr`WXa]f`dbe]X[Xo
+$
+N
+ONN
+PNNN
+PONN
+PO
+tN
+tO
+QN
+QO
+ur_`a]XZ`bc`defg`PO`hi`PQ`jkYbc
+WbYX`lam
+ur`lYv`rtw`k`j`v\am
+`
+`
+ur`dbe]X[Xo
+pXdX[XcqX
+$
+$
+$
+K L"7:7$70 +:*0#$.+;"22 ,".&$"&$,07<0* ,:*0M$CE$F($
+$
+):7"#",=M$$7'$GH-$' +$
+$
+D)0$;.&,*.220*$7 & '0#$,)0$;) &'"&'$.:,0*$;.&#",".&+$3022C$
+D)0$"&"," 2$#0;*0 +0$"&$70 +:*0#$,07<0* ,:*0$3)0&$' +$12.3$"+$#0;*0 +0#$"+$0L<2 "&0#4$+"7"2 *$,.$
+,0+,$E4$3",)$,)0$' +$90"&'$;..20#$2.&'0*$,"70$"&$,)0$,:9"&'+C$$
+$
+$
+$
+$
+$
+$
+
+
+
+/
+Hx
+y/
+ 

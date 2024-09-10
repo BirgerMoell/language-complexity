@@ -1,0 +1,3406 @@
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+1-D Modeling Piezoelectric Injector 
+Hadeel Solaka 
+ 
+1
+Master of Science Thesis Project 
+Stockholm, Sweden 2009 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+1-D Modeling Piezoelectric Injector 
+ 
+by 
+ 
+Hadeel Solaka  
+ 
+ 
+ 
+Master of Science Thesis MMK 2009:2 MFM127 
+KTH Industrial Engineering and Management 
+Machine Design 
+SE-100 44 STOCKHOLM 
+ 
+2
+ 
+ 
+ 
+ 
+ 
+Examensarbete MMK 2009:2 MFM127 
+ 
+1-D Modellering av Piezoelektrisk Injektor 
+ 
+ 
+ 
+ 
+ 
+Hadeel Solaka 
+Godkänt 
+2009-02-04 
+Examinator 
+Hans-Erik Ångström 
+Handledare 
+Hans-Erik Ångström 
+ 
+Uppdragsgivare 
+Scania CV AB 
+Kontaktperson 
+Fredrik Wåhlin 
+ 
+Sammanfattning 
+ 
+Piezo injektorn är modellerad i ett examensarbete på Scania CV AB i Södertälje i GT-Fuel. 
+GT-Fuel är ett simulering program och en del av GT-Suite från Gamma Technology. 
+ 
+Simuleringen för piezo injektor modellen är uppdelade i hydromekaniska system och 
+elektriska system (Piezoelectric element).  I början duplicerades den hydromekaniska 
+modellen från en tidigare modell framtagen i simuleringsprogrammet ”Advance Continuous 
+Simulation Language” (ACSL). Simuleringsresultat från GT-Fuel jämfördes med ACSL, detta 
+gjordes för att verifiera det hydromekaniska systemet. Simuleringsresultatet från den 
+elektriska modellen jämfördes med ett resultat som togs fram från en Simulink modell. Dessa 
+jämförelser visar att simuleringsmodellen överensstämmer till viss del med tidigare gjorda 
+modeller. 
+ 
+Piezoelektrisk elementen i GT-Fuel är enkelt modellerad, som inte täcker alla strömkretsen i 
+detta element. Begränsningen gav ett felaktigt värde på nållyft, det vill säga att modellen 
+genererar ett större nållyft. De piezoelektriska elementen kan modelleras i GT-Fuel genom att 
+använda andra funktioner för att modellera strömkretsen. Men detta skulle ta tid varvid 
+avgränsningar gjordes.  En annan lösning var att koppla GT-Fuel modellen till Simulink 
+modellen, men det var svårt att utföra.  
+ 
+Studier och analys gjordes även kring några av de viktiga parametrar som har inverkan på 
+injektorers prestanda (till exempel; injektorkroppens volym, mynnings diameter och 
+passningsspel). Resultaten visade att ökning av passningsspel diameter påverkade nållyftet, 
+som resulterar i att nålen stängs tidigare. En minskning av mynnings diameter resulteras i 
+ändring av nållyft profilen. Med andra ord, nålstängningen är långsammare för att det tar tid 
+för Control Chamber att återfyllas.   Ökning av injektorkroppens volym påverkade avsevärt 
+injektorprestanda. Utan den fick man en bättre nållyftets kurva.  
+ 
+ 
+3
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2009:2 MFM127 
+ 
+1-D Modeling Piezoelectric Injector 
+ 
+ 
+ 
+ 
+ 
+Hadeel Solaka 
+Approved 
+2009-02-04 
+Examiner 
+Hans-Erik Ångström 
+Supervisor 
+Hans-Erik Ångström 
+ 
+Commissioner 
+Scania CV AB 
+Contact person 
+Fredrik Wåhlin 
+ 
+Abstract  
+ 
+A piezoelectric injector was modeled, in this Master Thesis Project which was carried out at 
+Scania CV AB in Södertälje, in GT-Fuel. GT-Fuel is simulation program from Gamma 
+Technology.  
+ 
+The simulation model for the piezo injector was divided into a hydro-mechanical system and 
+an electrical system (Piezoelectric element). First the hydro-mechanic model was duplicated 
+from Advance Continuous Simulation Language model (ACSL). The simulation results were 
+then compared to the ACSL, to verify that the hydro-mechanical system was modeled 
+correctly. The simulation results for the electrical model were also compared with a Simulink 
+model. Comparison shows that the simulation results correspond with results from other 
+simulations. 
+ 
+The piezoelectric element in GT-Fuel is a relatively simple model, not all of the electrical 
+circuits in the element are covered. This limitation gave an inaccurate value of needle 
+displacement, that is to say it generates too large needle displacement.  The piezoelectric 
+element can be modeled in GT-Fuel by using a couple of functions in order to model 
+electrical circuit. This would take time so therefore some limitations have been made. Another 
+solution would be to couple GT-Fuel to Simulink, but this was difficult to achieve.  
+ 
+A study has been made around some significant parameters (for instance; Injector Body 
+volume, orifice diameter and clearance diameter), which affect injector performance. The 
+results shows that by increasing the clearance diameter affected the needle lift, which caused 
+the needle to close earlier. Decreasing the orifice diameter resulted in changing the needle 
+profile. In other words, the needle closes slower because it takes time to refill the Control 
+Chamber. Increasing the Injector Body volume did not affect injector performance but it gave 
+a better profile for the needle.  
+ 
+ 
+ 
+ 
+ 
+4
+Index 
+ 
+INTRODUCTION ................................................................................................................................................. 7 
+MODELING THE HYDRO-MECHANICAL SYSTEM IN GT-FUEL .......................................................... 8 
+MECHANICAL COMPONENTS ............................................................................................................................... 8 
+Mass .............................................................................................................................................................. 8 
+Ground........................................................................................................................................................... 8 
+Spring ............................................................................................................................................................ 9 
+Damper .......................................................................................................................................................... 9 
+Contact ........................................................................................................................................................ 10 
+MECHANICAL SYSTEM ...................................................................................................................................... 10 
+HYDRAULIC COMPONENTS................................................................................................................................ 11 
+Pipe .............................................................................................................................................................. 11 
+End Environment ......................................................................................................................................... 11 
+Flow Split (Volume) ..................................................................................................................................... 12 
+Leakage ....................................................................................................................................................... 14 
+Orifice .......................................................................................................................................................... 17 
+Valve ............................................................................................................................................................ 18 
+The mechanical flow connection between the volumes and masses ............................................................ 20 
+PIEZOELECTRIC CERAMIC ......................................................................................................................... 29 
+DEFINITION AND HISTORY ................................................................................................................................ 29 
+PIEZO CERAMICS MANUFACTURING AND THEIR CHARACTERISTICS ................................................................... 30 
+PIEZOELECTRIC VOLTAGE ................................................................................................................................. 31 
+TYPE OF PIEZOELECTRIC ELEMENT .................................................................................................................... 35 
+Unimorph ..................................................................................................................................................... 35 
+Bimorphs ..................................................................................................................................................... 35 
+Actuator Stacks ............................................................................................................................................ 36 
+Sandwich Transducers ................................................................................................................................. 36 
+LIMITATION OF PIEZOELECTRIC ELEMENT ......................................................................................................... 37 
+Temperature limitations .............................................................................................................................. 37 
+Voltage Limitations ..................................................................................................................................... 37 
+Mechanical stress limitations ...................................................................................................................... 37 
+IMPORTANT CONSTANT FOR PIEZOELECTRIC ELEMENT ...................................................................................... 38 
+Charge constant........................................................................................................................................... 38 
+Voltage constant .......................................................................................................................................... 38 
+Dielectric permittivity .................................................................................................................................. 39 
+Elastic compliance ....................................................................................................................................... 39 
+Young’s Modulus ......................................................................................................................................... 39 
+Electromechanical coupling factor .............................................................................................................. 40 
+PIEZOELECTRIC ELEMENT IN GT-FUEL ................................................................................................ 41 
+FORCE PIEZO ELECTRIC .................................................................................................................................... 41 
+SIGNAL GENERATOR ......................................................................................................................................... 42 
+VERIFICATION THE PIEZOELECTRIC DISPLACEMENT IN GT-FUEL WITH SIMULINK .......... 43 
+RESULTS AND DISCUSSIONS ....................................................................................................................... 45 
+COMPARING THE HYDRO-MECHANICAL SYSTEM IN GT-FUEL WITH ACSL ....................................................... 45 
+CONCLUSION.................................................................................................................................................... 51 
+REFERENCES .................................................................................................................................................... 53 
+ 
+ 
+5
+Abbreviations 
+ 
+ 
+ 
+ACSL 
+ 
+Advance Continuous Simulation Language 
+ 
+PZT 
+ 
+Lead Zirconate Titanate 
+ 
+ODE 
+ 
+Ordinary Differential Equations 
+ 
+HPL 
+ 
+High Pressure Line 
+ 
+HPC 
+ 
+High Pressure Connection 
+ 
+CFD 
+ 
+Computational Fluid Dynamics 
+ 
+XPI 
+ 
+Extra high Pressure Injection  
+ 
+Tc 
+ 
+Curie Point 
+ 
+6
+Introduction 
+ 
+The demands of making the latest generation of diesel engine more clean and effective are 
+met by using common rail injection systems and more recently piezoelectric injectors.  
+ 
+The common rail injection system is known for it’s controllably. The system’s principle 
+feature is that the injection pressure is independent of engine speed and injected fuel quantity. 
+The system pressure is generated by a high pressure pump and regulated by a pressure control 
+circuit, which is applied to the injector. The fuel is routed from the high pressure port via an 
+inlet passage to the nozzle and via the inlet restrictor into the valve Control Chamber. The 
+valve Control Chamber is connected by the outlet restrictor, which can be opened by a 
+solenoid valve, to the fuel return [1].  
+ 
+The piezoelectric stack/actuator operates on the injector needle motion via hydraulic link, 
+which amplifies the motion to help complete the lift for large injections. It also generates fast 
+opening and closing of the needle. This enables to inject the fuel to the combustion chamber 
+faster (square injection rate profile). 
+ 
+The main focus of this Master Thesis work was to model a piezoelectric injector in GT-Fuel. 
+The mechanical and hydraulic systems were modeled. A study of the piezoelectric ceramic 
+was made. Another challenge was to duplicate the Simulink model to GT-Fuel, if there was 
+enough time left.       
+ 
+Chapter one explains the hydro-mechanical model and piezoelectric element model in GT-
+Fuel. Also this chapter explains how the mechanical and hydraulic systems are connected to 
+the piezo element. 
+ 
+Chapter two covers the study that has been made about the piezoelectric ceramic. This chapter 
+deals with piezoelectric history, function, types and parameter constants.  
+ 
+Chapter three is the verification of piezoelectric displacement.   
+ 
+Finally the last chapter is about the Results and Conclusions, where the results from GT-Fuel 
+were compared to the results from ACSL.   
+ 
+ 
+     
+ 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+7
+Modeling the Hydro-Mechanical System in GT-Fuel 
+ 
+ 
+This capital covers topics related to modeling of the mechanical system, and the interaction 
+between the mechanical and hydraulic systems. The methods of coupling fluid and 
+mechanical systems are discussed.  
+ 
+Mechanical components 
+ 
+The most common used mechanical components are mass and ground in GT-Fuel. In order to 
+connect masses and grounds to each other, connection components are used. Such as; springs, 
+dampers and connection objects, which are explained below.  
+ 
+ 
+Mass 
+ 
+ 
+This object is used to model one-dimensional linear motion of a stiff mass acted upon by 
+external forces. The forces that affect the mass/masses are modeled either by a lookup 
+function object (a xy-table, time and force) or Force template. A reaction force from the 
+ground object affects the mass. Masses in series are connected by springs, damper and contact 
+objects [2]. 
+ 
+The injector is divided into nine masses and some of theses masses are subdivided as well. 
+The masses are; Actuator Retainer (neglected in the model), Stack Housing (neglected in the 
+model), Bellow, Adapter Flange (subdivided into two masses), Upper Plunger (subdivided 
+into two masses), Snubber Valve, Outer Plunger (subdivided into two masses), Refill Valve 
+and Needle (subdivided into three masses).    
+ 
+Sub-masses are connected by a spring and a damper. The spring and damper coefficients are 
+different for different masses. In other words, the elastic modulus E is different. Major masses 
+are connected to each other or to the ground by contact objects and to the hydraulic system by 
+a mechanical flow connection object (based on their construction structure). 
+ 
+Ground 
+ 
+ 
+The Ground object is used to model a ground part with defined displacement (zero or finite 
+value). The Ground, with zero value displacement, works as a stationary component. The 
+Ground like the mass objects, can be connected to mechanical components by spring, damper 
+or/and contact objects.  
+ 
+The arrows linking this object with other mechanical objects, can pointed in two directions 
+(toward the mass and away from the mass). The direction of the arrow decides the reaction 
+forces (if the force is negative or positive), that act on the Ground. The reaction force is 
+positive if the arrow pointed toward the Ground object [2].  
+ 
+ 
+8
+Four Ground objects are used in this model and they all work as stationary components. Two 
+of these work as a start and end point for the injector. The other two work as motion 
+absorbers, where the motion of other components according to the injector construction is 
+diminished.  
+ 
+Spring 
+ 
+ 
+This object is used to apply a spring force that acts between two mechanical components. The 
+spring force can be calculated: 
+ 
+ 
+ 
+ 
+ 
+ 
+(1) 
+p
+s
+F
+x
+x
+k
+F
+−
+−
+=
+)
+(
+2
+1
+Where 
+ 
+Fs is spring force 
+ 
+Fp is spring pretension 
+ 
+k is spring rate 
+ 
+x1 is displacement of component 1 
+ 
+x2 is displacement of component 2 
+ 
+Springs are used to define the material stiffness between the subdivided masses. The spring 
+stiffness is calculated: 
+ 
+ 
+L
+EA
+k =
+ 
+ 
+ 
+ 
+ 
+(2) 
+Where 
+ 
+E is the Young’s Modules of the mass material 
+ 
+A is the cross-sectional area of that part of the mass 
+ 
+L is the length of that part of the mass 
+ 
+The direction of the arrows represents the positive direction. The link arrow always couple 
+object 1 to object 2. The positive force is applied to object 2 and reaction force to object 1. If 
+the calculated force is positive then object 1 is pushing object 2, and if the force is negative 
+then object 1 is pulling object 2.    
+ 
+ 
+Damper  
+ 
+ 
+Damper object is applied between two mechanical components (masses). The damping force 
+can be calculated: 
+ 
+ 
+)  
+ 
+ 
+ 
+(3) 
+(
+2
+1
+x
+x
+C
+Fd
+
+ −
+=
+Where 
+ 
+Fd  is the damping force 
+ 
+C is the damping coefficient 
+ 
+is the velocity of component 1 
+1x
+ 
+is the velocity of component 2 
+2x
+ 
+ 
+9
+The direction of the link arrows between mechanical components represents component 
+numbers and therefore the sign of the force.  
+ 
+ 
+Contact 
+ 
+ 
+Contact objects can be placed between two mechanical components. This object applies a 
+force on the attached parts when the gap between these parts become less than zero, or greater 
+than the maximum gap. This gap can be specified in object table. The force on parts will be of 
+the opposite sign. The direction of the linking arrow will represent the force direction [2]. 
+ 
+ 
+Mechanical system  
+ 
+ 
+The mechanical system equation of movement can be solved by using the general ordinary 
+differential equations (ODE) of motion as defined below. For free linear motion of a body, 
+single degree of freedom, the equation can be written: 
+ 
+ 
+ 
+m
+F
+dt
+x
+d
+=
+
+ 
+ 
+ 
+ 
+ 
+(4) 
+ 
+x
+dt
+dx
+
+=
+ 
+ 
+ 
+ 
+ 
+(5) 
+Where 
+ 
+F  is the force action on the body 
+ 
+ is the velocity of the body 
+x
+ 
+x  is the displacement of the body 
+ 
+m is the mass of the body 
+ 
+ The motion of a system consists of a mass, spring and a damper, see Figure 1, can be written: 
+     
+ 
+ 
+Figure 1. Single degree of freedom for a mechanical system consisting of mass, damper and 
+spring. 
+ 
+10
+From the force equation (4), spring force equation (1) and damper force equation (3) the 
+mechanical system equation (6) can be derived: 
+ 
+Force equation can be written: 
+ 
+ 
+x
+m
+F
+
+=
+ 
+Fs in Figure 1 is the force applied on the system 
+ 
+ 
+piezo
+s
+F
+F =
+ 
+gives⇒ 
+ 
+piezo
+F
+x
+c
+kx
+x
+m
+=
++
++
+
+
+ 
+ 
+ 
+ 
+(6) 
+Hydraulic Components 
+ 
+The most common components are; pipes, flowsplits, and end-environments. Flow 
+connections are: orifice, valves, leakage and mechanical flow connections.  
+ 
+Pipe 
+ 
+ 
+The pipe object is used to model a round and straight pipe. This object models flow through 
+tubes with either constant or tapered diameter.  
+ 
+In the piezo model, three pipes are used; one of these is the high pressure line (HPL), which 
+connects Rail pressure (End environment) with high pressure connections (HPC) pipes. The 
+HPCs are linked to the Injector Body volume. 
+ 
+The flow model involves solving the Navier-Stokes equations, namely the conservation of 
+continuity, momentum and energy equations. These equations are solved in one dimension, 
+which means that all quantities are averages across the flow direction [2].  
+ 
+End Environment 
+ 
+ 
+This object describes end environment boundary conditions of pressure, temperature and 
+composition.  
+ 
+There are three End Environment objects used in the injector model; Rail Pressure, Drain and 
+Cylinder Pressure. These three objects have same boundary temperature and composition but 
+the pressure is different for the drain, cylinder and Rail pressure.  
+ 
+As mentioned previously, the End Environment for Rail pressure is connected to the pipes 
+(HPL and HPC), which are attached to the Injector Body Volume. The End Environment for 
+the Drain pressure is connected to the Drain Volume. The End Environment object for the 
+Cylinder pressure is connected to the Sac Pressure Volume via Injection Nozzle Connection.  
+ 
+ 
+ 
+ 
+ 
+11
+Flow Split (Volume) 
+ 
+ 
+This object is used to describe a volume connected to one or more flow components. When a 
+finite volume has several openings (ports) it forms a flow-split. The solution of the flow-split 
+is similar to the pipe. For the momentum solution, the flow-split geometry is characterized for 
+each port by its expansion diameter, characteristic length and the port orientation [2]. 
+ 
+Four Flow Split components are used to model the four volumes in the injector. These four 
+volumes are connected to each other (depending on how the injector is designed), either by 
+leak, valve or orifice connections. They are connected to the mechanical system by 
+mechanical flow connections.  
+ 
+The flow split general object can be used to describe any flow-split geometry. This type 
+requires the most information to define the flow-split geometry, but it is also the most 
+flexible. This object can have as many ports as needed to model the connections. The 
+diameter, length and the direction angles of each port define the geometry of the flow-split. 
+The direction angles are defined with respect to a coordinate system X, Y, Z. 
+ 
+Therefore the four Volume ports can be explained below 
+ 
+Drain Volume 
+ 
+This object is used to describe the drain volume geometry and its connection to the other 
+components. First the coordinate system is defined for the system (injector). The Drain 
+Volume’s initial condition, inside the volume, is defined as low pressure.  
+ 
+ 
+Table 1 shows the ports that are connected to the Drain Volume. 
+ 
+Table 1. Port Data for the Drain Volume.  
+Port number 
+1
+2
+3
+Angle x‐axis 
+90
+0
+90
+Angle y‐axis 
+180
+90
+180
+Angle z‐axis 
+90
+90
+90
+Characteristic length [mm]
+7.4
+11.9
+2
+Expansion diameter [mm]
+2.4
+1.8
+5
+ 
+Port (1) represents the connection between the Drain Volume and Injector Body Volume via 
+Annual Leak Connection.  
+Port (2) represents the connection between Drain Volume and End Environment for Drain. 
+Port (3) represents the connection between Drain Volume and the Upper Plunger (Top) mass 
+via a Mechanical Flow Connection.  
+ 
+ 
+12
+Injector Body Volume 
+ 
+This object describes the Injector Body Volume geometry and its connections to the other 
+components in the injector, see Table 2. The initial boundary condition for its pressure is 
+defined as high pressure. The Injector Body volume extends from the needle tip to the Sleeve 
+around all injector’s parts.  
+ 
+Table 2 shows the ports that are connected to other components.  
+ 
+Table 2. Port Data for Injector Body Volume.  
+Port number 
+1 
+2 
+3 
+4
+5
+6
+7
+8
+9 
+10 
+11
+Angle x‐axis 
+90 
+90 
+90 
+90
+90
+‐72
+90
+180
+180 
+90 
+90
+Angle y‐axis 
+180
+0 
+180  0
+180
+‐18
+180
+90
+90 
+0 
+0
+Angle z‐axis 
+90 
+90 
+90 
+90
+90
+90
+90
+90
+90 
+90 
+90
+Char. length 
+21.6
+1.7  7.8 
+6
+1.4
+5.5
+2.5
+1.3
+2.7 
+3 
+64
+Exp. Diameter 
+3.35
+3.2  9.6 
+2.4
+1.8
+10
+3.8
+3
+4.8 
+5.15 
+5.41
+ 
+ 
+Port (1) connects to the Sac Volume via the nozzle seat valve. The direction of the arrow is 
+important here, because this define the direction of the flow. 
+Port (2) connects to the Hydraulic Volume via an annual leak connection. The link arrow 
+defines the direction of the leakage, where the fluid leaks from the hydraulic volume to the 
+Injector Body volume. 
+ Port (3) connects to the Hydraulic Volume via an annual leak connection. The link arrow 
+direction is defined as for port (2). 
+Port (4) connects to the Drain Volume via an annual leak connection. The link arrow goes 
+forwards the Drain volume.  
+Port (5) connects to the Control Chamber Volume via an orifice connection. The orifice 
+connection represents the orifice in the Snubber valve. The flow direction goes from this 
+towards the Control Chamber Volume.  
+Port (6) connects to the Rail pressure (end environment) via pipes (HPL and HPC) and orifice 
+connections.  
+Port (7) connects to the Snubber valve mass via a mechanical flow connection. The link arrow 
+goes towards the Snubber valve mass.  
+Port (8) connects to the Control Chamber Volume via the valve actuated lift area connection. 
+The flow goes towards the Control Chamber Volume.  
+Port (9) connects to the Hydraulic Chamber Volume via the valve actuated lift area 
+connection. The flow goes towards the Injector Body volume.  
+Port (10) connects to the Refill valve mass via a mechanical flow connection. The link arrow 
+goes towards the Refill valve mass.  
+Port (11) connects to the Upper Plunger mass (Bottom) via a mechanical flow connection. 
+The link arrow goes towards the mass.    
+ 
+ 
+13
+The body volume has a big influence on injector operation. By increasing the Injector Body 
+Volume, the needle lift and injection rate shapes will be improved.  
+Sac Volume 
+ 
+This Volume is modeled by a Flow-split general object. The object describes the Sac 
+geometry and the ports that connect the other components, see Table 3. The initial pressure 
+boundary is set to the rate pressure.  
+ 
+Table 3 shows the ports and their respective angel, which are connected to the other 
+components in the Injector Body. The angles are described according to the coordinate 
+system.  
+ 
+Table 3. Port Data for the Sac Volume. 
+Port number
+1
+2
+Angle x‐axis
+90
+90
+Angle y‐axis
+0
+180
+Angle z‐axis
+90
+90
+Characteristic length
+0.8
+0.744
+Expansion diameter
+3.3466
+0.6
+ 
+ 
+Port (1) connects to the Injector Body Volume via the valve actuated lift area connection 
+(Nozzle seat). The flow goes from the Injector Body volume to the sac volume.  
+Port (2) connects to the Cylinder Pressure (End Environment) via the injection nozzle 
+connection.  
+ 
+Leakage 
+ 
+ 
+The leakage can be defined as the lost liquid/gas from one volume to another due to the 
+construction of the structure and pressure differences between these volumes. 
+  
+It can be classified into two types; laminar flow and turbulent flow. Laminar flow occurs 
+when a fluid flows in parallel layers with no disruption between the layers and is 
+characterized by high momentum diffusion, low momentum convection and pressure and 
+velocity is independent of time. The turbulent flow has the opposite characteristics.  
+ 
+Since the flow in the injector leakage is considered to be slow, it is treated as a laminar flow. 
+This object models the laminar leakage flow past a cylindrical mass in a guide, sleeve or 
+barrel where the clearance is a fraction of micron. The model takes into account the pressure 
+differential across the element and the effect of the relative motion of the rod with respect to 
+the guide. 
+ 
+ 
+14
+Reynolds number (Re) is an important factor in the equations that describe whether flow 
+conditions lead to laminar or turbulent flow. If Re is less than 500, the flow is considered to 
+be laminar. There are two types of laminar flow; non-viscous and viscous. 
+  
+The leakage annual radius is created by two cylindrical bodies assembled into each other. 
+These cylindrical bodies are assumed to be centered, when the annual leakage is modeled.    
+Leakage volumetric leak rate is calculated using a Poiseuille/Couette flow solution for flow 
+between parallel plates, and is valid when δ<<D [2]. 
+ 
+ 
+ 
+ 
+⎟⎟
+⎠
+⎞
+⎜⎜
+⎝
+⎛
++
+⋅
+Δ
+⋅
+⋅
+⋅
+=
+wall
+U
+L
+P
+D
+Q
+2
+1
+12
+2
+μ
+δ
+δ
+π
+ 
+ 
+ 
+(7) 
+Where 
+ 
+D is the diameter of the annulus  
+ 
+Q is the volume flow rate 
+ 
+δ is the thickness of annular passage 
+ 
+ΔP is the pressure differential 
+ 
+μ is the dynamic viscosity 
+ 
+L is the length of annular passage 
+ 
+Uwall is the relative velocity between piston and bore 
+ 
+The Clearance Diameter is calculated from the differences between the outer cylinder area 
+and the inner cylinder area.  
+ 
+There are four leakages in the piezo injector; Injector Body volume and drain volume, Injector 
+Body volume and Hydraulic Chamber volume and Control Chamber volume and Hydraulic 
+Chamber volume, see Figure 2.  
+ 
+ 
+Drain 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 2. The four leakages from different volumes.  
+ 
+ 
+Injector Body
+Control Chamber
+Volume object 
+Leak object 
+Hydraulic Chamber
+ 
+15
+Leakage between Injector Body volume and drain volume 
+ 
+The leakage between the Injector Body volume and drain volume is due to the pressure 
+differences in the volumes.  
+ 
+In order to calculate the volume flow rate through the annular passage, some parameters in 
+that area are defined/ calculated. These parameters/values are inserted to equation (7). Then 
+the values have been calculated according the injector structure.  
+ 
+The relative velocity of the fluid is assumed to be zero because the wall (sleeve and adapter 
+flange) does not move. The velocity is set to zero for all the leakage objects.  
+ 
+ 
+Leakage between Injector Body volume and Hydraulic Chamber volume 
+ 
+There are two leakages between these volumes; one between the needle and the Refill valve, 
+the other between the Outer Plunger (inside) and the Outer Plunger (outside). 
+ 
+The parameters for the leakage between the needle and the Refill valve, as in the previous 
+section, can be calculated from equation (7).  
+ 
+The relative velocity of the fluid is assumed to be zero because the wall of the Refill valve is 
+assumed to be fixed.  
+ 
+ 
+The parameters for the leakage between the Outer Plunger (inside) and Outer Plunger 
+(outside), as before can be calculated. 
+The relative velocity of the fluid is assumed to be zero because the wall of the Outer Plunger 
+(outside) is fixed.  
+ 
+Leakage between Control Chamber volume and Hydraulic Chamber volume 
+ 
+The leakage between volumes is due to the pressure differences. As before the parameters can 
+be calculated from equation (7) 
+ 
+It is worth mentioning that the annular clearness radius is one of the important parameters. 
+This parameter has been studied more closely by making it a variable. This will be a good 
+help for running many cases in GT-Fuel and comparing each cases to the original value. 
+These results can be seen in the chapter Results and Discussions. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+16
+Orifice 
+ 
+ 
+ 
+The orifice in the Snubber valve has several functions: 
+ 
+-To damp the needle velocity. 
+-To increase the line pressure. 
+-To decrease the flow through a line. 
+-To increase the fluid velocity in a line.  
+ 
+This object is placed between two flow components (volumes). As a fluid passes through the 
+orifice there is a pressure drop from one side to the other (upstream-downstream). The 
+pressure drop can be used to calculate the flow rate of the fluid through the orifice, if the 
+coefficient of contraction and orifice area are known.  
+ 
+With the momentum equation the flow rate through the orifice can be calculated. Newton 
+second law can be written “The Rate of change of momentum of a body is equal to the 
+resultant force acting on the body and takes place in the direction of the force.” 
+ 
+ 
+P1, V1, A1 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+P2, V2, A2 
+ 
+Figure 3. Shows the flow through Orifice in the Snubber valve.  
+ 
+From Bernoulli’s equation and continuity equation the flow through the orifice can be 
+calculated, see Figure 3. 
+Assume that the there is a steady flow which is non-uniform flowing in a stream tube: 
+ 
+Bernoulli equation 
+2
+2
+2
+1
+2
+2
+1
+2
+1
+1
+V
+P
+V
+P
+ρ
+ρ
++
+=
++
+  
+ 
+ 
+(8) 
+Where: 
+P is absolute pressure [Pa] 
+V is velocity [m/s] 
+ρ is the density of the fluid [kg/m3] 
+ 
+ 
+The Continuity equation 
+ 
+2
+2
+1
+1
+u
+A
+u
+A
+Q
+=
+=
+ 
+ 
+ 
+ 
+(9) 
+ 
+2
+2
+2
+1
+1
+1
+u
+A
+u
+A
+dt
+dm
+m
+ρ
+ρ
+=
+=
+=
+
+ 
+ 
+ 
+(10) 
+ 
+ 
+All these calculations are made in GT-Fuel. There are some parameters that must be added, 
+for example; diameters, forward discharge coefficient, reverse discharge coefficient and 
+ 
+17
+thickness. If the diameter and thickness are known and one of the axis parameters are known, 
+the other parameter can be calculated from Figure 4.  
+ 
+ 
+ 
+ 
+ 
+Figure 4. Effective discharge coefficient (geometry+friction) for orifice with thickness. 
+D is the diameter and L is the thickness [2].  
+ 
+ 
+ 
+ 
+Valve 
+ 
+ 
+This object is used to model the flow area of a valve, it connects two flow components. The 
+valve is defined when high pressure is placed to the valve inlet (determined by the direction of 
+the links/arrows), this causes the valve to open. On the other hand the valve will close because 
+the valve reacts on the mass motion. From the force balance on the valve, its lift can be 
+calculated. This object takes in to consideration the motion of the valve mass and the 
+discharge coefficients are specified as the function of the valve lift [2].  
+ 
+Three valves are used in this model: 
+ 
+ 
+Nozzle Seat  
+  
+The Nozzle seat is modeled by a valve object (ValveActuLiftAreaCon). This object is placed 
+between Injector Body Volume and Sac Volume. It is also connected to needle mass (bottom 
+part) by a sensor, gain and actuator (see Figure 5). The sensor connection will sense the 
+motion of the needle and then transmit the motion via a gain to the actuator.  
+ 
+18
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 5. The scheme over the Nozzle valve connection. 
+Needle 
+Inj.Body 
+Sac 
+Sensor 
+Gain 
+Actuator 
+ 
+In order to calculate the effective flow area as function of the lift, the discharge coefficient is 
+taken into account. CFD calculation was used to estimate the discharge coefficient and the 
+effective area based on the nozzle seat geometry.  
+ 
+Snubber Valve 
+ 
+The Snubber valve is modeled in the same way as the nozzle seat. It is placed between 
+Injector Body Volume on the valve inlet and Control Chamber on the valve outlet. It is 
+connected to the Snubber valve mass as mentioned previously. The Snubber valve function is 
+to damp the needle oscillation.  
+ 
+The data that was used in this object: 
+ 
+ 
+  
+DR
+DF
+C
+C
+=
+Where 
+ 
+ is the forward discharge coefficient  
+DF
+C
+ 
+ is the reverse discharge coefficient 
+DR
+C
+ 
+The mass flow from the Injector Body volume affects the valve area and causes valve lift. The 
+area is zero when the valve displacement is zero and the area is a fraction of mm2 when the 
+valve displacement is opened.  
+ 
+Refill Valve 
+ 
+The Refill valve is connected the Injector Body Volume and Hydraulic Chamber Volume. 
+This object is connected to the valve mass via sensor, gain and actuator objects. The Refill 
+valve function is to provide the Hydraulic Chamber with fuel that is lost during activation due 
+to the leakage. This also reduces the wear between the Outer Plunger and the piezo stack.  
+ 
+The data that is used in this object: 
+ 
+ 
+  
+DR
+DF
+C
+C
+=
+ 
+ 
+ 
+19
+Where 
+ 
+ is the forward discharge coefficient  
+DF
+C
+ 
+ is the reverse discharge coefficient 
+DR
+C
+ 
+The mass flow from the Injector Body volume affects the valve area and causes valve lift. 
+When the valve displacement is zero the area is zero and when the valve is opened the area is 
+a fraction of mm2. 
+ 
+The mechanical flow connection between the volumes and masses 
+ 
+  
+The mechanical flow connection is a template which is used in GT-Fuel to connect 
+mechanical and flow components. This models the interactions between dynamic mechanical 
+systems and flow systems. This object communicates information between the flow and 
+mechanical systems in the following way: The pressure applied into a mass creates a force 
+and vice versa. For systems with the translational (linear) motion, as in the Piezo-injector, the 
+force is applied to the connected mass. Displacement of the mass results in a change in the 
+flow chamber volume [2].  
+ 
+The force that will be applied to the mass can be calculated: 
+ 
+eff
+A
+P
+F
+⋅
+=
+ 
+ 
+ 
+ 
+ 
+(11) 
+Where 
+F is the force [N] 
+P is the pressure [Pa] 
+Aeff is the effective area [m2] 
+ 
+Effective area: the area which multiplies the pressure to calculate a force on the mechanical 
+component. This area is used to compute a volume change in the attached flow component 
+based on the displacement of the attached mechanical component. 
+ 
+The Refill Valve 
+ 
+There are two cases for the Refill Valve; closed and opened. 
+ 
+a. The Refill Valve is closed 
+ 
+When the Refill Valve is closed, see Figure 6, the effective area from the Hydraulic 
+Chamber volume (the blue arrows) and Injector Body volume (the red arrows) onto the 
+top respectively on the bottom of the valve can be calculated: 
+ 
+I.  Effective area, the force/pressure from Hydraulic Chamber volume on the top of 
+the valve (No.1 blue arrows) and a small part of the bottom valve, see Figure 6, 
+where the bottom effective area is defined by the dashed black line (No.2).  
+ 
+The effective area No.2 blue is neglected (the area that defined by the contact point x 
+between the Refill valve and the Outer Plunger (inner)), see Figure 6. This is 
+ 
+20
+because the forces on the specified part of mass in different directions create a 
+pressure force where the total force is zero.  
+ 
+ 
+II. Effective area, the force/pressure from Injector Body volume on the bottom of the 
+Refill valve (No.1 red arrows), see Figure 6, will try to move the Refill valve 
+upwards, in order to refill the Hydraulic Chamber with fuel that have been lost 
+during the compression of Hydraulic Chamber.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Hydraulic Chamber 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 6. The area flow from the Injector-body volume (red arrows) and from the Hydraulic 
+Chamber volume (blue arrows) on the Refill Valve when it is closed.  
+ 
+ 
+ 
+ 
+b. The Refill Valve is opened 
+ 
+The Refill valve’s job is to fill the Hydraulic Chamber with fuel because of lost fuel due to 
+leakage. When the Refill valve is opened the pressure from the Hydraulic Chamber on the 
+effective area of the top of the valve will be the same as the pressure/force from the 
+Injector Body on the bottom of the valve.  
+ 
+ 
+I. The pressure from the Hydraulic Chamber on the effective area of the top of the 
+valve. As in the previous section (the valve is closed), the effective area No.1 
+blue (blue arrows) can be calculated in the same way. Also area No.2 blue is 
+neglected for the same reason as before.  
+ 
+ 
+II. The pressure from the Injector Body on the bottom effective area of the valve 
+will increase when the valve is opened, see Figure 7. This will happen because of 
+InjBody  
+1
+2 
+2
+x
+x
+1
+ 
+21
+the pressure differences between the Hydraulic Chamber and the Injector Body. 
+The pressure in Hydraulic Chamber will decrease when the needle closes (return 
+to its initial position). This difference in pressure will help the valve to open and 
+fill the Hydraulic Chamber with the fuel that has been lost through leakage. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Hydraulic Chamber 
+ 
+1
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 7. The area flow from the Injector-body volume (red arrows) and from the Hydraulic 
+Chamber volume (blue arrows) on the Refill Valve when it is opened.  
+ 
+The Snubber Valve 
+ 
+There are two cases for the Snubber valve, closed and opened. 
+ 
+a. The Snubber valve is closed 
+ 
+When the Snubber valve is closed, see Figure 8, the pressure from the Injector Body affects 
+on the top of the valve No.1 blue (blue arrows). The pressure from the Control Chamber 
+affects on the corners/curves No.2 (red arrows) and also on the bottom of the valve No.1 (red 
+arrows). 
+ 
+I. Effective area, the pressure from the Injector Body onto the top of the Snubber 
+valve, see Figure 8, area that market with No.1 blue (blue arrows). This pressure 
+will try opening the valve to the maximum.  
+ 
+II. Effective area, the pressure from the Control Chamber volume onto the bottom 
+of the Snubber valve No.1 red (red arrows). The pressure on this area will try to 
+keep the valve in touch with Upper-Plunger.  
+ 
+The effective area; the area that is surrounded with the dashed rectangle No.2 red 
+(red arrows) is neglected. This is because the area influenced by the same pressure 
+(Control Chamber volume). The total summation of the pressure which affects this 
+area is zero. 
+InjBody  
+2
+2
+1
+ 
+22
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 8. The force on the area flow (effective area) from the Injector Body (blue arrows) on 
+the top of the Snubber valve and from the Control Chamber on the bottom of the Snubber 
+valve when the valve is closed. 
+ 
+b. The Snubber valve is closed 
+ 
+When the valve is open, see Figure 9, the pressure from the Injector Body on the top effective 
+area of the valve No.1 blue (blue arrows) will increase from the previous case. Also the 
+bottom effective area No.1 red (red arrows) which affects by the Control Chamber volume 
+will increase. These two effective areas will be the same size/dimension. 
+ 
+ 
+I. Effective area, the pressure from the Injector Body onto the top of the valve (red 
+arrows), can be calculated by  
+ 
+II. Effective area, the pressure from the Control Chamber onto the bottom of the 
+valve can be calculated by  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+1
+2
+2
+1
+InjBody 
+Control Chamber 
+ 
+23
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 9. The force on the area flow (effective area) from the Injector Body (blue arrows) on 
+the top of the Snubber valve and from the Control Chamber on the bottom of the Snubber 
+valve when the valve is opened. 
+ 
+ 
+Needle 
+ 
+There are two volumes which affect the needle mass; Hydraulic Chamber and Control 
+Chamber, see Figure 10.  
+ 
+I. The force from Hydraulic Chamber acts on the needle effective area, see Figure 
+10 (red arrows). This force attempts to lift the needle due to high pressure 
+created by Outer-Plunger downward movement.  
+ 
+ 
+ 
+II. The force from Control Chamber volume acts on the needle effective area, see 
+Figure 10 (blue arrows). The force tries to close the needle, after the Upper-
+Plunger returns to its initial position the pressure in both chambers drops 
+therefore closing the needle. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+1
+1
+InjBody 
+Control Chamber 
+ 
+24
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 10. The force from the Control Chamber volume on the top of the effective area of the 
+Needle (blue arrows) and from the Hydraulic Chamber on the bottom of the effective area of 
+the Needle (red arrows). 
+ 
+ 
+It is worth mentioning that there is another force which lifts the needle. The force from the 
+needle seat has been calculated from CFD simulations. These simulations depend on nozzle 
+seat and needle-tip geometry. The discharge coefficients and the effective area are also 
+calculated. 
+ 
+The discharge coefficient can be defined as: “In a nozzle or other constriction, the ratio of the 
+mass flow rate at the discharge end of the nozzle to that of an ideal nozzle which expands an 
+identical working fluid from the same initial conditions to the same exit pressure” [3]. 
+ 
+The discharge coefficient can be determined from the Bernoulli equation and the Continuity 
+equation 
+ 
+ 
+2
+2
+1
+1
+A
+V
+A
+V
+q
+m
+⋅
+⋅
+=
+⋅
+⋅
+=
+⋅
+=
+ρ
+ρ
+ρ
+
+ 
+ 
+ 
+(12) 
+Where 
+ 
+is the mass flow rate [kg/s] 
+m
+q is the flow rate [m3/s] 
+ 
+V is the flow velocity [m/s] 
+ 
+A is the flow area [m2] 
+ 
+ρ is the density of the fluid [kg/m3] 
+ 
+Hydraulic Chamber 
+Control Chamber 
+1
+1 
+ 
+25
+By combining the Bernoulli equation with the Continuity equation and to account for the 
+frictional and turbulence related losses in the nozzle orifice the discharge coefficient is 
+introduced.  
+ 
+ 
+ρ
+π
+ρ
+P
+D
+C
+m
+D
+Δ
+⋅
+⋅
+⋅
+⋅
+⋅
+=
+2
+)
+4
+(
+2
+
+ 
+ 
+ 
+(13) 
+Where 
+ 
+D is the reference diameter [m] 
+ 
+CD is the discharge coefficient  
+ 
+ΔP is the pressure drop [Pa] 
+ 
+ 
+ 
+From the discharge coefficient, effective area and Injector Body pressure the force can be 
+calculated. 
+ 
+There are two curves that describe the needle force as function of needle lift. These forces are 
+for the low needle lift and high needle lift. The first one is for the low lift which indicates that 
+the flow velocity is high and thus the pressure is low. This due to the Bernoulli and Continuity 
+equations, the velocity of the fluid will be at its highest and the pressure at it’s lowest in “vena 
+contracta”. After the vena contracta the velocity will drop. The pressure recovers to a pressure 
+level lower than the pressure before the obstruction and adds a heat loss to the flow.  
+ 
+Outer Plunger 
+ 
+The Outer Plunger is a very important part of the injector, since it produces a pressure 
+increase in the Hydraulic Chamber. The increasing pressure acts on the needle area that 
+produces the needle opening.  The Outer Plunger is affected by the other forces from the other 
+volumes. 
+ 
+I. The force acts on the lower part of Outer Plunger from Hydraulic Chamber. This 
+area increases the pressure in the Hydraulic Chamber because of the downward 
+motion of the Outer Plunger (caused by Piezo stroke). This is the heart of the 
+injector, because the mechanical force converts to a hydraulic pressure acting on 
+the needle.  
+ 
+ 
+II. The forces from the Injector Body and from the Control Chamber volumes act 
+on the Outer Plunger are replaced by only one force. This is to simplify the 
+model in GT-Fuel. In order to keep the system in balance, a force taken from the 
+Injector Body volume acts on the Upper Plunger. This will be discussed in detail 
+in the next section. 
+ 
+It is worth mentioning that the effective area for the Outer Plunger from the 
+Injector Body and Control Chamber can be calculated. 
+ 
+i. 
+From Injector Body 
+ 
+ii. 
+From Control Chamber 
+ 
+26
+It was mentioned above that these forces were replaced by only one force, from the Injector 
+Body, acting on the Outer Plunger.  
+ 
+Upper Plunger 
+ 
+The Upper Plunger is a link between the Piezo stack and the Outer Plunger. Its job is to 
+transmit the Piezo force to the Outer Plunger. There are two volumes which forces the Outer 
+Plunger to move upwards or downwards, see Figure 11. These forces are from drain volume 
+(red arrows) and from Injector Body volume (blue arrows). Also it is assumed that the spring 
+force which supports the Sleeve is too small. Therefore the force from the spring is neglected 
+on the Upper Plunger.  
+ 
+I. The force on the upper part effective area (red arrows) of the Upper Plunger 
+from drain volume. 
+ 
+ 
+ 
+II. The force (from the Injector Body volume) acts on the lower part of the Upper 
+Plunger (blue arrows). The pressure (green arrows) applied onto the Upper 
+Plunger before the contact point x is neglected. This is because the total force 
+will be zero (sum of the forces in all direction on that part).  The remaining 
+effective area can be calculated. 
+ 
+As it was mentioned in previously the forces from the Injector Body on the Outer 
+Plunger and Upper Plunger will be simplified and replaced as on force from the 
+Injector Body onto the lower part of the Upper Plunger. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+27
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 11. The force acts on the top of the Outer Plunger from drain volume (red arrows) and 
+on the lower part of the Outer Plunger from the Injector Body volume (blue arrows). 
+1
+ 
+Drain 
+InjBody 
+InjBody 
+x 
+x 
+x 
+x 
+Contact Point 
+Contact Point 
+ 
+28
+Piezoelectric Ceramic  
+ 
+Definition and History 
+ 
+ 
+Ceramic materials and single crystals showing ferroelectric behavior are being used in many 
+applications in electronics and optics. A large number of applications of ferroelectric ceramics 
+also exploit properties that are an indirect consequence of ferroelectricity, for example 
+dielectric, piezoelectric, pyroelectric and electro-optic properties [4]. In the beginning the 
+pyroelectric was discovered and by making this discovery, piezoelectricity and ferroelectricity 
+(which is one of the piezoelectric characteristic) were discovered and used.    
+ 
+In the mid-18th century the pyroelectric effect was studied by Carolus Linnaeus and Franz 
+Aepinus. By pyroelectric effect means those materials that generate an electrical potential in 
+response to temperature change. René Just Haüy and Antoine César Beccquerel suggested a 
+relationship between electric charge and mechanical stress. 
+ 
+Piezoelectricity was discovered by Pierre and Jacques Curie in 1880. Piezoelectricity is the 
+ability of some materials to interact between the mechanical and electrical systems. In other 
+words, electricity generated by mechanical pressure on certain crystals (such as quartz or 
+Rochelle Salt); alternatively, electrostatic stress produces a change in the linear dimensions of 
+the crystal. These materials are of certain crystalline structure including natural crystals of 
+Quartz, Rochelle Salt, Tourmaline and manufactured ceramic such as Barium Titanate and 
+Lead Zirconate Titanates (PZT) [5 and 6].  
+ 
+The direct piezoelectric effect is when a force is applied to those materials which then 
+produce a voltage proportional to the force. The opposite effect is when an electric field is 
+applied to those materials. Then the crystals become strained and the change in shape of their 
+structure will produce dimensional changes in the material [5 and 6].  
+ 
+In 1921 Ferroelectricity phenomena was discovered. Ferroelectricity called Seignette 
+electricity as Seignette or Rochelle Salt (RS) was the first material found to have ferroelectric 
+properties. All ferroelectrics are piezoelectric and pyroelectric.  
+ 
+The word Piezo is derived from the Greek piezein which means to squeeze or press. Also the 
+word Pyro is derived from Greek which means fire.  
+ 
+ 
+   
+ 
+29
+Piezo ceramics manufacturing and their characteristics  
+ 
+ 
+Piezoelectric materials are widely used in many applications in both technology and science. 
+These materials are ceramic materials and single crystals showing ferroelectric behavior. The 
+piezoelectric injector is made of ceramic (Lead Zirconate Titanate (PZT)). The PZT belongs 
+to the family of ceramics with perovskite crystal structure, which is made up of small 
+tetravalent metal ions such as titanium or zirconium [5 and 6]. 
+ 
+The Piezoelectric ceramic is prepared from a fine powder of component metal oxides (Pb, Zr, 
+Ti…etc.) which are mixed in specific quantities and then heated to form a homogeneous 
+powder. This powder is then mixed with an organic binder and formed into structural 
+elements having the desired shape, for example a discs, plates etc. These elements are fired or 
+heated according to a specific temperature and time program, and during this process the 
+material obtains a dense crystalline structure [6].  
+ 
+Ferroelectric ceramic (PZT) are represented by the formula ABO3, Perovskite crystalline 
+structures where the “A” atom sits at cube corner positions (0, 0, 0) which denotes large 
+divalent metal ion such as Pb. “B” atom sits at body center position (½, ½, ½) which denotes 
+smaller tetravalent ion such as Ti or Zr, and the oxygen atoms sit at face centered positions 
+(½, ½, 0), see Figure 12. 
+  
+ 
+Figure 12. Perovskite crystalline structure. 
+  
+In studying the physical properties of crystals, the orientations of the symmetry elements and 
+their positions are important. The crystalline structure of materials can be classified into two 
+types: noncentrosymmetric and centrosymmetric. A noncentrosymmetric structure has 
+anisotropic characteristics, this means that the properties of the material differ according to 
+the direction of the measurement. Piezoelectricity is anisotropic characteristic. Its structure 
+provides a net electric dipole moment within the crystal unit cell [7].  
+ 
+All ferroelectric materials have a transition temperature called the Curie point (TC). Above the 
+critical temperature, the crystalline structure has a centrosymmetric and below that point has 
+the non centrosymmetric.  
+ 
+By applying a strong direct electric field to a poled piezoelectric material which is composed 
+of many dipoles randomly oriented (material called isotropic and does not exhibit the 
+ 
+30
+piezoelectric effect). The material expands along the axis of the field and contracts 
+perpendicular to that axis. The electric dipoles will align in the same direction or parallel to 
+the electric field direction. After poling the material has a remnant polarization, see Figure 13.    
+ 
+ 
+Figure 13. Polarizing a piezoelectric ceramic [6].  
+ 
+Piezoelectric Voltage 
+ 
+ 
+To identify direction in a piezoelectric element, three axes presented as 1, 2 and 3 or x, y and 
+z respectively are used. Since the piezoelectric materials are anisotropic; their electrical, 
+mechanical and electromechanical prosperities differ along different directions. Hence the 
+three axes are used. The piezoelectric element is not piezoelectric before poling. The direction 
+of the poling filed is determined by the 3 direction.  
+ 
+The poling 3 axis is invariably taken along the direction of polarization within the ceramic, 
+see Figure 14. The 1 and 2 axes may be randomly located but they must be perpendicular to 
+each other.  
+ 
+ 
+ 
+3
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+P
+2 
+ 
+ 
+ 
+ 
+ 
+1
+ 
+ 
+ 
+Figure 14. Direction of poling axis 
+ 
+ 
+31
+The polarization vector P is represented by an arrow pointing from the positive to the negative 
+poling electrode. Each constant has two subscripts that indicate the directions of the two 
+related quantities, such as stress (force on the ceramic element/surface area of the element) 
+and strain (change in the length of element/original length of element) for elasticity.  
+ 
+The Piezoelectric element/stack changes its dimension depending on the direction of the 
+polarization and the force that is applied to the piezoelectric which is mechanical 
+compression/extension, tension or voltage: 
+ 
+ 
+ 
+a) Voltage applied to the piezoelectric element 
+ 
+After the poling process is complete, a voltage lower than the poling voltage will change 
+the dimension of the piezoelectric element. A voltage with same polarity as the poling 
+voltage extends the ceramic along the poling axis, see Figure 15. This results in changing 
+the piezoelectric element dimensions. The element becomes then longer and thinner.   
+ 
+It is worth mentioning that if a voltage with opposite polarity as the poling voltage extends 
+the ceramic perpendicular to the poling axis.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 15.  Expansion of the piezoelectric element:  Voltage of the same polarity along 
+the axis. 
+ 
+ 
+By applying a voltage with opposite polarity of the poling axis contracts the ceramic along 
+the poling axis, see Figure 16. The element becomes shorter and wider.  
+ 
+Also a voltage with same polarity as the poling voltage contracts the ceramic 
+perpendicular to the poling axis. 
+ 
+ 
+ 
+F 
++ 
+ 
+ 
+ 
+_ 
+_ 
+F 
+F 
++
+Results 
+Poling axis 
+F 
+ 
+32
+ 
+ 
+Figure 16. Contraction of the piezoelectric element: Voltage of the opposite polarity 
+along the axis. 
+ 
+ 
+It is worth mentioning that there is no change of volume during the expansion and 
+contraction of the piezoelectric element. The expansion of the length of a plate is 
+compensated by an equal contraction of the width or thickness and vise versa. By applying 
+voltage to the piezoelectric element this generates a force on a mechanical component.    
+ 
+ 
+b) Mechanical force applied to a piezoelectric element 
+ 
+After the poling process is complete, a tensile force applied to a piezoelectric element 
+along the poling axis will generate expansion of the length and contraction of the width of 
+the element, see Figure 17. This generates a voltage with opposite polarity as for the 
+poling voltage.  
+ 
+Also if a mechanical expansion (force) applied to piezoelectric element perpendicular to 
+the poling axis generates expansion of the length and contraction of the width of the 
+element.  
+ 
+ 
+Figure 17. Voltage with opposite polarity generates from applying a tensile force along 
+the poling axis.  
+_ 
++ 
+ 
+ 
+ 
+_ 
+F 
+F 
+F 
++ 
+Results 
+Poling axis 
+F 
++
+_ 
++ 
+_ 
++
+_ 
+Ttensile 
+No voltage  
+Voltage generated 
+Ttensile  
+Poling axis of the element 
+Applying Tensile force 
+Results 
+ 
+33
+A mechanical compression force applied to a piezoelectric ceramic generates a voltage 
+with the same polarity as the poling voltage. A mechanical compression parallel to poling 
+axis shortens the piezoelectric element, and generates a voltage with same polarity as the 
+poling voltage, see Figure 18.  
+ 
+Also, applying a tensile force perpendicular to the poling axis generates a voltage as the 
+poling voltage.   
+ 
+ 
+ 
+Figure 18. Voltage with same polarity generates from: a) Mechanical contraction 
+parallel to poling axis, b) Tensile perpendicular to poling axis.   
+ 
+  
+ 
+ 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
++
+_ 
+_ 
++ 
+Voltage generated 
+Fcontraction
+No voltage  
++
+Applying a compression force 
+_ 
+Fcontraction
+Results 
+Poling axis of the element 
+ 
+34
+Type of piezoelectric element 
+Type of piezoelectric element 
+ 
+ 
+The rate of piezoelectric element voltage, action and force is quite small. A single element can 
+extend to a fraction of a micron. Hence it requires amplification which can be achieved by the 
+use of different piezoelectric ceramics, such as Unimorph, Bimorph and Stacks.  
+The rate of piezoelectric element voltage, action and force is quite small. A single element can 
+extend to a fraction of a micron. Hence it requires amplification which can be achieved by the 
+use of different piezoelectric ceramics, such as Unimorph, Bimorph and Stacks.  
+ 
+Unimorph 
+Unimorph 
+ 
+A Unimorph consists of two layers; an active layer and non active layer. The active layer is 
+made of piezoelectric element and it bonds to non active layer which is usually made of a non 
+piezoelectric material. With this bond the piezo ceramic will deform the entire structure, see 
+Figure 19. 
+A Unimorph consists of two layers; an active layer and non active layer. The active layer is 
+made of piezoelectric element and it bonds to non active layer which is usually made of a non 
+piezoelectric material. With this bond the piezo ceramic will deform the entire structure, see 
+Figure 19. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Voltage 
+ 
+ 
+ 
+Figure 19. Voltage applied to Unimorph. 
+Figure 19. Voltage applied to Unimorph. 
+ 
+Bimorphs 
+Bimorphs 
+ 
+A Bimorphs consists of two active layers locked together, so that when a voltage is applied 
+these elements deform in opposite direction. If there is a temperature change, one of the layers 
+extend, and the other contract. If they are activated electrically, the electric field causes one 
+layer to extend and the other one to contract. The displacement per voltage of the Bimorphs is 
+greater than for one single disc/plate, typically 10
+A Bimorphs consists of two active layers locked together, so that when a voltage is applied 
+these elements deform in opposite direction. If there is a temperature change, one of the layers 
+extend, and the other contract. If they are activated electrically, the electric field causes one 
+layer to extend and the other one to contract. The displacement per voltage of the Bimorphs is 
+greater than for one single disc/plate, typically 10 μ  per volt. The Bimorphs are build-in to 
+generate large displacement than force, compared to the single plate, see Figure 20. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 20. Voltage applied to Bimorphs piezoelectric.  
+ 
+35
+Actuator Stacks 
+ 
+Stacks are made of several piezoelectric elements mechanically connected to each other in 
+series and electrically in parallel. The benefit of this coupling is that it generates a large 
+displacement. Each element executes a displacement which adds to the total displacement. In 
+other words, the displacement of the whole stack is equal to the sum of individual 
+displacements. The displacement of the stack is typically between 5 to 180μm.  
+ 
+Voltages applied to the Stack relative the polarity axis and poling voltage, force the element 
+either to expand or contract. The stack is consists of several ceramic elements connected to 
+each other electrically in parallel. That means each individual will get the same voltage and 
+generate same displacement, see Figure 21. 
+Voltage with same polarity  
+No voltage 
+Voltage with opposite polarity 
+ 
+ 
+Figure 21. Actuator stacks action depending on voltage polarity.  
+ 
+Sandwich Transducers  
+ 
+The sandwich transducer consists of metal-ceramic-metal. By doing this, it will be able to 
+manage resonance below 100 KHz. It is a suitable way of achieving a low ultrasonic 
+frequency (20-80 KHz). Ceramic is known to be robust and easy to design. By using metal on 
+both sides of the ceramic, cooling is achieved when the ceramic is operated at high power 
+levels (see Figure 22). 
+ 
+ 
+Metal 
+Metal 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 22. Sandwich Transducers with two piezo-ceramic rings.  
+ 
+36
+Limitation of piezoelectric element 
+ 
+The piezoelectric element has some limitations where its characteristic changes from 
+polarization to partial or total depolarization. This is because the piezoelectric element 
+exceeds the limit for the temperature, voltage or stress.  
+ 
+Temperature limitations 
+ 
+By exposing the piezoelectric ceramic to high temperature, the piezoelectric performance of 
+the material decreases, until the permanent depolarization occurs above the Curie temperature. 
+Each element has its own Curie point; when the element is heated above that point the 
+element lose, its characteristics, see Figure 23. 
+ 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+ 
+Figure 23. Crystal structure of piezo-ceramic [3].  
+ 
+At high temperature, the ageing process accelerates, piezoelectric performance decreases and 
+the maximum safe stress level is reduced. 
+Voltage Limitations 
+ 
+By applying a strong voltage with the opposite polarity to the original poling voltage to the 
+ceramic, it can be depolarized. 
+ 
+ The degree of depolarization is depending on type of the material, the exposure time, 
+temperature and other factors. The typical operating limit is between 500-1000 V/mm.  
+ 
+It is worth mentioning that all signal crystals and poled ceramics which show ferroelectric 
+behavior are pyroelectric. Pyroelectric ceramics show a spontaneous polarization Ps in a 
+certain temperature range. “The spontaneous polarization is given by the value of the dipole 
+moment per unit volume or by the value of the charge per unit area on the surface 
+perpendicular to the axis of spontaneous polarization, which is usually along a given ceramic 
+axis” [4].    
+Mechanical stress limitations 
+ 
+The piezoelectric ceramic depolarize by applying a high mechanical stress on the element. 
+The limit of the applied stress is dependent on the type of ceramic material and duration of the 
+applied stress. 
+ 
+37
+Important constant for piezoelectric element 
+ 
+The piezoelectric element for an actuator from the electrical side is much faster than the 
+dynamics from the mechanical side. In other words the generated force F is a static function 
+of voltage V (ideal conversion from electrical to mechanical energy) minus the spring-damper 
+forces k-c. This is the force acting on the piezo mass [2]. 
+ 
+The force can be calculated either by using the physical properties and design geometrical 
+details of the piezo element, or by using the test data. Therefore it is good to introduce some 
+constants that have a major effect on piezoelectric element, especially by converting the test 
+data to the data that will be used in GT-Fuel (This will be introducing in another chapter).  
+Charge constant 
+ 
+Piezoelectric charge constant, d, relates mechanical strain and applied electric field and 
+defined as the ratio of strain to field.  
+ 
+ 
+field
+dev
+ij
+E
+S
+d
+=
+  
+ 
+ 
+ 
+(14) 
+ 
+Where 
+ 
+Sdev   is the strain development  
+ 
+is the applied electric field [V/m] 
+field
+E
+ 
+The first subscript for charge constant, d, indicates the direction of the field and the second 
+the direction of the resulting strain (meter/volt). 
+ 
+33
+d
+is used when the forces are in the 3 directions, parallel to the polarization axis, and is 
+impressed on the same surface on which the charge is collected.  
+Voltage constant 
+ 
+The piezoelectric voltage constant, g, relates the open circuit voltage and the mechanical 
+stress, and is defined as the ratio of voltage to stress. 
+ 
+ 
+mech
+open
+ij
+S
+E
+g
+=
+  
+ 
+ 
+ 
+(15) 
+Where 
+ 
+Eopen  is the open circuit electric field [V/m] 
+ 
+Smech is the applied mechanical strain [Pa] 
+ 
+ 
+The first subscript indicates the direction of the generated voltage and the second indicates the 
+direction of the force (volt-meters/Newton). 
+ 
+33
+g indicates that both the electric field and the mechanical stress are parallel to the poling 
+axis. 
+ 
+ 
+38
+Dielectric permittivity 
+ 
+The piezoelectric dielectric permittivity, K, is defined as the ratio of the amount of stored 
+electrical energy when a potential is applied, relative to the permittivity of a vacuum. In other 
+words, it is the ratio of the permittivity of the material,ε , to the permittivity of free space, 
+0
+ε , 
+in the unconstrained condition, for example, bellow the mechanical resonance of the part. 
+ 
+0
+ε
+ε
+=
+K
+ 
+ 
+ 
+ 
+ 
+(16) 
+Where 
+ 
+[
+m
+F /
+10
+85
+.8
+10
+36
+1
+12
+9
+0
+⋅
+=
+⋅
+]
+⋅
+=
+π
+ε
+; is the absolute permittivity for the free space 
+ 
+ε  is the permittivity of material [F/m] 
+ 
+The first subscript to ε  indicates the direction of the dielectric displacement and the second is 
+the direction of the electric field. 
+ 
+S
+33
+ε
+is permittivity for dielectric displacement and electric field which are parallel to the poling 
+axis, under constant strain.  
+Elastic compliance 
+ 
+Piezoelectric elastic compliance, s, is the strain produced in a piezoelectric material per unit 
+of stress applied and is the reciprocal of the modulus of elasticity E.  
+ 
+E
+sij
+1
+=
+ 
+ 
+ 
+ 
+ 
+(17) 
+The first subscript indicates the direction of strain and the second is the direction of stress 
+ 
+D
+s33 is elastic compliance for stress parallel to the poling axis and accompanying strain along 
+the poling axis under constant electric displacement (open circuit).  
+Young’s Modulus  
+ 
+The mechanical stiffness property of a piezoelectric ceramic material and is defined as the 
+ratio of stress to strain.  
+ 
+strain
+stress
+Y
+E
+=
+/
+  
+ 
+ 
+ 
+(18) 
+E
+Y33 is the ratio of stress to strain parallel to poling axis, at constant electric field.  
+D
+Y33 is the same as for the open circuit (parallel to poling axis), at constant electric 
+displacement. 
+ 
+ 
+ 
+ 
+39
+Electromechanical coupling factor 
+ 
+The electromechanical coupling factor, k, is an indicator of the effectiveness with which a 
+piezoelectric material converts electrical energy into mechanical energy, or converts 
+mechanical energy into electrical energy. 
+ 
+elec
+A
+mech
+S
+ij
+En
+En
+k
+=
+ 
+ 
+ 
+ 
+(19) 
+or 
+ 
+meck
+A
+elec
+S
+ij
+En
+En
+k
+=
+ 
+ 
+ 
+ 
+(20) 
+Where 
+ 
+EnS mech is the mechanical energy stored [J] 
+ 
+EnA mech is the mechanical energy applied [J] 
+ 
+EnS elec   is the electrical energy stored [J] 
+ 
+EnA elec   is the electrical energy applied [J] 
+ 
+The first subscript indicates the direction of the electrical field and the second indicates of the 
+mechanical strain (in percent). 
+ 
+33
+k
+factor for electric field parallel to poling axis and longitudinal vibrations along the poling 
+axis (ceramic rod, length>10xdiameter). 
+tk factor for electric field parallel to poling axis and vibrations along poling axis. It describes 
+the energy conversion in a thickness shear vibration (thin disc, surface dimensions large 
+relation to thickness;
+). 
+33
+k
+kt <
+p
+k factor for electric field along poling axis and radial vibrations perpendicular to poling axis 
+(thin disc).  
+ 
+40
+Piezoelectric Element in GT-Fuel 
+ 
+ 
+ 
+In this chapter the piezoelectric element will be modeled and coupled to the hydro-mechanic 
+system. The components that involve modeling the piezoelectric element are; Force Piezo 
+Electric and Signal Generator objects.  
+ 
+Force Piezo Electric 
+ 
+This object is used to convert an electrical energy into a force or to generate an electrical 
+voltage when force or displacement is applied. The conversion from mechanical to electrical 
+and vice versa is achieved by piezoelectric effect of the material.  
+ 
+In this model, it is assumed that the actuator is composed of stack of a number individual 
+layers. Each of these layers has a thickness t. It is assumed that the dynamics of the piezo 
+actuator from the electrical side is much faster than the dynamics from the mechanical side. 
+That is to say, the generated force is static function of voltage minus the spring-damper force. 
+This is the force acting on piezo mass [2]. 
+ 
+ 
+For modeling the piezoelectrically controlled injectors, some information needed 
+ 
+i. 
+Piezo electric charge (strain) coefficient 
+ 
+As was mentioned in the previous chapter (Piezoelectric), the piezoelectric charge 
+coefficient can be calculated from  
+ 
+ 
+ 
+E
+r
+E
+T
+S
+k
+S
+k
+d
+33
+0
+33
+33
+33
+33
+33
+⋅
+⋅
+=
+⋅
+⋅
+=
+ε
+ε
+ε
+  
+ 
+(21)  
+ 
+ 
+The variables in equation 16 have been explained in the previous chapter (Piezoelectric 
+element). 
+ 
+ 
+ii. 
+Modulus of Elasticity  
+ 
+To convert IEEE data to the data required by this template. The conversion from elastic 
+compliance 
+E
+E S
+S
+33
+33
+[m2/N] to modulus of elasticity E [Pa] 
+ 
+ 
+E
+S
+E
+33
+1
+=
+ 
+ 
+ 
+ 
+ 
+(22) 
+iii. 
+Cross sectional area 
+ 
+Cross section area of the piezo element is constant and it is calculated to  
+ 
+iv. 
+Layer thickness 
+ 
+The thickness of the individual layer in the piezo stack before applying the voltage  
+ 
+41
+v. 
+Number of layer in stack 
+ 
+The number of individual layers of the piezoelectric element of the stack 
+ 
+ 
+ 
+vi. 
+Mechanical quality factor 
+ 
+The mechanical factor of the piezo element, it is a measure of the damping of the system 
+Here the mechanical factor Q is set to 1 
+  
+vii. 
+Electrical capacitance 
+ 
+The electrical capacitance of the piezoelectric element can be calculated from 
+ 
+Q
+km
+c =
+     
+ 
+ 
+ 
+(23) 
+ 
+ 
+Where 
+ 
+c is the damping of the piezoelectric element 
+ 
+k is the stiffness of the piezoelectric element [N/m] 
+ 
+m is the piezoelectric element mass [kg] 
+ 
+Q is the mechanical factor of the piezoelectric element 
+  
+ 
+Signal Generator  
+ 
+ 
+This template generates an output signal. This may be a constant, parameter or time 
+dependent. This object can be used to produce a signal of the current time, angle or cycle at 
+each time step.  
+ 
+This template is used to generate volt as a function of time. This function is created in a 
+profile transient object. The X values are assumed to be time in milliseconds. Y values are 
+assumed to be voltage in Volt. 
+ 
+This template is connected to the piezoelectric force object via an actuator. The actuator is 
+usually used to link a multi physic (i.e. flow, mechanical, electrical and etc.).   
+ 
+ 
+ 
+ 
+ 
+42
+Verification the Piezoelectric displacement in GT-Fuel with 
+Simulink 
+ 
+The piezoelectric element displacement in GT-Fuel is validated with piezoelectric element 
+from Simulink. The model is simplified in GT-Fuel. 
+ 
+It is noticeable that the injector model is modified with piezoelectric, Bellow and adapter 
+flange. This is because the model in Simulink models only the piezoelectric element, see 
+Figure 24. It is worth mentioning that a mass component which represents the piezo mass is 
+added to the model. This mass is coupled to the bellow mass via a rigid connection. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 24. Model for piezoelectric injector in Simulink (courtesy of Cummins). 
+ 
+The results from both models are plotted and compared, see Figure 25 and 26. Figure 25 
+shows the piezo voltage as a function of time for both programs. The voltage value as an input 
+signal for the piezoelectric element is copied from the Simulink data.  
+ 
+ 
+43
+ 
+Figure 25. Piezo Voltage as function of time for GT-Fuel (blue) Vs. Simulink (red).  
+ 
+After sending the voltage as an input signal to the piezoelectric element in both programs, the 
+input parameters for the piezoelectric element, which described in the previous chapter, are 
+interpolated. The parameters; such as piezoelectric discharge coefficient, d33, and 
+piezoelectric modulus of elasticity, E, are interpolated. This is to get a better output signal 
+from the piezoelectric element. Piezo displacement matches the Simulink results. 
+ 
+From the parameters above the results from the GT-Fuel were compared to the Simulink 
+results, the comparison was acceptable, see Figure 26. 
+ 
+Figure 26. Piezo displacement for GT-Fuel (blue) Vs. Simulink (red). 
+ 
+44
+Results and Discussions  
+ 
+ 
+Comparing the hydro-mechanical system in GT-Fuel with ACSL  
+ 
+After modeling the hydro-mechanical injection system in GT-Fuel, the simulations were 
+compared to the simulations from the Advance Continuous Simulation Language (ACSL) 
+program. Both models were modeled without a piezoelectric element. The alternative solution 
+for the piezoelectric element was to introduce a displacement. This function is defined as 
+piezoelectric displacement (displacement as function of time), see Figure 27. 
+ 
+-0,01
+0
+0,01
+0,02
+0,03
+0,04
+0,05
+0,06
+0,07
+0,08
+0,09
+0,1
+0
+2
+4
+6
+8
+10
+12
+Time
+ [mm]
+14
+PiezoDisplacement
+ 
+ [ms]
+Figure 27. The input signal, Piezo displacement as function of time, in GT-Fuel, which the 
+values are taken from ACSL simulation.  
+ 
+This comparison was made to see if the hydro-mechanical system in GT-Fuel corresponds to 
+the simulation from ACSL. 
+ 
+From Figure 28, it is obvious that the correspondence from both simulation programs is good 
+for the needle lift. But it seems that the simulation from GT-fuel is faster. Also it is obvious 
+that the needle starts to lift and close earlier for the GT-Fuel than ACSL. This also can be seen 
+in Hydraulic Chamber pressure, Figure 28 on the right, where the pressure in the first peak 
+increases because of piezo stroke. Then the pressure decrease before the ACSL, this is due to 
+the needle opening, which attempts to lift the need earlier. Then the needle partially attempts 
+to close, this is due to the pressure oscillations in the Injector Body. This also can be seen in 
+Hydraulic Chamber pressure, which follows the Injector Body pressure behavior, the peak in 
+the middle. The needle partially closing generates volume decreases in the Hydraulic 
+Chamber which causes a pressure rise in the Hydraulic Chamber. The needle goes up again 
+due to the pressure rise in Hydraulic Chamber. The final moment the needle is closing which 
+is caused by Injector Body pressure.  
+ 
+45
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 28. Needle lift on the left side and needle lift vise Hydraulic Chamber pressure on the 
+lift for GT-Fuel (blue line) Vs. ACSL (red line). 
+ 
+Figure 29 shows the simulation results for injection rate and sac pressure from ACSL (red 
+line) and GT-Fuel (blue line). The injection rate curve from the GT-Fuel simulation is higher; 
+this due to the injector holes’ diameter. In GT-Fuel the values were taken from the XPI 
+injector. XPI injector holes’ diameter differs from the piezo injector.  The oscillation in the 
+injection rate depend on the sac pressure, this is obvious from Figure 29, the figure on the 
+right side, where the sac pressure shows the same oscillation. This oscillation may be due to 
+the numerical solver in the program.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 29. Injection rate on the lift side and sac pressure on the right side from GT-Fuel 
+(blue line) and ACSL (red line). 
+ 
+Figure 30 shows the Upper Plunger motion. The simulation results from GT-Fuel and ACSL 
+have roughly the same profile shape. The GT-Fuel simulation (blue lines) results generate 
+displacement, which is the same as for the piezoelectric motion. As it mentioned in a previous 
+chapter the Upper Plunger mass is divided into two masses (Top and Bottom masses).  
+ 
+Figure 30 shows the deflection between the top and bottom mass for the Upper Plunger in 
+GT-Fuel in comparison with the ACSL. Also it is noticeable that the Upper Plunger top for 
+GT-Fuel and ACSL do not overlap the same as for the bottom part. This is due to the stiffness 
+and damper coefficients that are used between these parts. According to the stiffness 
+ 
+46
+coefficient k equation (2) can be concluded that the stiffness coefficient for each mass 
+depends on the mass elastics modulus, the mass area and the length of the mass element.  
+ 
+ 
+ 
+Figure 30. Upper Plunger displacement from ACSL (red lines) and GT-Fuel (blue lines).  
+ 
+ 
+This can be clarified in greater detail. In ACSL the injector parts, such as Upper Plunger, 
+Outer Plunger are not divided to sub-masses. In ACSL for instance the Upper Plunger mass 
+was connected from both sides with spring and damper, see Figure 31.     
+ 
+ 
+SB
+TOP POINT OF 
+UPPER PLUNGER
+BOTTOM POINT OF 
+UPPER PLUNGER
+MID POINT OF 
+UPPER PLUNGER
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 31. The Upper Plunger mass in ACSL to the left and in GT-Fuel to the right. 
+ 
+The same behavior can be seen in the Outer Plunger motion, see Figure 32. The results from 
+ACSL (red lines, for Outer Plunger top and Outer Plunger bottom) do not exactly correspond 
+to the results from GT-Fuel. The deflection between the Outer Plunger top and bottom mass 
+in GT-Fuel are not corresponding in the same as in ACSL. As mentioned previously, this is 
+due to the differences in damper and stiffness coefficients in both systems.     
+SB
+TOP POINT OF 
+UPPER PLUNGER
+BOTTOM POINT OF 
+UPPER PLUNGER
+MID POINT OF 
+UPPER PLUNGER
+E
+i
+ach spring stiffness
+s  2*7.5e7N/m
+ give equivalent 
+to
+tiffness of 7.5e7N/m
+S
+E
+i
+ach spring stiffness
+s  2*7.5e7N/m
+ give equivalent 
+to
+tiffness of 7.5e7N/m
+S
+Stiffness = k 
+ 
+Damping = C 
+Stiffness =2*k 
+Damping =2*C 
+ 
+47
+ 
+Figure 32. Outer Plunger displacement from ACSL (red lines) and GT-Fuel (blue lines). 
+ 
+ 
+Figure 33 shows the simulation results from simulation programs, GT-Fuel (blue line) and 
+ACSL (red line), for the Hydraulic Chamber pressure. The hydraulic pressure takes time to 
+reach the initial value in GT-Fuel. This is due partially to the stabilizing time for the hydro-
+mechanical system to reach its equilibrium position and partially because of the systems 
+damper and stiffness coefficients.  
+ 
+ The Outer Plunger downward movement increases with the pressure in the Hydraulic 
+Chamber, which is represented in the first peak (see Figure 33). At the highest point on the 
+first peak the needle attempts to lift. As explained previously the needle lift occurs earlier in 
+GT-Fuel. Then the pressure drops in Hydraulic Chamber due to the upward needle movement, 
+which causes an increasing in Hydraulic Chamber volume. The second peak is due to the 
+needle attempting to close due to the pressure oscillation in the Control Chamber which 
+follows the Injector Body pressure behavior. The hydraulic pressure rises quickly. The 
+pressure drops and causes the needle to close.    
+ 
+From Figure 33, it can be seen that the result from ACSL simulation has a peak at the end of 
+the trace. This is because at that moment the Refill valve opens and causes an increase in 
+pressure.   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+48
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 33. Simulation results for Hydraulic Chamber pressure on the left and Hydraulic 
+Chamber volume on the right from GT-Fuel (blue line) and ACSL (red line).   
+ 
+The correspondence of the simulation results for the Control Chamber pressure is quite 
+acceptable, see Figure 34. The GT-Fuel pressure results are greater than the ACSL pressure 
+results. This is maybe due to the damper and stiffness coefficients that are used in GT-Fuel.   
+ 
+As the needle lifts up the Control Chamber decreases in volume, this causes a pressure rise in 
+the Control Chamber. Pressure increases in the Control Chamber attempt to close the needle, 
+see Figure 34, middle peak on the Control Chamber pressure. This is due to the Control 
+Chamber pressure following the Injector Body pressure. The last dip on the pressure curve is 
+due to the needle closing. The Control Chamber volume increase to the initial value, see 
+Figure 34 to the right. The last dip for the GT-Fuel simulation are greater than for the ACSL, 
+this may due to the Refill valve opening for the ACSL.    
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Figure 34. Simulation results for Control Chamber pressure on the left and Control Chamber 
+volume on the right from GT-Fuel (blue line) and ACSL (red line). 
+ 
+ 
+ The Injector Body pressure for the GT-Fuel and ACSL in Figure 35 are quite similar, the 
+simulation results were satisfactory.  
+ 
+49
+ 
+Figure 35. Simulation results for Injector Body pressure from GT-Fuel (blue line) and ACSL 
+(red line). 
+ 
+A test was made to insure that these differences in the simulations were due to the dampers 
+and stiffness coefficients values, which were not modified in the same way in these systems. 
+In other words, the differences in vertical and longitudinal displacements between the 
+simulations are due to the stiffness and damper. Therefore some adjustment to the stiffness 
+and damping coefficients were made, the results can be seen in Figure 36. It is obvious, that 
+the needle starts to lift in GT-Fuel at the same time as for the ACSL. Also it is worth 
+mentioning that the Refill valve opens in GT-Fuel too. This concludes that model in GT-Fuel 
+is modeled correctly but the values of stiffness and dampers coefficients are not correct.  
+ 
+ 
+Figure 36. Needle Lift Vs Hydraulic Chamber pressure for GT-Fuel (blue) and ACSL (red). 
+ 
+50
+Conclusion 
+ 
+ 
+The simulation model of the hydro-mechanical system, in GT-Fuel corresponds well to the 
+simulation model from ACSL. Also the simulation model, piezoelectric stack, in GT-Fuel 
+corresponds to the Simulink simulation, with regards to the piezoelectric stack displacement, 
+force and voltage.  
+ 
+The difficulties lied in modeling the forces that acted on the needle and attempts to lift it up 
+from the sac with different Injector Body pressures. The force values around the cup and 
+needle seat were calculated with CFD simulation. These calculations in CFD were made for 
+only one pressure. Therefore the model was run for this specific pressure. It would be 
+interesting to run the model at lower pressures to see how the injector performed.  
+p 
+from the sac with different Injector Body pressures. The force values around the cup and 
+needle seat were calculated with CFD simulation. These calculations in CFD were made for 
+only one pressure. Therefore the model was run for this specific pressure. It would be 
+interesting to run the model at lower pressures to see how the injector performed.  
+ 
+The piezoelectric element in GT-Fuel is simple and does not cover all the areas, such as 
+capacitance, resistor voltage source...etc. Therefore the needle displacement was higher than it 
+should be. The electrical circuits of the piezoelectric element are not solved in the best way in 
+piezoelectric element template in GT-Fuel. There are some functions that could be used in 
+GT-Fuel such as input signals of voltage, resistor…etc. in order to model the piezoelectric 
+element. Due to the lack of the time, this was not modeled.  
+The piezoelectric element in GT-Fuel is simple and does not cover all the areas, such as 
+capacitance, resistor voltage source...etc. Therefore the needle displacement was higher than it 
+should be. The electrical circuits of the piezoelectric element are not solved in the best way in 
+piezoelectric element template in GT-Fuel. There are some functions that could be used in 
+GT-Fuel such as input signals of voltage, resistor…etc. in order to model the piezoelectric 
+element. Due to the lack of the time, this was not modeled.  
+ 
+It is worth mentioning that some efforts have been made to connect the Simulink model to the 
+GT-Fuel model. The Simulink model modeled the piezoelectric stack. This was omitted, 
+because it will take time to understand the function and the model in Simulink.  
+It is worth mentioning that some efforts have been made to connect the Simulink model to the 
+GT-Fuel model. The Simulink model modeled the piezoelectric stack. This was omitted, 
+because it will take time to understand the function and the model in Simulink.  
+ 
+The simulation results for GT-Fuel and ACSL corresponded roughly to each other. The 
+results show that there are differences in longitudinal and vertical deformations. This can due 
+to the how the injector models are modeled in these simulation programs, which can due to 
+incorrect input values of stiffness and damper coefficients in GT-Fuel. The solution for this 
+problem is to remodel the injector in GT-Fuel as in ACSL. This means, that the stiffness 
+coefficients will be recalculated (in series) as the values for the dampers.  
+The simulation results for GT-Fuel and ACSL corresponded roughly to each other. The 
+results show that there are differences in longitudinal and vertical deformations. This can due 
+to the how the injector models are modeled in these simulation programs, which can due to 
+incorrect input values of stiffness and damper coefficients in GT-Fuel. The solution for this 
+problem is to remodel the injector in GT-Fuel as in ACSL. This means, that the stiffness 
+coefficients will be recalculated (in series) as the values for the dampers.  
+ 
+To clarify the differences we can take the figure that was introduced previously in Chapter 
+Results and Discussions, see Figure 37. As we see, the figure on the left side, ACSL model, 
+the mass is able to move with out any restriction depending on the stored force in the springs 
+and dampers. Where in the right figure, GT-Fuel model, the bottom mass displacement 
+depends on the top mass, spring and dampers. In other word, the out deformation (deflection), 
+uout, in GT-Fuel is affected by the deflection that occurs in the first mass and the stored force 
+in spring and damper. 
+To clarify the differences we can take the figure that was introduced previously in Chapter 
+Results and Discussions, see Figure 37. As we see, the figure on the left side, ACSL model, 
+the mass is able to move with out any restriction depending on the stored force in the springs 
+and dampers. Where in the right figure, GT-Fuel model, the bottom mass displacement 
+depends on the top mass, spring and dampers. In other word, the out deformation (deflection), 
+uout, in GT-Fuel is affected by the deflection that occurs in the first mass and the stored force 
+in spring and damper. 
+ 
+uin  
+uin  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+uin  
+ 
+Figure 37. Shows the mechanical system for ACSL to the left and for GT-Fuel to the right. 
+Figure 37. Shows the mechanical system for ACSL to the left and for GT-Fuel to the right. 
+uout  
+uout  
+ 
+ 
+ 
+SB
+TOP POINT OF 
+UPPER PLUNGER
+BOTTOM POINT OF 
+UPPER PLUNGER
+MID POINT OF 
+UPPER PLUNGER
+Each spring stif
+is  2*7.5e7N/m
+fn
+t 
+/m
+ess
+to give equivalen
+Stiffness of 7.5e7N
+SB
+TOP POINT OF 
+UPPER PLUNGER
+BOTTOM POINT OF 
+UPPER PLUNGER
+MID POINT OF 
+UPPER PLUNGER
+Each spring stif
+is  2*7.5e7N/m
+fn
+t 
+/m
+ess
+to give equivalen
+Stiffness of 7.5e7N
+uout = uin+ Δu 
+ Δu  
+Stiffness = k 
+ 
+Damping = C 
+Stiffness = 2*k 
+ 
+Damping = 2*C 
+ 
+51
+As it mentioned earlier, the damping coefficients were not modified in the same way for both 
+systems. In order to correlate this difference, the damping coefficient can be calculated 
+according to the following equation: 
+ 
+ 
+ 
+m
+k
+c
+⋅
+⋅
+⋅
+=
+ξ
+2
+ 
+ 
+ 
+ 
+(24) 
+Where 
+ 
+c is the damping coefficient [Ns/m] 
+ 
+ξ is the critical damping ratio 
+ 
+k is the stiffness coefficient [N/m] 
+ 
+m is the mass [kg] 
+ 
+Finally, conversion of some parameters to variables had a major influence on the injector 
+performance. Increasing the clearance diameter had a major influence on the needle lift, 
+which causes the needle to close earlier. Decreasing the Orifice diameter affects needle 
+profile. In other words the needle closes slower than previous cases, this was due to the mass 
+flow through orifice connection, where it takes time to refill the Control Chamber. Increasing 
+the Injector Body volume did not have that much influence on the needle displacement, but 
+resulted in a square needle lift profile.    
+  
+ 
+ 
+52
+ 
+53
+References  
+ 
+[1] Bosch 2004, Automotive Handbook 6th edition. Impremé en Allemagne, Germany.  
+ 
+[2] Gamma Technology 2006, version 6.2. GT-Fuel Manuel User. Gamma Technologies, Inc. 
+ 
+[3] McGraw-Hill Dictionary of Scientific and Technical Terms 2003. Discharge Coefficient. 
+McGraw-Hill Companies, Inc. 
+ 
+[4] Ahmad Safari, Rajesh K, and et.al, 2006. Ferroelectric Ceramics Processing, Properties 
+and Applications. Department of Ceramic Science and Engineering, Rutgers University, USA. 
+ 
+[5] Takuro Ikeda 1990. fundamentals of piezoelectricity, Oxford University press 
+ 
+[6]AmericanPiezo (APC international)1998-2005. Piezo Theory. Online information: 
+http://www.americanpiezo.com. 2009-01-14 
+ 
+[7] Morgan Electro Ceramic 2007. Piezo Ceramic.Online information:  
+http://www.morganelectroceramics.com. 2009-01-26 
+ 
+[8] I. Mayergoyz and G. Bertotti (Eds.) 2005, the Science of Hystersis, Volume 3; ChAPTER 
+4” Hysteresis in Piezoelectric and Ferroelectric Materials”. Materials Science and 
+Engineering institute, School of Engineering, Swiss Federal Institute of Technology- EPFL, 
+Switzerland. Online information: 
+http://lc.epfl.ch/DraganDamjanovic/Papers/149Damjanovic.pdf . 2009-01-28 
+ 
+    
+ 
+ 
+ 
+    
+ 
+ 

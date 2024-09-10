@@ -1,0 +1,1496 @@
+A Computer Laboratory on
+Active Sound Control
+SAMIR MOUBADDER
+Masters’ Degree Project
+Stockholm, Sweden 2006
+XR-EE-RT 2006:006
+2
+3
+Sammanfattning
+ 
+Syftet med detta examensarbete är att utveckla en datorlaboration baserat på aktiv 
+ljudreglering för kursen reglerteknik allmän kurs för maskin och farkostteknik vid Kungliga 
+Tekniska Högskolan KTH. Arbetet ska innefatta en utveckling av en matematisk modell av 
+rörsystemet som ska regleras med en lead-lag regulator. Rörsystemet vid Marcus Wallenberg 
+Laboratoriet ska användas som modellsystem, och den matematiska modellen ska baseras på 
+mätningar insamlade på detta system.   
+ 
+Den matematiska modellen skapades med hjälp av ett s.k. identifieringsexperiment 
+och identifieringen baserades på en viktad minsta kvadratanpassning av insamlade 
+frekvensdata. Modellen anpassades till en överföringsfunktion som visade sig ha ett nollställe 
+i komplexa högra halvplanet, vilket motsvarar en svår bandbreddsbegränsning för den aktiva 
+ljuddämpningen. Orsaken till nollstället i högra halvplanet orsakas sannolikt av 
+ljudreflektioner i rörsystemet. 
+ 
+Begränsningen i bandbredden innebär att störningsundertryckning endast kan sker upp 
+till en specifik frekvens. För rörsystemet vid MWL innebar en sådan begränsning att effekten 
+av undertryckningen inte kommer att vara hörbar. Till denna anledning gjordes en modifiering 
+i modellen i syfte att göra systemet användbart för en laborationsuppgift för reglering med en 
+lead-lag regulator. Regleringen av den modifierade modellen gav ett hörbart resultat. 
+Förord
+ 
+Jag vill härmed tacka Hans Bodén vid Marcus Wallenberg Laboratoriet för sin stora 
+hjälp med data insamlingen. Ytterligare en person som måste tackas för hans ständiga hjälp 
+och handledning under examensarbetet är min handledare och examinator Elling W Jacobsen.  
+ 
+Jag vill även tacka mina föräldrar och min fästmö vilka motiverat och stött mig genom 
+detta examensarbete. Ett stort tack till er allihopa. 
+4
+5
+ Innehållsförteckning 
+Förkortningar och begrepp ...................................................................7 
+1 Inledning……………………………………………….. 9
+ 
+1.1 Aktiv ljudreglering …………………………………………………………………… 9  
+ 
+1.2 Framkopplad reglering .……………………………………………………………... 10 
+ 
+1.3 Återkopplad reglering ..………………………………………………………………10 
+ 
+1.4 Syftet med examensarbetet…………………………………………………………...11 
+2 Problemdefinition...............................................................................13 
+ 
+2.1 Problemformulering ………………………………………………………………….13 
+ 
+2.2 Uppställningen vid MWL…………………………………………………………….13 
+3 Modellering…………………………………………………………………15
+ 
+3.1 Skapa en matematisk modell över systemet vid MWL …………………………..…15 
+ 
+3.2 Data insamling …………………………………………………………………...….17 
+ 
+3.3 Identifikation i frekvensplanet …………………………………………………..…..18 
+ 
+3.4 Analys av överföringsfunktion …………………………………………….…..……21 
+ 
+3.5 Fysikaliska ändringar i systemet  …………………………………………..……….23 
+4 Modellbaserad regulator................................................. 27 
+ 
+4.1 Analys …………………………………………………………………………….….27 
+ 
+4.2 Loop shaping design …………………………………………………………………28 
+ 
+4.3 Modifiering av reglerbarhet  …………………………………………………………30 
+6
+5 Förslag till laborations uppgift..............................................................35 
+6 Slutsatser...........................................................................................39 
+7 Referenser.........................................................................................41 
+7
+Förkortningar och begrepp
+ASC  
+ 
+Engelska översättningen av aktiv ljudreglering (active  
+ 
+sound control) 
+MWL  
+Marcus Wallenberg laboratoriet  
+Frekvensfunktion 
+en representation av ett system i frekvensplanet 
+Överföringsfunktion  
+en representation av ett system i Laplaceplanet 
+Invfreqs   
+en Matlab funktion som finner de reella täljar- och 
+nämnarkoefficienterna till en tidskontinuerlig överföringsfunktion 
+givet en komplex frekvensfunktion   
+HHP 
+högra halv planet. 
+VHP 
+vänstra halv planet.  
+Nollställe  
+rötter till den karakteristiska ekvationen B(s) = 0, där B(s) fås
+ 
+ur överföringsfunktionen
+)
+(
+)
+(
+)
+(
+s
+A
+s
+B
+s
+G
+ 
+.
+Pol 
+ 
+ 
+ 
+rötter till den karakteristiska ekvationen A(s) = 0, där A(s) fås
+ 
+ 
+ 
+ 
+ur överföringsfunktionen
+)
+(
+)
+(
+)
+(
+s
+A
+s
+B
+s
+G
+ 
+.
+hM
+frekvensfunktionen av systemet vid MWL 
+hMf 
+frekvensfunktionen av systemet vid MWL då tidsfördröjningen ej 
+är modellerad   
+hM2
+frekvensfunktionen av systemet vid MWL med mikrofonen i 
+samma tvärsnitt som högtalare 2   
+hMabs
+frekvensfunktionen av systemet vid MWL med mikrofonen i 
+samma tvärsnitt som högtalare 2 och med absorberingsmaterial 
+n 
+ordningen på täljarpolynomet till en överföringsfunktion 
+m 
+ordningen på nämnarpolynomet till en överföringsfunktion = 
+ordningen på ett system 
+G(s) 
+irrationella överföringsfunktionen mellan högtalare 2 och 
+mikrofonen.  
+G1(s) 
+rationella överföringsfunktionen mellan högtalare 2 och mikrofonen.  
+G2(s) 
+överföringsfunktionen mellan högtalare 2 och mikrofonen då den 
+senare finns belägen i samma tvärsnitt som högtalare 2. 
+8
+G2mod(s) 
+modifierat G2(s). Nollställerna till G2(s) har speglats in i VHP och 
+ett nollställe i 8500 rad/s har lagts med bibehållen absolutvärde.  
+G2modf(s) 
+överföringsfunktionen där vissa resonanser i G2mod(s) har tagits bort
+wB 
+ 
+ 
+ 
+bandbredden i rad/s, det värde för vilket förstärkningen sjunker  
+under
+2
+1
+ (= -3 dB)  
+Zc 
+ 
+ 
+ 
+skärfrekvensen, frekvensen för vilket förstärkningen av en 
+överföringsfunktion antar värdet 1. 
+Im 
+ 
+ 
+ 
+fasmarginal, avståndet (i grader) till vinkeln 180 grader vid 
+skärfrekvensen Zc
+S(s) 
+ 
+ 
+ 
+ Känslighetsfunktion 
+9
+Kapitel 1 
+Inledning
+1.1 Aktiv ljudreglering  
+Oväsen har blivit ett stort problem i vårt samhälle. Många maskiner och elektroniska 
+apparater avger i de flesta fall någon form av störande ljud. Med ljud avses tryckförändringar 
+i luft med frekvenser som ligger inom hörbarhetens gräns, vilken för människans del omfattar 
+området 20-20 kHz. 
+Att undertrycka störande ljud med hjälp av absorberingsmaterial har länge varit det 
+traditionella sättet. Nackdelen med detta sätt är bl.a. att endast högfrekventa störningar 
+dämpas (störningar med frekvenser över 1 kHz). För att få en dämpning vid låga frekvenser 
+har det forskats, sedan 60 år tillbaka, på att använda aktiv ljudreglering (eng. active sound 
+control, ASC). Första patentet inom området skrevs av Tysken Paul Leug, se [1]. Där 
+använder han faktumet att ljudvågor har en linjär egenskap. Denna egenskap gör att 
+överlagring, även kallad superposition sker då två separata ljudvågor möts. Då två ljudvågor 
+med samma amplitud men med motsatt fas möts superponeras de och ett konstant tryck, eller 
+med andra ord tystnad, fås. I Leugs patent används denna princip för att kancellera ljudvågor 
+som propagerar genom ett rör.  
+Figur 1: En skiss ur Paul Leugs patent. Här framgår det hur det med hjälp av en regulator 
+skapas ett ljudfält, identiskt men 180 grader fasvriden med ljudfältet alstrad av den primära 
+ljudkällan. Den primära ljudkällan alstrar det störande ljudet i systemet.
+Vid aktiv ljudreglering (ASC) används en regulator för att skapa ett konstgjort ljudfält 
+som ska släcka ut det störande ljudet. Det skapade ljudfältet, som ska vara en exakt kopia av 
+det störande ljudet men med en 180 grader fasvridning, skickas ut i systemet med hjälp av en 
+sekundär ljudkälla, se figur 1. Två olika typer av reglering kan användas i detta syfte, 
+framkopplad (eng. feedforward) eller återkopplad reglering (eng. feedback control). 
+10
+1.2 Framkopplad reglering  
+Den framkopplade regleringen av ljud bygger på att kännedom om bruset man vill 
+undertrycka finns tillgänglig. Kunskap om bruset (även kallad för den primära ljudkällan, eng. 
+primary source) fås genom en referensmikrofon [2]. Vidare används signalen från 
+referensmikrofonen som insignal till en regulator, se figur 2. Regulatorn, som driver den 
+sekundära högtalaren, skapar en 180 grader fasvriden kopia av referenssignalen för att 
+kancellera bort bruset. 
+      Figur 2: En schematisk bild över en framkopplad aktiv ljudreglering   
+För att den framkopplade regleringen ska vara användbar måste referensmikrofonen 
+med en stor noggrannhet ge en bra uppskattning av den primära ljudkällan. Exempel på 
+applikationer där den framkopplade regleringen är användbar är miljöer med en periodisk 
+störning. I dessa miljöer kan referensmikrofonen ge en bra uppskattning av störningen och 
+därmed kommer regleringen att bidra med en bra störningsundertryckning.   
+I de fall då en referensmikrofon inte kan bidra med en bra uppskattning av bruset är 
+den framkopplade regleringen inte till någon större nytta, utan återkoppling är att 
+rekommendera. En situation där framkoppling inte är att föredra är exempelvis miljöer där 
+positionen på den primära ljudkällan är okänd [2]. I sådana miljöer är det inte uppenbart vart 
+man ska placera referensmikrofonen för att få en bra uppskattning av bruset. 
+1.3 Återkopplad reglering 
+ 
+För miljöer med flera osammanhängande primära ljudkällor kan man inte få en bra 
+referenssignal med hjälp av en referensmikrofon. I dessa miljöer kan framkoppling inte 
+utnyttjas för att aktivt reglera bort det oönskade ljudet, utan man får istället använda sig av 
+återkoppling. Vid den återkopplade regleringen behövs ingen exakt kunskap om ljudformen 
+alstrad av den primära ljudkällan.  
+Aktiv ljudreglering med hjälp av återkoppling blev först använt av Olson och May 
+1953, se [1]. Här använder man sig av en mikrofon och en högtalare enligt figur 3. Signalen 
+från mikrofonen är kopplad med en regulator. Utsignalen från denna regulator driver som 
+innan den sekundära högtalaren, vilket ska kancellera ljudet orsakad av den primära 
+ljudkällan. Området kring mikrofonen ska idealiskt vara ett område med total tystnad. 
+11
+      Figur 3: En schematisk bild över en återkopplad aktiv ljudreglering   
+ 
+Skillnaden mellan fram- och återkopplad reglering ligger i hanteringen av utsignalen 
+från regulatorn. Vid den framkopplade regleringen används inte mikrofonsignalen för att 
+detektera effekten av regleringen utan bara för att bilda en uppfattning av det störande ljudet. 
+Med andra ord är utsignalen från regulatorn inte tillgänglig för den som ska bestämma 
+insignalen. Detta gör att en helt exakt kunskap om insignalens påverkan på utsignalen måste 
+finnas och en exakt uppfattning av det störande ljudet man vill kancellera. Vid den 
+återkopplade regleringen däremot används utsignalen från regulatorn till att bestämma 
+insignalen. Detta medför att endast en ungefärlig uppfattning av ljudet  som ska kancelleras är 
+nödvändig.
+ 
+ 
+ 
+1.4 Syftet med examensarbetet 
+ 
+Hittills har arbeten inom aktiv ljudreglering använt avancerade regulatorer för att 
+aktivt reglera bort ljud. Både i framkopplad och återkopplad reglering har det använts 
+avancerade regulatorer som Internal Model Control IMC och Linear Quadratic Gaussian LQG 
+för att undertrycka störande ljud, se [3] och [4].  Syftet med detta examensarbete är att försöka 
+använda en enklare typ av regulator, en så kallad Lead-lag regulator, för att undertrycka ljudet 
+alstrad av en primär ljudkälla i ett rörsystem vid Marcus Wallenberg laboratoriet, MWL. Den 
+återkopplade varianten av aktiv ljudreglering ska tillämpas på detta system.  
+12
+13
+Kapitel 2
+Problemdefinition
+2.1 Problemformuleringen  
+Syftet med detta examensarbete är att utveckla en datorlaboration baserat på aktiv  
+ljudreglering. Laborationen ska vara en del av kursen reglerteknik allmän kurs för maskin och 
+farkostteknik programmet vid Kungliga tekniska högskolan, KTH. Målet är att demonstrera 
+en reglerdesign baserat på återkoppling av ett enkelt analogt ljudsystem. Arbetet ska innefatta 
+en utveckling av en matematisk modell av ljudsystemet som ska regleras, implementering i ett 
+program vilket körs under Matlab samt utveckling av en lämplig uppgift som ska lösas av 
+studenter som en del av en datorlaboration i kursen. Ljudlaboratoriet vid Marcus Wallenberg 
+laboratoriet, MWL ska användas som modellsystem, och den matematiska modellen ska 
+baseras på mätningar insamlade på detta system. Implementeringen i Matlab ska helst 
+involvera ett grafiskt användargränssnitt (GUI) och dator högtalarna ska användas för att
+alstra modellens utsignal.  
+ 
+Examensarbetet ska genomföras i samarbete med Marcus Wallenberg laboratoriet, 
+MWL. 
+2.2 Uppställningen vid MWL 
+ 
+Figur 4 visar en skiss över systemet vid MWL. Detta system består av ett rör med två 
+högtalare och en mikrofon. Högtalare 1, som är placerad i ena änden av röret är en högtalare 
+som alstrar bruset i systemet. Med hjälp av högtalare 2 och mikrofonen ska detta brus 
+regleras. Vid denna uppställning har mikrofonen placerats med 0.225 meters avstånd från 
+högtalare 2. 
+             Figur 4: En skiss över uppställningen vid MWL.  
+14
+15
+Kapitel 3
+Modellering
+ 
+En viktig del av examensarbetet går ut på att bilda en matematisk modell av systemet 
+vid Marcus Wallenberg laboratoriet, MWL. En matematisk modell av ett system används för 
+att analysera och simulera systemet. En sådan modell används också i arbetet med att 
+konstruera en regulator. Med matematiska modeller menas att samband mellan storheter som 
+kan observeras i ett system anges som matematiska relationer i en modell.  
+ 
+I detta avsnitt kommer det att beskrivas hur man gått tillväga för att bilda en 
+matematisk modell över rörsystemet vid MWL. Modellen kommer att undersökas och 
+verifieras. Det kommer även att diskuteras möjligheten med att fysikaliskt ändra i rörsystemet 
+för att få ett system med en mindre bandbreddsbegränsning.   
+3.1 Skapa en matematisk modell över systemet vid MWL 
+ 
+ 
+En matematisk modell kan skapas med hjälp av två grundprinciper,  fysikalisk modell
+konstruktion och/eller identifieringsexperiment [5]. Vid den fysikaliska modell konstruktionen 
+skapas en modell över ett system utifrån de fysikaliska lagarna som gäller för systemet. Den 
+andra modelleringsprincipen bygger på observationer från systemet. Genom att utgå ifrån 
+sambandet mellan insignalen och utsignalen till ett system kan det oftast bildas en ganska bra 
+modell.  
+ 
+ 
+Eftersom ljudet i rörsystemet vid MWL ska regleras med hjälp av återkoppling och då 
+denna typ av reglering inte behöver en exakt modell över systemet väljs 
+identifieringsexperiment som metod för modellering.  En annan orsak bakom valet av denna 
+metod är att modellen över rörsystemet enklast skapas med ett identifieringsexperiment.  
+Vid ett identifieringsexperiment betraktas systemet som ska modelleras som en svart 
+låda (eng. black box), hänsyn tas bara till sambandet mellan insignalen och utsignalen. Vid 
+denna typ av modellering är det viktigt att bestämma en lämplig insignal. En slumpmässig 
+vald insignal ger inte alltid en fullständig information om systemet. Det gäller att välja en 
+insignal som leder till att en stor del av dynamiken i systemet observeras i utsignalen. Vidare i 
+avsnitt 3.2  kommer valet av insignal till rörsystemet vid MWL att introduceras.   
+Sambanden mellan insignaler och utsignaler kan representeras på olika sätt, men den 
+mest illustrativa och användbara representationen fås med en överföringsfunktion. För ett 
+linjärt system med en insignal u(t) och en utsignal y(t) gäller följande samband 
+)
+(
+)
+(
+)
+(
+s
+U
+s
+G
+s
+Y
+ 
+ 
+ 
+ 
+(1) 
+ 
+där G(s) kallas för överföringsfunktion. Om det linjära systemet drivs av en insignal  
+ 
+       
+)
+cos(
+)
+(
+t
+t
+u
+Z
+ 
+ 
+  
+(2) 
+16
+blir den stationära utsignalen från det linjära systemet 
+ 
+       
+)
+cos(
+)
+(
+U
+Z 
+ 
+t
+A
+t
+y
+ 
+  
+(3) 
+där
+ 
+       
+,)
+( Z
+i
+G
+A  
+     
+)
+(
+arg
+Z
+U
+i
+G
+ 
+ 
+  
+(4) 
+Ekvationerna 2-4 ovan visar att 
+)
+( Z
+i
+G
+ger information om hur ett linjärt system svarar 
+då det skickas in frekvenser som insignal. Av denna anledning kallas
+)
+( Z
+i
+G
+för
+frekvensfunktion eller frekvenssvar [6]. Då det ibland kan vara svårt att identifiera argumentet 
+och amplituden till utsignalen, utnyttjas istället signalernas spektrum för att bilda 
+frekvensfunktionen
+)
+( Z
+i
+G
+enligt:
+)
+(
+)
+(
+)
+(
+Z
+Z
+Z
+u
+uy
+R
+i
+G
+R
+ 
+Æ  
+ 
+ 
+)
+(
+)
+(
+)
+(
+Z
+Z
+Z
+u
+uy
+R
+R
+i
+G
+ 
+ 
+ 
+ 
+(5) 
+   där
+)
+(
+)
+(
+)
+(
+* Z
+Z
+Z
+i
+U
+i
+Y
+Ruy
+ 
+  
+ 
+ 
+(6) 
+är korsspektrumet mellan ut- och insignalen och 
+ 
+)
+(
+)
+(
+)
+(
+* Z
+Z
+Z
+i
+U
+i
+U
+Ru
+ 
+  
+ 
+ 
+(7) 
+är effekttäthetsspektrumet av insignalen.
+)
+( Z
+i
+Y
+och
+)
+( Z
+i
+U
+är ut- respektive insignalens diskreta 
+fouriertransformer och U* är det komplexa konjugatet av U.   
+Ett användbart sätt att illustrera och tolka frekvensfunktionen
+)
+( Z
+i
+G
+är att plotta
+dess förstärkning log
+)
+( Z
+i
+G
+och dess fasförskjutning
+^
+`
+)
+(
+arg
+Z
+i
+G
+som funktion av frekvens i  
+logaritmisk skala, 
+Z
+log
+. Detta sätt att illustrera
+)
+( Z
+i
+G
+på kallas för Bode diagram eller
+Bodeplott.
+Ett identifieringsexperiment som leder till en frekvensfunktion har fördelen att man 
+med dess hjälp lätt kan undersöka olika frekvensområden extra noga. Olika resonanser och 
+svängningar i ett system kan enkelt observeras. Bland de nackdelar denna metod av 
+identifiering har, är att frekvensfunktionen som bildas är representerad i form av en tabell 
+eller graf [5]. Detta leder till att resultatet av identifieringen måste behandlas på ett lämpligt 
+sätt för att sedan kunna användas i vidare arbeten. 
+17
+3.2 Data insamling  
+Att konstruera en matematisk modell baserat på identifieringsexperiment kräver att det 
+först bestäms vilka matematiska samband i systemet som är av intresse. Därefter måste en 
+lämplig insignal väljas så att dessa samband framgår i utsignalen då exciteringen av systemet 
+sker.
+Då regleringen av ljudnivån i rörsystemet sker med hjälp av högtalare 2 och 
+detekteringen av resultatet sker med hjälp av mikrofonen måste de matematiska sambanden 
+som råder där emellan bestämmas. Med andra ord måste det bildas en överföringsfunktion 
+som representerar övergången av ljudet mellan högtalare 2 och mikrofonen, se figur 4. 
+Insignalen till denna överföringsfunktion är ljudet som kommer ut från högtalaren och 
+utsignalen är den signal som mikrofonen detekterar.    
+Som nämnt i det inledande kapitlet till denna rapport används ACS för att dämpa ljud 
+med frekvenser under 1 kHz. Överföringsfunktionen som ska bildas måste av denna anledning 
+representera övergången av ljud mellan högtalare 2 och mikrofonen med en frekvens upp till 
+1 kHz.  För att bilda denna överföringsfunktion med hjälp av ett identifieringsexperiment 
+måste en lämplig insignal väljas. Denna insignal ska bidra med att en stor del av systemets 
+dynamik ska observeras i utsignalen. Den insignal som bäst bidrar med detta är vitt brus. Vitt 
+brus är en signal som har sin energi lika fördelad över alla frekvenser och kan inte predikteras, 
+gamla förlopp ger inte några kunskaper om de framtida.  
+Figur 5: Bodeplotten av frekvensfunktionen mellan högtalare 2 och mikrofonen för systemet vid 
+MWL
+Vid MWL användes vitt brus med frekvenser upp till 1 kHz och en samplingsfrekvens 
+på 2560 Hz som insignal. Enligt Nyquist teoremet i [9] krävs det en samplingsfrekvens på 
+dubbla frekvensen för att information inte ska gå förlorad vid sampling. Det hade med andra 
+ord varit tillräckligt med en samplingsfrekvens på 2 kHz. Genom att utnyttja ekvationerna (5)-
+(7) fås den komplexa frekvensfunktionen hM av systemet. Frekvensfunktionen, vilket finns 
+representerat i vektorform med komplexa frekvenspunkter, kan illustreras med hjälp av ett 
+Bodeplott enligt figur 5.
+18
+ 
+Som tidigare nämnt kan det med hjälp av en frekvensfunktion observeras olika 
+fenomen i ett system genom att plotta dess Bodeplott.  Betraktas exempelvis Bodeplotten i 
+figur 5 kan många resonanstoppar och en kraftig fasvriden frekvensfunktion skådas. 
+Resonanstopparna indikerar att vissa ljud toner förstärks kraftigt av röret mellan högtalare 2 
+och mikrofonen. De kraftiga resonanstopparna och den stora fasvridningen gör att det redan 
+här kan dras slutsatsen att en dämpning av ljudnivån i rörsystemet inte kan uppnås med någon 
+enkel reglering, utan det behövs mer avancerade regulatorer för att få en optimal lösning på 
+problemet.  
+ 
+Frekvensfunktionen hM kan endast användas för att grafiskt illustrera systemets 
+frekvenssvar mellan högtalare 2 och mikrofonen. Men för att få, utöver den grafiska 
+representationen, en matematisk representation av de samband som råder i systemet måste det 
+bildas en överföringsfunktion.
+3.3 Identifikation i frekvensplanet 
+Från MWL skapades en frekvensfunktion genom ett identifieringsexperiment. Vidare 
+ska en överföringsfunktion anpassas med hjälp av frekvensfunktionen hM.
+Ett användbart hjälpmedel för att omvandla magnitud och fasdata till en 
+överföringsfunktion är Matlabfunktionen invfreqs [12]. Med hjälp av denna funktion anpassas 
+en tidskontinuerlig rationell överföringsfunktion baserat på en given komplex 
+frekvensfunktion.  Funktionen ger de reella täljar- och nämnarkoefficienterna till polynomen 
+B(s) och A(s) i den rationella överföringsfunktionen 
+)1
+(
+...
+)
+2
+(
+)1(
+)1
+(
+...
+)
+2
+(
+)1(
+)
+(
+)
+(
+)
+(
+1
+1
+
+
+
+
+
+
+
+
+ 
+ 
+
+
+m
+a
+s
+a
+s
+a
+n
+b
+s
+b
+s
+b
+s
+A
+s
+B
+s
+G
+m
+m
+n
+n
+       (8)
+Konstanterna n och m representerar ordningen på täljar- respektive nämnarpolynomet. 
+Dessa konstanter är bland de inmatningsdata som ska anges till invfreqs för att göra det 
+möjligt för funktionen att finna koefficienterna till B(s) och A(s). Utöver dessa konstanter 
+måste även den komplexa frekvensfunktionen vara given. 
+Matlabfunktionen invfreqs använder en felberäkningsmetod (eng. equation error 
+method) för identifiering. Vid denna metod bestäms täljar- och nämnarkoefficienterna B(s)
+och A(s) genom en minimering av den viktade funktionen  
+  
+  
+¦
+ 
+
+ 
+q
+k
+k
+w
+B
+k
+w
+A
+k
+h
+k
+wt
+Q
+1
+2
+))
+(
+(
+))
+(
+(
+)
+(
+)
+(
+  
+(9) 
+A(w(k)) och B(w(k)) i ekvation (9) är fouriertransformen av koefficienterna A(s) 
+respektive B(s) vid frekvensen w(k) och q är antalet frekvenspunkter, eller längden av 
+frekvensfunktionen. Vidare är wt(k) en viktfunktion som kan anges i minimeringen för att 
+lägga större vikt på vissa frekvenser. 
+ 
+Vid en noggrann betraktelse av rörsystemet i figur 4 kan en viktig notering göras. 
+Avståndet l mellan högtalare 2 och mikrofonen bidrar med en tidsfördröjning av ljudet som 
+19
+propagerar längst denna sträcka. Denna tidsfördröjning finns med i frekvensfunktionen hM. En 
+överföringsfunktion till ett system med en tidsfördröjning är en irrationell funktion, och 
+eftersom invfreqs anpassar rationella överföringsfunktioner måste tidsfördröjningen tas bort 
+från hM och anpassas separat.
+ 
+Tidsfördröjningen som orsakas av ljudutbredningen mellan högtalare 2 och 
+mikrofonen ger en fasvridning på
+c
+fl
+S
+2
+, där f är frekvensen i fråga, l är avståndet mellan 
+högtalare 2 och mikrofonen och c står för ljudhastigheten. Genom borttagning av 
+tidsfördröjningen i hM bildas frekvensfunktionen hMf, vilket kan användas av invfreqs för att 
+identifiera den rationella delen av överföringsfunktionen till rörsystemet vid MWL. I figur 6 
+illustreras Bodeplotten av frekvensfunktionen hMf och hM. I denna figur kan effekten av 
+tidsfördröjningen ses. Frekvensfunktionen hMf har en mindre fasförskjutning jämfört med hM
+medan beloppet till båda funktionerna är den samma. 
+ 
+Figur 6: Bodeplotten av frekvensfunktionen hMf och hM. Vid hMf  har tidsfördröjningen tagits bort,  
+ 
+vilket resulterar i en mindre fasvridning jämfört med hM  i vilket tidsfördröjningen är modellerad.  
+ 
+För att skapa överföringsfunktionen som representerar övergången av ljud mellan 
+högtalare 2 och mikrofonen med hjälp av invfreqs måste ordningen till överföringsfunktionen 
+vara känd. Då denna ordning inte är given måste den bestämmas. Med olika ordningar på 
+täljar- respektive nämnarkoefficienterna fås olika överföringsfunktioner. Genom att det till 
+varje överföringsfunktion bildas en frekvensfunktion hfi, kan minsta kvadrafelet mellan 
+frekvensfunktionen hMf och hfi användas för att finna den troliga ordningen. Genom att 
+betrakta hur felet mellan dessa frekvensfunktioner avtar ju högre ordning 
+överföringsfunktionen har kan den troliga ordningen bestämmas. Där felet mellan hMf och hfi
+börjar bli försumbart befinner sig den troliga ordningen  Beräkningen av minsta kvadratfelet 
+mellan hMf och hfi kan beskrivas av ekvationen
+¦
+
+ 
+ 
+2|
+|
+min
+fi
+Mf
+h
+h
+e
+felet
+ 
+(10) 
+där summeringen sker över alla frekvenspunkter.   
+20
+Med hjälp av denna metodik kan den troliga ordningen till överföringsfunktionen 
+bestämmas. Minsta kvadratfelet e indikerar att den troliga ordningen på täljarpolynomet n är 
+18, samtidigt som nämnarpolynomet m troligen har ordningen 19, se figur 7.
+Figur 7: Figuren visar hur felet mellan hMf och hfi avtar. En försumbar minskning på felet sker 
+efter att nämnarpolynomet fått en 19:e ordningen. Den mindre figuren är en förstoring kring 
+det intressanta området.      
+Med kännedom om den troliga ordningen på täljar- respektive nämnarpolynomet och 
+givet en frekvensfunktion hMf identifieras överföringsfunktionen G1(s).  Genom att plotta 
+Bodeplotten till frekvensfunktionen hMf och överföringsfunktionen G1(s), kan det grafiskt ses 
+hur pass bra dessa två funktioner överensstämmer med varandra. Figur 8 visar att den skapade 
+överföringsfunktionen G1(s) är en god anpassning av hMf. Då figuren illustrerar Bodeplotten 
+till funktionerna med en logaritmisk skala syns det tydligt att anpassningen är tillsynes dålig 
+vid låga frekvenser. Eftersom Bodeplotten har en logaritmisk skala på axlarna framstår de 
+låga frekvenserna som om de utgör en stor del av anpassningsfelet, vilket de inte är sant i 
+verkligheten.
+  Figur 8: Bodeplotten till frekvensfunktionen hMf och överföringsfunktionen G1(s)
+21
+ 
+ 
+För att få den irrationella överföringsfunktionen G(s) till rörsystemet adderas  
+tidsfördröjningen som ej togs med vid anpassning av G1(s). Vidare i nästa avsnitt kommer 
+överföringsfunktionen G(s) att studeras och analyseras ingående.
+3.4 Analys av överföringsfunktion 
+De matematiska sambanden som råder mellan in- och utsignalen till ett system kan 
+representeras i en överföringsfunktion, och med hjälp av denna kan begränsningar i 
+bandbredden som kan åstadkommas med återkopplad reglering identifieras. En viktig kontroll 
+som måste göras i första skedet är att kontrollera om den skapade överföringsfunktionen G(s) 
+är stabil. För att ett system ska vara stabilt krävs att samtliga poler är belägna i vänstra halv 
+planet VHP. Med ett stabilt system menas att en begränsad insignal till systemet leder till en 
+begränsad utsignal. Identifierad överföringsfunktion G(s) visade sig vara stabil då alla poler 
+till funktionen var strikt belägna i VHP. Dock observerades att systemet hade nollställen i 
+högra halv planet HHP, i z = +80 rad/s och i z = 5340r i3050 rad/s.
+Ett nollställe i HHP ger en bandbreddsbegränsning. Med en bandbredd, wB menas det 
+frekvensintervall där störningsundertryckning sker [6]. Bandbredden wB för ett icke- 
+minimumfas system med ett reellt HHP nollställe i s = z kan bestämmas genom att betrakta 
+specifikationerna i frekvensplanet till känslighetsfunktionen av systemet. En 
+känslighetsfunktion S(s) beskriver hur störningar i ett återkopplat system påverkar utsignalen. 
+Då känslighetsfunktion |S| är <1 dämpas störningar i ett system medan en förstärkning av 
+störningar fås då |S|>1. Typiska specifikationer på känslighetsfunktionen är 
+bandbredden
+B
+w (frekvensen där
+|)
+(
+|
+iw
+S
+skär 0.707 nerifrån) och den maximala 
+resonanstoppen till S, 
+M
+iw
+S
+d
+f
+||
+)
+(
+||
+[7]. Konstanten M anger den maximala förstärkningen 
+känslighetsfunktionen får anta efter bandbredden wB. Mattematiskt kan dessa specifikationer 
+beskrivas av en övre gräns-specifikation,
+|)
+(
+|/
+1
+s
+wp
+, för känslighetsfunktionen S, där
+p
+w är en 
+vikt enligt
+s
+w
+M
+s
+s
+w
+B
+p
+
+ 
+/
+)
+(
+  
+ 
+ 
+(11) 
+För att få bra prestanda på känslighetsfunktionen ska
+1
+||
+||
+|,
+)
+(
+|
+|)
+(
+|
+1
+
+
+
+
+f
+
+S
+w
+w
+iw
+w
+iw
+S
+p
+p
+  
+(12) 
+medan kravet på ett stabilt återkopplad system fås då den viktade känslighetsfunktionen 
+uppfyller
+ 
+ 
+|)
+(
+|
+||
+||
+z
+w
+S
+w
+p
+p
+t
+f
+ 
+ 
+ 
+(13) 
+För att ekvation 13 ska uppfyllas samtidigt som villkoret i ekvation 12 gäller måste 
+vikten
+p
+w vara
+22
+1
+|)
+(
+|
+
+z
+wp
+ 
+ 
+ 
+ 
+(14) 
+Konstanten M i ekvation 11 väljs oftast till 2. Med detta värde på M och genom att utnyttja 
+ekvationerna 11 och 14 bestäms bandbredden wB till 
+    
+ 
+ 
+B
+w < z/2 
+ 
+ 
+(15) 
+Med HHP nollstället z = 80 rad/s i överföringsfunktionen G(s) fås en bandbredden på wB < 40 
+rad/s.
+ 
+Det har visats att ett nollställe i HHP ger en bandbreddsbegränsning. Ett annat 
+fenomen i ett system som leder till en sådan begränsning är en tidsfördröjning. Ett system 
+med tidsfördröjning T har en övre begränsning på bandbredden enligt  
+ 
+ 
+ 
+T
+wB
+/
+1
+
+    
+ 
+(16) 
+Då överföringsfunktionen G(s) har en tidsfördröjning orsakad av avståndet mellan högtalare 2 
+och mikrofonen fås en bandbreddsbegränsning på 0.23 rad/s, vilket är en liten begränsning 
+jämfört med begränsningen HHP nollställerna orsakar. Denna begränsning kan minskas om 
+en reducering av tidsfördröjningen sker. Genom att minska på avståndet mellan högtalare 2 
+och mikrofonen färdas ljud en kortare sträcka och därmed en minskad tidsfördröjning och en 
+minskad bandbreddsbegränsning. Att placera mikrofonen närmare högtalare 2 är ett sätt att 
+minska på tidsfördröjningen.  
+ 
+Den totala bandbreddsbegränsningen till rörsystemet vid MWL är summan av 
+bandbreddsbegränsningen orakad av HHP nollställerna och tidsfördröjningen, d.v.s. 40 rad/s 
++ 0.23 rad/s = 40.23 rad/s.
+Innan det görs några fysikaliska ändringar i systemet är det viktigt att klargöra några 
+saker. Det är nödvändigt att förstå innebörden av resultaten som fåtts. Det har talats mycket 
+om bandbredden i detta kapitel. Att systemet vid MWL har en bandbreddsbegränsning på 
+40.23 rad/s innebär att störningsundertryckning endast sker upp till denna frekvens. Som 
+nämnt i inledningen ligger frekvensen för hörbart ljud mellan 20 och 20 kHz. Att 
+störningsundertryckning endast undertrycker ljud upp till en frekvens på 40.23 rad/s (6.5 Hz) 
+innebär att effekten av regleringen inte kommer att vara hörbart. 
+För att undersöka om ett system liknande systemet vid MWL typiskt har HHP 
+nollställen studeras andra arbeten. I [8] och [4] har författarna gjort en modell av ett system 
+liknande rörsystemet vid MWL. Ur modellen kunde det identifieras att systemet hade 
+nollställen i HHP. Dessa nollställen orsakas till stor del av att ljudet reflekteras i röret [4]. 
+Olika rörsystem med olika dimensioner gör att ljudet reflekteras på olika sätt, vilket resulterar 
+i olika HHP nollställen. Gemensamt för alla rörsystem är att ljud som färdas i röret reflekteras 
+och resulterar i HHP nollställen. Reflektionen av ljudet under färden från högtalaren till 
+mikrofonen i dessa system skapar en begränsning ur reglersynpunkt.  
+23
+3.5 Fysikaliska ändringar i systemet 
+För att minska på tidsfördröjningen i rörsystemet vid MWL kan en omplacering av 
+mikrofonen ske. Då avståndet mellan högtalare 2 och mikrofonen minskas får ljudet en 
+kortare sträcka att färdas och därmed reduceras tidsfördröjningen. Avståndet mellan 
+högtalaren och mikrofon minskas genom att placera mikrofonen i samma tvärsnitt med 
+högtalare 2, se figur 9. 
+Figur 9: Uppställningen vid MWL då mikrofonen placerades i samma tvärsnitt med       
+högtalare 2.    
+ Vid MWL gjordes det två olika experiment på det modifierade systemet. Vid ett av 
+dessa experiment placerades absorberingsmaterial i röret i hopp om att minska på 
+ljudreflektionerna. Vid båda experimenten placerades mikrofonen i samma tvärsnitt som 
+högtalare 2 och vitt brus upptill frekvensen 1kHz användes som insignal till systemet. 
+Figur 10: Den vänstra figuren visar frekvensfunktionen hM2 av det modifierade systemet med mikrofonen 
+placerad i samma tvärsnitt som högtalare 2. Högra figuren är en representation av frekvensfunktionen hMabs av 
+systemet med absorberingsmaterial. 
+Att absorberingsmaterial inte undertrycker ljud med en frekvens under 1 kHz framgår 
+av figuren ovan. Frekvensfunktionen hMabs av systemet med absorberingsmaterial har samma 
+fasvridning och förstärkning som frekvensfunktionen hM2, frekvensfunktionen av systemet 
+utan absorberingsmaterialen. Detta styrker att det traditionella sättet att undertrycka ljud med 
+hjälp av absorberingsmaterial inte funkar för ljud med en frekvens under 1 kHz.  
+24
+En omplacering av mikrofonen hade en effektiv påverkan. Då mikrofonen placerades i 
+samma tvärsnitt som högtalare 2 fås en frekvensfunktion hM2 med en fasvridning på 9 rad/s 
+medan frekvensfunktionen hM hade en fasvridning på 17 rad/s. Av detta kan det sägas att 
+mikrofonen närmare högtalaren resulterade i en betydlig mindre fasvridning eftersom 
+tidsfördröjningen i systemet reducerats. 
+Med hjälp av frekvensfunktionen hM2 ska en överföringsfunktion G2(s) identifieras. Då 
+mikrofonen placerades i samma tvärsnitt som högtalare 2 kan det bortses från att systemet har 
+en tidsfördröjning. Med hjälp av minsta kvadrat felet i ekvation 10 identifierades den troliga 
+ordningen på överföringsfunktionen till n = 15 och m = 16, se figur 11.  
+ Figur 11: Figuren visar hur felet mellan hM2 och hfi avtar. En försumbar minskning på felet 
+sker efter att nämnarpolynomet fått en 16:e ordningen.
+Med en given frekvensfunktion hM2 och en kunskap om den troliga ordningen på 
+täljar- respektive nämnarpolynomet skapas överföringsfunktionen G2(s).
+Överföringsfunktionen G2(s) visade sig vara stabil men hade två HHP nollställen, ett i 145 
+rad/s och den andra i 5640 rad/s. Av detta fås en bandbreddsbegränsning på 72.5 rad/s. En 
+jämförelse mellan frekvensfunktionen hM2 och överföringsfunktionen G2(s) har gjorts för att 
+verifierar hur bra dessa två funktioner överlappar med varandra, se figur 12. En bra 
+överlappning av funktionerna tyder på att rätt överföringsfunktion har skapats.
+25
+ 
+Figur 12: Bodeplotten till frekvensfunktionen hM2 och överföringsfunktionen G2(s)
+26
+27
+Kapitel 4
+Modellbaserad regulator 
+ 
+Det ska i detta examensarbete konstrueras en laborationsuppgift lämpad för studenter 
+som läser reglerteknik allmän kurs. Under kursen får studenterna bekanta sig med en regulator 
+kallad Lead- lag regulator. Med anledning till detta väljs det att regleringen i 
+laborationsuppgiften ska baseras på denna typ av regulator.
+ 
+Kapitlet är indelat i tre avsnitt. I den första görs en analys av reglerbarheten och 
+därefter skapas en regulator baserat på loop shaping design. I sista avsnittet till detta kapitel 
+görs modifieringar i modellen i syfte att göra systemet användbart för en laborationsuppgift 
+för reglering med en Lead-lag regulator.     
+4.1 Analys   
+ 
+Det konstaterades i förra kapitlet att systemet som ska regleras har en begränsning i 
+form av maximal bandbredd, vilket innebär att regleringen av systemet inte kommer ge några 
+hörbara effekter då störningsundertryckningen endast kommer att ske för frekvenser under 72 
+rad/s. Att endast frekvenser under 72 rad/s kommer att undertryckas beror på att systemet har 
+HHP nollställen. Med nollstället z = 145 rad/s ficks en bandredd på 72 rad/s (11.5 Hz) vilket 
+inte ligger inom intervallet för hörbart ljud.  
+ 
+Till ett system som ska regleras genom återkoppling sätts krav på önskade 
+specifikationer i det slutna systemet. De två främsta specifikationerna är en lämplig 
+skärfrekvens Zc och fasmarginal Im. En skärfrekvens Zc är det värde för vilket förstärkningen 
+av en överföringsfunktion antar värdet 1, |G(iZc)|=1. Vid denna frekvens definieras 
+fasmarginalen Im som avståndet till nivån 180 grader [9]. Kravet på Bandbredden i det givna 
+systemet kan ersättas med ett krav på skärfrekvensen eftersom skillnaderna mellan dessa är 
+små. Ett sätt att uppfylla kraven på skärfrekvens och fasmarginal till det slutna systemet är att 
+använda en Lead-lag regulator med enkla länkar  
+bN
+s
+b
+s
+N
+s
+Flead
+
+
+ 
+)
+(
+     
+ 
+(17) 
+M
+a
+s
+a
+s
+s
+Flag
+
+
+ 
+)
+(
+ 
+ 
+(18) 
+Denna regulator består som namnet tyder på en s.k. lead- och lag länk. Lead länken (ekvation 
+17) används för att höja faskurvan vid en given skärfrekvens Zc, medan lag länken (ekvation 
+18) används för att uppfylla specifikationerna på felkoefficienterna. Parametern N (>1) i 
+ekvation 17 bestämmer den maximala fasavanceringen. För att åstadkomma en sådan 
+avancering vid en specifik skärfrekvens väljs b (>0) till 
+N
+w
+b
+önskad
+c )
+(
+ 
+. En härledning av 
+hur lag-länkens parametrar a och M bestäms ges i [9].  
+28
+ 
+Ett annat sätt att uppfylla kraven på skärfrekvens och fasmarginal är att forma 
+lutningen till kretsförstärkningen. Detta sätt kallas för loop shaping design i denna rapport. 
+Med denna design formas lutning på beloppet till kretsförstärkningen så att kraven på 
+systemet uppfylls. Loop shaping design är en allmännare regleringsmetod jämfört med lead-
+lag regleringen. I nästa avsnitt kommer därför loop shaping designen att användas för 
+reglering av systemet i G2(s). Därefter återkommer vi till regleringen med hjälp av en Lead-
+lag regulator i senare avsnitt.
+4.2 Loop shaping design  
+ 
+Loop shaping (svenska krets formning) är en design procedur för formning av 
+absolutvärdet till kretsförstärkningen |L(iw)| så att önskad skärfrekvens på ett system fås [7]. 
+Här är L(s) = G(s)K(s) där K(s) är regulatorn som ska konstrueras och G(s) är 
+överföringsfunktionen till systemet [7].  
+ 
+ 
+För att få ett godtagbart återkopplat system måste bl.a. beloppet till 
+kretsförstärkningen |L(iw)| vara >>1 vid låga frekvenser och <<1 vid höga frekvenser. Med 
+låga frekvenser menas frekvenser med lägre frekvensvärde än skärfrekvensen och höga 
+frekvenser är de frekvenser med ett högre frekvensvärde. Orsaken bakom kravet på att |L(iw)| 
+ska vara större än 1 vid låga frekvenser är baserat på att störningar främst uppkommer vid 
+låga frekvenser och för att undertrycka dessa måste |L(iw)| anta ett stort värde. Mätbruset i ett 
+system uppkommer däremot vid höga frekvenser och det krävs ett litet |L(iw)| för att de ska 
+undertryckas.
+ 
+Med en skarp lutning på |L| kan ovanstående krav uppfyllas. Lutningen på |L| 
+gentemot frekvensen bestäms av
+w
+d
+L
+d
+N
+ln
+/|
+|
+ln
+ 
+. En lutning på -1 innebär att |L| faller 
+med en faktor på -20 dB dåZ ökar med faktorn10. |L| kan dock inte konstrueras med en allt 
+för stor lutning, då ett stort värde på N orsakar att det adderas oönskad fas eftersom 
+2
+/
+)
+(
+)
+(
+arg
+S
+iw
+N
+iw
+L
+|
+. För en lämplig fasmarginal vid skärfrekvensen konstrueras oftast |L| 
+med en lutning på –1 kring skärfrekvensen och en lutning på –2 vid övriga frekvenser. 
+ 
+Regulatorn K(s) i L(s) måste vara proper och brukar, om det är nödvändigt innehålla 
+en lead länk för att förbättra fasmarginalen på |L| och en lag länk för att få en lämplig 
+lågfrekvent förstärkning. I förra kapitlet konstaterades att rörsystemet representerad i 
+överföringsfunktionen G2(s) hade en bandbreddsbegränsning på 72 rad /s. Av denna 
+anledning måste det reglerade systemet han en skärfrekvens på maximalt 72 rad/s.  
+29
+Figur 13: Bodeplotten till kretsförstärkningen L(s) = K(s)G2(s).  I figuren framgår att det 
+öppna systemet har en skärfrekvens på 71.2 rad/s och en fasmarginal på 31.6 grader.  
+                        Att L(s) har en lutning på –1 vid skärfrekvensen och –2 bortom denna frekvens framgår också  
+ 
+ av denna figur.  
+ 
+Regulatorn konstruerades så att den eliminerar de poler i G2(s) som bidrar med att en 
+större lutning vid skärfrekvensen till kretsförstärkningen L(s) fås. Polerna i G2(s) med en 
+frekvens mindre än skärfrekvensen kommer att bidra med att lutningen på L(s) blir mindre än 
+–1 då dessa inte tas bort med hjälp av regulatorn. Dessa poler kommer även att bidra med en 
+större negativ fasmarginal. För att eliminera dessa poler ansätts i regulatorn nollställen vid 
+samma position. Metoden som användes för att undvika en ökning i lutningen orsakad av ett 
+HHP nollställe i s = z var att placera en pol i s = -z så att kretsförstärkningen innehöll termen 
+z
+s
+z
+s
+
+
+
+. Denna term kallas för ett allpass filter eftersom dess belopp är lika med ett över alla 
+frekvenser.  Regulatorn, vilket konstruerades enligt beskrivningen ovan, resulterade i en 
+kretsförstärkning L(s) med en lutning på –1 vid skärfrekvensen och en acceptabel 
+fasmarginal, se figur 13. 
+ 
+Det har diskuterats i föregående kapitel att ett HHP nollställe orsakar en 
+bandbreddsbegränsning. Bandbredden beräknades till z/2 där z är nollstället i HHP. För att 
+illustrera hur systemet påverkas om en större bandbredd än z/2 används vid reglering med 
+hjälp av loop shaping betraktas känslighetsfunktionen till det återkopplade systemet. Då det 
+reglerade systemet har en bandbredd på 72 rad/s fås en känslighetsfunktion med en maximal 
+förstärkning på 2.5 gånger, se figur 14. Däremot får känslighetsfunktionen en maximal 
+förstärkning på 10 gånger då det reglerade systemet har skärfrekvensen 144 rad/s (samma 
+frekvens som HHP nollstället). Av detta kan det dras slutsatsen att ett system med en 
+skärfrekvens som ligger i närheten av ett HHP nollställen orsakar att det återkopplade 
+systemet förstärker kraftigt en del frekvenser. För aktiv ljudreglering innebär det att det 
+återkopplade systemet kommer att innehålla kraftiga resonanser vilket leder till att det 
+störande ljudet i rörsystemet kommer att förstärkas kraftigt.  
+30
+ 
+ 
+Figur 14: Tre olika känslighetsfunktioner för ett system som reglerades med tre olika  
+ 
+ 
+skärfrekvenser. Då det öppna systemet har en skärfrekvens nära HHPs nollstället fås  
+ 
+ 
+en känslighetsfunktion S3 med en kraftig resonanstopp.     
+4.3 Modifiering av reglerbarhet 
+ 
+Syftet med examensarbetet är att skapa en datorlaboration som ska användas av 
+teknologer som läser reglerteknik allmän kurs. Av pedagogiska skäl vill man att effekten av 
+regleringen ska höras med hjälp av en högtalare kopplade till datorn teknologen använder. Då 
+det konstaterades att regleringen av G2(s) inte ger någon hörbar effekt p.g.a. 
+bandbreddsbegränsningen bestämdes det att en modifiering skulle göras i modellen av 
+systemet.  
+ 
+För att få ett hörbart resultat vid reglering måste begränsningen reduceras, HHP 
+nollstället måste flyttas längre ut i halvplanet för att få en minskad bandreddsbegränsning. 
+Kravet, då positionen på nollställerna ändras är att absolutkurvan till systemet föreblir den 
+samma. 
+ 
+För att minska den stora begränsningen systemet G2(s) har, speglades de två HHP 
+nollställerna i G2(s) in i VHP samtidigt som ett HHP nollställe med ett relativt stort positivt 
+värde ansattes. Då filtrering av ljud visades inte ge några hörbara effekter då ljud under 600 
+Hz (3800 rad/s) filtreras valdes att överföringsfunktionen skulle ha en bandbredd bortom 
+denna frekvens. Med ett HHP nollställe i 8500 rad/s får systemet en maximal bandbredd på 
+4250 rad/s (680 Hz). Med denna bandbredd är det möjligt att höra effekten av regleringen 
+med hjälp av vanliga datorhögtalare. Den modifierade överföringsfunktionen G2mod(s) har 
+samma amplitudskurva som G2(s) medan en skillnad i fasen kan uppmärksammas, se figur 15. 
+Skillnaden orsakas av att ett HHP nollställe sänker faskurvan. 
+31
+ 
+Figur 15: Bodeplotten av överföringsfunktionen G2(s) och den modifierade funktionen G2mod(s)
+ 
+med ett HHP nollställe i 8500 rad/s.   
+ 
+Innan reglerdesignen startar måste ytterligare en modifiering göras. För att 
+överföringsfunktionen ska vara användarvänlig, ur en pedagogisk synvinkel, för studenter 
+som läser kursen reglerteknik allmän kurs måste resonanserna i överföringsfunktionen 
+minskas. Resonanser i ett system orsakas av komplexkonjugerade poler och nollställen. Med 
+kunskap om vilka poler och nollställen som ger upphov till de oönskade resonanstopparna kan 
+dessa toppar elimineras. Då resonanstopparna elimineras minskas även oscillationen i fasen, 
+en jämnare faskurva fås. Resultatet av elimineringen av de kraftiga resonanserna blev 
+överföringsfunktionen G2modf(s). En jämförelse mellan G2mod(s) och G2modf(s) visas i figur 16. 
+I denna figur kan resultatet av elimineringen tydligt urskiljas, inga kraftiga resonanser finns 
+medan en stor del av dynamiken i systemet kvarstår.   
+Figur 16: Bodeplotten av överföringsfunktionen G2mod(s) tillsammans med funktionen  
+G2modf(s) i vilket de kraftiga resonanserna har eliminerats 
+-80
+-60
+-40
+-20
+0
+20
+Magnitude (dB)
+10
+0
+10
+1
+10
+2
+10
+3
+10
+4
+10
+5
+10
+6
+-360
+-180
+0
+180
+360
+540
+Phase (deg)
+Bode Diagram
+Frequency  (rad/sec)
+G2(s)
+G2mod(s)
+G2mod(s)
+G2(s)
+-80
+-60
+-40
+-20
+0
+20
+Magnitude (dB)
+10
+0
+10
+1
+10
+2
+10
+3
+10
+4
+10
+5
+10
+6
+0
+90
+180
+270
+360
+450
+540
+Phase (deg)
+Bode Diagram
+Frequency  (rad/sec)
+G2modf(s)
+G2mod(s)
+32
+En modifiering av G2(s) har gjorts vilket lett till en minskad bandbreddsbegränsning 
+och en minskning i antalet resonanser. Med dessa modifieringar kan regulator konstruktionen 
+starta. En Lead-lag regulator skapas med målet att en dämpning i ljudnivån i rörsystemet ska 
+var hörbart. Med detta mål väljs att det reglerade systemet ska ha en skärfrekvens på 4000 
+rad/s (strax under bandbreddsbegränsningen) och en fasmarginal på 60 grader. 
+Överföringsfunktionen G2modf(s) har vid den önskade skärfrekvensen en fas på 172 grader 
+enligt figur 17. För att en fasmarginal på 60 grader ska fås måste en fasavancering på 68 
+grader ske. Effektivast uppnås denna fasavancering, vid den önskade skärfrekvensen med 
+hjälp av två seriekopplade lead-länkar, där varje länk ska bidra med en faslyft på ca 35 grader.      
+ 
+Figur 17: Överföringsfunktionen G2modf(s) där fasen vid den önskade skärfrekvensen har
+markerats. 
+ 
+Lead-lag regulatorn lyckades skapa ett stabilt återkopplat system med en fasmarginal 
+på 60 grader och en skärfrekvens på 4000 rad/s, se figur 18. Ljud med en frekvens under 
+skärfrekvensen kommer att dämpas av det återkopplade systemet medan ljudsignaler med en 
+högre frekvens kommer att förstärkas. En Bodeplott där det illustrativt går att se vilka 
+frekvenser som dämpas och vilka ger upphov till en förstärkning av störningar i rörsystemet 
+kan åskådas i Bodeplotten till känslighetsfunktionen av det reglerade systemet i figur 19. I 
+denna figur kan det ses att en kraftig störningsundertryckning sker för frekvenser under 10 
+rad/s medan undertryckningen därefter ligga runt –10 dB ända fram till skärfrekvensen. 
+Slutsatsen är att det med hjälp av en Lead-lag regulator inte går att få en stor 
+störningsundertryckning vid höga frekvenser.
+33
+Figur 18: Bodeplotten av det öppna systemet F(s)G2modf(s), där F(s) är Lead-lag regulatorn som 
+består av två lead- och en lag-länk.
+ 
+Figur 19: Känslighetsfunktionen till det reglerade systemet G2modf(s)
+34
+35
+Kapitel 5
+Förslag till laborationsuppgift
+1.
+Studenten ska först ladda ner 
+överföringsfunktionen G2(s) från 
+kurshemsidan och plotta dess 
+bodeplott.
+ 
+Denna laborationsuppgift har flera mål. Det huvudsakliga målet är att studenterna 
+som gör laborationen ska konstruera en Lead- lag regulator som dämpar ljudnivån i 
+rörsystemet vid MWL. Effekten av regleringen ska vara hörbar och kunna verifieras med 
+vanliga datorhögtalare. Under laborationen ska man ge studenterna en inblick i systemet. 
+Studenterna ska själva verifiera att systemet är av icke minimumfas karaktär och därefter 
+ska det förklaras för dem att systemet måste modifieras för att kunna regleras med en 
+enkel Lead-lag regulator. Själva modifieringen ska göras av studenterna. Med modifiering 
+menas att bandbreddsbegränsningen minskas genom att HHP nollställerna speglas in till 
+VHP och därefter ansätts ett HHP nollställe som inte utgör några större begränsningar ur 
+reglersynpunkt. I verkligheten innebär modifieringen att det placeras dämpande material i 
+rörsystemet så att ljudreflektionerna minskas. Experiment har visat att det krävs en 
+bandbredd på minst 3800 rad/s för att effekten av regleringen ska vara hörbart med 
+datorhögtalare. Till denna anledning ska det ansättas ett nollställe i HHP med ett värde på 
+8500 rad/s.
+ 
+Överföringsfunktionen G2(s) som ska används i laborationen är 
+överföringsfunktionen till rörsystemet vid MWL men med en eliminering av vissa 
+resonanser. Nedan härleds läsaren stegvis genom den förslagna laborationsuppgiften. 
+36
+2.
+När studenten lyckats plotta 
+bodeplotten till överföringsfunktionen
+ska han/hon därefter identifiera om 
+systemet är ett minfas- eller icke 
+minimumfassystem.  
+Studenten ska identifiera att G2(s) har 
+2st HHP nollställen och därmed ett 
+icke minimumfassystem. 
+3.
+Nästa uppgift i laborationen är 
+att spegla in HHP nollställerna 
+till VHP utan att beloppskurvan 
+till G2(s) ändras. Studenten ska 
+till det nya systemet G3(s)
+ansätta ett HHP nollställe i 8500 
+rad/s.
+Tips till studenten: använd 
+Matlab funktionen ]SN (se help 
+]SNför att ändra i ett systems 
+poler och  nollställen.
+Efter att studenten verifierat att systemet G2(s) är av icke minimumfas karaktär förklaras 
+att detta systemet inte kan regleras med en Lead-lag regulator då HHPs nollställen utgör 
+en begränsning. För att göra systemet reglerbart måste begränsningen elimineras vilket 
+innebär att nollställen måste speglas in VHP. Då systemet i verkligheten har HHP 
+nollställen måste det därför ansättas ett nollställe i HHP på ett sådant sätt att begränsning 
+inte fås. Ett nollställe i 8500 rad/s är ett nollställe som visats vara användbart. Vidare 
+förklaras det för den som gör datorlaborationen att ett HHP nollställe i 8500 rad/s innebär 
+att systemet maximal få ha en skärfrekvens på 4250 rad/s och att experiment har visat att 
+man behöver reglera upp till 3800 rad/s för att effekten av regleringen ska vara hörbart 
+med en pc högtalare.  
+37
+4.
+Studenten ska genom att plotta 
+bodeplotten till G2(s) och G3(s)
+grafiskt se hur HHP nollställen 
+påverkar faskurvan.
+5.
+Uppgiften nu är att konstruera en 
+Lead-lag regulatorn för att få en fas 
+på 60 grader vid skärfrekvensen 
+4000 rad/s. 
+Vid den önskade skärfrekvensen
+4000 rad/s har systemet G3(s) en fas 
+på 172 grader. För att få en 
+fasmarginal på 60 grader ska 
+studenten komma underfund med  
+att den önskade faslyften är 68 
+grader.
+Tips för studenten: två lead länkar 
+kan användas för att få önskad 
+faslyft. 
+38
+6.
+Resultatet av regleringen framgår 
+av figuren intill. Vid den önskade 
+skärfrekvensen har systemet en 
+fasmarginal på 60 grader.  
+7.
+För att höra resultatet av regleringen ska studenten först simulera systemet G3(s) med 
+vitt brus
+)
+(t
+Z
+, vilket kan laddas ner från kurshemsidan. Därefter simulerar han/hon det 
+återkopplade systemet med samma vita brus. En dämpning i ljudnivån ska höras om 
+regulatorn har konstruerats rätt. 
+Tips för studenten: För simulering av att ett system kan OVLP användas och för att spela 
+upp ljud kan ZDYSOD\ vara användbart. 
+39
+Kapitel 6
+Slutsatser
+ 
+Det har visats i detta examensarbete att en matematisk modell över rörsystemet vid 
+MWL kan skapas med hjälp av ett identifieringsexperiment.  Med en lämplig insignal till 
+systemet kunde in- respektive utsignalernas spektra används för att skapa frekvensfunktionen 
+över systemet. Med hjälp av denna frekvensfunktion kunde systemets dynamik identifieras.  
+ 
+Att anpassa en överföringsfunktion givet en frekvensfunktion med hjälp av Matlab 
+funktionen invfreqs ger ett bra resultat. Det gäller för den som ska använda funktionen till 
+anpassning att förstå vad funktionen ger för resultat och vad man har tillgängligt. T.ex. är det 
+viktigt att modellera tidsfördröjningen i en frekvensfunktion separat då invfreqs endast kan 
+anpassa rationella överföringsfunktioner. Det är även nödvändigt att använda rätt metod för 
+bestämning av den troliga ordningen på överföringsfunktionen som ska identifieras.  
+ 
+En viktig slutsats som måste lyftas fram är att rörsystem liknande MWL:s har HHP 
+nollställen. Dessa nollställen orsakas av att ljudet i röret reflekteras. Ännu har man inte 
+kommit på ett sätt att undvika ljudreflektionen så att bandbreddsbegränsningen minskas. 
+Däremot har det visats i detta examensarbete att en reducering av tidsfördröjningen minskar 
+på begränsningen i den bandbredd som kan åstadkommas genom återkoppling.     
+ 
+Det är viktigt att påpeka att examensarbetet startades med avsikten att skapa en 
+datorlaboration till en regler allmän kurs. Men under arbetets gång visades att systemet har en 
+hög modellordning och en svår begränsning. Hade inte examensarbetet avsikten att skapa en 
+datorlaboration till en sådan kurs kunde mer avancerade regulatorer med högre ordningar 
+användas för att reglera systemet. Exempel på avancerade regulatorer som kunde användas för 
+att reglera ljudnivån i rörsystemet vid MWL är
+f
+H reglering vilket är en avancerad from av 
+loop shaping.
+40
+41
+Kapitel 7
+Referenser
+[1] H. Bodén (2006) Applications of Signal Analysis , Active control of Sound
+[2] W. Tseng , B.Rafaely, and S.J. Elliott (1998) Combined feedback-feedforward active
+     control of sound in a room
+[3] S. J. Elliott,T. J. Sutton, (1996) IEEE transactions on speech  and audio processing,
+     Performance of feedforward and feedback system for active control, vol 4, no 3 
+[4] H. Jeongho, J.C. Akers, R. Venugopal, M. Lee, A.G. Sparks, P.D. Washabaugh, and  
+    D.S. Bernstein. (1996) IEEE Transaction on control system technology, Modeling,
+   Identification, and Feedback Control of Noise in an Acoustic Duct, vol. 4, nr. 3 
+[5] L. Ljung, T. Glad (2004) modellbygge och simulering, ISBN 91-44-02443-6 
+[6] L. Ljung, T. Glad (2003) Reglerteori Flervariabla och olinjära metoder, ISBN 91-44-
+      03003-7 
+[7] S. Skogestad , I. Postlethwaite. (1996) Multivariable feedback control, Analysis
+     and design, ISBN 0-471-94-277-4. 
+[8] J. C. Carmon and V. M. Alvarado (2000) IEEE Transaction on control system technology,       
+   Active Noise Control of a Duct Using Robust Control Theory, vol. 8, nr 6 
+[9] L. Ljung, T. Glad (1989) Reglerteknik Grundläggande teori, ISBN 91-44-17892-1 
+[10] J.N.Jauang (1994) Applied system identification, ISBN:0-13-079211-X
+[11] P. Rybin (2003) Active Noise Control in Home Environment, (Master´s Thesis) 
+[12] Matlab version 7.0 
+42

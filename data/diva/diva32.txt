@@ -1,0 +1,3665 @@
+ 
+ 
+ 
+Off-design Analysis of a Vapour 
+Absorption Refrigeration System 
+ 
+ 
+ 
+ 
+ 
+KARL-HENRIK KALENIUS 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis 
+Stockholm, Sweden 2007 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Off-design Analysis of a Vapour Absorption 
+Refrigeration System 
+ 
+ 
+ 
+Karl-Henrik Kalenius 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2007:37 MPK594 
+KTH Industrial Engineering and Management 
+Machine Design 
+SE-100 44  STOCKHOLM 
+ 
+ 
+ 
+ 
+ 
+Examensarbete  MMK 2007:37 MPK594 
+ 
+Analys av off-design prestanda för ett 
+absorptionskylsystem 
+ 
+ 
+ 
+ 
+ 
+Karl-Henrik Kalenius 
+ 
+Godkänt 
+2007-05-04 
+Examinator 
+Jan-Gunnar Persson 
+Handledare 
+Jan-Gunnar Persson 
+              
+ 
+Uppdragsgivare 
+University of Florida 
+Kontaktperson 
+William E. Lear 
+ 
+Sammanfattning 
+ 
+Examensarbetet för KTH utfördes vid avdelningen för maskin- och rymdteknik vid University of 
+Florida (UF). Examensarbetet är en del av ett forskningsprojekt där ett absorptionskylsystem är 
+integrerat med ett regenerativt högtrycks gasturbinsystem. Syftet med examensarbetet är att 
+programmera en datormodell för att kunna analysera off-design prestanda för kylsystemet. 
+Modellen skall enkelt kunna integreras som en funktion i en större datormodell. För att kunna 
+programmera modellen insamlades kunskaper om absorbent/köldmedia blandningen samt 
+funktion och termodynamiska egenskaper för ingående komponenter. Dessa studier finns 
+beskrivna i rapporten. Kylsystemet består av fyra värmeväxlare som tar upp eller avger värme till 
+yttre källor, dessa är generator, förångare, kondensor och absorbator. Ytterliggare två 
+värmeväxlare används internt i kylsystemet för minskad storlek och minskad värmeöverföring 
+vid de andra värmeväxlarna samt ökad prestanda. Den mest komplicerade komponenten i 
+systemet är en vattenavskiljare som används för att koncentrera ammoniak-vatten blandningen 
+till nästan ren ammoniak. För att erhålla erforderlig tryckskillnad i kylsystemet används en pump 
+och några olika typer av ventiler. Ett antal datorsimuleringar kördes med programmet, för att få 
+parametriska data till diagram för att beskriva kylsystemets prestanda. Resultaten från 
+beräkningarna är presenterade på ett sätt som relaterar till intressanta områden i anslutning till 
+kylsystemet som påverkar dess prestanda. Experimentella mätdata från energi- och 
+gasturbinlaboratoriet vid UF är jämförda med datormodellens beräkningar vilket visade att 
+kylsystemet i testanläggningen arbetade på ungefär hälften av dess design-prestanda. 
+Kylsystemet är överdimensionerat och klarar av mycket högre värmebelastning förutsatt att 
+tillräcklig kylning finns tillgänglig. En högre värmebelastning skulle medföra att kylsystemet 
+arbetade närmare den ideala driftpunkten vilket skulle innebära bättre prestanda. Den viktigaste 
+slutsatsen är att kylsystemets kondensor bör ha tillgång till tillräcklig köldmediemängd med 
+tillräckligt låg temperatur för att erhålla bra driftförhållanden och därmed bra prestanda. 
+ 
+ 
+ 
+ 
+ 
+Master of Science Thesis MMK 2007:37 MPK594 
+ 
+Off-design Analysis of a Vapour Absorption 
+Refrigeration System 
+ 
+ 
+ 
+ 
+ 
+Karl-Henrik Kalenius 
+ 
+Approved 
+2007-05-04 
+Examiner 
+Jan-Gunnar Persson 
+Supervisor 
+Jan-Gunnar Persson 
+           
+ 
+Commissioner 
+University of Florida 
+Contact person 
+William E. Lear 
+ 
+Abstract 
+ 
+This master thesis project at KTH is performed in the Mechanical and Aerospace Engineering 
+department at University of Florida (UF). The thesis is a small part of a gas turbine research 
+project where a vapour absorption refrigeration system (VARS) and a high pressure regenerative 
+turbine engine (HPRTE) are integrated together. The main objective is to build a computer 
+model of the VARS. The computer model is supposed to be used to analyse the off-design 
+performance of the VARS and should also be easy to integrate as a subroutine in a more complex 
+system model. To model the VARS some knowledge of the absorbent/refrigerant mixture had to 
+be well known, in this case a mixture of ammonia and water. The thermodynamics of the 
+different components is also studied and discussed in the report. The VARS consists of four heat 
+exchangers that rejects/absorbs heat to/from external sources; the evaporator, generator, 
+condenser and absorber. There are two internal heat exchangers used to increase the performance 
+of the VARS and to reduce the heat load on the other heat exchangers. A pump and some 
+throttling valves keep the pressure difference needed in the system to accomplish evaporation 
+and condensation in the heat exchangers. The most advanced component is the rectifier, a mass 
+and heat exchanger that purifies the ammonia-water mixture into almost pure ammonia. The 
+computer model built in this thesis is included in Appendix E and has been used in parametric 
+calculations to plot charts. The results presented and discussed in the report are related to 
+external parameters that are of interest and that have influence on the VARS performance. The 
+experimental test data from test runs in the Energy and Gas Dynamics Systems Laboratory at UF 
+is also compared with the model calculations. At the time of this thesis the VARS used in the 
+experimental setup at UF is operating at approximately half of its capacity and is capable of 
+much more. The most important conclusion drawn from the model calculations is that the 
+temperature of the coolant entering the condenser is very sensitive on the VARS performance 
+and should be kept close to design conditions.  
+ 
+Acknowledgement 
+ 
+I would like to thank professor Jan-Gunnar Persson and professor Rune Lindgren at KTH for 
+the opportunity to do my thesis project in the USA. Thanks to Dr. William E. Lear at 
+University of Florida for the support and meetings on weekly basis. Dr. Jameel Khan, thanks 
+for the support and discussions regarding the VARS. Thanks to Mr. John Crittenden for 
+letting me attend to the test runs and giving me laboratory experience. Also thanks to Karl 
+Järvi, my classmate at KTH for all the discussions through the years. And finally thanks to my 
+family and Lisa Gustavsson, I am glad to be home.  
+ 
+Table of contents 
+ 
+ 
+Nomenclature...................................................................................................................... 2 
+ 
+1 
+Objectives........................................................................................................................... 3 
+1.1 
+Thesis project description........................................................................................... 3 
+2 
+Introduction ........................................................................................................................ 4 
+2.1 
+Background ................................................................................................................ 4 
+3 
+Cycle configuration............................................................................................................ 5 
+3.1 
+Gas turbine cycle........................................................................................................ 5 
+3.2 
+Vapour Absorption Refrigeration System – VARS cycle.......................................... 6 
+4 
+The different components and thermodynamics ................................................................ 7 
+4.1 
+Heat exchangers RHX and SHX ................................................................................ 7 
+4.2 
+Generator, Evaporator and Condenser ....................................................................... 8 
+4.3 
+Absorber..................................................................................................................... 9 
+4.4 
+Rectifier...................................................................................................................... 9 
+4.5 
+Pump......................................................................................................................... 10 
+4.6 
+Throttling valves ...................................................................................................... 11 
+4.7 
+Coefficient of performance(COP)............................................................................ 11 
+4.8 
+Absorbent-Refrigerant mixture ................................................................................ 11 
+5 
+Computer model............................................................................................................... 14 
+5.1 
+Model introduction................................................................................................... 14 
+5.2 
+Model assumptions................................................................................................... 14 
+5.3 
+Inputs to the model................................................................................................... 15 
+5.4 
+Calculation procedure .............................................................................................. 15 
+5.5 
+Outputs from model ................................................................................................. 16 
+6 
+Results .............................................................................................................................. 17 
+6.1 
+Influence of evaporator exit temperature on gas side............................................... 17 
+6.2 
+Influence of changed temperature of the chilling fluid entering the condenser....... 18 
+6.3 
+Influence of different generator heat loads .............................................................. 18 
+6.4 
+Experimental data..................................................................................................... 19 
+6.5 
+Conclusions .............................................................................................................. 20 
+6.6 
+Future work .............................................................................................................. 21 
+ 
+Appendix A 
+Heat exchanger effectiveness........................................................................... 22 
+ 
+A.1 
+Definition of heat exchanger effectiveness .............................................................. 22 
+ 
+A.2 
+Refrigerant heat exchanger (RHX) effectiveness..................................................... 22 
+ 
+A.3 
+Solution heat exchanger (SHX) effectiveness.......................................................... 23 
+Appendix B 
+Pump data......................................................................................................... 25 
+ 
+B.1 
+Pump efficiency........................................................................................................ 25  
+Appendix C 
+Thermostatic expansion valve (TEV) .............................................................. 26 
+ 
+C.1 
+The function of an externally equalized TEV.......................................................... 26 
+Appendix D 
+Validation of ammonia-water subroutines ....................................................... 27 
+ 
+D.1 
+Validation heat of mixing......................................................................................... 27 
+ 
+D.2 
+Overall heat balance................................................................................................. 28 
+Appendix E 
+Computer program ........................................................................................... 29 
+ 
+References ................................................................................................................................ 47 
+ 
+ 
+ 
+2 
+Nomenclature 
+t 
+- 
+temperature 
+[oC] 
+m  
+- 
+mass flow rate 
+[kg/s] 
+p 
+- 
+pressure 
+[kPa] 
+x 
+- 
+concentration 
+[-] 
+h 
+- 
+enthalpy 
+[kJ/kg] 
+Q  
+- 
+heat load 
+[kW] 
+W  
+- 
+work rate (power) 
+[kW] 
+V  
+- 
+volume flow rate 
+[m3/s] 
+COP 
+- 
+coefficient of performance [-] 
+Y 
+- 
+solution split factor 
+[-] 
+ν 
+- 
+specific volume 
+[m3/kg] 
+ε 
+- 
+effectiveness 
+[-] 
+cp 
+- 
+specific heat 
+[kJ/kg K] (at constant pressure) 
+ 
+ 
+Subscripts 
+1, 2,.,12a- 
+state point numbers 
+SH 
+- 
+super heat 
+mole 
+- 
+molar based 
+mass 
+- 
+mass based 
+SHX 
+- 
+solution heat exchanger 
+RHX 
+- 
+refrigerant heat exchanger 
+evap 
+- 
+evaporator 
+cond 
+- 
+condenser 
+abs 
+- 
+absorber 
+gen 
+- 
+generator 
+Pump 
+- 
+pump 
+d 
+- 
+design 
+c 
+- 
+cold 
+h 
+- 
+hot 
+mix 
+- 
+mixture 
+NH3  
+- 
+ammonia 
+H2O 
+- 
+water 
+in 
+- 
+inlet conditions 
+out 
+- 
+outlet conditions 
+ 
+ 
+ 
+3 
+1 Objectives 
+ 
+1.1 
+Thesis project description 
+A computer model should be made that calculates the performance of a vapour absorption 
+refrigeration system(VARS). The model is supposed to be used to predict the off-design 
+performance of a VARS at different operating conditions. It will be used to see the influence 
+of changes in the external heat loads on the VARS performance. The model should be built so 
+it could be easily implemented as a subroutine in a more complex system model, in this case a 
+gas turbine cycle where the VARS is used. 
+  
+ 
+4 
+2 Introduction 
+ 
+2.1 
+Background 
+This thesis project is carried out at University of Florida(UF) in the Energy and Gas 
+Dynamics Systems Laboratory at the Mechanical and Aerospace Engineering department. The 
+thesis project is a small part of a greater gas turbine research project that has been going on 
+for a couple of years. It is subcontracted to University of Florida by Triad Research 
+Corporation, Inc., Gainesville, FL. The purpose of the thesis project is to obtain knowledge 
+about the off-design performance of a Vapour Absorption Refrigeration System(VARS). The 
+VARS is heat driven and uses waste heat, exhaust heat, from a gas turbine cycle to produce 
+cooling. The cooling produced is used to cool down recirculated exhaust gas, but could also 
+be used to produce external refrigeration. At this moment the gas turbine configuration in the 
+Energy and Gas Dynamics Systems Laboratory includes the VARS which will give useful 
+information that could be used to compare the computer calculations at off-design data with 
+experimental data.  
+ 
+5 
+3 Cycle configuration 
+ 
+3.1 
+Gas turbine cycle 
+Before going into details and starting to explain the VARS the gas turbine cycle is briefly 
+described to get an first impression of what the VARS is used for in the gas turbine system. 
+The gas turbine cycle is a high pressure regenerative turbine engine(HPRTE) and will only be 
+describes at the boundaries closest to the VARS, additional information can be found in 
+reference [1]. The thin lines and the uncoloured components in figure 3.1 show the gas turbine 
+cycle. The VARS is a stand alone unit implemented in the HPRTE as shown in figure 3.1. 
+The bold lines and grey coloured components in the sketch represent the VARS. The VARS 
+sketch is somewhat simplified and the actual system is described in section 3.2.  
+ 
+ 
+Figure 3.1.   HPRTE with VARS implemented at the recirculated 
+exhaust. 
+The exhaust from the high pressure turbine(HPT) passes the recuperator(REC) where hot gas 
+is recuperated and then either passed to ambient through the low pressure turbine(LPT) or 
+recirculated to the hot gas cooler(HGC) where the gas is further chilled. The HGC in the gas 
+path is the same component as the generator(GEN) in the VARS. After HGC the gas flows 
+through the warm gas cooler(WGC) to the cold gas cooler(CGC) which is the same as the 
+evaporator(EVAP) in the VARS. The heat driven VARS absorbs heat from the gas path at 
+both the GEN and the EVAP and is thereby cooling the recirculated gas at both places. The 
+WGC is used to obtain the temperature difference needed between the GEN and the EVAP. 
+At present in the research setup the WGC is cooled by a water cooled heat exchanger but 
+could also be air cooled if water is not available. The task for the VARS is to cool down the 
+recirculated gas below ambient temperature before it enters the high pressure 
+compressor(HPC). A reduced inlet temperature to HPC will reduce the work input to the HPC 
+and give a better overall efficiency. After the HPC the gas is preheated in the REC before 
+entering the combustion chamber where the gas temperature is increased before the HPT. The 
+HPT is connected by the same shaft to the HPC and thereby drives the HPC. The HPT 
+produces enough power to also produce electrical power through an electrical generator. The 
+final component in the gas turbine cycle is the low pressure compressor(LPC) that is used to 
+increase the inlet air pressure. At normal running condition the LPC inlet is the only fresh air 
+intake to the system and the flow rate of the air introduced to the gas path has to be sufficient 
+for the desired type of combustion. At the configuration at UF the air mass flow introduced at 
+the LPC inlet was approximately 40 percent of the total mass flow in the gas path. If the air 
+flow rate is to small oxygen depletion in the combustion chamber will occur and the 
+combustion will stop.  
+ 
+6 
+ 
+3.2 
+Vapour Absorption Refrigeration System – VARS cycle 
+The vapour absorption refrigeration system (VARS) is a refrigeration cycle that uses a 
+compound of the two fluids ammonia and water. The ammonia which has a lower boiling 
+point at a given pressure is used as refrigerant and the water as absorbent. The ammonia lines 
+are numbered from (7) to (12) in figure 3.2. In these lines it is almost pure ammonia 
+circulating. In the other lines there is a mixture of ammonia and water. The solution leaving 
+the absorber (ABS) and entering the rectifier(RECT) in the lines (1) to (3a) carries strong 
+solution, while the lines (4), (5) and (6) from the rectifier back to the absorber are containing 
+weak solution.  
+ 
+ 
+Figure 3.2.  The actual VARS with state points. 
+The VARS uses a pump to circulate the solution and increase the pressure from the low 
+pressure (LP) side to the high pressure (HP) side. Compared to a vapour compression cycle 
+which compresses vapour to increase pressure the VARS pumps liquid to increase pressure 
+and thereby uses less work. The lower electrical input is the major advantage against the 
+vapour compression cycle. However for an adsorption refrigeration process, the COP has a 
+theoretical upper limit of 1, in reality it is lower. The VARS on the other hand needs heat in 
+the generator and is most commonly used where waste heat is available. To maintain the 
+pressure difference in the system two valves are used. One in the weak solution line to keep 
+the pressure difference between the rectifier and the absorber and one thermostatic expansion 
+valve (THX) between the condenser and the evaporator. The THX is not only maintaining the 
+pressure difference it is also the main controlling system of the VARS. It regulates the 
+refrigerant mass flow by sensing the degree of superheat of the vapour leaving the evaporator. 
+There is also a fixed valve regulating the strong solution flow going to the top of the rectifier. 
+This valve is preset to a value that is based on the design conditions, it is set to get a good 
+rectification process. Then there is a couple of heat exchangers; the generator, evaporator, 
+condenser and absorber where the heat transfer is in two phase flow, the heat transfer in these 
+four heat exchangers is to external heat sources or sinks. Solution heat exchanger (SHX) and 
+refrigerant heat exchanger (RHX) is internally used in the VARS to reduce the heating and 
+cooling needed in the other four heat exchangers and to increase the COP. The last and most 
+advanced component is the rectifier. It is used to purify the high concentration ammonia 
+vapour leaving  the generator till almost pure ammonia vapour at the top of the rectifier. 
+ 
+7 
+4 The different components and thermodynamics 
+  
+In the thermodynamic analysis of the cycle steady state conditions is assumed. It is also 
+assumed that the system is not exposed to any heat sources or have any heat losses to the 
+surroundings. To be able to find the thermodynamic properties of the ammonia-water mixture 
+the state at some of the state points is assumed to be completely saturated, either at vapour or 
+liquid phase. This assumption had to be made during the thesis project due to the difficulties 
+related to binary mixture properties. It showed that there is lack of literature describing the 
+mixture properties for the ammonia-water mixture as a function of concentration. The 
+assumptions are further discussed in section 5.2. For all components continuity and 
+conservation of species is valid. The general equations for continuity is equation (4.1) and for 
+conservation of species equation (4.2). 
+ 
+in
+out
+m
+m
+=
+
+
+ 
+(4.1) 
+ 
+in
+in
+out
+out
+m
+x
+m
+x
+⋅
+=
+⋅
+
+
+ 
+(4.2) 
+ 
+4.1 
+Heat exchangers RHX and SHX 
+These two heat exchangers are of closed counter flow type, used internally in the VARS to 
+preheat or chill the fluids in the system. A common way to describe the heat exchanger 
+performance is to use the heat exchanger effectiveness ε . To estimate the effectiveness it is 
+important to consider the product mass flow rate times specific heat to choose which way to 
+calculate the effectiveness. A more detailed explanation of the definition of the heat 
+exchanger effectiveness is described in appendix A. 
+ 
+ 
+ 
+Figure 4.1.  Sketch of the RHX with state points.  
+In the RHX the mass flow on both sides consist of almost pure ammonia. As figure 4.1 
+indicates the mass flow that enters at (8) is the same that leave at (12) due to continuity. Since 
+the mass flow is the same at both the hot side and the cold side the specific heat will 
+determine how to calculate the effectiveness for the RHX. The specific heat of the fluid at the 
+high pressure side is higher than the specific heat for the fluid at the low pressure side, this 
+leads to equation (4.3) which defines the effectiveness for the RHX by the definition given in 
+appendix A.  
+ 
+ 
+12
+11
+8
+11
+RHX
+T
+T
+T
+T
+ε
+−
+=
+−
+ 
+(4.3) 
+ 
+ 
+8 
+ 
+ 
+ 
+Figure 4.2.  Sketch of the SHX with state points. 
+For the SHX the effectiveness is not as simple to define. It is dependent of the concentrations 
+of the weak and strong solutions, mass flows and temperatures. In section A.3 in appendix A a 
+discussion is made about the SHX effectiveness that ends up in equation (4.4) and (4.5). 
+When the computer model programmed in this thesis project was used initially it showed that 
+at different condition different ways to define the effectiveness should be used. In the model it 
+is assumed that the higher mass flow in the lines (2a) and (3) is the most dependent variable 
+which ends up in equation (4.4) for the SHX effectiveness. After the calculation is made the 
+model checks the assumption of using equation (4.4). If the assumption was incorrect 
+equation (4.5) has to be used for the SHX effectiveness. 
+ 
+ 
+4
+5
+4
+2
+SHX
+a
+T
+T
+T
+T
+ε
+−
+=
+−
+ 
+(4.4) 
+ 
+3
+2
+4
+2
+a
+SHX
+a
+T
+T
+T
+T
+ε
+−
+=
+−
+ 
+(4.5) 
+ 
+Heat balances for RHX and SHX are shown in equations (4.6) and (4.7). 
+ 
+ 
+8
+8
+11
+11
+9
+9
+12
+12
+0
+m
+h
+m
+h
+m
+h
+m
+h
+⋅
++
+⋅
+−
+⋅
+−
+⋅
+=
+
+
+
+
+ 
+(4.6) 
+ 
+2
+2
+4
+4
+5
+5
+3
+3
+0
+a
+a
+m
+h
+m
+h
+m
+h
+m
+h
+⋅
++
+⋅
+−
+⋅
+−
+⋅
+=
+
+
+
+
+ 
+(4.7) 
+ 
+4.2 
+Generator, Evaporator and Condenser 
+The generator, evaporator and condenser are closed counter flow heat exchangers were phase 
+change takes place. In the generator the strong solution is partially vaporized, i.e. both liquid 
+and vapour is leaving the generator. Due to the different characteristics of ammonia and water 
+the vapour leaving the generator is higher in concentration of ammonia than the solution 
+entering while the liquid leaving is weaker. For the evaporator and the condenser the fluid is 
+almost pure ammonia and assumed to be saturated at outlet, completely evaporated and 
+condensed. Since the heat exchangers are of closed type the inlet and outlet are connected. 
+Heat balances for the heat exchangers are written in equations (4.8) - (4.10) . 
+ 
+ 
+3
+3
+3
+3
+0
+gen
+a
+a
+Q
+m
+h
+m
+h
++
+⋅
+−
+⋅
+=
+
+
+
+ 
+(4.8) 
+ 
+10
+10
+11
+11
+0
+evap
+Q
+m
+h
+m
+h
++
+⋅
+−
+⋅
+=
+
+
+
+ 
+(4.9) 
+ 
+7
+7
+8
+8
+0
+cond
+m
+h
+m
+h
+Q
+⋅
+−
+⋅
+−
+=
+
+
+
+ 
+(4.10) 
+    
+ 
+9 
+4.3 
+Absorber 
+At the mixing junction and in the absorber the weak solution and almost pure ammonia are 
+mixed into strong solution. During mixing the heat of solution will affect the heat balance. Up 
+to now the heat of solution of ammonia into different concentration of liquids are not that 
+much described in literature. It is difficult to estimate the heat generated during mixing and 
+therefore the absorber and mixing junction is treated as a control volume closed by state 
+points (1), (6) and (12) as shown in figure 4.3. Thereby the heat of solution will be included in 
+the heat balance which is accurate since the heat generated during mixing also need to be 
+rejected in the absorber. A validation of the heat of mixing is made in appendix D. 
+ 
+ 
+Figure 4.3.  Sketch of the mixing junction and the absorber. 
+Equation (4.11) describes the heat balance of the absorber. 
+ 
+ 
+6
+6
+12
+12
+1
+1
+0
+abs
+m
+h
+m
+h
+m h
+Q
+⋅
++
+⋅
+−
+⋅
+−
+=
+
+
+
+
+ 
+(4.11) 
+ 
+4.4 
+Rectifier 
+After the generator the vapour mixture normally has an concentration of around 70% 
+ammonia. The rectifier purifies the vapour till almost pure ammonia and physically the 
+rectifier is a direct contact mass and heat exchanger. There are mass and heat transfer 
+processes going on inside the rectifier which are very complex and is beyond the scope of this 
+thesis project but the process will be briefly described. To analytically examine the rectifying 
+process the design of the rectifier has to be known. Some different approaches for 
+mathematical modelling of the rectification is described by M. Bogart [2].  
+ 
+ 
+Figure 4.4.  Sketch of the rectifier with state points. 
+At the bottom of the rectifier hot vapour-liquid mixture of strong solution is injected from the 
+generator (3a). Cold strong solution that is by-passed the generator is introduced to the 
+rectifier at the top (2c). Hot vapour entering at bottom evaporates the ammonia of the colder 
+strong solution going downward while at the same time cold solution condenses water from 
+the up-going vapour and therefore purifies the vapour into higher concentration. A well 
+designed rectifier will have almost pure ammonia vapour leaving at the top (7). At the bottom 
+weak solution is collected and drained back to the absorber at (4) to again mix with the almost 
+pure ammonia.  
+ 
+10 
+ 
+ 
+Figure 4.5. Rectifier boundaries (A) and (B) could be any two 
+boundaries along the rectifier. The section between (A) and 
+(B) represents just a small part of the rectifying column.  
+A schematic sketch to explain the heat and mass transfer process in the rectifier is shown in 
+figure 4.5. The temperature difference of the cool liquid going down and the hot vapour going 
+up is the driving force for mass transfer between the streams. Boundaries (A) and (B) could be 
+any two boundaries along the rectifier. At boundary (A) vapour entering with a lower 
+concentration than the vapour leaving at (B). Liquid solution entering at (B) has a higher 
+ammonia concentration than the liquid solution leaving at boundary (A). A rule of thumb for 
+the mass transfer to continue is that the temperature of the vapour leaving at (B) has to be 
+higher than the temperature of the liquid leaving at (A). In the model it is assumed that the 
+process is adiabatic and that the rectifier is treated as a control volume. Heat balance for the 
+absorber is shown in equation (4.12).  
+ 
+ 
+2
+2
+3
+3
+4
+4
+7
+7
+0
+c
+c
+a
+a
+m
+h
+m
+h
+m
+h
+m
+h
+⋅
++
+⋅
+−
+⋅
+−
+⋅
+=
+
+
+
+
+ 
+(4.12) 
+ 
+4.5 
+Pump 
+The pump work is rather small in comparison to the heat loads. It could be neglected but is 
+anyway used in the model. There are two equations used for the pump. Equation (4.13) for the 
+pump work and equation (4.14) for the energy balance across the pump.  
+ 
+ 
+(
+)
+1
+1
+2
+1
+pump
+pump
+m
+p
+p
+W
+υ
+η
+⋅
+−
+= 
+
+ 
+(4.13) 
+ 
+1
+1
+2
+2
+0
+pump
+W
+m h
+m
+h
++
+⋅
+−
+⋅
+=
+
+
+
+ 
+(4.14) 
+ 
+The efficiency is based on the pump characteristics from MTH Pumps [3] and the type of 
+pump in the HPRTE/VARS configuration used at UF at present. Pump data is retrieved from 
+a subroutine that can be easily changed to represent another pump. The pump data is shown in 
+appendix B and the subroutine can be found in appendix E.  
+ 
+ 
+11 
+4.6 
+Throttling valves 
+In the VARS there are three different throttling valves. Two of them are preset to a value that 
+will not change during operation. The weak solution valve between (5) and (6) in figure 3.2 is 
+used to maintain the pressure difference between the generator and the absorber. Between 
+(2b) and (2c) is a by-pass valve for the strong solution. It regulates the amount of cold strong 
+solution entering at the top of the rectifier. Both of these valves are preset for operation at 
+design conditions and can only be changed manually. 
+ 
+The third valve is an externally equalised thermostatic expansion valve (THX) which is the 
+main controlling system of the VARS. The THX regulates the refrigerant mass flow by 
+sensing the superheat at the evaporator outlet. The physical function of the THX is discussed 
+in appendix C. The THX is placed between (9) and (10) in figure 3.2. 
+ 
+Due to continuity and conservation of species the mass flow and concentration of the fluid has 
+to be constant across the valves. The most important thermodynamic consideration is that 
+there is no enthalpy change between the valve inlet and the valve outlet which ends up in 
+equation (4.15). It is important to mention that an assumption is made that there are no 
+internal losses in the valves. The pressure and the temperature of the fluid changes across the 
+valves.    
+ 
+ 
+in
+out
+h
+h
+=
+ 
+(4.15) 
+ 
+4.7 
+Coefficient of performance(COP) 
+To describe the performance of a refrigeration system the most common way is to use the 
+COP. For the VARS the COP is calculated by equation (4.16). 
+ 
+ 
+evap
+gen
+pump
+Q
+COP
+Q
+W
+=
++
+
+
+
+ 
+(4.16) 
+   
+4.8 
+Absorbent-Refrigerant mixture 
+To be able to calculate the thermodynamic properties at the different state points the state of 
+the mixture has to be taken into account. Since there is much less research made of ammonia-
+water mixtures than for the pure components ammonia and water it is hard to find data that 
+deals with the mixture properties with high accuracy. For the model built in this thesis project, 
+the mixture properties are taken from a PhD thesis at UF by J.R. Khan [4] which has 
+subroutines based on another PhD thesis by G. Tamm [5]. In the subroutine the molar 
+concentration has to be used and it is calculated by equation (4.17). The molar weight of the 
+mixture can be calculated by equation (4.18) when the concentrations and molecular weights 
+of pure ammonia and pure water are used. The molecular weight of ammonia is 17,032 
+g/mole and of water it is 18,016 g/mole. 
+ 
+ 
+3
+mass
+mix
+mole
+NH
+x
+M
+x
+M
+⋅
+=
+ 
+(4.17) 
+ 
+12 
+ 
+ 
+3
+2
+1
+1
+mix
+mass
+mass
+NH
+H O
+M
+x
+x
+M
+M
+=
+−
++
+ 
+(4.18) 
+ 
+ 
+Dew curve/Bubble curve
+0
+500
+1000
+1500
+2000
+2500
+3000
+0,0
+0,1
+0,2
+0,3
+0,4
+0,5
+0,6
+0,7
+0,8
+0,9
+1,0
+Mass fraction [kg NH3/kg mixture]
+Enthalpy [kJ/kg]
+Dew  curve
+Bubble curve
+T=200 [C]
+T=100 [C]
+T=150 [C]
+T=75 [C]
+T=125 [C]
+T=175 [C]
+ 
+Figure 4.5. Bubble and dew curves for ammonia and water mixture at a 
+pressure of 1800 kPa. The values for the graph are calculated 
+with the subroutines written by J.R. Khan [4].  
+ 
+If a single refrigerant is used as in a vapour compression cycle the thermodynamic state can 
+be defined with two known parameters. When a binary mixture is used three parameters have 
+to be known to define the thermodynamic state. The concentration of the solution is the new 
+parameter. In figure 4.5 the bubble and dew curves are plotted. It also shows isotherms in the 
+transition region between liquid and vapour. In the figure the curves only represent a single 
+pressure and will have a new unique appearance for another pressure. 
+   
+ 
+ 
+13 
+Dew curve/Bubble curve
+0
+500
+1000
+1500
+2000
+2500
+3000
+0,0
+0,1
+0,2
+0,3
+0,4
+0,5
+0,6
+0,7
+0,8
+0,9
+1,0
+Mass fraction [kg NH3/kg mixture]
+Enthalpy [kJ/kg]
+ 
+Figure 4.6. Enthalpy-concentration diagram to describe the 
+transition from liquid to vapour. 
+ 
+With help of figure 4.6 a short explanation of how the transition from liquid to vapour occurs. 
+If a liquid solution with the concentration 0,5 is heated it will start to vaporise when it reaches 
+the bubble point (1). Since the ammonia has a lower boiling point than water the ammonia 
+will vaporize first. If an isotherm (2) is drawn from the boiling point to the dew curve the 
+concentration of the first vapour formed can be determined, in this case 0,97. In the transition 
+region between the bubble and dew curve the change of the liquid concentration will follow 
+the bubble curve. At the same time the change of the vapour concentration will follow the 
+dew curve as long as heat is added. When the temperature reaches the dew point (3) at the 
+concentration 0,5 another isotherm (4) can be drawn. At the point where the isotherm 
+intersects with the bubble curve the concentration of the last evaporated liquid drop can be 
+determined to approximately 0,1. At this point the fluid consists of only vapour. If more heat 
+is added the vapour will be superheated. During the described process the average 
+concentration of the mixture is always 0,5 but the concentration of the liquid and vapour part 
+of the solution will differ a lot during the transition. The transitions region between liquid and 
+vapour is the part that causes difficulties when trying to determine the thermodynamic state of 
+a binary mixture. 
+ 
+1 
+2 
+3 
+4 
+ 
+14 
+5 Computer model 
+ 
+5.1 
+Model introduction 
+The computerized model is the main objective with the thesis project. The model is supposed 
+to be used to validate a VARS performance at off-design conditions and should also be easy 
+to implement as a subroutine in a more comprehensive system model. Thereby the model is 
+called with a number of input parameters from a main program file. The short main program 
+can and has been used for repeated looping to perform parametric calculations to generate 
+diagrams of the VARS performance. The program and its subroutines is included in appendix 
+E.  
+ 
+5.2 
+Model assumptions 
+As mentioned earlier there are difficulties to determine the thermodynamic state for a binary 
+mixture. Therefore some assumptions had to be made regarding the vapour quality. At some 
+state points the vapour quality of the fluid is assumed to be either saturated liquid or saturated 
+vapour. The assumptions are based on the experimental setup at UF and literature study [2], 
+[6], [7]. The vapour quality and assumptions made is shown in table 5.1. 
+ 
+State 
+point
+Component located 
+before state point
+Component located 
+after state point
+Vapour quality
+1
+Absorber
+Pump
+Saturated liquid assumed, solution 
+reciver is present.
+2
+Pump
+Solution split
+Subcooled liquid.
+2a
+Solution split
+SHX
+Subcooled liquid.
+2b
+Solution split
+Solution split throttling
+Subcooled liquid.
+2c
+Solution split throttling
+Rectifier (top)
+Subcooled liquid.
+3
+SHX
+Generator
+Saturated liquid.
+3a
+Generator
+Rectifier (bottom)
+Mixture of liquid and vapour.
+4
+Rectifier (bottom)
+SHX
+Saturated liquid assumed, solution 
+float valve is present.
+5
+SHX
+Solution throttling
+Subcooled liquid.
+6
+Solution throttling
+Absorber
+Subcooled liquid.
+7
+Rectifier (top)
+Condenser
+Saturated vapour assumed, 
+superheated vapor needs more 
+generator heat and also more 
+condenser cooling to condence the 
+refrigerant, this is unwanted.
+8
+Condenser
+RHX
+Saturated liquid assumed, NH3 reciver 
+is present.
+9
+RHX
+Refrigerant throttling
+Subcooled liquid.
+10
+Refrigerant throttling
+Evaporator
+Assumed to be saturated liquid but it 
+could be some vaporisation at 
+throttling.
+11
+Evaporator
+RHX
+Superheated vapour.
+12
+RHX
+Absorber
+Superheated vapour.
+ 
+Table 5.1. Table shows the vapour quality at the state points. Where assumptions are 
+made the rows are coloured.   
+ 
+ 
+15 
+5.3 
+Inputs to the model 
+The model has fluids of three different concentrations. The concentration of the weak solution 
+and the almost pure ammonia is set as inputs in the model based on design data and literature 
+study for example in Principles of refrigeration by W.B. Gosney[6].  
+ 
+Some temperatures are also set as inputs. The chosen input temperatures correspond to 
+external temperatures that are of interest. The first temperature is the condenser outlet 
+temperature, T8 which is directly influenced by the condenser coolant fluid temperature. Then 
+there is temperature T10 at the evaporator inlet which has to be kept above freezing to avoid 
+frost formation in the gas path. The evaporator superheat is also preset to ensure completely 
+evaporated vapour at the outlet.  
+ 
+The pump mass flow is set as input and assumed to be constant. This is not entirely true but is 
+a pretty good parameter to hold constant due to the fact that the pressure difference between 
+the LP and HP side have to be pretty constant for the VARS to operate in stable conditions. 
+The SHX and RHX effectiveness are both set to 0,7. The reason for a fixed value of the 
+effectiveness is the complexity of having it defined as a variable parameter. The effectiveness 
+is a function of many fluid parameters as well as geometrical parameters. The solution split 
+factor that regulates the amount of strong solution by-passed to the rectifier is preset based on 
+design values. The desired cooling capacity is also used as input. 
+ 
+5.4 
+Calculation procedure 
+The calculation needed a number of inputs to be able to solve the state at all state points. The 
+model also needed assumptions regarding saturated conditions at a number of state points to  
+solve the thermodynamic properties. The inputs and assumptions are discussed in sections 5.2 
+and 5.3. The calculation procedure below describes the steps taken in the calculation 
+procedure and does not mention the assignment of data between the different parameters and 
+state points. In the following section state point data will be denoted SPD.   
+ 
+• Due to inputs and assumptions the SPD could be determined at (7), (8) 
+and (10).  
+• To determine the SPD at (11) and (12) an iteration across the RHX and 
+evaporator is done. The iteration includes the RHX effectiveness. 
+• A heat balance across the evaporator determines the refrigerant mass 
+flow. With help of continuity, inputs for the solution split factor and 
+pump mass flow the rest of the mass flows can be determined. 
+• The mass concentrations are determined from the mass flows and 
+conservation of species.  
+• Assumption is made to find the specific volume at (1). 
+• Pump data is calculated. 
+• SPD at (4) is determined based on assumptions and calculated data. 
+• Loop starts to verify the definition of the SHX effectiveness. 
+• Iteration across the SHX is done to determine SPD at (2a), (3) 
+and (5). SHX effectiveness and heat balance is used in the SHX 
+iteration. 
+• Iteration across the pump to determine SPD at (1). 
+• Calculation of heat loads, pump work and COP. 
+ 
+16 
+• Check to verify that the assumptions made are correct. Checks 
+RHX effectiveness, SHX effectiveness, assumed specific 
+volume at state point (1) and the overall heat balance. 
+• Re-calculates if SHX effectiveness assumption is wrong. 
+• Write the calculated data to command window and to a file. 
+ 
+The check of RHX effectiveness, assumed specific volume at state point (1) and the overall 
+heat balance has to be made manually. But these assumptions are valid for most of the 
+running conditions. The RHX effectiveness and specific volume at (1) have been wrong at 
+extreme conditions, according to the parametric calculations.   
+ 
+The only state point that is not calculated in the calculation is (12a) due to difficulties to 
+determine the heat of mixing. As long as the mixing junction and absorber is treated as 
+the same control volume the state at state point (12a) is unnecessary.  
+ 
+5.5 
+Outputs from model 
+Output from the calculation are temperatures, enthalpies and pressures for all state points. 
+With the thermodynamic state at all the state points heat loads, pump work and coefficient of 
+performance COP are calculated and returned as outputs. 
+ 
+ 
+17 
+6 Results 
+ 
+The following results are presented in non-dimensional form to make the results general and 
+independent of the size of the VARS. The non-dimensional parameters are based on the 
+design data for the VARS used at UF. The discussion made in this chapter is with the 
+emphasis on the HPRTE/VARS setup since it is easy to relate to the figures shown in chapter 
+3. But in a real scenario the cooling capacity produced by the VARS could be used for 
+refrigeration. 
+ 
+6.1 
+Influence of evaporator exit temperature on gas side  
+COP versus T10/ T10D is plotted in figure 6.1. T10 is the temperature at evaporator inlet and 
+corresponds to the temperature at the exit of the CGC in the HPRTE. The three curves 
+represent three different cooling loads, 
+evap
+Q
+/
+evapD
+Q
+. The negative values at the x-axis 
+indicates temperatures below 0oC, the changed slope of the curves depends of the small water 
+content left in the refrigerant. It is good to mention that below 0 oC there is risk of frost 
+formation or freezing of the moist in the re-circulated gas path. If freezing occurs at the CGC 
+in the gas path it will increase pressure losses and decrease the heat transfer ability. This will 
+of course affect the operation.   
+0,78 
+0,80 
+0,82 
+0,84 
+0,86 
+0,88 
+0,90 
+0,92 
+0,94 
+0,96 
+-1,00
+-0,75
+-0,50
+-0,25
+0,00
+0,25
+0,50
+0,75
+1,00
+1,25
+1,50
+T10/T10D [oC]
+COP [-]
+Qe/Qed=0,85
+Qe/Qed=1,00
+Qe/Qed=1,15
+ 
+Figure 6.1. COP as a function of evaporator inlet temperature 
+T10 at different evaporator heat loads 
+evap
+Q
+. 
+ 
+The graph in figure 6.1 shows that the COP will change at off-design operating conditions. 
+The curve is rather flat which means that the changes are small at varying evaporator inlet 
+temperature. 
+ 
+ 
+18 
+6.2 
+Influence of changed temperature of the chilling fluid entering the condenser  
+In figure 6.2 COP versus T8/ T8D is shown. T8 is the temperature at condenser outlet and 
+corresponds to the chilling fluid temperature entering the condenser. The figure shows how 
+COP is influenced of temperature changes in the chilling fluid that cools the condenser.  
+0,78 
+0,80 
+0,82 
+0,84 
+0,86 
+0,88 
+0,90 
+0,92 
+0,94 
+0,96 
+0,20
+0,30
+0,40
+0,50
+0,60
+0,70
+0,80
+0,90
+1,00
+1,10
+1,20
+1,30
+T8/T8D [oC]
+COP [-]
+Qe/Qed=0,85
+Qe/Qed=1,00
+Qe/Qed=1,15
+ 
+Figure 6.2. COP as a function of condenser outlet temperature 
+T8 at different evaporator heat loads
+evap
+Q
+. 
+ 
+Figure 6.2 clearly shows that the COP of the VARS is sensitive to temperature changes in the 
+condenser coolant flow.  
+ 
+6.3 
+Influence of different generator heat loads  
+In figure 6.3 and 6.4 the influence of changed generator heat loads is shown. 
+gen
+Q
+/
+genD
+Q
+ is 
+different off-design generator heat loads at different evaporator temperatures T10 and 
+condensing temperatures T8. The graph represents just a small change in the generator heat 
+load. The reason for the small change is that the inputs is chosen to be close to the operating 
+condition of the experimental setup. In figure 6.3 the evaporator inlet temperature is held 
+constant and the condenser outlet temperature is varied. For the gas path this corresponds to 
+constant temperature at outlet of the CGC while there is temperature deviations in the coolant 
+fluid entering the condenser. 
+0,73 
+0,74 
+0,75 
+0,76 
+0,77 
+0,78 
+0,79 
+0,80 
+0,45 0,46 0,47 0,48 0,49 0,50 0,51 0,52 0,53 0,54 0,55 0,56 0,57 0,58
+QGEN/QGEND [-]
+COP [-]
+T8=35, T10=5
+T8=40, T10=5
+T8=45, T10=5
+ 
+Figure 6.3. COP as a function of generator heat load 
+gen
+Q
+.  
+ 
+19 
+ 
+In figure 6.4 the condenser outlet temperature is held constant and the evaporator inlet 
+temperature is varied. This means that the VARS has constant temperature of the coolant 
+entering the condenser. On the other hand there are fluctuations of the temperature at the 
+outlet of the CGC.  
+0,73 
+0,74 
+0,75 
+0,76 
+0,77 
+0,78 
+0,79 
+0,80 
+0,45 0,46 0,47 0,48 0,49 0,50 0,51 0,52 0,53 0,54 0,55 0,56 0,57 0,58
+QGEN/QGEND [-]
+COP [-]
+T8=40, T10=0
+T8=40, T10=5
+T8=40, T10=10
+ 
+Figure 6.4. COP as a function of generator heat load
+gen
+Q
+.  
+ 
+For both figure 6.3 and 6.4 the slope of the curves is the same. This means that the COP will 
+be affected in the same way in both cases when the generator heat load is changed. It also 
+shows that a temperature difference in the coolant fluid entering the condenser will affect the 
+COP a lot. Much more than a change in the temperature at CGC outlet. This is the same 
+results as in section 6.1 and 6.2.  
+ 
+6.4 
+Experimental data 
+Curves in figure 6.5 and figure 6.6 have been achieved by running the computer model in 
+loops. Changes in condenser outlet temperatures T8, evaporator inlet temperatures T10 and 
+different evaporator heat loads 
+evap
+Q
+have been used in the parametric calculations.  
+0,88 
+0,90 
+0,92 
+0,94 
+0,96 
+0,98 
+1,00 
+1,02 
+1,04 
+1,06 
+1,08 
+1,10 
+1,12 
+1,14 
+10
+20
+30
+40
+50
+60
+T8 [oC]
+COP/COPd [-]
+Qe/Qed=0,5
+Qe/Qed=0,85
+Qe/Qed=1,00
+Qe/Qed=1,15
+Experimental data Qe/Qed~0,5
+ 
+Figure 6.5. Graph shows relative COP at different condenser outlet 
+temperatures. Curves are based on computer model 
+calculations and dots are taken from experimental setup.  
+ 
+20 
+In both Figure 6.5 and 6.6 nine measurements from the experimental setup at UF are plotted. 
+It shows that the setup was working at around 93% of the design coefficient of performance. 
+The figures also clearly show that the evaporator heat load is approximately half of the heat 
+load at the design value. From the experimental data used for these graphs the heat load at the 
+generator is also approximately half of the design heat load. 
+0,88 
+0,90 
+0,92 
+0,94 
+0,96 
+0,98 
+1,00 
+1,02 
+1,04 
+1,06 
+1,08 
+1,10 
+-20
+-10
+0
+10
+20
+30
+T10 [oC]
+COP/COPd [-]
+Qe/Qed=0,5
+Qe/Qed=0,85
+Qe/Qed=1,00
+Qe/Qed=1,15
+Experimental data Qe/Qed~0,5
+ 
+Figure 6.6. Graph shows relative COP at different evaporator inlet 
+temperatures. Curves are based on computer model 
+calculations and dots are taken from experimental setup.  
+ 
+A conclusion of this is that the VARS is capable of absorbing much more heat from the gas 
+turbine exhaust path. But it is important to ensure that the VARS will manage to reject all the 
+heat it absorbs at the condenser and absorber. 
+ 
+6.5 
+Conclusions 
+The experimental data shows that the VARS operates at half of the design capacity. The 
+VARS is able to operate at much higher heat loads than at the test runs made during this thesis 
+project. But this is of course depending of a lot of parameters. Is the HPRTE able to operate 
+with higher temperatures and higher mass flows in the gas path? Is the generator and 
+evaporator large enough to manage greater heat loads? In other words does it have the heat 
+transfer ability needed.   
+ 
+For the VARS to be in thermodynamic balance all heat loads are related to each other.  
+An increased cooling capacity will need a greater generator heat load. And an increased heat 
+input to the VARS will need increased rejection of heat. The VARS needs sufficient cooling 
+at the condenser and absorber to reject an increased heat load. 
+ 
+The most important consideration in the VARS/HPRTE configuration is to have sufficient 
+cooling at the condenser. This will increase the COP and also ensure the VARS to take care of 
+an increased temperature in the gas path. The condenser has an important role and has to be 
+well designed for the actual place of operation. 
+ 
+ 
+21 
+6.6 
+Future work 
+Here are some suggestions for future work related to the VARS. 
+ 
+The model could be improved in a few different ways; by making it more self controlling or 
+to improve the accuracy by detailed modelling of some components. If the model is 
+automized the manual check can be aborted and the model can be used more like a stand 
+alone model. To increase the accuracy there are a few different areas that could be improved. 
+Some of them is probably appropriate for a thesis project just by itself. The rectifier is 
+complex to model in detail. It is depending on several parameters at the same time such as 
+geometry, type of flow at the inside and heat and mass transfer. The absorber is somewhat the 
+opposite of the rectifier but it also includes heat of mixing. Heat of mixing, heat transfer 
+parameters and thermodynamic properties of the mixture have to be taken into account at the 
+same time for the absorber. 
+ 
+Both suggestions for detailed modelling described above will need high accuracy in the 
+mixture properties. Thereby a properties function with high accuracy for the ammonia-water 
+mixture would be very useful. It could be a thesis project to model a more flexible function 
+for the ammonia-water mixture that is capable of using different input parameters. Another 
+option is to research if the properties function could be purchased with the accuracy needed. 
+At least there are functions with ammonia-water mixture properties for EES [9] out on the 
+market but it has to be evaluated if the properties have sufficient accuracy. 
+ 
+Another aspect is to model different VARS configurations, if there is need for different 
+cooling loads for example to cool down the HPRTE and produce external refrigeration. It 
+could be solved by using multiple evaporators. If the VARS/HPRTE system is used at a place 
+where the cooling to the condenser is limited it might be possible to use the VARS to cool 
+itself. This could be interesting in situations when the HPRTE has to operate above the design 
+conditions for short periods. A final step in a such a project is to build a configuration and 
+verify the computer model by test runs. 
+ 
+22 
+Appendix A - Heat exchanger effectiveness  
+ 
+A.1  Definition of heat exchanger effectiveness 
+The heat exchanger performance can be described by the heat exchanger effectiveness ε . An 
+important consideration to decide the effectiveness is to evaluate the product m⋅
+ cp. There are 
+two equations used for counter flow heat exchangers describing effectiveness equation (A.1) 
+if (m⋅
+ cp )h is lower than (m⋅
+ cp )c and equation (A.2) otherwise according to J.P. Holman[8]. 
+In equation (A.1) and (A.2) the subscript h represents the hot fluid and c the cold fluid. 
+Subscript 1 and 2 represents the hot fluid side respectively cold fluid side. I.e. for the hot fluid 
+the subscript h1 corresponds to the hot fluid with the highest temperature and h2 the hot fluid 
+with the lowest temperature.  
+ 
+ 
+(
+) (
+)
+(
+) (
+)
+(
+)
+(
+)
+(
+)
+(
+)
+1
+2
+1
+2
+1
+2
+1
+2
+p
+h
+h
+h
+h
+h
+h
+p
+p
+h
+c
+p
+h
+c
+h
+c
+h
+m c
+T
+T
+T
+T
+if
+m c
+m c
+m c
+T
+T
+T
+T
+ε
+⋅
+⋅
+−
+−
+=
+=
+⋅
+<
+⋅
+⋅
+⋅
+−
+−
+
+
+
+
+ 
+(A.1) 
+ 
+ 
+(
+) (
+)
+(
+) (
+)
+(
+)
+(
+)
+(
+)
+(
+)
+1
+2
+1
+2
+1
+2
+1
+2
+p
+c
+c
+c
+c
+c
+c
+p
+p
+h
+c
+p
+h
+c
+h
+c
+c
+m c
+T
+T
+T
+T
+if
+m c
+m c
+m c
+T
+T
+T
+T
+ε
+⋅
+⋅
+−
+−
+=
+=
+⋅
+>
+⋅
+⋅
+⋅
+−
+−
+
+
+
+
+ 
+(A.2) 
+ 
+A.2  Refrigerant heat exchanger (RHX) effectiveness 
+In the RHX the mass flow consists of almost pure ammonia. Since the flow on the hot high 
+pressure (HP) side and the cold low pressure (LP) side are in series the mass flow is identical 
+in the two streams. This means that only the specific heat cp needs to be considered to decide 
+how the effectiveness is defined.  
+2,0
+2,5
+3,0
+3,5
+4,0
+4,5
+5,0
+0
+10
+20
+30
+40
+50
+60
+70
+80
+90
+100
+Temperature - T [oC]
+Specific heat - cp [kJ/(kg.K)]
+LP vapor 800kPa
+HP liquid 1700kPa
+ 
+Figure A.1. Specific heat for pure ammonia calculated with EES [9]. The 
+step in the specific heat curves which appears for both the LP 
+and HP curves corresponds to the saturated condition where 
+transition from liquid to vapour takes place.  
+ 
+ 
+23 
+Figure A.1 is based on the VARS design data and shows the specific heat cp for the HP and 
+LP flows. It clearly shows that the specific heat value is higher for the HP side of the RHX, 
+the RHX should always have an operating temperature above 20oC. This means that (m⋅
+  cp) 
+is higher for the hot side and equation (A.2) should be used. With the nomenclature used in 
+this project the RHX effectiveness is calculated with equation (A.3). At the end of the model 
+calculation the model checks if the assumption about the effectiveness is correct. 
+ 
+ 
+12
+11
+8
+11
+RHX
+T
+T
+T
+T
+ε
+−
+=
+−
+ 
+(A.3) 
+  
+A.3  Solution heat exchanger (SHX) effectiveness 
+For the SHX the effectiveness is mainly dependent of the mass flows. In the SHX it is 
+obvious that the strong solution mass flow on the cold side has to be greater than the weak 
+solution mass flow on the hot side. The strong solution is the sum of the weak solution and 
+refrigerant mass flow. Based on design data the strong solution mass flow is 30 % greater than 
+the weak solution flow. At design point the average temp of both flows is approximately 
+47 oC  and concentrations about 0,5 and 0,7.  
+3,5
+4,0
+4,5
+5,0
+5,5
+0
+10
+20
+30
+40
+50
+60
+Temperature - T [oC]
+Specific heat - cp [kJ/(kg.K)]
+x=0
+x=1
+x=0,7
+x=0,5
+x=0,3
+ 
+Figure A.2. Graph based on a paper by Reiner Tillner-Roth and Daniel G. 
+Friend [10]. The graph shows the specific heat at different 
+ammonia-water mixture concentrations.  
+ 
+ 
+24 
+By using figure A.2 the mass based specific heat can be estimated at T=47 oC . For the lower 
+concentration x=0,5 the specific heat is 4,68
+/(
+)
+kJ
+kg K
+⋅
+ and for x=0,7 it is 4,85
+/(
+)
+kJ
+kg K
+⋅
+an 
+increase with about 3-4%. Since the mass flow difference in the SHX is 30% the mass flow is 
+the most dependent variable. The product (m⋅
+  cp)c for the strong solution flow is dominant 
+and equation (A.1) is valid. This ends up in equation (A.4) for the SHX effectiveness.  
+ 
+ 
+4
+5
+4
+2
+SHX
+a
+T
+T
+T
+T
+ε
+−
+=
+−
+ 
+(A.4) 
+ 
+The model assumes that this is the correct approach initially. When the model calculation is 
+done the model checks the assumption regarding the effectiveness. If the assumption is wrong 
+the model re-calculates with the effectiveness defined as equation (A.5). 
+ 
+ 
+3
+2
+4
+2
+a
+SHX
+a
+T
+T
+T
+T
+ε
+−
+=
+−
+ 
+(A.5) 
+  
+ 
+25 
+Appendix B - Pump data 
+ 
+B.1  Pump efficiency 
+The computer model uses a subroutine for the pump characteristics. Pump efficiency is 
+linearized in a number of intervals to give the pump efficiency for the entire operation range. 
+Performance curves for a regenerative turbine pump from MTH Pumps [3] are used as 
+reference for the pump data, the same pump that is used in the VARS. The linearized pump 
+efficiency curve is shown in figure B.1. The subroutine needs the inlet conditions as input and 
+returns the efficiency and the pump outlet pressure. To make the model fit another VARS 
+configuration the pump characteristics can be changed in the pump subroutine.  
+0,00
+0,05
+0,10
+0,15
+0,20
+0,25
+0,30
+0,35
+0,40
+0,45
+0,50
+0,00
+0,10
+0,20
+0,30
+0,40
+0,50
+Volume flow -   V   [l/s]
+Pump efficiency - η [-]
+ 
+Figure B.1. Multi linearized pump efficiency curve implemented in the 
+computer model. Performance data taken from MTH Pumps [3]. 
+ 
+ 
+Figure B.2. Performance chart for the regenerative turbine pump in the  
+VARS. Chart taken from MTH Pumps [3]. 
+. 
+ 
+26 
+Appendix C - Thermostatic expansion valve (TEV).  
+ 
+C.1  The function of an externally equalized TEV 
+The TEV regulates the refrigerant mass flow to take care of the heat available at the 
+evaporator as efficiently as possible. The TEV has a sensing bulb (A) attached to the 
+evaporator outlet connected through a capillary tube (B). The TEV is sensing the temperature 
+change by sensing the pressure changes in the bulb. The bulb pressure is a function of the 
+evaporator outlet temperature. If the evaporator does not manage to evaporate the fluid the 
+temperature at evaporator outlet will decrease and affect the pressure in the bulb and finally 
+affect the diaphragm (C) in the TEV. The diaphragm will close the nozzle (D) to reduce the 
+refrigerant mass flow to help the evaporator work properly. If the superheat is higher than 
+expected the nozzle will open to increase the refrigerant mass flow to reduce the superheat. 
+There is usually a spring (E) connected to the nozzle that works against the diaphragm. By 
+loosening or tightening the spring the spring tension can be either decreased or increased to 
+set the desired degree of superheat.  
+ 
+The externally equalized TEV is sensing the actual pressure at the evaporator outlet through a 
+capillary tube (F) and is not influenced by the pressure drop across the evaporator. Since the 
+TEV is sensing the actual pressure at the evaporator outlet it controls the desired degree of 
+superheat very efficiently. 
+ 
+ 
+            Figure C.1.  Externally equalized thermostatic expansion valve, picture from [11] 
+ 
+It should also be mentioned that in ammonia applications the TEV is more often damaged by 
+erosion than in systems with other refrigerants. To reduce the risk of erosion some steps 
+should be considered. At first the fluid that enters the TEV should be liquid without vapour. 
+Secondly a filter should be installed to insure as pure ammonia as possible. In a vapour 
+absorption systems the rectifier has an important role to rectify the strong solution into pure 
+ammonia. To insure long life time for the TEV a vapour absorption system should be running 
+as close to design conditions as possible. Thirdly it is good to have a relatively low velocity of 
+the ammonia flowing through the TEV. Reference Sporlan [12] and [13]. 
+   
+  
+  
+  
+  
+  
+  
+  
+A 
+B
+C
+D 
+E 
+F
+ 
+27 
+Appendix D - Validation of ammonia-water               
+subroutines  
+D.1  Validation heat of mixing 
+This validation is made to verify that the subroutines for ammonia-water mixture properties 
+take heat of mixing into account. The validation was made by using a control volume at the 
+mixing junction before the absorber, where almost pure ammonia and weak solution are being 
+re-mixed into strong solution. The control volume cuts the lines at (12)-(6)-(12a) as shown in 
+figure D.1. A heat balance across the mixing junction calculated according to equation (D.1) 
+should equal to zero. 
+ 
+ 
+(
+)
+(
+)
+(
+)
+6
+12
+12
+tot
+mix
+a
+Q
+m h
+m h
+m h
+Q
+=
+⋅
++
+⋅
+−
+⋅
++
+
+
+
+
+
+ 
+(D.1) 
+ 
+ 
+ 
+Figure D.1. Mixing junction before the absorber. 
+At (6) weak solution is entering and at 
+(12) the refrigerant enters. 
+ 
+In the validation the calculation is with pure substance properties and heat of mixing. 
+Pressure, temperatures, mass concentrations and mass flows are taken from the computer 
+model, presented in table D.1. With help of temperature and pressure the enthalpies for the 
+pure components are calculated with EES [9]. The enthalpy of mixing was found to be 
+600kJ/kgNH3 based on an ammonia concentration of 0,41 in the weak solution line (6). The 
+enthalpy of mixing was found in Gas Purification [14]. Enthalpy for the mixture based on 
+pure ammonia and pure water is calculated by equation (D.2). 
+ 
+ 
+3
+3
+2
+3
+(1-
+)
+mix
+NH
+NH
+H O
+NH
+h
+h
+x
+h
+x
+=
+⋅
++
+⋅
+ 
+(D.2) 
+ 
+ 
+28 
+Inputs
+m
+x
+T
+P
+[kg/s]
+[-]
+[oC]
+[kPa]
+(6)
+0,144
+0,415
+66,05
+176,30
+(12)
+0,028
+0,996
+33,15
+176,30
+(12a)
+0,172
+0,510
+111,73
+176,30
+hNH3
+hH2O
+hmix
+[kJ/kg]
+[kJ/kg]
+[kJ/kg]
+1640
+2624
+2215
+1570
+2562
+1574
+1740
+2710
+2216
+Qoverall without heat of mixing: -18 kW 
+Heat generated at mixing, Qmix: 16,8 kW
+Qoverall heat balance with heat of mixing: -1,2 kW 
+(12)
+(12a)
+Results
+(6)
+ 
+Table D.1. Data for the heat of mixing validation.  
+ 
+The heat balance for the mixing junction using pure ammonia and pure water without heat of 
+mixing ended up in -18kW. The enthalpy of mixing gives an extra heat load of 16,8kW. This 
+will give an overall heat balance with a deviation of -1,2 kW. There are several elements that 
+could affect this deviation for example inaccuracy in heat of solution or inaccuracy in 
+ammonia-water subroutines. A conclusion of this validation is that the computer model for the 
+vapour absorption cycle is taking care of the heat of mixing. Otherwise would the overall heat 
+balance be far away from zero, compare with section D.2. Since a control volume including 
+the mixing junction and the absorber is used in the model the heat of mixing is included and 
+rejected at the absorber. 
+ 
+D.2  Overall heat balance  
+An overall heat balance for the entire VARS according to equation (D.3) will confirm that the 
+heat absorbed by the system is the same as the heat rejected. This will show that the model is 
+in thermodynamic balance as expected for an adiabatic system. The sum of all heat loads, 
+overall
+Q
+, should be equal to zero to fulfil the thermodynamic balance of the system. 
+ 
+ 
+overall
+evap
+gen
+pump
+cond
+abs
+Q
+Q
+Q
+W
+Q
+Q
+=
++
++
+−
+−
+
+
+
+
+
+
+ 
+(D.3) 
+ 
+For the design data the results of the overall heat balance is shown in table D.2. As expected 
+the heat balance equals to zero. 
+ 
+Overall heat balance [kW]
+QEVAP
+66,80
+QGEN
+80,06
+WPUMP
+0,39
+QCOND
+-64,67
+QABS
+-82,58
+Qoverall
+0,00
+ 
+Table D.2. Overall heat balance at design data.  
+ 
+29 
+Appendix E – Computer program 
+ 
+In appendix E the program written in Fortran is included. The program can be and has been 
+rewritten with loops to perform parametric charts. The program starts from the START.F90 
+file written in Fortran90 standard while all the subroutines follow an older Fortran standard. 
+From the START file the program calls the file VARS.FOR which is the main program of the 
+vapour  absorption system. 
+ 
+The program uses two subroutines from a thesis by Khan J.R. [4]  which are not printed in 
+this thesis. The first subroutine PROP_VARS calculates the ammonia-water mixture 
+properties. It needs temperature, pressure and concentration of the mixture to calculate and 
+return the enthalpy, entropy and specific volume of the mixture. The second subroutine 
+TEMP_VARS calculates the bubble and dew temperature of the ammonia-water mixture. It 
+needs the concentration and pressure as inputs.  
+ 
+The Fortran handbook Structured Fortran 77 for engineers and scientists [15] has been great 
+as support when learning Fortran.  
+ 
+Main program 
+start.f90 
+ 
+Subroutines 
+vars.for 
+molar_conc.for 
+pressure_drops.for 
+bubble_pressure.for 
+rhx_iter.for 
+shx_iter.for 
+pump_iter.for 
+temp.for 
+pump_data.for 
+to_screen.for 
+check.for 
+to_file.for 
+ 
+temp_vars.for [4] (not printed) 
+prop_vars.for [4] (not printed) 
+ 
+30 
+ 
+!     start.f90 
+! 
+!     The software used for this thesis required the program file in  
+!     FORTRAN90 format, . f90 file. The subroutines is written in  
+!     format according to traditional FORTRAN format, .for files. 
+! 
+!     Entry point to the main vars program. 
+! 
+!     Subroutines used: 
+!       VARS       
+! 
+!********************************************************************* 
+      PROGRAM START 
+ 
+!----------- DECLARATION OF VARIABLES -------------------------------- 
+      DOUBLE PRECISION 
+QEVAP,X4MASS,X7MASS,T8,T10,M1,EPSILON_RHX,EPSILON_SHX,T_SH_EVAP,Y,T1_ASSUMPTION,CHECK_SHX,SHX 
+     
+!----------- INPUTS --------------------------------------------------    
+      QEVAP=33.52       !EVAPORATOR CAPACITY 
+      X4MASS=0.415      !MASS CONCENTRATION WEAK SOLUTION 
+      X7MASS=0.996      !MASS CONCENTRATION REFRIGERANT 
+     
+      T8=37.3+273.15    !CONDENSER OUTLET TEMPERATURE 
+      T10=0.2+273.15    !EVAPORATOR INLET TEMPERATURE 
+      M1=0.172          !CONSTANT PUMP MASS FLOW   
+ 
+      
+      EPSILON_RHX=0.7   !RHX EFFECTIVENESS 
+      EPSILON_SHX=0.7   !SHX EFFECTIVENESS 
+      T_SH_EVAP=5.5     !EVAPORATOR EXIT SUPERHEAT 
+      Y=0.184           !STRONG SOLUTION SPLIT FACTOR 
+      
+      T1_ASSUMPTION=50+273.15 !ASS. TO GET SPEC. VOL. AT PUMP INLET 
+      CHECK_SHX=0             !USED IF SHX EFFECTIVENESS IS WRONG  
+      SHX=1                   !USED IF SHX EFFECTIVENESS IS WRONG 
+ 
+!*********************************************************************     
+      CALL 
+VARS(QEVAP,X4MASS,X7MASS,T8,T10,M1,EPSILON_RHX,EPSILON_SHX,T_SH_EVAP,Y,T1_ASSUMPTION,CHECK_SHX
+,SHX) 
+ 
+ 
+      END PROGRAM START 
+ 
+ 
+ 
+31 
+!     vars.for  
+! 
+!     Main program for the VARS. 
+! 
+!     Subroutines used:          
+!       MOLAR_CONC                   
+!       PRESSURE_DROPS               
+!       BUBBLE_PRESS                 
+!       PROP_VARS 
+!       TEMP_VARS 
+!       RHX_ITER  
+!       SHX_ITER  
+!       PUMP_ITER 
+!       TEMP      
+!       PUMP_DATA 
+!       TO_SCREEN 
+!       CHECK 
+!       TO_FILE 
+! 
+!     Nomenclature and units: 
+!       T - [K] 
+ 
+TEMPERATURE 
+!       P - [kPa] 
+ 
+PRESSURE 
+!       H - [kJ/(kg*K)] 
+ 
+ENTHALPY 
+!       XMASS - [-] 
+ 
+MASS CONCENTRATION 
+!       XMOLE - [-] 
+ 
+MOLAR CONCENTRATION 
+!       M - [kg/s] 
+ 
+MASS FLOW 
+!       dP - [kPa] 
+ 
+PRESSURE DIFFERENCE 
+!       EPSILON - [-] 
+ 
+EFFICIENCY 
+!       Q - [kW] 
+ 
+LOAD 
+!       W - [kW] 
+ 
+WORK 
+!       COP - [-] 
+ 
+COEFFICIENT OF PERFORMANCE 
+!       y - [-] 
+ 
+SPLIT FACTOR 
+!       V - [(m^3)/kg] 
+ 
+SPECIFIC VOLUME 
+!       MW – [g/mole] 
+ 
+MOLAR WEIGHT 
+!       Vdot – [m^3/s] 
+ 
+VOLUME FLOW 
+!       S - [kJ/(kg*K)] 
+ 
+ENTROPY 
+! 
+!********************************************************************* 
+      SUBROUTINE VARS(QEVAP,X4MASS,X7MASS,T8,T10,M1,EPSILON_RHX, 
+     .EPSILON_SHX,T_SH_EVAP,Y,T1_ASSUMPTION,CHECK_SHX,SHX) 
+ 
+!----------- DECLARATION OF VARIABLES -------------------------------- 
+      DOUBLE PRECISION T1,T2,T2a,T2b,T2c,T3,T3a,T4,T5,T6,T7,T8,T9,T10,  
+     .T11,T12,T12a,P1,P2,P2a,P2b,P2c,P3,P3a,P4,P5,P6,P7,P8,P9,P10,  
+     .P11,P12,P12a,H1,H2,H2a,H2b,H2c,H3,H3a,H4,H5,H6,H7,H8,H9,H10,  
+     .H11,H12,H12a,X1MOLE,X2MOLE,X2aMOLE,X2bMOLE,X2cMOLE,X3MOLE,  
+     .X3aMOLE,X4MOLE,X5MOLE,X6MOLE,X7MOLE,X8MOLE,X9MOLE,X10MOLE,  
+     .X11MOLE,X12MOLE,X12aMOLE,X1MASS,X2MASS,X2aMASS,X2bMASS,  
+     .X2cMASS,X3MASS,X3aMASS,X4MASS,X5MASS,X6MASS,X7MASS,X8MASS,  
+     .X9MASS,X10MASS,X11MASS,X12MASS,X12aMASS,M1,M2,M2a,M2b,M2c,M3, 
+     .M3a,M4,M5,M6,M7,M8,M9,M10,M11,M12,M12a,dP_ABS,dP_GEN,dP_COND, 
+     .dP_EVAP,dP_SHX_SS,dP_SHX_WS,dP_RHX_HP,dP_RHX_LP,dP_VALVE_SS,  
+     .QEVAP,QCOND,QGEN,QABS,WPUMP,COP,EPSILON_RHX,EPSILON_SHX,  
+     .T_SH_EVAP,Y,V1,ETA_PUMP,T1_ASSUMPTION,SHX,V1_ASSUMPTION,CHECK_Q, 
+     .CHECK_V,CHECK_SHX,CHECK_RHX,W,Qtot 
+     
+      DOUBLE PRECISION T_IN,XMOLE_IN,P_OUT,HGM_OUT,SGM_OUT, 
+     .VGM_OUT,HLM_OUT,SLM_OUT,VLM_OUT,MWMIX_OUT,X_IN,P_IN, 
+     .TCMIX_OUT,PCMIX_OUT,TBUBBLE_OUT,TDEW_OUT     
+    
+!*********** MAIN PROGRAM ******************************************** 
+!----------- MASS CONCENTRATIONS -------------------------------------      
+      X5MASS=X4MASS 
+      X6MASS=X4MASS 
+      X8MASS=X7MASS 
+      X9MASS=X7MASS 
+      X10MASS=X7MASS 
+      X11MASS=X7MASS 
+      X12MASS=X7MASS 
+       
+!----------- MOLAR CONCENTRATIONS ------------------------------------ 
+      CALL MOLAR_CONC(X4MASS,X4MOLE)    !OUTPUT: X4MOLE 
+      CALL MOLAR_CONC(X5MASS,X5MOLE)    !OUTPUT: X5MOLE 
+      CALL MOLAR_CONC(X6MASS,X6MOLE)    !OUTPUT: X6MOLE 
+      CALL MOLAR_CONC(X7MASS,X7MOLE)    !OUTPUT: X7MOLE 
+      CALL MOLAR_CONC(X8MASS,X8MOLE)    !OUTPUT: X8MOLE 
+      CALL MOLAR_CONC(X9MASS,X9MOLE)    !OUTPUT: X9MOLE 
+ 
+32 
+      CALL MOLAR_CONC(X10MASS,X10MOLE)  !OUTPUT: X10MOLE 
+      CALL MOLAR_CONC(X11MASS,X11MOLE)  !OUTPUT: X11MOLE 
+      CALL MOLAR_CONC(X12MASS,X12MOLE)  !OUTPUT: X12MOLE 
+ 
+!----------- GET PRESSURE DROPS --------------------------------------      
+      CALL PRESSURE_DROPS(dP_ABS,dP_GEN,dP_COND,dP_EVAP,dP_SHX_SS, 
+     .dP_SHX_WS,dP_RHX_HP,dP_RHX_LP,dP_VALVE_SS) 
+ 
+!----------- STATEPOINT 8 --------------------------------------------      
+      T_IN=T8 
+      XMOLE_IN=X8MOLE 
+      CALL BUBBLE_PRESS(T_IN,XMOLE_IN,P_OUT) 
+      P8=P_OUT    !PRESSURE SATURATED LIQUID 
+      CALL PROP_VARS(T8,P8,X8MOLE,HGM_OUT,SGM_OUT,VGM_OUT,HLM_OUT, 
+     .SLM_OUT,VLM_OUT,MWMIX_OUT) 
+      H8=HLM_OUT  !ENTHALPY SATURATED LIQUID 
+     
+      P7=P8+dP_COND 
+      P2c=P7 
+      P9=P8-dP_RHX_HP 
+       
+!----------- STATEPOINT 7 -------------------------------------------- 
+      X_IN=X7MOLE 
+      P_IN=P7 
+      CALL TEMP_VARS(X_IN,P_IN,TCMIX_OUT,PCMIX_OUT,TBUBBLE_OUT,TDEW_OUT) 
+      T7=TDEW_OUT !TEMPERATURE SATURATED VAPOR 
+      CALL PROP_VARS(T7,P7,X7MOLE,HGM_OUT,SGM_OUT,VGM_OUT,HLM_OUT,  
+     .SLM_OUT,VLM_OUT,MWMIX_OUT) 
+      H7=HGM_OUT  !ENTHALPY SATURATED VAPOR 
+       
+!----------- STATEPOINT 10 -------------------------------------------      
+      T_IN=T10 
+      XMOLE_IN=X10MOLE 
+      CALL BUBBLE_PRESS(T_IN,XMOLE_IN,P_OUT) 
+      P10=P_OUT   !PRESSURE SATURATED LIQUID 
+      CALL PROP_VARS(T10,P10,X10MOLE,HGM_OUT,SGM_OUT,VGM_OUT,HLM_OUT,  
+     .SLM_OUT,VLM_OUT,MWMIX_OUT) 
+      H10=HLM_OUT !ENTHALPY SATURATED LIQUID 
+      P11=P10-dP_EVAP 
+      P12=P11-dP_RHX_LP 
+      P6=P12 
+      P12a=P12 
+      P1=P12a-dP_ABS 
+      H9=H10 
+       
+!----------- STATEPOINTS 11,12 ITERATION IN SUBROUTINE --------------- 
+      CALL RHX_ITER(P11,P12,X11MOLE,X12MOLE,T8,T_SH_EVAP,EPSILON_RHX,  
+     .T11,H11,T12,H12)    !OUTPUT: T11,H11,T12,H12 
+      
+!----------- MASSFLOWS -----------------------------------------------      
+      M10=(QEVAP)/(H12-H8)  
+  
+      M7=M10 
+      M8=M10 
+      M9=M10 
+      M11=M10 
+      M12=M10 
+     
+      M2=M1 
+      M12a=M1 
+      M2a=(1-Y)*M2 
+      M2b=Y*M2 
+      M2c=M2b 
+      M3=M2a            
+      M3a=M2a 
+     
+      M6=M12a-M12 
+      M4=M6 
+      M5=M6 
+       
+!----------- MASS CONCENTRATIONS -------------------------------------      
+      X1MASS=(((M12*X12MASS)+(M6*X6MASS))/M1) 
+      X2MASS=X1MASS 
+      X2aMASS=X1MASS 
+      X2bMASS=X1MASS 
+      X2cMASS=X1MASS 
+      X3MASS=X1MASS 
+ 
+33 
+      X3aMASS=X1MASS 
+      X12aMASS=X1MASS 
+       
+!----------- MOLAR CONCENTRATIONS ------------------------------------     
+      CALL MOLAR_CONC(X1MASS,X1MOLE)        !OUTPUT: X1MOLE 
+      CALL MOLAR_CONC(X2MASS,X2MOLE)        !OUTPUT: X2MOLE 
+      CALL MOLAR_CONC(X2aMASS,X2aMOLE)      !OUTPUT: X2aMOLE 
+      CALL MOLAR_CONC(X2bMASS,X2bMOLE)      !OUTPUT: X2bMOLE 
+      CALL MOLAR_CONC(X2cMASS,X2cMOLE)      !OUTPUT: X2cMOLE 
+      CALL MOLAR_CONC(X3MASS,X3MOLE)        !OUTPUT: X3MOLE 
+      CALL MOLAR_CONC(X3aMASS,X3aMOLE)      !OUTPUT: X3aMOLE 
+      CALL MOLAR_CONC(X12aMASS,X12aMOLE)    !OUTPUT: X12aMOLE 
+       
+ 
+ 
+!------- ASSUMPTION TO FIND SPEC. VOLUME AT STATEPOINT 1 ------------- 
+      CALL PROP_VARS(T1_ASSUMPTION,P1,X1MOLE,HGM_OUT,SGM_OUT,VGM_OUT,  
+     .HLM_OUT,SLM_OUT,VLM_OUT,MWMIX_OUT) 
+      V1_ASSUMPTION=VLM_OUT !SPECIFIC VOLUME SATURATED LIQUID 
+       
+!----------- PUMP ----------------------------------------------------   
+      CALL PUMP_DATA(P1,M1,V1_ASSUMPTION,P2, 
+     .ETA_PUMP) !OUTPUT:P2,ETA_PUMP  
+ 
+      P2a=P2 
+      P2b=P2 
+      P3=P2a-dP_SHX_SS 
+      P3a=P3-dP_GEN 
+      P4=P3a 
+      P5=P4-dP_SHX_WS 
+       
+!----------- STATEPOINT 4 -------------------------------------------- 
+      X_IN=X4MOLE 
+      P_IN=P4 
+      CALL TEMP_VARS(X_IN,P_IN,TCMIX_OUT,PCMIX_OUT,TBUBBLE_OUT,TDEW_OUT) 
+      T4=TBUBBLE_OUT ! TEMPERATURE SATURATED LIQUID 
+      CALL PROP_VARS(T4,P4,X4MOLE,HGM_OUT,SGM_OUT,VGM_OUT,HLM_OUT,  
+     .SLM_OUT,VLM_OUT,MWMIX_OUT) 
+      H4=HLM_OUT  !ENTHALPY SATURATED LIQUID 
+ 
+!----------- STATEPOINTS 2a,3,5 ITERATION IN SUBROUTINE -------------- 
+      DO WHILE (CHECK_SHX .EQ. 0) !LOOP TO VERIFY CORRECT SHX EFFEC. 
+      CALL SHX_ITER(X2aMOLE,X3MOLE,X5MOLE,P2a,P3,P5,T4,H4,M4,M2a,SHX,  
+     .EPSILON_SHX,I,T2a,H2a,T3,H3,T5,H5) !OUTPUT: T2a,H2a,T3,H3,T5,H5 
+      H2=H2a 
+      H2b=H2a 
+      H2c=H2b 
+      H6=H5 
+      H9=H8+H11-H12 
+      H3a=(((M4*H4)+(M7*H7)-(M2c*H2c))/M3a) 
+       
+!----------- STATEPOINTS 1, ITERATION IN SUBROUTINE ------------------ 
+      CALL PUMP_ITER(H2,P1,P2,X1MOLE,X12MOLE,H1,V1, 
+     .T1) !OUTPUTS: H1,V1,T1 
+       
+!----------- TEMPERATURES -------------------------------------------- 
+      CALL TEMP(X2MOLE,P2,H2,T2)          !OUTPUT: T2 
+      CALL TEMP(X2bMOLE,P2b,H2b,T2b)      !OUTPUT: T2b 
+      CALL TEMP(X2cMOLE,P2c,H2c,T2c)      !OUTPUT: T2c 
+      CALL TEMP(X3aMOLE,P3a,H3a,T3a)      !OUTPUT: T3a 
+      CALL TEMP(X6MOLE,P6,H6,T6)          !OUTPUT: T6 
+      CALL TEMP(X9MOLE,P9,H9,T9)          !OUTPUT: T9  
+     
+!----------- HEAT CAPACITIES, WORK AND COP --------------------------- 
+      QCOND=M7*(H7-H8) 
+      QGEN=M3*(H3a-H3) 
+      QABS=((M12*H12)+ (M6*H6)-(M1*H1)) 
+      WPUMP=((M1*V1*(P2-P1))/ETA_PUMP)    
+      COP=QEVAP/(QGEN+WPUMP) 
+               
+!*********************************************************************     
+!----------- CHECK IF RESULTS ARE OK --------------------------------- 
+      CALL CHECK(H1,H2,M1,M4,M8,H4,H5,H8,H9,T2a,T3,T4,T5,T8,  
+     .T9,T11,T12,QEVAP,QGEN,QCOND,QABS,WPUMP,V1_ASSUMPTION,V1,  
+     .CHECK_Q,CHECK_V,CHECK_SHX, 
+     .CHECK_RHX) !OUTPUTS: CHECK_Q,CHECK_V,CHECK_SHX,CHECK_RHX 
+       
+ 
+34 
+      IF (CHECK_SHX .EQ. 1 .AND. SHX .EQ. 1) THEN 
+            CHECK_SHX=1 
+      ELSE IF (CHECK_SHX .EQ. 0 .AND. SHX .EQ. 1) THEN 
+            SHX=0 
+      ELSE IF (CHECK_SHX .EQ. 0 .AND. SHX .EQ. 0) THEN 
+            CHECK_SHX=1   
+      END IF 
+      END DO 
+       
+!----------- WRITE T0 COMMAND WINDOW----------------------------------     
+      CALL TO_SCREEN(T1,T2,T2a,T2b,T2c,T3,T3a,T4,T5,T6,T7,T8,T9,  
+     .T10,T11,T12,T12a,P1,P2,P2a,P2b,P2c,P3,P3a,P4,P5,P6,P7,P8,P9,  
+     .P10,P11,P12,P12a,H1,H2,H2a,H2b,H2c,H3,H3a,H4,H5,H6,H7,H8,H9,  
+     .H10,H11,H12,H12a,X1MOLE,X2MOLE,X2aMOLE,X2bMOLE,X2cMOLE,  
+     .X3MOLE,X3aMOLE,X4MOLE,X5MOLE,X6MOLE,X7MOLE,X8MOLE,X9MOLE,  
+     .X10MOLE,X11MOLE,X12MOLE,X12aMOLE,X1MASS,X2MASS,X2aMASS,  
+     .X2bMASS,X2cMASS,X3MASS,X3aMASS,X4MASS,X5MASS,X6MASS,X7MASS,  
+     .X8MASS,X9MASS,X10MASS,X11MASS,X12MASS,X12aMASS,M1,M2,M2a,  
+     .M2b,M2c,M3,M3a,M4,M5,M6,M7,M8,M9,M10,M11,M12,M12a,dP_ABS,  
+     .dP_GEN,dP_COND,dP_EVAP,dP_SHX_SS,dP_SHX_WS,dP_RHX_HP,  
+     .dP_RHX_LP,dP_VALVE_SS,QEVAP,QCOND,QGEN,QABS,WPUMP,COP,  
+     .EPSILON_RHX,EPSILON_SHX,T_SH_EVAP,Y,ETA_PUMP,CHECK_Q,  
+     .CHECK_V,CHECK_SHX,CHECK_RHX) 
+ 
+!----------- WRITE T0 FILE ------------------------------------------- 
+      CALL TO_FILE(I,IMAX,T1,T2,T2a,T2b,T2c,T3,T3a,T4,T5,T6,T7,T8,T9,  
+     .T10,T11,T12,T12a,P1,P2,P2a,P2b,P2c,P3,P3a,P4,P5,P6,P7,P8,P9,  
+     .P10,P11,P12,P12a,H1,H2,H2a,H2b,H2c,H3,H3a,H4,H5,H6,H7,H8,H9,  
+     .H10,H11,H12,H12a,X1MOLE,X2MOLE,X2aMOLE,X2bMOLE,X2cMOLE,  
+     .X3MOLE,X3aMOLE,X4MOLE,X5MOLE,X6MOLE,X7MOLE,X8MOLE,X9MOLE,  
+     .X10MOLE,X11MOLE,X12MOLE,X12aMOLE,X1MASS,X2MASS,X2aMASS,  
+     .X2bMASS,X2cMASS,X3MASS,X3aMASS,X4MASS,X5MASS,X6MASS,X7MASS,  
+     .X8MASS,X9MASS,X10MASS,X11MASS,X12MASS,X12aMASS,M1,M2,M2a,  
+     .M2b,M2c,M3,M3a,M4,M5,M6,M7,M8,M9,M10,M11,M12,M12a,dP_ABS,  
+     .dP_GEN,dP_COND,dP_EVAP,dP_SHX_SS,dP_SHX_WS,dP_RHX_HP,  
+     .dP_RHX_LP,dP_VALVE_SS,QEVAP,QCOND,QGEN,QABS,WPUMP,COP,  
+     .EPSILON_RHX,EPSILON_SHX,T_SH_EVAP,Y,ETA_PUMP,CHECK_Q,  
+     .CHECK_V,CHECK_SHX,CHECK_RHX,W,Qtot) 
+       
+      END    
+ 
+ 
+ 
+ 
+35 
+!     molar_conc.for  
+! 
+!     Subroutine to calculate the molar concentration. 
+! 
+!********************************************************************* 
+      SUBROUTINE MOLAR_CONC(XMASS_IN,XMOLE_OUT) 
+ 
+!----------- DECLARATION OF VARIABLES -------------------------------- 
+      DOUBLE PRECISION MWNH3,MWH2O,XMASS,MWMIX_MASS,XMOLE, 
+     .XMASS_IN,XMOLE_OUT 
+ 
+ 
+!*********** MAIN PROGRAM ******************************************** 
+      MWNH3=17.031 !MOLAR WEIGHT AMMONIA 
+      MWH2O=18.016 !MOLAR WEIGHT WATER 
+ 
+      XMASS=XMASS_IN 
+      MWMIX_MASS=1.0/((XMASS/MWNH3)+((1.0-XMASS)/MWH2O)) 
+      XMOLE=(XMASS*MWMIX_MASS)/(MWNH3) 
+ 
+      XMOLE_OUT=XMOLE !SUBROUTINE OUTPUT: MOLE FRACTION OF AMMONIA 
+      RETURN 
+      END 
+======================================================================================= 
+======================================================================================= 
+ 
+ 
+======================================================================================= 
+======================================================================================= 
+!     pressure_drops.for  
+! 
+!     Subroutine giving the pressure drops at all components in kPa. 
+!     At this moment just values, based on ENERGY CONCEPTS design  
+!     data. 
+! 
+!     Subroutines used: 
+!       PROP_VARS 
+! 
+!********************************************************************* 
+      SUBROUTINE PRESSURE_DROPS(dP_ABS,dP_GEN,dP_COND,dP_EVAP, 
+     .dP_SHX_SS,dP_SHX_WS,dP_RHX_HP,dP_RHX_LP,dP_VALVE_SS) 
+ 
+!----------- DECLARATION OF VARIABLES -------------------------------- 
+      DOUBLE PRECISION dP_ABS,dP_GEN,dP_COND,dP_EVAP, 
+     .dP_SHX_SS,dP_SHX_WS,dP_RHX_HP,dP_RHX_LP,dP_VALVE_SS 
+ 
+!*********** MAIN PROGRAM ******************************************** 
+      dP_ABS=6.9       !SUBROUTINE OUTPUT: dP ABSORBER 
+      dP_GEN=34.5      !SUBROUTINE OUTPUT: dP GENERATOR 
+      dP_COND=13.8     !SUBROUTINE OUTPUT: dP CONDENSER             
+      dP_EVAP=13.8     !SUBROUTINE OUTPUT: dP EVAPORATOR 
+      dP_SHX_SS=27.6   !SUBROUTINE OUTPUT: dP SHX STRONG SOL. SIDE  
+      dP_SHX_WS=27.6   !SUBROUTINE OUTPUT: dP SHX WEAK SOL. SIDE  
+      dP_RHX_HP=103.5  !SUBROUTINE OUTPUT: dP RHX HIGH PRESS. SIDE  
+      dP_RHX_LP=6.9    !SUBROUTINE OUTPUT: dP RHX LOW PRESS. SIDE 
+      dP_VALVE_SS=69.0 !SUBROUTINE OUTPUT: dP STRONG SOL.SPLIT VALVE 
+      RETURN 
+      END 
+======================================================================================= 
+======================================================================================= 
+   
+ 
+======================================================================================= 
+======================================================================================= 
+!     bubble_pressure.for  
+! 
+!     Calculate the bubble pressure of NH3-H2O mixture with temperature T 
+!     and molar concentration XMOLE as inputs, the subroutine is valid  
+!     for the temperature range given below at given concentrations. 
+!     (The temp range can might be increased by rebuilding the iteration  
+!     for lower concentrations) 
+! 
+!------------------------------------------------ 
+!Conc.Range [-] TempRange [C]   
+!------------------------------------------------ 
+!x>0.55         -10 - 150     
+!------------------------------------------------          
+!0.55>x>0.35     20 - 150     
+!------------------------------------------------ 
+ 
+36 
+!0.35>x>0.3      30 - 150     
+!                30 - 90    
+!------------------------------------------------ 
+!0.3>x           Inaccuracy in data 
+!------------------------------------------------ 
+! 
+!     Subroutines used: 
+!       TEMP_VARS 
+! 
+!********************************************************************* 
+      SUBROUTINE BUBBLE_PRESS(T_IN,XMOLE_IN,P_OUT) 
+ 
+      DOUBLE PRECISION T,XMOLE,P_GUESS,STEP,NEW_STEP,TBUBBLE,P_NEW_GUESS, 
+     .TDIFF,TBUBBLE_OUT,T_IN,XMOLE_IN,P_OUT,I,SPAN 
+      
+!*********** MAIN PROGRAM ******************************************** 
+      T=T_IN 
+      XMOLE=XMOLE_IN 
+      P_NEW_GUESS=1000.0    !INITIAL GUESS PRESSURE 
+      NEW_STEP=1            !INITIAL STEP 
+      CALL TEMP_VARS(XMOLE,P_NEW_GUESS,TCMIX_OUT,PCMIX_OUT, 
+     .TBUBBLE_OUT,TDEW_OUT) !OUTPUT: TBUBBLE_OUT 
+      TBUBBLE=TBUBBLE_OUT 
+      TDIFF=TBUBBLE_OUT-T 
+      I=0                   !START VALUE FOR THE DO WHILE LOOP 
+      DO WHILE (ABS(TDIFF) .GT. 0.01) !REPEAT UNTIL TEMP DIFF IS OK 
+ 
+I=I+1 
+           STEP=NEW_STEP 
+ 
+P_GUESS=P_NEW_GUESS 
+ 
+IF (TBUBBLE .LT. T) THEN      !MUST NEW GUESS BE HIGHER?  
+               P_NEW_GUESS=P_GUESS+STEP 
+           ELSE 
+               P_NEW_GUESS=P_GUESS-STEP 
+           END IF 
+           CALL TEMP_VARS(XMOLE,P_NEW_GUESS,TCMIX_OUT,PCMIX_OUT, 
+     .TBUBBLE_OUT,TDEW_OUT) !OUTPUT: TBUBBLE_OUT 
+           TBUBBLE=TBUBBLE_OUT 
+           TDIFF=TBUBBLE_OUT-T 
+ 
+   
+           SPAN=STEP 
+           IF (ABS(TDIFF) .LT. SPAN) THEN !REDUCE STEP TO REDUCE TEMP DIFF 
+               NEW_STEP=STEP/4  
+           END IF     
+           IF (I .GT. 5000) THEN  !STOP NON CONVERGING ITERATION 
+               TDIFF=0 
+               P_NEW_GUESS=0 
+           WRITE (*,*) 'NO CONV'       
+           END IF 
+      END DO 
+      P_OUT=P_NEW_GUESS     !SUBROUTINE OUTPUT: PRESSURE 
+      RETURN 
+      END 
+======================================================================================= 
+======================================================================================= 
+ 
+ 
+======================================================================================= 
+======================================================================================= 
+!     rhx_iter.for  
+! 
+!     Subroutine makes an iteration across the RHX to calculate the  
+!     state points 11 and 12. 
+! 
+!     Subroutines used: 
+!       PROP_VARS 
+!       TEMP_VARS 
+! 
+!********************************************************************* 
+      SUBROUTINE RHX_ITER(P11,P12,X11MOLE,X12MOLE,T8,T_SH_EVAP,EPSILON_RHX, 
+     .T11_OUT,H11_OUT,T12_OUT,H12_OUT)  
+       
+!----------- DECLARATION OF VARIABLES -------------------------------- 
+      DOUBLE PRECISION I,STEP,NEW_STEP,T11_SAT,T11_GUESS,T12_GUESS, 
+     .T12_NEW_GUESS,T_SH_GUESS,T_SH_DIFF,SPAN 
+       
+      DOUBLE PRECISION P11,P12,X11MOLE,X12MOLE,T8,T_SH_EVAP,EPSILON_RHX, 
+     .T11_OUT,H11_OUT,T12_OUT,H12_OUT,TCMIX_OUT,PCMIX_OUT,TBUBBLE_OUT, 
+ 
+37 
+     .TDEW_OUT,HGM_OUT,SGM_OUT,VGM_OUT,HLM_OUT, 
+     .SLM_OUT,VLM_OUT,MWMIX_OUT 
+      
+!*********** MAIN PROGRAM ******************************************** 
+      NEW_STEP=1 
+      T12_NEW_GUESS=T8      !INITAL GUESS 
+      I=0 
+      T_SH_DIFF=1            
+      DO WHILE (ABS(T_SH_DIFF) .GT. 0.001) !REPEAT UNTIL TEMP DIFF IS OK 
+        I=I+1 
+        STEP=NEW_STEP 
+        T12_GUESS=T12_NEW_GUESS 
+        T11_GUESS=((T12_GUESS-(EPSILON_RHX*T8))/(1-EPSILON_RHX)) 
+        CALL TEMP_VARS(X11MOLE,P11,TCMIX_OUT,PCMIX_OUT,TBUBBLE_OUT, 
+     .TDEW_OUT) 
+        T11_SAT=TDEW_OUT    !TEMPERATURE SATURATED VAPOR 
+        T_SH_GUESS=T11_GUESS-T11_SAT 
+        T_SH_DIFF=T_SH_GUESS-T_SH_EVAP 
+        IF (T_SH_DIFF .GT. 0) THEN !MUST NEW GUESS BE LOWER?  
+            T12_NEW_GUESS=T12_GUESS-STEP        
+ 
+        ELSE 
+            T12_NEW_GUESS=T12_GUESS+STEP 
+        END IF 
+        SPAN=5*STEP 
+        IF (ABS(T_SH_DIFF) .LE. SPAN) THEN !MAKE STEP SMALLER  
+            NEW_STEP=STEP/4                
+        END IF                               
+        IF (I .GE. 5000) THEN  !STOP NON CONVERING ITERATION 
+            T_SH_DIFF=0 
+            WRITE (*,*) 'NO CONV'       
+        END IF 
+      END DO         
+      T11_OUT=T11_GUESS     !SUBROUTINE OUTPUT: TEMPERATURE 
+      CALL PROP_VARS(T11_GUESS,P11,X11MOLE,HGM_OUT,SGM_OUT,VGM_OUT,HLM_OUT, 
+     .SLM_OUT,VLM_OUT,MWMIX_OUT) 
+      H11_OUT=HGM_OUT       !SUBROUTINE OUTPUT: ENTHALPY SATURATED VAPOR 
+      T12_OUT=T12_GUESS     !SUBROUTINE OUTPUT: TEMPERATURE  
+      CALL PROP_VARS(T12_GUESS,P12,X12MOLE,HGM_OUT,SGM_OUT,VGM_OUT,HLM_OUT, 
+     .SLM_OUT,VLM_OUT,MWMIX_OUT) 
+      H12_OUT=HGM_OUT       !SUBROUTINE OUTPUT: ENTHALPY SATURATED VAPOR 
+      RETURN 
+      END 
+======================================================================================= 
+======================================================================================= 
+ 
+ 
+======================================================================================= 
+======================================================================================= 
+!     shx_iter.for  
+! 
+!     Subroutine makes an iteration across the SHX to calculate the  
+!     state points 2a, 3a and 5. This subroutine consists of two parts  
+!     and have to be changed manually if the SHX effectiveness is  
+!     defined in the wrong way.  
+  
+! 
+!     Subroutines used: 
+!       PROP_VARS 
+!       TEMP_VARS 
+!       TEMP 
+! 
+!********************************************************************* 
+      SUBROUTINE SHX_ITER(X2aMOLE,X3MOLE,X5MOLE,P2a,P3,P5,T4,H4,M4,M2a, 
+     .SHX,EPSILON_SHX,N,T2a_OUT,H2a_OUT,T3_OUT,H3_OUT,T5_OUT,H5_OUT) 
+ 
+!----------- DECLARATION OF VARIABLES -------------------------------- 
+      DOUBLE PRECISION I,STEP,NEW_STEP,SPAN,T2a_GUESS,T3_SAT,T3_GUESS, 
+     .T3_DIFF,T5_GUESS,T2a_NEW_GUESS,H2a_GUESS,H3_GUESS,H5_GUESS 
+       
+      DOUBLE PRECISION X2aMOLE,X3MOLE,X5MOLE,P2a,P3,P5,T4,H4,M4,M2a, 
+     .EPSILON_SHX,T2a_OUT,H2a_OUT,T3_OUT,H3_OUT,T5_OUT,H5_OUT, 
+     .TCMIX_OUT,PCMIX_OUT,TBUBBLE_OUT,T_OUT,HGM_OUT,SGM_OUT,VGM_OUT, 
+     .HLM_OUT,SLM_OUT,VLM_OUT,MWMIX_OUT,TDEW_OUT,N 
+ 
+!*********** MAIN PROGRAM ******************************************** 
+!---- This part is used if SHX effectiveness is defined correctly ---- 
+      IF (SHX .EQ. 1) THEN 
+      NEW_STEP=1 
+ 
+38 
+      T5_NEW_GUESS=T4-1  
+      I=0 
+      T3_DIFF=11 
+ 
+      DO WHILE (ABS(T3_DIFF) .GT. 0.1)!REPEAT UNTIL TEMP DIFF IS OK 
+        I=I+1 
+        STEP=NEW_STEP 
+        T5_GUESS=T5_NEW_GUESS 
+        T2a_GUESS=(((T4*(EPSILON_SHX-1))+T5_GUESS)/EPSILON_SHX) 
+        CALL PROP_VARS(T5_GUESS,P5,X5MOLE,HGM_OUT,SGM_OUT,VGM_OUT,HLM_OUT, 
+     .SLM_OUT,VLM_OUT,MWMIX_OUT) 
+        H5_GUESS=HLM_OUT !ENTHALPY LIQUID 
+        CALL PROP_VARS(T2a_GUESS,P2a,X2aMOLE,HGM_OUT,SGM_OUT,VGM_OUT, 
+     .HLM_OUT,SLM_OUT,VLM_OUT,MWMIX_OUT) 
+        H2a_GUESS=HLM_OUT !ENTHALPY LIQUID 
+        H3_GUESS=((M4/M2a)*(H4-H5_GUESS))+H2a_GUESS 
+        CALL TEMP(X3MOLE,P3,H3_GUESS,T_OUT) 
+        T3_GUESS=T_OUT 
+        CALL TEMP_VARS(X3MOLE,P3,TCMIX_OUT,PCMIX_OUT,TBUBBLE_OUT, 
+     .TDEW_OUT) 
+        T3_SAT=TBUBBLE_OUT !TEMPERATURE SATURATED LIQUID 
+        T3_DIFF=T3_GUESS-T3_SAT 
+        IF (T3_DIFF .GT. 0) THEN !MUST NEW GUESS BE LOWER 
+            T5_NEW_GUESS=T5_GUESS-STEP 
+       
+ 
+        ELSE 
+            T5_NEW_GUESS=T5_GUESS+STEP 
+        END IF 
+        SPAN=4*STEP 
+        IF (ABS(T3_DIFF) .LE. SPAN) THEN   !MAKE STEP SMALLER 
+            NEW_STEP=STEP/2                  
+        END IF                                
+         
+        IF (I .GE. 5000) THEN  !STOP NON CONVERGING LOOPING 
+            T3_DIFF=0 
+            WRITE (*,*) 'NO CONV IN SP2a3AND5.FOR'       
+        END IF 
+      END DO 
+      END IF         
+ 
+!------- This part is used if SHX effectiveness is defined wrong------ 
+      IF (SHX .EQ. 0) THEN 
+      NEW_STEP=1 
+      T2a_NEW_GUESS=T4-1  
+      I=0 
+      T3_DIFF=11 
+ 
+      DO WHILE (ABS(T3_DIFF) .GT. 0.1) !REPEAT UNTIL TEMP DIFF IS OK 
+        I=I+1 
+        STEP=NEW_STEP 
+        T2a_GUESS=T2a_NEW_GUESS 
+        T3_GUESS=(((T4-T2a_GUESS)*EPSILON_SHX)+T2a_GUESS) 
+        CALL PROP_VARS(T2a_GUESS,P2a,X2aMOLE,HGM_OUT,SGM_OUT,VGM_OUT, 
+     .HLM_OUT,SLM_OUT,VLM_OUT,MWMIX_OUT) 
+        H2a_GUESS=HLM_OUT ! ENTHALPY LIQUID 
+        CALL PROP_VARS(T3_GUESS,P3,X3MOLE,HGM_OUT,SGM_OUT,VGM_OUT,HLM_OUT, 
+     .SLM_OUT,VLM_OUT,MWMIX_OUT) 
+        H3_GUESS=HLM_OUT !ENTHALPY LIQUID 
+        H5_GUESS=((M2a/M4)*(H2a_GUESS-H3_GUESS))+H4 
+        CALL TEMP(X5MOLE,P5,H5_GUESS,T_OUT) 
+        T5_GUESS=T_OUT 
+        CALL TEMP_VARS(X3MOLE,P3,TCMIX_OUT,PCMIX_OUT,TBUBBLE_OUT, 
+     .TDEW_OUT) 
+        T3_SAT=TBUBBLE_OUT !TEMPERATURE SATURATED LIQUID 
+        T3_DIFF=T3_GUESS-T3_SAT 
+        IF (T3_DIFF .GT. 0) THEN !MUST NEW GUESS BE LOWER 
+            T2a_NEW_GUESS=T2a_GUESS-STEP        
+ 
+        ELSE 
+            T2a_NEW_GUESS=T2a_GUESS+STEP 
+        END IF 
+        SPAN=4*STEP 
+        IF (ABS(T3_DIFF) .LE. SPAN) THEN   !MAKE STEP SMALLER 
+            NEW_STEP=STEP/2                 
+        END IF                                
+         
+        IF (I .GE. 5000) THEN  !STOP NON CONVERGING LOOPING 
+            T3_DIFF=0 
+            WRITE (*,*) 'NO CONV IN SP2a3AND5.FOR'       
+ 
+39 
+        END IF 
+      END DO 
+      END IF  
+!--------------------------------------------------------------------- 
+       
+      T2a_OUT=T2a_GUESS !SUBROUTINE OUTPUT: TEMPERATURE 
+      H2a_OUT=H2a_GUESS !SUBROUTINE OUTPUT: ENTHALPY LIQUID 
+      T3_OUT=T3_GUESS   !SUBROUTINE OUTPUT: TEMPERATURE 
+      H3_OUT=H3_GUESS   !SUBROUTINE OUTPUT: ENTHALPY LIQUID 
+      T5_OUT=T5_GUESS   !SUBROUTINE OUTPUT: TEMPERATURE 
+      H5_OUT=H5_GUESS   !SUBROUTINE OUTPUT: ENTHALPY LIQUID 
+      RETURN 
+      END 
+======================================================================================= 
+======================================================================================= 
+ 
+ 
+======================================================================================= 
+======================================================================================= 
+!     pump_iter.for  
+! 
+!     Subroutine makes an iteration across the pump to calculate state  
+!     points 1. 
+! 
+!     Subroutines used: 
+!       PROP_VARS 
+! 
+!********************************************************************* 
+ 
+      SUBROUTINE PUMP_ITER(H2,P1,P2,X1MOLE,X12MOLE,H1_OUT,V1_OUT,T1_OUT) 
+       
+!----------- DECLARATION OF VARIABLES -------------------------------- 
+      DOUBLE PRECISION P1,P2,X1MOLE,X2MOLE,H1,H2,H1_OUT,V1,V1_OUT,T1_OUT 
+       
+      DOUBLE PRECISION I,STEP,NEW_STEP,T1_GUESS,T1_NEW_GUESS,H_DIFF,SPAN 
+       
+      DOUBLE PRECISION HGM_OUT,SGM_OUT,VGM_OUT,HLM_OUT,SLM_OUT,VLM_OUT, 
+     .MWMIX_OUT 
+      
+!*********** MAIN PROGRAM ******************************************** 
+      NEW_STEP=1 
+      T1_NEW_GUESS=273  !INITIAL GUESS 
+      I=0 
+      H_DIFF=1 
+      DO WHILE (ABS(H_DIFF) .GT. 0.0001) !REPEAT UNTIL TEMP DIFF IS OK 
+        I=I+1 
+        STEP=NEW_STEP 
+        T1_GUESS=T1_NEW_GUESS 
+         
+        CALL PROP_VARS(T1_GUESS,P1,X1MOLE,HGM_OUT,SGM_OUT,VGM_OUT, 
+     .HLM_OUT,SLM_OUT,VLM_OUT,MWMIX_OUT) 
+        H1=HLM_OUT        !ENTHALPY LIQUID 
+        V1=VLM_OUT        !SPECIFIC VOLUME LIQUID 
+        H_DIFF=H2-H1-(V1*(P2-P1)) 
+   
+        IF (H_DIFF .LT. 0) THEN !MUST NEW GUESS BE LOWER?  
+            T1_NEW_GUESS=T1_GUESS-STEP 
+       
+ 
+        ELSE 
+            T1_NEW_GUESS=T1_GUESS+STEP 
+        END IF 
+         
+        SPAN=5*STEP 
+   
+        IF (ABS(H_DIFF) .LE. SPAN) THEN !MAKE STEP SMALLER 
+            NEW_STEP=STEP/4                 
+        END IF                              
+         
+        IF (I .GE. 5000) THEN  !STOP NON CONVERGING LOOPING 
+            H_DIFF=0 
+            WRITE (*,*) 'NO CONV'       
+        END IF 
+      END DO         
+ 
+ 
+      H1_OUT=H1         !SUBROUTINE OUTPUT: ENTHALPY 
+      V1_OUT=V1         !SUBROUTINE OUTPUT: SPECIFIC VOLUME 
+      T1_OUT=T1_GUESS   !SUBROUTINE OUTPUT: TEMPERATURE 
+      RETURN 
+      END 
+ 
+40 
+======================================================================================= 
+======================================================================================= 
+ 
+ 
+======================================================================================= 
+======================================================================================= 
+!     temp.for  
+! 
+!     Subroutine calculates temperature. 
+! 
+!     Subroutines used: 
+!       PROP_VARS 
+! 
+!********************************************************************* 
+      SUBROUTINE TEMP(XMOLE_IN,P_IN,H_IN,T_OUT) 
+ 
+!----------- DECLARATION OF VARIABLES -------------------------------- 
+      DOUBLE PRECISION I,XMOLE,P,H,T_GUESS,T_NEW_GUESS,H_DIFF,SPAN,STEP, 
+     .NEW_STEP 
+      DOUBLE PRECISION XMOLE_IN,P_IN,H_IN,T_OUT,HGM_OUT,SGM_OUT,VGM_OUT, 
+     .HLM_OUT,SLM_OUT,VLM_OUT,MWMIX_OUT 
+ 
+!*********** MAIN PROGRAM ******************************************** 
+      XMOLE=XMOLE_IN 
+      P=P_IN   
+      H=H_IN 
+ 
+      NEW_STEP=1 
+      T_NEW_GUESS=1 
+      H_DIFF=11 
+      I=0 
+      DO WHILE (ABS(H_DIFF) .GT. 0.001) !REPEAT UNTIL ENTH. DIFF IS OK 
+         I=I+1 
+         STEP=NEW_STEP 
+         T_GUESS=T_NEW_GUESS 
+         CALL PROP_VARS(T_GUESS,P,XMOLE,HGM_OUT,SGM_OUT,VGM_OUT,HLM_OUT, 
+     .SLM_OUT,VLM_OUT,MWMIX_OUT) 
+         H_GUESS=HLM_OUT !ENTHALPY LIQUID 
+         H_DIFF=H_GUESS-H 
+ 
+ 
+         IF (H_DIFF .GT. 0) THEN !MUST NEW GUESS BE LOWER? 
+             T_NEW_GUESS=T_GUESS-STEP 
+         ELSE 
+             T_NEW_GUESS=T_GUESS+STEP 
+         END IF 
+         
+         SPAN=5*STEP 
+         IF (ABS(H_DIFF) .LE. SPAN) THEN !MAKE STEP SMALLER 
+             NEW_STEP=STEP/4              
+         END IF                              
+         
+         IF (I .GE. 5000) THEN  !STOP NON CONVERGING ITERATION 
+             H_DIFF=0 
+             T_GUESS=0 
+             WRITE (*,*) 'NO CONV IN TEMP.FOR'       
+         END IF 
+      END DO 
+       
+      T_OUT=T_GUESS !SUBROUTINE OUTPUT: TEMPERATURE   
+ 
+      RETURN 
+      END 
+======================================================================================= 
+======================================================================================= 
+ 
+ 
+======================================================================================= 
+======================================================================================= 
+!     pump_data.for  
+! 
+!     Subroutine to calculate the pressure P2 
+!     Constants K, M are based on pump characteristics, linear  
+!     Constants K2, M2 are based on pump efficiency curve, the  
+!     curve is linearized in intervals. 
+! 
+!     Subroutines used: 
+! 
+ 
+41 
+!********************************************************************* 
+ 
+      SUBROUTINE PUMP_DATA(P1,M1,V1,P_OUT,ETA_OUT) 
+ 
+!----------- DECLARATION OF VARIABLES -------------------------------- 
+      DOUBLE PRECISION ETA_PUMP,K,K2,M,M2,P1,P2,M1,Vdot,V1,P_OUT,ETA_OUT 
+ 
+!*********** MAIN PROGRAM ******************************************** 
+      K=-6681929.3543           !BASED ON PUMP CHARACTERISTICS 
+      M=3220.7508               !BASED ON PUMP CHARACTERISTICS 
+ 
+ 
+      Vdot=M1*V1                !VOLUMEFLOW 
+      P2=P1+(K*Vdot)+M          !LINEAR, BASED ON PUMP CHARACTERISTICS 
+ 
+      IF (Vdot .LT. 0.000063) THEN 
+          K2=1505.78070 
+          M2=0.00000 
+      END IF 
+      IF (Vdot .GT. 0.000063 .AND. Vdot .LT. 0.000126) THEN 
+          K2=1505.78070 
+ 
+          M2=0.00000 
+      END IF 
+      IF (Vdot .GT. 0.000126 .AND. Vdot .LT. 0.000189) THEN 
+          K2=1426.52908 
+ 
+          M2=0.01000 
+      END IF 
+      IF (Vdot .GT. 0.000189 .AND. Vdot .LT. 0.000252) THEN 
+          K2=1188.77424 
+          M2=0.05500 
+      END IF 
+      IF (Vdot .GT. 0.000252 .AND. Vdot .LT. 0.000315) THEN 
+          K2=1030.27100 
+          M2=0.09500 
+      END IF 
+      IF (Vdot .GT. 0.000315 .AND. Vdot .LT. 0.000347) THEN 
+          K2=634.01293 
+          M2=0.22000 
+      END IF 
+      IF (Vdot .GT. 0.000347 .AND. Vdot .LT. 0.000379) THEN 
+          K2=158.50323 
+ 
+          M2=0.37000 
+      END IF 
+      IF (Vdot .GT. 0.000379 .AND. Vdot .LT. 0.000410) THEN 
+          K2=-713.26454 
+          M2=0.68750 
+      END IF 
+      IF (Vdot .GT. 0.000410 .AND. Vdot .LT. 0.000442) THEN 
+          K2=-2219.04524 
+ 
+          M2=1.27000 
+      END IF 
+      IF (Vdot .GT. 0.000442) THEN 
+          K2=-7182.17767 
+ 
+          M2=3.46188 
+      END IF 
+ 
+ 
+      ETA_PUMP=K2*Vdot+M2 !LINEAR, BASED ON PUMP CHARACTERISTICS 
+      P_OUT=P2            !SUBROUTINE OUTPUT: PRESSURE 
+      ETA_OUT=ETA_PUMP    !SUBROUTINE OUTPUT: EFFICIENCY 
+      RETURN 
+      END 
+======================================================================================= 
+======================================================================================= 
+ 
+ 
+======================================================================================= 
+======================================================================================= 
+!     to_screen.for  
+! 
+!     Subroutine writes the calculated data to command window. 
+! 
+!     Subroutines used: 
+!        
+!********************************************************************* 
+      SUBROUTINE TO_SCREEN(T1,T2,T2a,T2b,T2c,T3,T3a,T4,T5,T6, 
+     .T7,T8,T9,T10,T11,T12,T12a,P1,P2,P2a,P2b,P2c,P3,P3a,P4,P5,P6, 
+     .P7,P8,P9,P10,P11,P12,P12a,H1,H2,H2a,H2b,H2c,H3,H3a,H4,H5,H6, 
+     .H7,H8,H9,H10,H11,H12,H12a,X1MOLE,X2MOLE,X2aMOLE, 
+     .X2bMOLE,X2cMOLE,X3MOLE,X3aMOLE,X4MOLE,X5MOLE, 
+ 
+42 
+     .X6MOLE,X7MOLE,X8MOLE,X9MOLE,X10MOLE,X11MOLE,X12MOLE,X12aMOLE, 
+     .X1MASS,X2MASS,X2aMASS,X2bMASS,X2cMASS,X3MASS,X3aMASS,X4MASS, 
+     .X5MASS,X6MASS,X7MASS,X8MASS,X9MASS,X10MASS,X11MASS,X12MASS, 
+     .X12aMASS,M1,M2,M2a,M2b,M2c,M3,M3a,M4,M5,M6,M7,M8,M9,M10,M11, 
+     .M12,M12a,dP_ABS,dP_GEN,dP_COND,dP_EVAP,dP_SHX_SS,dP_SHX_WS, 
+     .dP_RHX_HP,dP_RHX_LP,dP_VALVE_SS,QEVAP,QCOND,QGEN,QABS, 
+     .WPUMP,COP,EPSILON_RHX,EPSILON_SHX,T_SH_EVAP,Y,ETA_PUMP, 
+     .CHECK_Q,CHECK_V,CHECK_SHX,CHECK_RHX) 
+ 
+!----------- DECLARATION OF VARIABLES -------------------------------- 
+      DOUBLE PRECISION T1,T2,T2a,T2b,T2c,T3,T3a,T4,T5,T6, 
+     .T7,T8,T9,T10,T11,T12,T12a,P1,P2,P2a,P2b,P2c,P3,P3a,P4,P5,P6, 
+     .P7,P8,P9,P10,P11,P12,P12a,H1,H2,H2a,H2b,H2c,H3,H3a,H4,H5,H6, 
+     .H7,H8,H9,H10,H11,H12,H12a,X1MOLE,X2MOLE,X2aMOLE, 
+     .X2bMOLE,X2cMOLE,X3MOLE,X3aMOLE,X4MOLE,X5MOLE, 
+     .X6MOLE,X7MOLE,X8MOLE,X9MOLE,X10MOLE,X11MOLE,X12MOLE,X12aMOLE, 
+     .X1MASS,X2MASS,X2aMASS,X2bMASS,X2cMASS,X3MASS,X3aMASS,X4MASS, 
+     .X5MASS,X6MASS,X7MASS,X8MASS,X9MASS,X10MASS,X11MASS,X12MASS, 
+     .X12aMASS,M1,M2,M2a,M2b,M2c,M3,M3a,M4,M5,M6,M7,M8,M9,M10,M11, 
+     .M12,M12a,dP_ABS,dP_GEN,dP_COND,dP_EVAP,dP_SHX_SS,dP_SHX_WS, 
+     .dP_RHX_HP,dP_RHX_LP,dP_VALVE_SS,QEVAP,QCOND,QGEN,QABS, 
+     .WPUMP,COP,EPSILON_RHX,EPSILON_SHX,T_SH_EVAP,Y,ETA_PUMP, 
+     .CHECK_Q,CHECK_V,CHECK_SHX,CHECK_RHX 
+ 
+!*********** MAIN PROGRAM ******************************************** 
+!----------- WRITE PRESSURE DROPS ------------------------------------ 
+      WRITE (*,*) '' 
+ 
+      WRITE (*,*) 'PRESSURE DROPS' 
+ 
+      WRITE (*,*) '' 
+      WRITE (*,*) 'dP_ABS IS',dP_ABS 
+      WRITE (*,*) 'dP_GEN IS',dP_GEN 
+      WRITE (*,*) 'dP_COND IS',dP_COND 
+      WRITE (*,*) 'dP_EVAP IS',dP_EVAP 
+      WRITE (*,*) 'dP_SHX_SS IS',dP_SHX_SS 
+      WRITE (*,*) 'dP_SHX_WS IS',dP_SHX_WS 
+      WRITE (*,*) 'dP_RHX_HP IS',dP_RHX_HP 
+      WRITE (*,*) 'dP_RHX_LP IS',dP_RHX_LP 
+ 
+!----------- WRITE TEMPERATURES -------------------------------------- 
+      WRITE (*,*) '' 
+ 
+      WRITE (*,*) 'TEMPERATURES (calculated except T4,T8,T10)' 
+      WRITE (*,*) '' 
+      WRITE (*,*) 'T1 IS',T1-273.15 
+      WRITE (*,*) 'T2 IS',T2-273.15 
+      WRITE (*,*) 'T2a IS',T2a-273.15 
+      WRITE (*,*) 'T2b IS',T2b-273.15 
+      WRITE (*,*) 'T2c IS',T2c-273.15 
+      WRITE (*,*) 'T3 IS',T3-273.15 
+      WRITE (*,*) 'T3a IS',T3a-273.15 
+      WRITE (*,*) 'T4 IS',T4-273.15 
+      WRITE (*,*) 'T5 IS',T5-273.15 
+      WRITE (*,*) 'T6 IS',T6-273.15 
+      WRITE (*,*) 'T7 IS',T7-273.15 
+      WRITE (*,*) 'T8 IS',T8-273.15 
+      WRITE (*,*) 'T9 IS',T9-273.15 
+      WRITE (*,*) 'T10 IS',T10-273.15 
+      WRITE (*,*) 'T11 IS',T11-273.15 
+      WRITE (*,*) 'T12 IS',T12-273.15 
+      WRITE (*,*) 'T12a IS',T12a-273.15 
+     
+!----------- WRITE PRESSURES------------------------------------------ 
+      WRITE (*,*) '' 
+ 
+      WRITE (*,*) 'PRESSURES (calculated)' 
+ 
+      WRITE (*,*) '' 
+      WRITE (*,*) 'P1 IS',P1 
+      WRITE (*,*) 'P2 IS',P2 
+      WRITE (*,*) 'P2a IS',P2a 
+      WRITE (*,*) 'P2b IS',P2b 
+      WRITE (*,*) 'P2c IS',P2c 
+      WRITE (*,*) 'P3 IS',P3 
+      WRITE (*,*) 'P3a IS',P3a 
+      WRITE (*,*) 'P4 IS',P4 
+      WRITE (*,*) 'P5 IS',P5 
+      WRITE (*,*) 'P6 IS',P6 
+      WRITE (*,*) 'P7 IS',P7 
+      WRITE (*,*) 'P8 IS',P8 
+      WRITE (*,*) 'P9 IS',P9 
+ 
+43 
+      WRITE (*,*) 'P10 IS',P10 
+      WRITE (*,*) 'P11 IS',P11 
+      WRITE (*,*) 'P12 IS',P12 
+      WRITE (*,*) 'P12a IS',P12a 
+ 
+!----------- WRITE ENTHALPIES ---------------------------------------- 
+      WRITE (*,*) '' 
+ 
+      WRITE (*,*) 'ENTHALPIES (calculated)' 
+ 
+      WRITE (*,*) '' 
+      WRITE (*,*) 'H1 IS',H1 
+      WRITE (*,*) 'H2 IS',H2 
+      WRITE (*,*) 'H2a IS',H2a 
+      WRITE (*,*) 'H2b IS',H2b 
+      WRITE (*,*) 'H2c IS',H2c 
+      WRITE (*,*) 'H3 IS',H3 
+      WRITE (*,*) 'H3a IS',H3a 
+      WRITE (*,*) 'H4 IS',H4 
+      WRITE (*,*) 'H5 IS',H5 
+      WRITE (*,*) 'H6 IS',H6 
+      WRITE (*,*) 'H7 IS',H7 
+      WRITE (*,*) 'H8 IS',H8 
+      WRITE (*,*) 'H9 IS',H9 
+      WRITE (*,*) 'H10 IS',H10 
+      WRITE (*,*) 'H11 IS',H11 
+      WRITE (*,*) 'H12 IS',H12 
+      WRITE (*,*) 'H12a IS',H12a 
+ 
+!----------- WRITE MOLE FRACTION AMMONIA ----------------------------- 
+      WRITE (*,*) '' 
+ 
+      WRITE (*,*) 'MOLE FRACTION AMMONIA (calculated)'  
+      WRITE (*,*) '' 
+      WRITE (*,*) 'X1MOLE IS',X1MOLE 
+      WRITE (*,*) 'X2MOLE IS',X2MOLE 
+      WRITE (*,*) 'X2aMOLE IS',X2aMOLE 
+      WRITE (*,*) 'X2bMOLE IS',X2bMOLE 
+      WRITE (*,*) 'X2cMOLE IS',X2cMOLE 
+      WRITE (*,*) 'X3MOLE IS',X3MOLE 
+      WRITE (*,*) 'X3aMOLE IS',X3aMOLE 
+      WRITE (*,*) 'X4MOLE IS',X4MOLE 
+      WRITE (*,*) 'X5MOLE IS',X5MOLE 
+      WRITE (*,*) 'X6MOLE IS',X6MOLE 
+      WRITE (*,*) 'X7MOLE IS',X7MOLE 
+      WRITE (*,*) 'X8MOLE IS',X8MOLE 
+      WRITE (*,*) 'X9MOLE IS',X9MOLE 
+      WRITE (*,*) 'X10MOLE IS',X10MOLE 
+      WRITE (*,*) 'X11MOLE IS',X11MOLE 
+      WRITE (*,*) 'X12MOLE IS',X12MOLE 
+      WRITE (*,*) 'X12aMOLE IS',X12aMOLE 
+ 
+!----------- WRITE MASS FRACTION AMMONIA ----------------------------- 
+      WRITE (*,*) '' 
+ 
+      WRITE (*,*) 'MASS FRACTION AMMONIA (Given)' 
+ 
+      WRITE (*,*) '' 
+      WRITE (*,*) 'X1MASS IS',X1MASS 
+      WRITE (*,*) 'X2MASS IS',X2MASS 
+      WRITE (*,*) 'X2aMASS IS',X2aMASS 
+      WRITE (*,*) 'X2bMASS IS',X2bMASS 
+      WRITE (*,*) 'X2cMASS IS',X2cMASS 
+      WRITE (*,*) 'X3MASS IS',X3MASS 
+      WRITE (*,*) 'X3aMASS IS',X3aMASS 
+      WRITE (*,*) 'X4MASS IS',X4MASS 
+      WRITE (*,*) 'X5MASS IS',X5MASS 
+      WRITE (*,*) 'X6MASS IS',X6MASS 
+      WRITE (*,*) 'X7MASS IS',X7MASS 
+      WRITE (*,*) 'X8MASS IS',X8MASS 
+      WRITE (*,*) 'X9MASS IS',X9MASS 
+      WRITE (*,*) 'X10MASS IS',X10MASS 
+      WRITE (*,*) 'X11MASS IS',X11MASS 
+      WRITE (*,*) 'X12MASS IS',X12MASS 
+      WRITE (*,*) 'X12aMASS IS',X12aMASS 
+ 
+!----------- WRITE MASSFLOWS ----------------------------------------- 
+      WRITE (*,*) '' 
+ 
+      WRITE (*,*) 'MASSFLOWS (calculated)' 
+ 
+      WRITE (*,*) '' 
+      WRITE (*,*) 'M1 IS',M1 
+      WRITE (*,*) 'M2 IS',M2 
+ 
+44 
+      WRITE (*,*) 'M2a IS',M2a 
+      WRITE (*,*) 'M2b IS',M2b 
+      WRITE (*,*) 'M2c IS',M2c 
+      WRITE (*,*) 'M3 IS',M3 
+      WRITE (*,*) 'M3a IS',M3a 
+      WRITE (*,*) 'M4 IS',M4 
+      WRITE (*,*) 'M5 IS',M5 
+      WRITE (*,*) 'M6 IS',M6 
+      WRITE (*,*) 'M7 IS',M7 
+      WRITE (*,*) 'M8 IS',M8 
+      WRITE (*,*) 'M9 IS',M9 
+      WRITE (*,*) 'M10 IS',M10 
+      WRITE (*,*) 'M11 IS',M11 
+      WRITE (*,*) 'M12 IS',M12 
+      WRITE (*,*) 'M12a IS',M12a 
+ 
+ 
+!----------- WRITE INPUTS -------------------------------------------- 
+      WRITE (*,*) '' 
+ 
+      WRITE (*,*) 'INPUTS'  
+      WRITE (*,*) '' 
+      WRITE (*,*) 'QEVAP IS',QEVAP     
+      WRITE (*,*) 'X4MASS IS',X4MASS 
+      WRITE (*,*) 'X7MASS IS',X7MASS 
+      WRITE (*,*) 'T8 IS',T8-273.15 
+      WRITE (*,*) 'T10 IS',T10-273.15 
+      WRITE (*,*) 'M1 IS',M1 
+      WRITE (*,*) 'EPSILON_RHX IS',EPSILON_RHX 
+      WRITE (*,*) 'EPSILON_SHX IS',EPSILON_SHX 
+      WRITE (*,*) 'T_SH_EVAP IS',T_SH_EVAP 
+      WRITE (*,*) 'Y IS',Y 
+ 
+!----------- HEAT CAPACITIES AND COP --------------------------------- 
+      WRITE (*,*) '' 
+ 
+      WRITE (*,*) 'HEAT CAPACITIES AND COP (calculated)' 
+ 
+      WRITE (*,*) '' 
+      WRITE (*,*) 'QCOND IS',QCOND 
+      WRITE (*,*) 'QGEN IS',QGEN 
+      WRITE (*,*) 'QABS IS',QABS 
+      WRITE (*,*) 'WPUMP IS',WPUMP 
+      WRITE (*,*) 'COP IS',COP 
+ 
+!----------- CHECKED ASSUMPTIONS ------------------------------------- 
+      WRITE (*,*) '' 
+    
+      WRITE (*,*) 'CHECKING ASSUMPTIONS (SHOULD BE EQUAL TO 1)' 
+      WRITE (*,*) '' 
+      WRITE (*,*) 'CHECK_Q IS  ',CHECK_Q 
+      WRITE (*,*) 'CHECK_V IS  ',CHECK_V 
+      WRITE (*,*) 'CHECK_SHX IS',CHECK_SHX 
+      WRITE (*,*) 'CHECK_RHX IS',CHECK_RHX 
+ 
+      END 
+======================================================================================= 
+======================================================================================= 
+ 
+ 
+======================================================================================= 
+======================================================================================= 
+!     check.for  
+! 
+!     Subroutine to check that the right assumptions is made when  
+!     using the heat exchanger effectiveness. 
+!     Also checking the global heat balance for the VARS and the  
+!     assumed specific volume V1. 
+! 
+!     Subroutines used: 
+!        
+!********************************************************************* 
+      SUBROUTINE CHECK(H1,H2,M1,M4,M8,H4,H5,H8,H9,T2a,T3,T4,T5,T8, 
+     .T9,T11,T12,QEVAP,QGEN,QCOND,QABS,WPUMP,V1_ASSUMPTION,V1,  
+     .CHECK_QOUT,CHECK_VOUT,CHECK_SHXOUT,CHECK_RHXOUT) 
+ 
+!----------- DECLARATION OF VARIABLES -------------------------------- 
+      DOUBLE PRECISION QTOT,MCP_SHXHS,MCP_SHXCS,MCP_RHXHP,MCP_RHXLP, 
+     .QPUMP,CHECK_Q,CHECK_V,CHECK_SHX,CHECK_RHX 
+      DOUBLE PRECISION H1,H2,M1,M4,M8,H4,H5,H8,H9,T2a,T3,T4,T5,T8, 
+     .T9,T11,T12,QEVAP,QGEN,QCOND,QABS,WPUMP,V1_ASSUMPTION,V1, 
+     .CHECK_QOUT,CHECK_VOUT,CHECK_SHXOUT,CHECK_RHXOUT 
+ 
+45 
+      
+!*********** MAIN PROGRAM ******************************************** 
+!----------- CHECK RHX EFFECTIVENESS --------------------------------- 
+      MCP_RHXHP=(((M8*(H8-H9))/(T8-T9))) 
+      MCP_RHXLP=(((M8*(H8-H9))/(T12-T11))) 
+ 
+      IF (MCP_RHXHP .GT. MCP_RHXLP) THEN 
+         
+CHECK_RHX=1 
+      ELSE 
+         
+CHECK_RHX=0 
+      END IF 
+ 
+!----------- CHECK SHX EFFECTIVENESS --------------------------------- 
+      MCP_SHXHS=(((M4*(H4-H5))/(T4-T5))) 
+      MCP_SHXCS=(((M4*(H4-H5))/(T3-T2a))) 
+     
+ 
+      IF (MCP_SHXHS .LT. MCP_SHXCS) THEN 
+          CHECK_SHX=1 
+      ELSE 
+          CHECK_SHX=0 
+      END IF 
+ 
+ 
+!----------- CHECK SPECIFIC VOLUME V1 -------------------------------- 
+      V_DIFF=(V1_ASSUMPTION-V1)/V1 
+      IF (ABS(V_DIFF) .LT. 0.01) THEN 
+          CHECK_V=1 
+      ELSE 
+          CHECK_V=0 
+      END IF 
+ 
+ 
+!----------- CHECK OVERALL HEAT BALANCE ------------------------------ 
+      QPUMP=M1*(H2-H1)  
+      QTOT=QEVAP+QGEN-QCOND-QABS+QPUMP  
+ 
+ 
+      IF (ABS(QTOT) .LT. 0.001) THEN 
+          CHECK_Q=1 
+      ELSE 
+          CHECK_Q=1     
+ 
+      END IF 
+ 
+ 
+      CHECK_RHXOUT=CHECK_RHX !SUBROUTINE OUTPUT: CHECK RHX 
+      CHECK_SHXOUT=CHECK_SHX !SUBROUTINE OUTPUT: CHECK SHX 
+      CHECK_VOUT=CHECK_V     !SUBROUTINE OUTPUT: CHECK SPEC. VOL.   
+      CHECK_QOUT=CHECK_Q     !SUBROUTINE OUTPUT: CHECK HEAT LOADS 
+ 
+      RETURN 
+      END 
+======================================================================================= 
+======================================================================================= 
+ 
+ 
+======================================================================================= 
+======================================================================================= 
+!     to_file.for  
+! 
+!     Subroutine writes the calculated data to the file OUTPUT001.FILE. 
+! 
+!     Subroutines used: 
+!        
+!********************************************************************* 
+      SUBROUTINE TO_FILE(I,IMAX,T1,T2,T2a,T2b,T2c,T3,T3a,T4,T5,T6, 
+     .T7,T8,T9,T10,T11,T12,T12a,P1,P2,P2a,P2b,P2c,P3,P3a,P4,P5,P6, 
+     .P7,P8,P9,P10,P11,P12,P12a,H1,H2,H2a,H2b,H2c,H3,H3a,H4,H5,H6, 
+     .H7,H8,H9,H10,H11,H12,H12a,X1MOLE,X2MOLE,X2aMOLE, 
+     .X2bMOLE,X2cMOLE,X3MOLE,X3aMOLE,X4MOLE,X5MOLE, 
+     .X6MOLE,X7MOLE,X8MOLE,X9MOLE,X10MOLE,X11MOLE,X12MOLE,X12aMOLE, 
+     .X1MASS,X2MASS,X2aMASS,X2bMASS,X2cMASS,X3MASS,X3aMASS,X4MASS, 
+     .X5MASS,X6MASS,X7MASS,X8MASS,X9MASS,X10MASS,X11MASS,X12MASS, 
+     .X12aMASS,M1,M2,M2a,M2b,M2c,M3,M3a,M4,M5,M6,M7,M8,M9,M10,M11, 
+     .M12,M12a,dP_ABS,dP_GEN,dP_COND,dP_EVAP,dP_SHX_SS,dP_SHX_WS, 
+     .dP_RHX_HP,dP_RHX_LP,dP_VALVE_SS,QEVAP,QCOND,QGEN,QABS, 
+     .WPUMP,COP,EPSILON_RHX,EPSILON_SHX,T_SH_EVAP,Y,ETA_PUMP, 
+     .CHECK_Q,CHECK_V,CHECK_SHX,CHECK_RHX,W,Qtot) 
+ 
+!----------- DECLARATION OF VARIABLES -------------------------------- 
+      DOUBLE PRECISION T1,T2,T2a,T2b,T2c,T3,T3a,T4,T5,T6, 
+     .T7,T8,T9,T10,T11,T12,T12a,P1,P2,P2a,P2b,P2c,P3,P3a,P4,P5,P6, 
+ 
+46 
+     .P7,P8,P9,P10,P11,P12,P12a,H1,H2,H2a,H2b,H2c,H3,H3a,H4,H5,H6, 
+     .H7,H8,H9,H10,H11,H12,H12a,X1MOLE,X2MOLE,X2aMOLE, 
+     .X2bMOLE,X2cMOLE,X3MOLE,X3aMOLE,X4MOLE,X5MOLE, 
+     .X6MOLE,X7MOLE,X8MOLE,X9MOLE,X10MOLE,X11MOLE,X12MOLE,X12aMOLE, 
+     .X1MASS,X2MASS,X2aMASS,X2bMASS,X2cMASS,X3MASS,X3aMASS,X4MASS, 
+     .X5MASS,X6MASS,X7MASS,X8MASS,X9MASS,X10MASS,X11MASS,X12MASS, 
+     .X12aMASS,M1,M2,M2a,M2b,M2c,M3,M3a,M4,M5,M6,M7,M8,M9,M10,M11, 
+     .M12,M12a,dP_ABS,dP_GEN,dP_COND,dP_EVAP,dP_SHX_SS,dP_SHX_WS, 
+     .dP_RHX_HP,dP_RHX_LP,dP_VALVE_SS,QEVAP,QCOND,QGEN,QABS, 
+     .WPUMP,COP,EPSILON_RHX,EPSILON_SHX,T_SH_EVAP,Y,ETA_PUMP, 
+     .CHECK_Q,CHECK_V,CHECK_SHX,CHECK_RHX,W,Qtot 
+ 
+!*********** MAIN PROGRAM ******************************************** 
+      T1=T1-273.15 
+      T2=T2-273.15 
+      T2a=T2a-273.15 
+      T2b=T2b-273.15 
+      T2c=T2c-273.15 
+      T3=T3-273.15 
+      T3a=T3a-273.15 
+      T4=T4-273.15 
+      T5=T5-273.15 
+      T6=T6-273.15 
+      T7=T7-273.15 
+      T8=T8-273.15 
+      T9=T9-273.15 
+      T10=T10-273.15 
+      T11=T11-273.15 
+      T12=T12-273.15 
+      T12a=T12a-273.15 
+       
+      OPEN(UNIT=101,FILE='OUTPUT001.FILE',STATUS='UNKNOWN') 
+      WRITE(101,10) 'T1','T2','T2a','T2b','T2c','T3','T3a','T4','T5', 
+     .'T6','T7','T8','T9','T10','T11','T12','T12a','M1','M2','M2a', 
+     .'M2b','M2c','M3','M3a','M4','M5','M6','M7','M8','M9','M10','M11', 
+     .'M12','M12a','QEVAP','QCOND','QGEN','QABS','WPUMP','COP', 
+     .'ETA_PUMP','CHECK_Q','CHECK_V','CHECK_SHX','CHECK_RHX','W','Qtot' 
+10    FORMAT(1X,47A22) !47=47 PARAMETERS, A=STRING, 22=22 CHARACTERS 
+         
+      WRITE(101,11) T1,T2,T2a,T2b,T2c,T3,T3a,T4,T5, 
+     .T6,T7,T8,T9,T10,T11,T12,T12a,M1,M2,M2a, 
+     .M2b,M2c,M3,M3a,M4,M5,M6,M7,M8,M9,M10,M11, 
+     .M12,M12a,QEVAP,QCOND,QGEN,QABS,WPUMP,COP, 
+     .ETA_PUMP,CHECK_Q,CHECK_V,CHECK_SHX,CHECK_RHX,W,Qtot 
+11    FORMAT(1X,47F22.14) !47=47 PARAMETERS, F=REAL, 22=22 POSITIONS,  
+                          !14=14 DECIMAL POSITIONS 
+ 
+ 
+      CLOSE(101)  
+      END 
+ 
+ 
+ 
+ 
+47 
+References 
+ 
+[1] 
+Khan J.R., Lear, W.E., Sherif S.A., Howell E.B., Crittenden J.F., Meitner P.L., 2006, 
+Testing and modeling of a semi-closed gas turbine cycle integrated with a vapour 
+absorption refrigeration system, Proceedings of IMECE06 2006 ASME International 
+Mechanical Engineering Congress and Exposition November 5-10, 2006, Chicago, 
+Illinois USA. Paper IMECE2006-15403. 
+ 
+[2] 
+M. Bogart, 1981, Ammonia Absorption Refrigeration in Industrial Processes, Gulf 
+Publishing, ISBN 0872010279 
+ 
+[3] 
+http://www.mthpumps.com/performance/t51curves.pdf, 2006-03-05 
+ 
+[4] 
+Khan J.R., 2006, Design and optimization of a distributed generation system with the 
+production of water and refrigeration, PhD thesis. Dept. of Mechanical and Aerospace 
+Engineering, University of Florida, Gainesville,  Florida, USA. 
+ 
+[5] 
+Tamm, G., 2003, Experimental Investigation of an Ammonia-Based Combined Power 
+and Cooling Cycle, Ph.D. dissertation, University of Florida, Gainesville, FL. 
+ 
+[6] 
+W.B Gosney, 1982, Principles of refrigeration, Cambridge University Press, ISBN 
+0521236711 
+ 
+[7] 
+Kuehn, T.H., Ramsey, J.W., and Threlkeld, J.L., 1998, Thermal Environmental 
+Engineering, Third Edition, Prentice Hall, ISBN 0139172203 
+ 
+[8] 
+J.P. Holman, 1981, Heat Transfer, Fifth Edition, McGraw-Hill, ISBN 0070296189 
+ 
+[9] 
+S.A. Klein, 1992-2005, Engineering Equation Solver, F-Chart Software, Academic 
+Commercial V7.441  
+ 
+[10] Reiner Tillner-Roth and Daniel G. Friend, 1998, Survey and Assessment of Available 
+Measurements on Thermodynamic Properties of the Mixture {Water+Ammonia}, J. 
+Phys. Chem. Ref. Data, Vol. 27, No. 1 
+ 
+[11] http://www.hvacmechanic.com/txv.htm 2006-03-05 
+ 
+[12] Sporlan, Catalog 717, A complete line of products for refrigerant 717 Ammonia, 
+January 2003 
+ 
+[13] Sporlan, Thermostatic Expansion valves, Bulletin 10-9, August 2005  
+ 
+[14] Arthur L. Kohl , Fred C. Riesenfeld , 1985, Gas Purification, Fourth Edition, Gulf 
+Publishing Company, ISBN 0872013146 
+ 
+[15] D.M. Etter, 1983, Structured Fortran 77 for engineers and scientists, 
+Benjamin/Cummings Pub. Co, ISBN 0805325204 
+ 

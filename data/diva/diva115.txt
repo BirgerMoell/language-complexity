@@ -1,0 +1,2808 @@
+ 
+Examensarbete inom 
+Datalogi 
+Avancerad nivå, 30 hp 
+Stockholm, Sverige 2013
+Adaptiv relevansmodell med betingad 
+sannolikhetshierarki
+OSKAR LINDSTRÖM
+Adaptiv relevansmodell med betingad
+sannolikhetshierarki
+Adaptive relevance model with conditional
+probability hierarchy
+OSKAR LINDSTRÖM
+olinds@kth.se
+DD221X Examensarbete inom datalogi, avancerad nivå
+Handledare: Anders Lansner
+Examinator: Jens Lagergren
+Uppdragsgivare: Netlight Consulting AB
+28 maj 2013
+TRITA xxx yyyy-nn
+Referat
+Syftet med detta examensarbete är att implementera
+en adaptiv relevansmodell för att kunna analysera hur
+bra denna presterar med den lilla mängd träningsdata
+som ﬁnns tillgänglig. Resultatet bygger på den betingade
+sannolikhetshierarki som är framtagen av Zhou et al. Denna
+relevansmodell implementeras mellan användargränssnittet
+och Apache Solr, sökmotorn som användes vid studiens
+genomförande. Genom att implementera på detta sätt
+kommer både den systembaserade relevansen, från Apache
+Solr, och den användarbaserade relevansen, från denna
+relevansmodell, att bidra till den totala relevansen.
+Den betingade sannolikhetshierarkin använder sig av
+två andra modeller, oberoendemodellen och fullmodellen,
+för att skatta relevansen hos ett dokument givet den
+ställda sökfrågan. Oberoendemodellen gör antagandet att
+söktermerna i sökfrågan är oberoende varandra men
+förkastar informationen i ordföljden, medan fullmodellen
+tar hänsyn till den information ordföljden ger.
+Resultatet visar att relevansmodellen kan omordna
+sökresultatet i 98% av fallen. Med rätt parametervärden
+rankar
+den
+det
+sökta
+dokumentet
+högre
+i
+84%
+av
+fallen, jämfört med resultaten utan att använda denna
+relevansmodell.
+Abstract
+Adaptive relevance model with conditional
+probability hierarchy
+The purpose with this master thesis is to implement an
+adaptive relevance model to be able to analyze how well it
+performs with the small amount of training data available.
+The results is based on the conditional probability hierarchy
+developed by Zhou et al.
+This relevance model is
+implemented between the user interface and Apache Solr,
+the search engine used at the studies implementation. By
+implementing it in this way the system based relevance,
+from Apache Solr, and the user based relevance, from
+this relevance model, are both contributing to the overall
+relevance.
+The conditional probability hierarchy uses two other
+models, the independent model and the full model, to
+estimate the relevance for a document given the search
+query. The independent model makes the assumption that
+the search terms in the query are independent from each
+other but discard the information given from the order of
+the search terms, while the full model takes account for this
+information.
+The
+result
+shows
+that
+the
+relevance
+model
+can
+rearrange the search results in 98% of the time, and with the
+correct parameter settings it ranks the searched document
+higher in 84% of the cases, compared to the search results
+without using this relevance model.
+Innehåll
+1
+Introduktion
+1
+1.1
+Bakgrund . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1
+1.2
+Problem . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1
+1.3
+Syfte . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2
+2
+Teori
+3
+2.1
+Adaptiv relevansmodell
+. . . . . . . . . . . . . . . . . . . . . . . . .
+3
+2.2
+Relevans . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4
+2.2.1
+Klasser av relevans . . . . . . . . . . . . . . . . . . . . . . . .
+4
+2.3
+Varför önskas en adaptiv relevansmodell?
+. . . . . . . . . . . . . . .
+4
+2.4
+Implicit återkoppling genom klickloggar
+. . . . . . . . . . . . . . . .
+5
+2.4.1
+Rankningens ordning inﬂuerar användaren . . . . . . . . . . .
+5
+2.4.2
+Kaskadmodellen
+. . . . . . . . . . . . . . . . . . . . . . . . .
+7
+2.5
+Återkoppling baserat på vad användaren gjorde efter att ha tittat på
+dokumentet . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+8
+2.6
+Sökfrågekedjor
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+9
+2.7
+Problem med begränsad mängd träningsdata
+. . . . . . . . . . . . .
+10
+2.7.1
+Överträning . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+10
+2.8
+Typer av sökfrågor . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+10
+2.9
+Tf-idf
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+11
+2.9.1
+Tf-idf hos Apache Solr . . . . . . . . . . . . . . . . . . . . . .
+11
+2.9.2
+Egenskaper . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+12
+2.10 Viktning av enskilda termer . . . . . . . . . . . . . . . . . . . . . . .
+13
+2.10.1 Relationer mellan ekvationerna . . . . . . . . . . . . . . . . .
+14
+2.10.2 Antaganden . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+15
+2.10.3 Slutsatser av experimenten
+. . . . . . . . . . . . . . . . . . .
+15
+3
+Metod
+17
+3.1
+Betingad sannolikhetshierarki . . . . . . . . . . . . . . . . . . . . . .
+17
+3.1.1
+Formalisering av problemet . . . . . . . . . . . . . . . . . . .
+17
+3.1.2
+Deﬁnitionen av att lära från klickloggar . . . . . . . . . . . .
+18
+3.1.3
+Oberoendemodellen
+. . . . . . . . . . . . . . . . . . . . . . .
+18
+3.1.4
+Fullmodellen
+. . . . . . . . . . . . . . . . . . . . . . . . . . .
+19
+3.1.5
+Den betingade sannolikhetshierarkin . . . . . . . . . . . . . .
+19
+3.1.6
+Tolkning av sannolikheter . . . . . . . . . . . . . . . . . . . .
+21
+3.1.7
+Antaganden . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+23
+3.2
+Motivering till val av relevansmodell . . . . . . . . . . . . . . . . . .
+23
+3.3
+Tolkning av klick . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+24
+3.4
+Delning av sökfråga till söktermer
+. . . . . . . . . . . . . . . . . . .
+24
+3.4.1
+Exempel . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+25
+3.4.2
+Motivering till delningsalgoritmen
+. . . . . . . . . . . . . . .
+25
+3.5
+Uträkning av skattningar
+. . . . . . . . . . . . . . . . . . . . . . . .
+25
+3.6
+Integration mot Apache Solr . . . . . . . . . . . . . . . . . . . . . . .
+26
+3.7
+Utvärdering av resultat
+. . . . . . . . . . . . . . . . . . . . . . . . .
+27
+3.7.1
+Träﬀsäkerheten hos förutsägelser . . . . . . . . . . . . . . . .
+27
+3.7.2
+Förutsägelsegrad . . . . . . . . . . . . . . . . . . . . . . . . .
+28
+3.7.3
+Hantering av data
+. . . . . . . . . . . . . . . . . . . . . . . .
+28
+3.7.4
+Utförande . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+28
+3.7.5
+Redovisning av resultat
+. . . . . . . . . . . . . . . . . . . . .
+29
+4
+Resultat
+31
+4.1
+Innehåll i klickloggarna
+. . . . . . . . . . . . . . . . . . . . . . . . .
+31
+4.2
+Antal sökfrågor som inte längre var med i resultatlistan
+. . . . . . .
+32
+4.3
+Förutsägelsegrad . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+32
+4.4
+Träﬀsäkerhet
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+33
+4.4.1
+Analys av parametern β . . . . . . . . . . . . . . . . . . . . .
+33
+4.4.2
+Analys av parametern relevanceBoost . . . . . . . . . . . .
+35
+4.4.3
+λ:s inﬂytande hos relevansmodellen . . . . . . . . . . . . . . .
+37
+5
+Slutsatser
+39
+5.1
+Förutsägelsegrad . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+39
+5.2
+Träﬀsäkerhet
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+39
+5.2.1
+β:s inverkan . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+40
+5.2.2
+relevanceBoost:s inverkan . . . . . . . . . . . . . . . . . . .
+40
+5.2.3
+λ:s inverkan . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+40
+5.2.4
+Förhållandet mellan parametervärdena . . . . . . . . . . . . .
+40
+5.3
+Klickloggar med begränsad mängd träningsdata . . . . . . . . . . . .
+41
+5.4
+Rekommendation av parametervärden . . . . . . . . . . . . . . . . .
+41
+5.5
+Nästa steg . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+41
+Litteraturförteckning
+43
+Bilagor
+44
+A Samtliga resultat
+45
+Kapitel 1
+Introduktion
+Detta kapitel avser att framhålla målet och syftet med detta examensarbete.
+1.1
+Bakgrund
+Netlight är idag ett företag som innehar stora mängder information. För att
+eﬀektivt kunna hitta den information som söks behövs en pedantisk struktur för
+var dokument ska sparas och med vilket namn. Med tiden blir detta svårt att hålla
+efter och även om katalogstrukturen ser någorlunda bra ut blir det problematiskt
+att hitta den information som söks.
+För att underlätta sökandet av information har Netlight en sökmotor för sina
+interna dokument. Sökmotorn i fråga är Apache Solr med Apache Lucene som index.
+Detta underlättar för de anställda då de istället för att leta i katalogstrukturen för
+hand kan söka efter dokumentet, förutsatt att de vet några speciﬁka nyckelord som
+ﬁnns i dokumentet. Begränsningen med Apache Solr och Apache Lucene är att
+rankningen som görs är statisk och med samma ord får man samma resultat varje
+gång givet att indexet inte har uppdaterats.
+Netlight har ett behov av att öka produktiviteten och att snabbare kunna hitta
+den information som behövs. Ett sätt att göra det är att skräddarsy hur resultaten
+ska rankas. Detta kräver att någon avsätter tid för den uppgiften vilket inte är
+hållbart i längden. En annan lösning på problemet är att sökmotorn själv kan lära
+sig vilka dokument som är viktiga för en speciﬁk sökfråga och med tiden ranka
+dessa högre i resultatlistan när sökfrågan återkommer.
+1.2
+Problem
+För Netlight:s del växer informationsmängden varje dag. Det gör att det blir allt
+svårare att hitta den information som söks. Ett liknande problem ﬁnns idag på
+internet eftersom det ﬁnns mycket information tillgänglig där. Sättet som idag är
+lösning på det problemet är att söka efter den informationen man letar efter, ty ofta
+vet användaren ungefär vad denne letar efter.
+1
+KAPITEL 1. INTRODUKTION
+Lösningen som Netlight valt är att använda sig av en sökmotor, Apache Solr, för
+att indexera de interna dokumenten. Detta medför en central knutpunkt för samtlig
+information som företaget innehar. Eftersom samtliga dokument är indexerade
+kommer Apache Solr ge dokumenten ett numeriskt värde beroende på hur bra
+dessa matchar sökfrågan [14], men vissa dokument kan vara mer relevanta än vad
+det numeriska värdet säger. Detta beror på att användaren har sökt på någonting
+som inte ger dokumentet den relevans det borde ha. Det ﬁnns inte heller någon
+återkoppling tillbaka till användaren på vad denne borde ha sökt på för att detta
+dokument skulle rankas högre, vilket betyder att om användaren aldrig lär sig vad
+denna ska söka efter kommer dokumentet alltid vara lägre rankat trots att det har
+högre relevans för användaren. För att komma till rätta med detta problem behöver
+Apache Solr lära sig vad som är viktigt för användaren och ranka dessa dokument
+högre. För att sökmotorn ska ha möjligheten att lära sig hur dokumenten ska rankas
+behöver den träningsdata i form av vad användare har sökt på och vad de senare
+har klickat på i resultatlistan. Dock är tillgången på denna träningsdata mycket
+begränsad då sökmotorn nyligen hade tagits i bruk vid genomförandet av detta
+examensarbete.
+1.3
+Syfte
+Syftet med detta examensarbete är att implementera en adaptiv relevansmodell
+för
+att
+kunna
+analysera
+hur
+bra
+denna
+presterar
+med
+den
+begränsade
+mängd träningsdata som ﬁnns tillgänglig. Resultatet bygger på den betingade
+sannolikhetshierarki som är framtagen av Zhou et al. [15]. Det praktiska målet med
+detta examensarbete är att Netlight:s sökmotor ska kunna ranka dokument på ett
+adaptivt sätt genom att ta tillvara på den implicita information som klickloggarna
+innehåller. Vad en klicklogg är förklaras i ”2.1 Adaptiv relevansmodell”.
+2
+Kapitel 2
+Teori
+Nedan presenteras tidigare forskning som har relevans för detta examensarbetes
+resultat och syftar till att stärka och tydliggöra resultatet.
+2.1
+Adaptiv relevansmodell
+Enligt Van Rijsbergen et al. [12] är en adaptiv relevansmodell en modell som
+adaptivt kan ändra vilka dokument som anses relevanta beroende på den sökfråga
+som ställs och vilka dokument en användare tidigare har klickat på. Syftet är att
+hämta ut alla relevanta dokument samtidigt som så få av icke relevanta dokument
+kommer med.
+För att kunna göra en bedömning om hur relevant ett dokument är behövs
+någon typ av återkoppling, vilket Lv et al. [8] beskriver som ett eﬀektivt sätt att
+öka träﬀsäkerheten i en relevansmodell. Ett sätt skulle kunna vara en interaktiv
+process som börjar med att användaren ställer en sökfråga. Sökmotorn svarar då
+med en första resultatlista med dokument, varpå sökmotorn ber användaren att
+värdera dessa dokument som relevanta eller icke relevanta. Därefter omformulerar
+sökmotorn användarens sökfråga baserat på vilka dokument användaren anser
+relevanta och svarar med en ny resultatlista. Detta blir snabbt tröttsamt för
+användaren och är en lösning som inte används. I stället försöker sökmotorn lära
+sig vilka dokument som är relevanta för vilka sökfrågor med andra metoder som
+inte går ut på att fråga användaren. Många metoder använder sig av övervakad
+inlärning med en speciell behandling för sökfrågan. Hur relationen mellan sökfrågan
+och återkopplingen realiseras är ett svårt men viktigt problem. Det behövs en
+balans mellan originalsökfrågan och återkopplingen, ty om för mycket vikt läggs på
+återkopplingen är risken att en viss delmängd av dokumenten favoriseras, men om
+för lite vikt läggs på återkopplingen missas poängen med en adaptiv relevansmodell.
+Denna balans är vanligen kontrollerad av en variabel som är konstant för alla
+sökfrågor, men bör optimeras mot varje enskild sökfråga. Återkopplingen görs ofta
+med hjälp av de loggar som en sökmotor producerar när en användare söker och
+klickar på dokument, hädan efter kallat klicklogg. Med en adaptiv relevansmodell
+3
+KAPITEL 2. TEORI
+eftersträvas någon typ av sann relevans för ett dokument. Durpet et al. [3] menar
+på att den sanna relevansen hos ett dokument endast kan bli bestämt efter att
+användaren klickat på det.
+2.2
+Relevans
+Relevans inom informationsåtkomst är ett begrepp som kan delas in i olika
+klasser och typer. Borlund [1] menar att konceptet också är applicerbart med
+referenser till relevanskriterier och relevansnivå. Samma bit information har även
+möjligheten att bli mottaget och värderat på olika sätt av olika användare, så
+kallad multidimensionell relevans. Även samma användare kan mottaga och värdera
+samma information över tid med olika relevans, så kallad dynamisk relevans.
+Relevans behöver inte heller vara statiskt utan kan lika gärna vara någonting
+som är dynamiskt och ändras under tiden. Det är också möjligt att fokus ändras
+under informationsåtkomsten, vilket resulterar i att både informationsbehovet och
+kriterierna för relevans ändras medan informationsåtkomsten fortgår.
+2.2.1
+Klasser av relevans
+Borlund tar upp två huvudklasser för relevans, systembaserad och användarbaserad
+relevans. Dessa två innebär olika grader av engagemang från användarens sida.
+Den systembaserade relevansen ser relevans som ett statiskt och objektivt koncept
+som inte ändrar sig, medan användarbaserad relevans ser relevans som en subjektiv
+och individuell mental upplevelse. Oavsett vilken klass relevansen tillhör är den
+baserad på olika kriterier vid tidpunkten för beräkningen. För den systembaserade
+relevansen är relevanskriterierna tillämpade mellan sökfrågan och innehållet i det
+hämtade dokumentet. Vad gäller den användarbaserade relevansen är det mer
+komplicerat då det är användaren som bestämmer de parameterar för vilket ett
+dokument ska anses relevant eller inte.
+Hur mycket relevansen i sig är värd mäts med relevansnivå och tilldelningen
+av den görs oberoende av klasser, typer av relevans eller vilken typ av kriterier
+som är använda. Denna relevansnivå kan också användas till att säga om hela
+dokumentet är relevant eller bara delar av det. Dock är detta ovanligt inom
+utvärderingen av informationsåtkomst där man istället bara använder relevansen
+och inte dess relevansnivå som det primära kriteriet för att utvärdera hur lyckad
+informationsåtkomsten är.
+2.3
+Varför önskas en adaptiv relevansmodell?
+Robertson et al. [13] konstaterar att en användare kan vara mer intresserad av
+ett dokument med en sökterm a än ett dokument med sökterm b på ett sätt som
+inte alls är kopplat genom användarens ställda sökfråga och innehållet i det sökta
+dokumentet, även om dokumentet med söktermen b bättre passar in på den ställda
+4
+2.4. IMPLICIT ÅTERKOPPLING GENOM KLICKLOGGAR
+sökfrågan. Detta är någonting en sökmotor utan en adaptiv relevansmodell aldrig
+kommer att förstå. Därför kommer den fortsätta ranka dokumenten i samma ordning
+för den givna sökfrågan varje gång, även om rankningen i själva verket bör ha en
+annan ordning för att bättre tillmötesgå användaren.
+Enligt Joachims et al. [7] ger en statisk relevansmodell en funktion som kan
+liknas vid ”en storlek som passar alla”. Det måste nödvändigtvis bli en kompromiss
+bland sökresultaten och således fungerar det suboptimalt. Den andra anledningen
+att använda en adaptiv relevansmodell, menar Joachims et al., är för att se skillnader
+mellan olika sammansättningar av grupper som kräver en ﬁnjustering för att nå en
+optimal resultatlista med hänsyn taget till gruppen. Detta arbete blir tidsödande
+om det ska göras för hand om än inte fullständigt opraktiskt och hopplöst. Det har
+också visat sig svårt att designa en eﬀektiv rankningsfunktion för att hitta relevanta
+dokument enligt Radlinski et al. [10]. För att lösa problemet har maskininlärning
+fått en stor uppmärksamhet, dock med ﬂaskhalsen att denna lösning kräver stor
+mängd träningsdata för inlärningen. För att komma tillrätta med träningsdatan
+används implicit återkoppling som kan hämtas från sökmotorns klicklogg. Detta
+blir både billigt för företaget och kräver inget extra från användaren. På detta sätt
+kan större kvantiteter av träningsdata samlas in till en betydligt lägre kostnad.
+Priset som får betalas är istället att den insamlade datan kan vara svår att tolka
+och är potentiellt brusig.
+2.4
+Implicit återkoppling genom klickloggar
+En klicklogg kan ses som en lista över vilka dokument en användare har klickat på
+vid en speciﬁk sökfråga hos en sökmotor. Därför är en klicklogg av intresse då den
+innehåller information om vad användarna har sökt på och sedan vilka dokument
+som har fått ett klick. Således kan man säga att klickloggen innehåller information
+om vilka dokument användaren anser vara mer relevanta än andra vid en speciﬁk
+sökfråga. Eftersom informationen inte innehåller ett exakt svar vad användaren
+anser om resultatlistan är det därför inte en explicit återkoppling och behöver då
+tolkas för att utvinna informationen.
+2.4.1
+Rankningens ordning inﬂuerar användaren
+Joachims et al. studerar hur en användare ser på resultatlistan med hjälp av
+ögonstyrning. De tittar på hur många sammanfattningar användaren läser innan
+ett klick görs samt om användaren läser resultaten uppifrån och ned. Slutsatsen
+Joachims et al. drar är att användaren gör informativa beslut baserat på vad de
+läst i sammanfattningarna och att deras klick motsvarar ett relevant omdöme.
+De visar också att ett klick är inﬂuerat på minst två sätt. Det första, som
+de kallar förtroendepåverkning (trust bias), leder till att användaren klickar på
+dokument högre upp i resultatlistan, även om dess sammanfattning inte är lika
+relevant som andra sammanfattningar som användaren också läst för den träﬀen.
+Detta påvisar ett förtroende för sökmotorn och att användaren litar på att den
+5
+KAPITEL 2. TEORI
+levererar relevanta dokument högt uppe i resultatlistan. För att komma tillrätta
+med förtroendepåverkning behövs tolkningen göras relativt dokumentets plats i
+rankningen. Enligt de experiment Joachims et al. utför drar de slutsatsen att en
+användare har en viss nivå av förtroende för en sökmotor och väljer oftare att klicka
+på ett högre rankat dokument även om ett lägre dokuments sammanfattning är mer
+relevant. Den andra påverkan kallar de för kvalitetpåverkning (quality bias). Denna
+visar att ett klick inte endast är inﬂuerat av relevansen för dokumentet utan också av
+den generella kvaliteten hos de andra sammanfattningarna i resultatlistan. Joachims
+et al. drar slutsatsen att om kvaliteten hos sammanfattningarna för resultatlistan
+går ned, klickar en användare i genomsnitt på mindre relevanta sammanfattningar.
+Detta anser Joachims et al. visar att ett klick bör tolkas relativt ordningen och
+relativt de andra sammanfattningarna i resultatlistan, samt att det är problematiskt
+att tolka ett klick som en bekräftelse på att ett dokument är viktigt. Enligt Joachims
+et al. behöver en exakt tolkning av ett klick ta hänsyn till användarens tillit för
+kvaliteten hos sökmotorn samt själva rankningsfunktionen som sökmotorn använder.
+De hittar också en intressant svängning omkring dokument nummer 6 till 7 i
+resultatlistan. Från och med dessa och nedåt klickar användaren betydligt mindre
+på dokumenten än de ovan, samt att sammanfattningarna mellan rank 6 till 10 får
+en jämnare distribuering av uppmärksamhet till skillnad från de högre rankade.
+Detta förklaras genom att det var de första 5 till 6 dokumenten i resultatlistan som
+normalt visas på en skärm, utan att behöva scrolla. När en användare väl behöver
+scrolla får betydelsen av rank en lägre inﬂuens för uppmärksamheten. Även en skarp
+nedgång i antalet klick och lästa sammanfattningar noteras efter rank 10, då det är
+10 resultat som visas på en sida.
+Detta resultat om hur användaren läser resultatlistan tyder på att en
+genomsnittlig användare läser den uppifrån och ned, som den linjära ordningen
+en resultatlista föreslår att den ska läsas. Utöver detta indikerar deras resultat att
+det första och det andra resultatet läser användaren direkt och det är ett stort hopp
+innan sammanfattningen med rank tre blir läst. Även i dessa resultat återﬁnner
+Joachims et al. att sidbrytningen spelar in, då det tar längre tid innan resultaten
+som inte får plats på första sidan blir lästa. Det verkar som om en användare läser
+de resultat som hamnar på första sidan ganska noggrant innan denne fortsätter
+på nästa sida. Joachims et al. tittar också på hur många sammanfattningar som
+en användare läser över och under det klickade dokumentet. Det är betydligt ﬂer
+sammanfattningar som läses som ligger högre upp i resultatlistan än det klickade
+dokumentet än vad som ligger under, även om det inte nödvändigtvis är att
+samtliga ovan har blivit lästa. Joachims et al. säger också att det verkar som
+om sammanfattningar som ligger nära över det klickade dokumentet har större
+sannolikhet att bli lästa än sammanfattningar högre upp. Ett annat mönster
+som uppkommer är att sammanfattningar som kommer direkt efter det klickade
+dokumentet har blivit lästa ungefär hälften av gångerna.
+Vidare testar Joachims et al. hur en användare reagerar på en försämrad
+relevansmodell. Där upptäcker de att användaren tittar mer frekvent på lägre
+rankade dokument och att betydligt ﬂer sammanfattningar blir lästa än i det
+6
+2.4. IMPLICIT ÅTERKOPPLING GENOM KLICKLOGGAR
+normala fallet. Det visar sig också att användaren med mindre sannolikhet
+klickar på det första dokumentet och med högre sannolikhet klickar på ett lägre
+rankat dokument. Detta visar att beteendet hos användaren beror på kvaliteten
+av rankningen i resultatlistan och att individuella klickningar är inﬂuerade av
+relevansen hos sammanfattningen. Det är därför möjligt, enligt Joachims et al.,
+att ett observerat uppförande hos användaren kan användas till att fastställa den
+generella kvaliteten för rankningen samt relevansen för enskilda dokument.
+2.4.2
+Kaskadmodellen
+Craswell et al. [2] säger som Joachims et al. att ett klick på ett dokument inte
+endast beror på att dokumentet är relevant utan att det också har en viss position i
+resultatlistan. Craswell et al. presenterar en modell som baseras på att en användare
+gör en linjär läsning genom resultatlistan och att sammanfattningar längre ned än
+ett klickat dokument inte blir lästa. Modellen kallar de för kaskadmodellen (cascade
+model) och antagandet från Craswell et al. är således att en användare börjar
+läsa från den högst rankade sammanfattningen och läser uppifrån och ned. För
+varje sammanfattning gör användaren ett val att klicka på dokumentet eller inte,
+innan vederbörande går vidare till nästa. I den enklaste modellen görs antagandet
+att en användare som klickat på ett dokument aldrig kommer tillbaka och att
+användaren alltid fortsätter till nästan dokument när vederbörande valt att inte
+klicka på föregående dokument. Då blir sannolikheten, cdi, att klicka på dokument
+i i resultatlistan:
+cdi = rd
+i−1
+Y
+j=1
+(1 −rdocInRank:j)
+(2.1)
+där rd är sannolikheten att dokumentet d blir klickat och rdocInRank:j
+är
+sannolikheten att dokumentet på plats j blir klickat. För att observera ett klick
+behöver då användaren välja att klicka på just det dokumentet samt att inte klicka
+på alla ovanstående dokument.
+Craswell et al. drar slutsatsen att kaskadmodellen stämmer bra högt upp i
+resultatlistan. Vid resultat 4 och nedåt är den sämre än att anta att det inte ﬁnns
+någon positionspåverkan. De tolkar detta som att positionspåverkan är lägre längre
+ned i resultatlistan, samt att klick är mer sällsynt där och således är mer utspridda.
+Craswell et al. drar också slutsatsen att längre ned i resultatlistan går det att anta
+att det inte ﬁnns någon positionspåverkan. Således kan man inhämta klickdata
+från dessa lägre rankade dokument utan positionspåverkan, men för högre rankade
+dokument är inverkan från positionen stor.
+Slutsatsen av dessa två resultat är att användare läser resultatlistan på två
+sätt. Det första är enligt kaskadmodellen uppifrån och ned, med ett klick på
+det första dokumentet som verkar relevant. Det andra sättet är att läsa samtliga
+sammanfattningar och sedan ta beslut om vilket som är mest relevant.
+Problemet med kaskadmodellen, som Craswell et al. ser det, är att den innehåller
+ett antagande om att användaren alltid fortsätter att läsa i resultatlistan så länge
+7
+KAPITEL 2. TEORI
+denne inte hittar någonting att klicka på. Detta är någonting som Craswell et al.
+påvisat inte är sant utan vissa användare lämnar sökfrågan och resultatlistan utan
+att läsa samtliga resultat och utan att klicka på ett dokument. Data om användaren
+kommer även förloras när det dyker upp ett synnerligen bra dokument eller om
+resultatlistan från sökfrågan är dålig. Ytterliggare en svaghet i kaskadmodellen är
+att när ett klick registrerats, är användaren borta. Det ﬁnns inget som tar hänsyn
+till att en användare återvänder till resultatlistan efter ett klick. Lösningen på det
+problemet är, enligt Craswell et al., att lägga till en sannolikhet för att användaren
+återkommer till resultatlistan.
+2.5
+Återkoppling baserat på vad användaren gjorde efter
+att ha tittat på dokumentet
+Durpet et al. [3] tar fram en modell för att tolka klickloggar beroende på vad
+användaren gör efter att denne tittat på dokumentet. Denna modell ger en verklig
+relevans till skillnad från tidigare beskrivna modeller som ger upplevd relevans.
+De kommer fram till att modellen är speciellt bra för icke navigationssökfrågor,
+sökfrågor där användaren ofta överger resultatet utan klick och många sökfrågor för
+samma session. Just dessa typer av sökfrågor är viktiga då de anses vara de som är
+svårast att lösa.
+Med en session menar Durpet et al. de handlingar en användare tar till
+för att tillfredsställa informationsbehovet. De kan innehålla olika sökfrågor som
+resulterar i olika resultatlistor och även klick på ﬂera skilda dokument i de skilda
+resultatlistorna. Denna modell kräver således att en session för en användare går
+att identiﬁera. Det skulle till exempel kunna göras med en kaka (cookie) som
+tillhör användaren eller tidsstämplingar för sökfrågor och klick. Dock ﬁnns det ingen
+speciﬁk information om att två efterföljande sökfrågor från en användare tillhör
+samma session, vilket försvårar det hela.
+En viktig del i att samla in data från klickloggar är att det inte enbart är
+de aktiva användarna som data samlas in från, som det till exempel är i ett
+socialt nätverk, utan att data även samlas in från de icke aktiva användarna.
+Med klickloggar kommer man åt alla användare, både de aktiva och de icke
+aktiva. Därför säger Durpet et al. att informationen inte är vinklad mot de socialt
+aktiva användarna. Modellen Durpet et al. föreslår antar att användaren söker i
+resultatlistan av den första sökfrågan och dess omformuleringar tills tillräckligt
+mycket information har samlats in för att tillfredsställa användarens behov. Detta
+oberoende av hur långt ned i resultatlistan de relevanta dokumenten ﬁnns och hur
+svårt det är att komma fram till bra omformuleringar. Alla sessioner som avslutas
+med ett klick anses som lyckade. Det ﬁnns ingen notation för att en användare
+överger en session i denna modell vilket är en brist. Dock är en fördel med denna
+modell att antagandet att användaren läser resultatlistan sekvensiellt inte behöver
+göras, då det är klicken som behöver vara i kronologisk ordning. Modellen tar
+inte heller hänsyn till i vilken ordning dokumenten varit placerade i resultatlistan.
+8
+2.6. SÖKFRÅGEKEDJOR
+Durpet et al. menar att eftersom den sanna relevansen endast kan bestämmas efter
+att användaren tittat på dokumentet är relevansen oberoende var i resultatlistan
+dokumentet ligger.
+Denna modell leder till en intressant konsekvens, nämligen att relevansen är
+okorrelerad med dokumentets klickfrekvens. Istället är antalet klick på ett dokument
+relaterat till säkerheten för relevansskattningen och inte dokumentets relevans i sig.
+Med den nya modellen observerar Durpet et al. en signiﬁkant förbättring för en av
+de ledande kommersiella sökmotorerna. Den var som bäst när det var ett lågt antal
+klick per session, under 0.3, och för fallet med sökfrågor med ett högt antal klick
+på sessionen, över 1.5. Detta tyder på att modellen är bra för typiska sessioner med
+informationssökfrågor och sessioner där sökfrågorna ofta överges.
+2.6
+Sökfrågekedjor
+Sökfrågekedjor (query chains) är ett annat sätt att extrahera implicit information
+från klickloggar och liknar den modell Durpet et al. tagit fram. Denna modell
+är framtagen av Radlinski et al. då de observerade att en användare ofta
+ställde ﬂera sökfrågor efter varandra med liknande informationsbehov. Vad de
+vill åstadkomma med dessa sökfrågekedjor är att kunna ge möjlighet till en ny
+tolkning av informationen i klickloggarna som tar tillvara användarens intelligens att
+omformulera en sökfråga. Det som skiljer modellerna åt är att Radlinski et al. endast
+tittar på sekvensen av sökfrågorna, medan Durpet et al. tittar på användarens
+beteende efter att denne klickat på dokumentet.
+Radlinski et al. visar att om sökfrågor tolkas oberoende av varandra ignoreras
+viktig information som är gömd i sekvensen av sökfrågorna och klicken som
+användaren gör. Ty när sökfrågor tolkas oberoende av varandra ses endast ett
+par av klicken högst upp i listan som information, då användaren sällan tittar
+längre ned i listan. Det sökfrågekedjor fångar är hela sessionen användaren har med
+omformuleringar och letande längre ned i resultatlistan. Detta medför att med hjälp
+av sökfrågekedjor tas sekvensen tillvara och en bättre tolkning om vad användaren
+anser relevant kan göras.
+Någonting som måste göras för att kunna använda sökfrågekedjor är att
+kunna urskilja dessa ur en klicklogg. Radlinski et al. gör detta genom att för
+hand identiﬁera några klickloggar och därefter träna ﬂera supportvektormaskiner
+(Support Vector Machine) med olika parametrar och välja den som presterar bäst.
+Denna väljer Radlinski et al. att fullständigt lita på som klassiﬁcerare.
+Det Radlinski et al. kommer fram till är att deras metod med sökfrågekedjor
+kan lära sig högst ﬂexibla modiﬁkationer gentemot sökresultatet som visades från
+början. Vad Radlinski et al. också ser är att för många populära sökfrågor verkar det
+endast vara ett fåtal dokument som är relevanta för användaren. Av den anledningen
+är det inte förvånande att det är möjligt att få signiﬁkanta förbättringar genom
+att endast lära sig associationen mellan sökterm och dokument. Radlinski et al.
+tror också att det kan ﬁnnas ytterligare information genom att titta på position i
+9
+KAPITEL 2. TEORI
+sökfrågekedjan för sökfrågan samt att den sista sökfrågan kan vara mer informativ
+än de tidigare.
+2.7
+Problem med begränsad mängd träningsdata
+Träningsdata behöver samlas in för att lära ett program sök- och klickbeteenden.
+Det är med den träningsdatan som algoritmen ska lära sig vilka dokument som är
+relevanta för speciﬁka sökfrågor. Detta är en abstrakt koppling som inte går att läsa
+ur dokumentets innehåll eller sökfrågan själv och sökrymden för dessa kopplingar är
+stor. Problemet med att ha en begränsad mängd träningsdata uppstår när mängden
+träningsdata är för liten i jämförelse mot sökrymden. Ty algoritmens uppgift är att
+lära sig generalisera utifrån den data den blivit tränat med. Får den endast se ett
+fåtal fall i sökrymden är det svårt att välja rätt hypotes vid något av de många andra
+fall den inte blivit tränad med. Dock betyder det inte att med mindre träningsdata
+och sämre generalisering att resultatet av algoritmen ska förkastas, ty den säger
+ändå någonting av vad som kan vara relevant. Det ska också sägas att i nästan
+alla fall är det brist på träningsdata och varför man i slutändan har en begränsad
+mängd beror oftast på kostnaden eller svårigheten att samla in den. I det här fallet
+beror det på att sökmotorn nyligen hade tagits i bruk vid genomförandet av detta
+examensarbete.
+I de fall man lider av en begränsad mängd träningsdata är det viktigt att hitta
+balansen mellan värderingen av en sökfråga och ett klick. För om relevansmodellen
+blir övertränad gör den mer skada än om det hade funnits mycket träningsdata
+enligt Lv et al.
+2.7.1
+Överträning
+Överträning är när algoritmen slutar beskriva det underliggande sambandet och
+övergår till att lära sig bruset i träningsdatan. Detta ger en modell med sämre
+träﬀsäkerhet då den lärt sig bruset och inte det generella fallet. Anledningen till att
+överträning sker kan vara att modellen är för komplex och har för många parametrar
+relativt antalet observationer.
+2.8
+Typer av sökfrågor
+Beroende på vilken typ av information en användare söker kan sökfrågan som ställs
+klassiﬁceras i tre breda grupper, enligt Manning et al. [9]. Det är inte nödvändigtvis
+som så att en sökfråga hamnar i en grupp utan den kan mycket väl hamna i ﬂera.
+Det är inte heller nödvändigt att en sökfråga måste hamna i en av grupperna
+utan kan lika väl hamna utanför. De tre grupperna är informationssökfrågor,
+navigationssökfrågor och transaktionssökfrågor.
+10
+2.9. TF-IDF
+Informationssökfrågor Här söker användaren efter information på ett brett
+område och svaret ﬁnns typiskt inte i ett dokument utan användaren samlar
+ihop information från ﬂera dokument för att fylla informationsbehovet.
+Navigationssökfrågor Här söker användaren efter ett speciﬁkt dokument och
+förväntar sig att det ska hamna högst upp i resultatlistan. Att det ﬁnns andra
+dokument som eventuellt passar bättre in på sökfrågan är inte av intresse.
+Transaktionssökfrågor Här
+söker
+användaren
+efter
+information
+inför
+en
+kommande transaktion, som till exempel att köpa en produkt.
+Dessa grupper av sökfrågor ställer olika krav på sökmotorn för att leverera vilket och
+vilken typ av dokument som skall presenteras i resultatlistan. Som tidigare nämts
+är icke navigationssökfrågor, sökfrågor där användaren ofta överger resultatet utan
+klick, och många sökfrågor för samma session, de svåraste sökfrågorna att lösa.
+2.9
+Tf-idf
+Apache Solr använder sig av Apache Lucene för att sätta en poäng på hur relevant
+ett dokument är. Apache Lucene i sin tur använder sig av tf-idf för att beräkna
+poängen för hur relevant ett dokument är givet en sökfråga [4, 5, 6].
+Tf-idf står för Term Frequency - Inverse Document Frequency och beräknar en
+poäng för varje term i ett dokument. Poängen beräknas genom frekvensen hos en
+term i ett speciﬁkt dokument, i förhållande till antalet dokument termen förekommer
+i. En hög poäng från tf-idf för en speciﬁk sökterm, indikerar en stark relation mellan
+termen och dokumentet termen förekommer i och alltså hur relevant den speciﬁka
+termen är för dokumentet. Således om termen förekommer i en sökfråga bör ett
+dokument där termen är relevant för dokumentet, även vara relevant för användaren.
+2.9.1
+Tf-idf hos Apache Solr
+Den fullständiga poängberäkningen som Apache Lucene använder ser ut på följande
+sätt, där q är en sökfråga, d ett dokument och t en term:
+score(q, d) = coord(q, d) · queryNorm(q) ·
+X
+t∈q
+
+tf(t ∈d) · idf(t)2 · t.getBoost() · norm(t, d)
+
+(2.2)
+Nedan beskrivs de olika faktorerna för ekvation 2.2:
+coord(q, d) Detta är en poängfaktor som baseras på hur många av söktermerna från
+sökfrågan q som återﬁnns i dokumentet d. Där ett högre värde erhålls om ﬂer
+av termerna från sökfrågan återﬁnns i dokumentet.
+queryNorm(q) Detta är en normaliseringsfaktor som används för att kunna jämföra
+poängen mellan olika sökfrågor och påverkar inte rankningen av dokumentet.
+11
+KAPITEL 2. TEORI
+tf(t ∈d) Detta är tf-termen i tf-idf och den talar om hur många gånger termen
+t förekommer i dokumentet d. Ett dokument med många förekomster av
+termen t får ett högre värde och ett dokument med få förekomster av
+termen t får ett lägre värde. Uträkningen av Apache Lucene är tf(t ∈d) =
+√
+frekvensen av t i d.
+idf(t) Detta är idf-termen i tf-idf och är det omvända förhållandet för antalet
+dokument som termen t förekommer i. Denna faktor gör att en ovanligt
+förekommande term får ett högre värde än en vanligt förekommande
+term. Anledningen till att ta kvadraten för idf(t) i ekvation 2.2 är att
+idf(t) förekommer för termen t i både sökfrågan och dokumentet, enligt
+dokumentationen för Apache Lucene. Uträkningen som görs av Apache Lucene
+är idf(t) = 1 + log(antalet dokument
+docFreq+1
+), där docFreq är antalet dokument termen
+t förekommer i.
+t.getBoost() Detta är en faktor som är till för att öka relevansen hos en term t i
+sökfrågan vid söktillfället. Till exempel om användaren anser att en term är
+mer relevant än de andra i sökfrågan.
+norm(t, d) Detta är en produkt som består av ﬂera faktorer. Den första är en
+manuell faktor, som kan sättas för att öka relevansen hos dokumentet d vid
+indexeringstillfället. Den andra är också en manuell faktor, men är till för att
+öka relevansen för dokumentets innehåll vid indexeringstillfället. Den tredje
+och sista är en längdnormalisering för att ge eﬀekten av att ett kortare innehåll
+i ett dokument bidrar mer till relevansen än vad längre innehåll gör.
+Resultatet score(q, d) blir en poäng som säger hur bra dokumentet d matchar
+sökfrågan q. Dokumenten sorteras utifrån denna poäng med högst poäng först, ty
+det är detta dokument som har matchat sökfrågan bäst och bör således vara det
+mest relevanta för användaren.
+2.9.2
+Egenskaper
+Termer som är vanligt förekommande i samtliga indexerade dokument, som till
+exempel pronomen och prepositioner, har en hög frekvens inuti ett dokument samt
+förekommer i nästan alla dokument. Dessa termer håller ingen relevant information
+och tenderar att få ett lågt värde från tf-idf och blir därför försumbara i en sökning.
+Omvänt gäller om en term är vanligt förekommande i ett eller några speciﬁka
+dokument men ovanligt i övriga dokument. Då får det ett högre värde från tf-idf
+vilket ger en hög sannolikhet att när användaren söker på den termen, letar denne
+efter något av dessa dokument.
+Enligt Ramos [11] är tf-idf en enkel och eﬀektiv algoritm för att säga om en
+term är relevant i ett dokument eller inte, vilket gör det till en bra grund att bygga
+mer komplicerade algoritmer ovanpå. Nackdelen är att tf-idf inte på något sätt
+tar hänsyn till relationer mellan termer, som till exempel synonymer eller plural. I
+12
+2.10. VIKTNING AV ENSKILDA TERMER
+stället beräknas varje term för sig och får ett aningen lägre värde än om de hade
+beräknats tillsammans. Enligt Ramos kan detta vara ett eskalerande problem för
+större dokumentsamlingar.
+2.10
+Viktning av enskilda termer
+Robertson et al. [13] undersöker en statistisk teknik för en viktfunktion av enskilda
+termer. De syftar till att hitta ett teoretiskt ramverk vilket ska ge en vägledning
+till hur relevansinformation ska användas i sökning, samt att testa detta ramverk
+experimentellt. Målet med teorin är att härleda en optimal rankning för dokument
+beroende på vilka av söktermerna som ﬁnns i ett dokument, men också vilka av
+söktermerna som inte ﬁnns i ett dokument.
+Givet antagandet med ett index där antingen en term ﬁnns eller inte ﬁnns i ett
+dokument och en mängd relevanskriterier för varje sökfråga, där dessa kriterier är
+speciﬁka för den användare som ställt sökfrågan, tar Robertson et al. fram tabell
+2.1 för osäkerheten hos ett dokument i indexet för en sökterm t och en sökfråga q.
+Notationen i tabell 2.1 är följande: N är antalet dokument i indexet, R är antalet
+relevanta dokument för sökfrågan q, n är antalet dokument som innehåller termen
+t och r är antalet relevanta dokument som innehåller termen t.
+Relevanta dokument
+Icke relevanta dokument
+Summa
+Dokument
+som
+innehåller termen
+t
+r
+n −r
+n
+Dokument
+som
+inte
+innehåller
+termen t
+R −r
+N −n −R + r
+N −n
+Summa
+R
+N −R
+N
+Tabell 2.1. Osäkerhetstabell av dokumentdistributionen för söktermen t enligt
+Robertson et al. [13].
+Viktning av en term måste i någon mån reﬂekteras i den relativa distributionen av
+termer med hänseende till andra dokument och andra termer, säger Robertson et
+al. och härleder fyra ekvationer från tabell 2.1.
+w1 = log ( r
+R)
+( n
+N )
+(2.3)
+Den första ekvationen, ekvation 2.3, representerar förhållandet mellan andelen av
+relevanta dokument som innehåller söktermen t och andelen av totala antalet
+dokument som t förekommer i.
+w2 = log
+( r
+R)
+( n−r
+N−R)
+(2.4)
+13
+KAPITEL 2. TEORI
+Den andra ekvationen, ekvation 2.4, representerar förhållandet mellan andelen
+av relevanta dokument innehållande söktermen t och andelen av icke relevanta
+dokument.
+w3 = log (
+r
+R−r)
+(
+n
+N−n)
+(2.5)
+Ekvation
+2.5
+representerar
+förhållandet
+mellan
+relevansoddset
+för
+t
+och
+samlingsoddset för t. Relevansoddset för t är förhållandet mellan antalet relevanta
+dokument innehållande söktermen t och antalet relevanta dokument som inte
+innehåller t. Samlingsoddset för t är förhållandet mellan totala antalet dokument
+innehållande t och totala antalet dokument som inte innehåller t.
+w4 = log
+(
+r
+R−r)
+(
+n−r
+N−n−R+r)
+(2.6)
+Den sista ekvationen Robertson et al. tagit fram är ekvation 2.6. Den representerar
+förhållandet mellan relevansoddsen för t och t:s icke relevansodds, det vill säga
+proportionen av icke relevanta dokument och dokument som inte innehåller t samt
+inte heller är relevanta.
+Enligt traditionen har tilldelningen av vikter till söktermer i ett index, varit
+ett separat problem från formuleringen av en matchningskoeﬃcient som används
+till att ranka dokument utifrån en sökfråga. Dock är den teori Robertson et al.
+speciﬁcerar en explicit dokumentrankningsfunktion och för att kunna härleda en
+termviktningsfunktion måste man anta att den matchande koeﬃcienten består av
+summan av vikterna för de matchande termerna.
+En annan kombination av matchningskoeﬃcienter och termviktningsfunktioner
+skulle kunna vara en icke logaritmisk form av ekvationerna 2.3 - 2.6 där man i
+stället för en summa använder sig av produkten mellan matchningskoeﬃcienten
+och termviktningsfunktionen. Med detta kan det ses varför logaritmer används
+i
+ekvationerna
+2.3
+-
+2.6,
+det
+beror
+helt
+enkelt
+på
+kombinationen
+mellan
+matchningskoeﬃcient och termviktningsfunktion.
+2.10.1
+Relationer mellan ekvationerna
+De fyra ovan nämnda ekvationerna härleds alla från en formell probabilistisk teori
+för viktning av relevans. Enligt Robertson et al. är ekvation 2.3 och 2.4 relaterade
+för att de båda använder proportioner om t är relevant eller inte. Ekvation 2.5
+och 2.6 har relationen att båda använder sig av odds. Vidare har ekvation 2.3 och
+2.5 relationen att båda jämför den relevanta dokumentdistributionen mot totala
+samlingen av dokument. Slutligen är ekvation 2.4 och 2.6 relaterade för att båda
+jämför distributionen av relevanta och icke relevanta dokument med termen t.
+14
+2.10. VIKTNING AV ENSKILDA TERMER
+2.10.2
+Antaganden
+Målet med teorin Robertson et al. tar fram är att skapa en optimal rankning
+av dokument ur ett index, baserat på om en term t ﬁnns i ett dokument eller
+inte. För att göra det gör de fyra antaganden, två oberoendeantaganden och två
+ordningsantaganden, som följer nedan:
+Oberoendeantagande I1 säger att distributionen av termer i relevanta dokument
+är oberoende och att deras distribution i alla dokument är oberoende.
+Oberoendeantagande I2 säger att distributionen av termer i relevanta dokument
+är oberoende och deras distribution i icke relevanta dokument är oberoende.
+Ordningsantagande O1 säger att sannolikheten hos relevansen endast är baserad
+på närvaron av söktermer i ett dokument.
+Ordningsantagande O2 säger att sannolikheten hos relevansen är baserad på
+både närvaron och frånvaron av söktermer i ett dokument.
+Oberoendeantagandet ger möjligheten att dra slutsatser om dokument innehållande
+en given sekvens av termer från informationen om varje enskild term, oberoende
+de andra. I verkligheten är det osannolikt att termer i ett index är oberoende
+varandra, men i brist på bättre information skapar det en godtagbar startpunkt
+enligt Robertson et al.
+De fyra tidigare nämnda ekvationerna är byggda på en kombination av dessa
+antaganden som kan ses i tabell 2.2. I den tabellen kan det ses att antagandet I1
+ligger till grund för ekvation 2.3 och 2.5 medan antagandet I2 ligger till grund för
+ekvation 2.4 och 2.6.
+I1
+I2
+O1
+2.3
+2.4
+O2
+2.5
+2.6
+Tabell 2.2. De antaganden ekvationerna 2.3 - 2.6 bygger på enligt Robertson et al.
+Robertson et al. argumenterar för att antagandena I2 och O2 stämmer bättre
+överens med verkligheten än I1 respektive O1, vilket talar för att ekvation 2.6
+bör vara den som är bäst bland de fyra viktfunktionerna.
+2.10.3
+Slutsatser av experimenten
+Den första slutsatsen Robertson et al. drar är att argumentationen om att
+ordningsantagandet O2 är korrekt och att O1 är inkorrekt bekräftas av deras
+experiment då ekvation 2.5 och 2.6 hela tiden presterade bättre än ekvation 2.3
+och 2.4.
+15
+KAPITEL 2. TEORI
+Den andra slutsatsen är att oavsett vilket oberoendeantagande som antas
+verkar det inte spela någon roll då det inte hade någon påverkan på experimenten
+Robertson et al. utförde. Dock lägger de till att det kan spela roll med
+större och/eller mer heterogena dokumentsamlingar. De betonar också att deras
+experiment indikerar att även en dålig skattningsfunktion kan ge bättre resultat än
+en enkel sökning mot termer.
+Vidare anser Robertson et al. att vilket som helst oberoendeantagande är
+tvivelaktigt då de inte håller generellt. Alternativet skulle vara att titta på mönster
+hos termer som förekommer i samma sökfråga, men för att få bra resultat skulle det
+krävas mycket data för att bestämma egenskaperna huruvida parametrarna ska vara
+deﬁnierade för att säga att ﬂera termer hör ihop. Robertson et al. har dock problem
+att få ut tillräckligt med information från de enskilda termerna som antogs vara
+oberoende och deras resultat indikerar att oberoendeantaganden inte är speciellt
+kritiskt utan att de olika antagandena presterar lika bra.
+16
+Kapitel 3
+Metod
+Detta kapitel beskriver först den bakomliggande teorin för den metod jag
+implementerar.
+Därefter
+följer
+hur
+implementationsstegen
+ser
+ut
+och
+hur
+integrationen med Apache Solr görs. Slutligen presenteras hur resultaten kommer
+att beräknas.
+3.1
+Betingad sannolikhetshierarki
+Zhou et al. [15] introducerar en metod för att förutsäga vilket dokument en
+användare kommer att klicka på baserat på tidigare sökfrågor och klickade
+dokument. De utvecklar två probabilistiska modeller som skiljer sig i tolkningen
+av
+relationen
+mellan
+sökfråga
+och
+dokument.
+Den
+första
+modellen
+kallas
+oberoendemodellen och den andra kallas fullmodellen. Zhou et al. använder en
+teknik kallad betingad sannolikhetshierarki (conditional probability hierarchy) för att
+kunna kombinera oberoendemodellen och fullmodellen med varandra och därigenom
+kunna utnyttja fördelarna i de olika modellerna för att uppnå bästa resultat.
+3.1.1
+Formalisering av problemet
+Problemet
+som
+ska
+lösas
+ligger
+i
+att
+förutsäga
+P(d|q, dq, Γ),
+vilket
+är
+sannolikheten
+av
+att
+en
+användare
+klickar
+på
+dokumentet
+d
+för
+sökfrågan
+q
+när
+denne
+blir
+presenterad
+med
+resultatlistan
+dq,
+givet
+observationerna av klick för sökfråga-dokumentparen, Γ. Posteriorisannolikheten
+att
+observera
+varje
+klick
+på
+ett
+speciﬁkt
+dokument,
+d,
+är
+P(d|q, dq),
+där
+dq
+representerar
+dokumentlistan
+som
+returneras
+vid
+sökfrågan
+q.
+Förutsägelsen
+av
+ett
+användarklick
+för
+sökfrågan
+q
+blir
+således
+ˆd = arg maxd P(d|q, dq, Γ), där d ∈dq och Γ är observationen av klick för
+sökfråga-dokumentparen.
+17
+KAPITEL 3. METOD
+3.1.2
+Deﬁnitionen av att lära från klickloggar
+Zhou et al. deﬁnierar systemets uppgift att lära sig förutsäga klick med hjälp
+av loggdata från en sökmotor med den statistiska relationen mellan sökfråga och
+dokument. Det primära antagandet är att ett klick från en användare indikerar
+användarens återkoppling av kvaliteten mellan sökfrågan och dokumentet.
+Zhou et al. beskriver att om vi antar att vokabuläret av sökfrågor, i form
+av enskilda söktermer, är stabilt över en tidsperiod är det möjligt att estimera
+sannolikheten av framtida klick baserade på tidigare observationer. Detta är
+givet ett idealt fall där vi är kapabla att samla in tillräckligt många instanser
+för varje kombination av söktermer tillsammans med deras sökfrågor och de
+klickade dokumenten. Genomförbarheten av det tillvägagångssättet förlitar sig på
+antagandet att träningsdatan uttömmer alla möjliga sökfrågor. Eftersom antalet
+olika sökfrågor i sökning utökas med ny användarkunskap och slumpmässighet
+i formulerandet av sökfrågor, blir dock spårning av alla möjliga sökfrågor både
+opraktiskt och oberäkneligt.
+Den linjära tillväxten av distinkta sökfrågor över tid indikerar att det blir svårt
+att matcha även en minsta del av de nya sökfrågorna exakt med gamla sökfrågor.
+Resultatet av det är att förutsägelser inte kan göras för nya frågor och leder till en låg
+förutsägelsebarhet. Att lära relationen mellan fullständiga sökfrågor och dokument
+är därför ett högst utmanande problem.
+En alternativ lösning är att bryta ned sökfrågan till enskilda termer. En
+observation av en sökfråga och tillhörande klickade dokument transformeras
+till ﬂera oberoende observationer av termer och dokument, term-dokumentpar
+istället för sökfråga-dokumentpar. Denna lösning kan förutsäga okända sökfrågor
+så länge de innehåller ett tidigare känt ord. Dock förkastas ordföljden med
+denna metod och därtill all den information om närliggande och tillhörande
+ord för sökfrågan och dokumentet. För att både kunna förutse nya sökfrågor
+med ett oberoendeantangande och för att inte kasta bort ordföljden tas båda
+egenskaperna tillvara i varsin relevansmodell och kombineras med den betingade
+sannolikhetshierarkin.
+3.1.3
+Oberoendemodellen
+För ett sökfråga-dokumentpar, ⟨d, q⟩, föreslår Zhou et al. att först antaga att
+varje ord i q är oberoende av varandra. Formellt deﬁnieras den tolkningen i
+oberoendemodellen för en instans av ⟨d, q⟩som en observation av d och givet d
+observera orden w1, . . . , wk oberoende av varandra.
+Den sannolikhet som sedan ska beräknas är P(d|q) = P(d|w1, . . . , wk) i
+fallet där en sökfråga består av k ord då q = [w1, . . . , wk] och det klickade
+dokumentet d. Nedan följer uträkningrna som leder fram till hur P(d|q) beräknas
+för oberoendemodellen:
+P(d|w1, . . . , wk) = P(d, w1, . . . , wk)
+P(w1, . . . , wk)
+(3.1)
+18
+3.1. BETINGAD SANNOLIKHETSHIERARKI
+= P(d)P(w1|d) . . . P(wk|d)
+P
+d∈D P(d, w1, . . . , wk)
+(3.2)
+=
+P(d) Qk
+i=1 P(wi|d)
+P
+d′∈D P(d′) Qk
+i=1 P(wi|d′)
+(3.3)
+Ekvation 3.2 ges genom att använda Bayes sats. Från ekvation 3.2 till 3.3 antas
+att wi och wj är betingat oberoende av varandra enligt modelldeﬁnitionen. P(d)
+är marginalsannolikheten för dokument d, vilket är proportionellt mot antalet
+förekomster av d. Varje ⟨d, q⟩kan också brytas ned till ett antal oberoende instanser
+⟨d, wi⟩, där i = 1, . . . , k.
+Denna oberoendemodell tenderar att ge en hög förutsägelsegrad, dock utan
+vidare hög precision. Det vill säga att modellen oftast kan säga någonting om hur
+dokumenten bör ordnas, men den vet inte riktigt hur.
+3.1.4
+Fullmodellen
+För fullmodellen deﬁnierar Zhou et al. q i en instans ⟨d, q⟩som ett element och
+kombinationen av närliggande ord i q kommer ses som nya element. Eftersom
+fullmodellen använder sökfrågan som en grupp fås en hög precision i förutsägelserna,
+förutsatt att en stor mängd sökfrågor har blivit observerade med stort stöd.
+Problemet med denna modell är att antalet olika sökfrågor växer fort och i praktiken
+saknar denna relevansmodell alltid träningsdata.
+Denna modell tenderar till att uppnå en hög precision om tillräckligt med
+träningsdata ﬁnns. Dock kan den inte användas när nya sökfrågor påträﬀas. Det
+som fullmodellen bidrar med är att om den har sett en sökfråga tidigare kan den
+säga med bra precision hur dokumenten bör ordnas.
+3.1.5
+Den betingade sannolikhetshierarkin
+Den betingade sannolikhetshierarkin använder tekniken att kombinera fullmodellen
+med oberoendemodellen och kan på så sätt utvinna fördelarna hos båda. För
+ytterligare hjälp på vägen av framtida sökfrågor som kan tänkas uppkomma försöker
+den betingade sannolikhetshierarkin rekursivt generera multipla mellanliggande
+kombinationer av sökfrågan. Detta ger både mer träningsdata och bättre chans
+att i framtiden förutsäga vilket dokument som är mest relevant.
+Användning av hierarkin
+Det börjar med att behandla en sökfråga som en mängd oberoende ord, vilket ger
+P(d|wj). Från denna första nivå, L1 i ﬁgur 3.1, slås närliggande söktermer samman
+parvis som resulterar i nästa nivå L2, vilket ger P(d|uk) för varje ihopslagning som
+gjordes. Inför nästa nivå, L3, slås par från nivå L2 ihop. Detta fortgår då det inte
+längre är möjligt att slå ihop ﬂer par och den slutgiltiga estimeringen av P(d|q) blir
+en hierarkiskt kombination som sträcker sig över ﬂera nivåer enligt ﬁgur 3.1. I ”3.4
+19
+KAPITEL 3. METOD
+Delning av sökfråga till söktermer” ﬁnns det beskrivet hur söktermerna slås ihop
+mellan nivåerna.
+Figur 3.1. Kombinationen av sannolikheter vid olika nivåer för den betingade
+sannolikhetshierarkin. Estimeringen gäller P(d′|a, b, c, d, e). Bilden är hämtad från
+Zhou et al. [15].
+Antag att vi har ett dokument d och ordsekvens u, där u antingen kan vara ett
+enskilt ord eller ﬂera ord. Låt P(d|u)f beteckna estimeringen av P(d|u) under
+fullmodellen, P(d|u)o under oberoendemodellen och P(d|u)h under den betingade
+sannolikhetshierarkin. Antag också en sökfråga q = ⟨a, b, c, d, e⟩bestående av fem
+individuella ord a, b, c, d och e och att fullmodellestimeringen av P(d′|w)f, där
+w = a, b, c, d, e redan är känt. Då sätts vid nivå L1, P(d′|w)h och P(d′|w)o som
+ekvivalent till fullmodellestimeringen P(d′|w)f enligt ekvation 3.4, ty i en nivå med
+bara ett ord är fullmodellen och oberoendemodellen ekvivalenta.
+L1 : P(d′|w)h = P(d′|w)f = P(d′|w)o
+(3.4)
+Sedan kombineras sannolikheterna från nivå L1 till L2, i ﬁgur 3.1 enligt ekvation
+3.5 och 3.6:
+L2 : P(d′|a, b)h = (1 −λ)P(d′|a, b)o + λP(d′|a, b)f
+(3.5)
+L2 : P(d′|c, d)h = (1 −λ)P(d′|c, d)o + λP(d′|c, d)f
+(3.6)
+där λ används som en viktningsfaktor mellan fullmodellen och oberoendemodellen
+och sätts beroende på hur säker fullmodellen är. För nivå L3 beräknas estimeringen
+av P(d′|c, d, e)h på samma sätt enligt ekvation 3.7:
+L3 : P(d′|c, d, e)h = (1 −λ)P(d′|c, d, e)o + λP(d′|c, d, e)f
+(3.7)
+där P(d′|c, d, e)o
+för oberoendemodellen estimeras genom kombinationen för
+P(d′|c, d)h och P(d′|e)h på följande sätt:
+P(d′|c, d, e)o =
+P(d′)P(c, d|d′)hP(e|d′)h
+P
+d′ P(d′)P(c, d|d′)hP(e|d′)h
+(3.8)
+Slutligen i nivå L4:
+L4 : P(d′|a, b, c, d, e)h = (1 −λ)P(d′|a, b, c, d, e)o + λP(d′|a, b, c, d, e)f
+(3.9)
+där
+P(d′|a, b, c, d, e)o
+estimeras
+med
+oberoendemodellen
+för
+P(d′|a, b)h
+och
+P(d′|c, d, e)h på samma sätt som i ekvation 3.8.
+20
+3.1. BETINGAD SANNOLIKHETSHIERARKI
+Det generella fallet
+I det generella fallet för en sökfråga q och ett dokument d estimeras P(d′|q)h på
+följande sätt:
+P(d′|q)h = (1 −λ)P(d′|q)o + λP(d′|q)f
+(3.10)
+där P(d′|q)f är fullmodellestimeringen och P(d′|q)o estimeras med:
+P(d′|q)o =
+P(d′)P(ql|d′)hP(qr|d′)h
+P
+d′ P(d′)P(ql|d′)hP(qr|d′)h
+(3.11)
+där ql och qr är den vänstra respektive den högra delen vid en delning av sökfrågan
+q i ekvation 3.11. För att beräkna P(ql|d′)h och samtidigt hålla kopplingen mellan
+de olika nivåerna i hierarkin kan Bayes sats används på följande sätt:
+P(ql|d′)h = P(ql)P(d′|ql)h
+P(d′)
+(3.12)
+där P(ql) =
+antal förekomster av sökfrågan ql
+totalt antal sökfrågor
+. Faktorn P(d′|ql)h blir kopplingen till
+den nyligen beräknade nivån i hierarkin och är således känt.
+Estimering för λ
+λ i ekvation 3.10 bör bero på antalet instanser där wq, . . . , wk′ uppkommer
+tillsammans i det intuitiva fallet anser Zhou et al. Det är mer naturligt att ge
+fullmodellen högre vikt då den har många observationer och att den i de fallen
+tenderar till att vara mer precis. Av den anledningen bör λ viktas på följande sätt:
+λ =
+n(w1, . . . , wk′)
+α + n(w1, . . . , wk′)
+(3.13)
+där n är antalet klick och α > 0. Om ett högt α anges, indikerar det en hög
+trovärdighet mot tidigare skattningar och således en lägre uppdateringstakt.
+Enligt presenterade resultat av Zhou et al. ger λ = 0.1 en förutsägelsegrad på
+0.20 med 100 000 instanser av träningsdata. Detta är den storleksordningen Netlight
+har på sina loggar för tillfället och därför bör λ = 0.1 vara ett lämpligt värde. Detta
+avser jag undersöka.
+3.1.6
+Tolkning av sannolikheter
+I estimeringen av oberoendemodellen är P(wi|d) tvunget att räknas ut och genom
+att använda bayesiska formler blir det slutligen P(d|wi) som ska estimeras.
+I
+den
+lägsta
+nivån
+L1
+är
+P(d|w)
+tvunget
+att
+beräknas
+för
+både
+oberoendemodellen och fullmodellen. Skattningen är också tvingad att beräknas
+i samtliga nivåer för fullmodellen. Enligt Zhou et al. bör en bayesisk estimering
+appliceras på grund av för få observationer. Om P(d|w) låts vara P(d|w) = θ ∼B(θ),
+ger detta att det är θ som behövs estimeras. Låt n vara antalet gånger som ordet
+21
+KAPITEL 3. METOD
+w har blivit klickat på för något dokument d, låt också x vara antalet klick
+på dokumentet d och anta att användarna utför sökfrågor och klick oberoende
+av varandra, ty då blir P(x|θ) en binomialdistribution. Om en betadistribution
+Beta(α, β) används som priorikonjugat för θ, följer också P(θ|x) betadistributionen,
+som i sin tur blir parametriserad som:
+P(θ|x) ∼Beta(α + x, n + β −x)
+(3.14)
+Estimeringen av θ givet x ges som skattningen av P(θ|x):
+ˆθ =
+Z 1
+0
+P(θ|x)θdθ =
+α + x
+α + β + n
+(3.15)
+Denna skattningen av ˆθ används som skattningen för P(d|w). Skattningen har också
+egenskapen att den kan leverera värden skilt från 0 i en situation utan tidigare
+observationer av ⟨d, w⟩.
+Det som är kvar för att kunna göra en skattning av P(θ|x) är att bestämma α
+och β. För att göra det antag att varje dokument har samma sannolikhet att bli
+klickade på, då kan skattningen av av E(P(θ)) sättas enligt ekvation 3.16:
+E(P(θ)) = 1
+m
+(3.16)
+där m är antalet distinkta dokument i hela mängden. Beräkningen av väntevärdet
+för Beta(α, β) beräknas enligt ekvation 3.17:
+E(Beta(α, β)) =
+α
+α + β
+(3.17)
+Då Beta(α, β) är priorikonjugat till θ kan ekvation 3.16 och 3.17 kombineras till
+α
+α+β = 1
+m och då kan α beräknas enligt ekvation 3.18:
+α =
+β
+m −1
+(3.18)
+Nu när α är skattat kan det användas i ekvation 3.15 och resulterar i att den
+bayesiska skattningen av P(d|w) blir enligt ekvation 3.19:
+ˆθ =
+d
+P(d|w) =
+β
+m−1 + x
+β
+m−1 + β + n
+(3.19)
+Här krävs att β > 0 och Zhou et al. ﬁnjusterar β i sina experiment och sätter
+β = 5. β är den variabel som bestämmer uppdateringstakten för relevansmodellen,
+där ett högre värde på β ger en lägre uppdateringstakt. I övrigt är x antalet klick
+på dokument d, m antalet kandiderande dokument och n antalet gånger som w har
+blivit klickat på med något dokument. Med denna skattning är samtliga parametrar
+kända vid sökfrågetillfället utom β. Vad denna parameter bör ha för värde avses
+undersökas.
+Den sista skattningen som behöver göras är P(d′) och den beräknas enligt
+följande:
+P(d′) =
+antal klick på dokument d
+totalt antal klick för samtliga dokument
+(3.20)
+22
+3.2. MOTIVERING TILL VAL AV RELEVANSMODELL
+3.1.7
+Antaganden
+Som framkommer i texten ovan har följande antaganden gjorts:
+• Varje dokument har samma sannolikhet att bli klickat på.
+• Ett klick från en användare indikerar användarens återkoppling av kvaliteten
+mellan sökfrågan och dokumentet.
+• För oberoendemodellen antas att varje ord i sökfrågan är oberoende av
+varandra.
+3.2
+Motivering till val av relevansmodell
+Denna relevansmodell är vald, baserad på den litteraturstudie som genomförts, då
+den använder sig av en betingad sannolikhetshierarki som tar tillvara på både att
+termer kan antas vara oberoende av varandra i oberoendemodellen, men samtidigt
+tittar på vilka ﬂer termer en sökfråga består av i fullmodellen. Modellen ger också
+möjlighet att ﬁnjustera förhållandet mellan oberoendemodellen och fullmodellen till
+vad som passar sökmönstret hos Netlight.
+Om denna modell jämförs med att vikta enskilda termer som de experiment
+Robertson et al. [13] utförde, talar detta för att använda sig av oberoendemodellen
+för att göra en skattning av vad som är relevant eller inte. Oavsett vilket
+oberoendeantagande som görs spelar det inte någon större roll enligt vad Robertson
+et al. upptäckte i sina undersökningar. Någonting som de dock kommer fram till är
+att både närvaro och icke närvaro av en term i ett dokument är av betydelse. Detta
+är någonting den relevansmodell jag använder inte tar hänsyn till, vilket kan vara
+en nackdel.
+Det som också ska noteras är att min relevansmodell först kommer att appliceras
+på dokument som Apache Solr redan anser som relevanta och därför får skjuts
+av tf-idf på vägen. Detta gör att lösningen i slutet först har tagit del av en
+systemrelevans och därefter applicerat en användarbaserad relevans i form av
+denna adaptiva relevansmodell. I den bästa av världar bör detta levera dokument
+innehållande de termer en användare har sökt på och också de dokument som många
+anser relevanta.
+Min modell tar inte hänsyn till sökfrågekedjor som Radlinski et al. undersöker
+eller någon annan form av modell som använder sig av sessioner som den modell
+Durpet et al. tar fram. Detta skulle kunna göras som försteg innan modellen matas
+med klickloggdata. Dock ﬁnns det inte möjlighet att, i de klickloggar jag använt,
+urskilja en session mer än med tidpunkt för sökfråga och klick. Därför har jag valt
+att begränsa detta examensarbete genom att inte ta hänsyn till sessioner.
+23
+KAPITEL 3. METOD
+3.3
+Tolkning av klick
+Jag har tolkat ett klick som absolut information, även då Joachims et al. och
+Craswell et al. säger emot att man ska göra på det sättet. Varför jag inte har valt
+att ta hänsyn till positionspåverkan utan endast ta ett absolut värde av ett klick, är
+att loggarna Netlight tillhandahåller inte innehåller den informationen utan endast
+ett klick. Det var heller inte möjligt att återskapa resultatlistan då indexet ändrats
+sedan loggarna sparades. Jag har därför valt att se ett klick som en absolut tolkning
+av att ett dokument är viktigt. Jag har inte heller valt att tolka klickloggarna på det
+sätt Durpet et al. föreslår, det vill säga titta vad användaren gjorde efter ett klick,
+även om det skulle ge bättre och säkrare information. För att göra det behövs en
+modell som tar reda på vilka sökfrågor och klick som tillhör samma session vilket
+är någonting som ligger utanför detta examensarbete.
+En annan anledning till att tolka ett klick som absolut information är att
+loggarna varit små och genom att ta tillvara på varje klick används maximalt av
+den information som ﬁnns.
+3.4
+Delning av sökfråga till söktermer
+Zhou et al. använder ett tvåvägsträd med en girig algoritm för att producera
+hierarkin. Den söker iterativt efter den närliggande enheten med högst stöd i varje
+nivå. Dessa enheter slås samman och matas till nästa nivå och den hierarkiska
+ihopslagningen av sökfrågans termer resulterar i att nya kombinationer av kortare
+sökfrågor upptäcks och blir ihopslagna till nya enheter med ökad längd, så kallade
+n-enheter (n-grams). En n-enhet är här deﬁnierad som en sekvens av ord av
+längden n. Hur stor den minsta n-enheten kan vara är deﬁnierad till 1 då detta
+är minsta naturliga enheten en sökfråga kan delas upp i. Dessa n-enheter är vad
+fullmodellen jobbar med och därför behövs en algoritm som kan se hur den ska
+dela upp sökfrågan på bästa sätt. Längden på det minsta värdet för en n-enhet har
+jag deﬁnierat till 1 då större delen av sökfrågorna består av en- eller tvåtermiga
+sökfrågor. Om ett högre värde skulle valts går relevansmodellen miste om den
+betingade sannolikhetshierarkins förmåga att dela sökfrågor.
+I min implementationen för att dela upp en sökfråga i den hierarki som ﬁgur
+3.1 visar, använder jag mig likt Zhou et al. av en girig algoritm. Dock går den inte
+nedifrån och upp som Zhou et al. gör, utan uppifrån och ned med början i hel
+sökfråga i stället för enskilda termer. Algoritmen börjar med att göra en iterativ
+delning till kopior av den hela sökfrågan till en vänster- och en högerdel vid varje
+skiljetecken. Skiljetecknet är i detta fall ett mellanrum. Denna delning syftar till att
+hitta vilket skiljetecken som ger den högsta summan för den högra och vänstra delen
+räknat i totalt antal klick för dessa termer. Den delning som resulterar i den högsta
+summan vinner och för oberoendemodellen tas en höger- och en vänsterdel fram.
+Detta fortsätter rekursivt med den vänstra respektive den högra halvan tills endast
+enskilda termer ﬁnns kvar. Då dessa inte går att dela upp mer avbryts rekursionen.
+24
+3.5. UTRÄKNING AV SKATTNINGAR
+Det förekommer fall då det kan ﬁnnas ﬂera skiljetecken där en delning ger
+samma stöd. Till exempel om sökfrågan består av helt okända söktermer kommer
+samtliga delningar ge en summa som är noll. I dessa fall väljs en delning så nära
+mitten som möjligt räknat i antalet kandiderande skiljetecken. Delningen sker på
+position ⌊antal skiljetecken
+2
+⌋. Detta görs för att inte göra en delning vid första eller
+sista skiljetecknet och skapa ett snedvridet träd, utan försöka hålla trädet jämt
+balanserat.
+3.4.1
+Exempel
+Antag sökfrågan term1 term2 term3 term4 term5. För varje skiljetecken görs en
+delning och antalet klick för den högra respektive den vänstra summeras. Den
+första delningen resulterar i [term1] [term2 term3 term4 term5] och den andra
+delningen resulterar i [term1 term2] [term3 term4 term5]. Detta fortgår tills
+samtliga skiljetecken är testade. Antag att en delning mellan term3 och term4 ger
+högst summa. Till ekvation 3.11 kommer ql nu representeras av term1 term2 term
+3 och qr representeras av term4 term5.
+För att sedan dela på de nya delsökfrågorna används samma metod tills det bara
+är enskilda termer kvar. Ty då sammanfaller oberoendemodellen med fullmodellen
+och rekursionen avslutas.
+I fallet med fem tidigare okända söktermer kommer delningen att ske mellan
+term2 och term3 då det ﬁnns fyra kandiderande skiljetecken och närmst mitten
+ﬁnnes genom ⌊4
+2⌋= 2, således skiljetecken nummer två.
+3.4.2
+Motivering till delningsalgoritmen
+Med denna giriga algoritm tas för högsta nivån det bästa beslutet. Det är i denna
+nivå vi har som mest information om närliggande söktermer och således utnyttjar
+algoritmen maximalt med information om närliggande söktermer.
+Bristen med att gå uppifrån är att söktermer som kan ge mycket information
+längre ned, inte nödvändigtvis grupperas ihop.
+Genom att försöka göra delningen på det skiljetecken som är närmast mitten
+tar vi bort risken att skapa snedvridna träd för okända sökfrågor där ena halvan
+består av endast en term. Fördelen är att efter en delning fås två halvor som båda
+kan delas igen, istället för bara en halva som kan fortsätta att delas. Anledningen är
+att inte dela av enskilda termer i ett tidigt stadium utan att försöka att fortfarande
+kunna få ytterligare delningar i båda halvorna.
+3.5
+Uträkning av skattningar
+Algoritmen för att skatta P(d|q)h görs iterativt från nivå L1 och uppåt som ﬁgur
+3.1 visar. Dock görs uppdelningen av sökfrågan enligt den hierarkiska strukturen i
+förväg enligt beskrivningen i ”3.4 Delning av sökfråga till söktermer”, där samtliga
+deltermer med respektive vänster- och högerhalva sparas för varje nivå.
+25
+KAPITEL 3. METOD
+Algoritmen börjar med att behandla specialfallet med enskilda termer och
+beräknar P(d|q)h för dem med fullmodellen. Dessa skattningar sparas för senare
+användning i nivån ovan. Denna uträkning görs för varje dokument i resultatlistan.
+Därefter används de förberäknade delningarna av sökfrågan med början i den
+ände av listan som innehåller nivå L2. Denna nivå simulerar en hopslagning av två
+närliggande söktermer till en ny sökterm bestående av dessa två söktermer. För
+den nyligen bildade söktermen beräknas fullmodellen enligt ekvation 3.19. Därefter
+beräknas oberoendemodellen för den nyligen bildade söktermen. I detta steg ska
+söktermen delas upp i en vänster och en högerhalva. Eftersom algoritmen precis
+slog ihop två söktermer till en, ﬁnns redan denna delning. För den vänstra halvan
+beräknas P(ql|d′)h enligt ekvation 3.12 där P(d′|ql)h är en skattning som beräknats
+i den tidigare nivån och behöver inte beräknas igen. Med detta och ekvationerna för
+P(ql) samt P(d′) kan nu P(d′|q)o beräknas.
+Nu när fullmodellen och oberoendemodellen är beräknade sammanfogas de enligt
+ekvation 3.10 till P(d|q)h för dokumentet och delsökfrågan. Detta görs för varje
+dokument i resultatlistan och därefter görs det om för varje delsökterm på den
+nivån, innan algoritmen går vidare till nästa nivå, L3 i detta fall. Detta fortgår
+till dess att algoritmen till slut når den högsta nivån där q då är den fullständiga
+sökfrågan. När P(d|q)h är beräknat för samtliga dokument i den högsta nivån har
+denna relevansmodell sagt sitt om i vilken ordning dokumenten i resultatlistan ska
+ordnas.
+3.6
+Integration mot Apache Solr
+För att Netlight ska kunna använda relevansmodellen agerar programmet som en
+proxy. Deras gränssnitt som användaren ser ställer sökfrågan till denna proxy som
+sedan ställer frågan vidare till Apache Solr. Resultatlistan från Apache Solr får
+relevansmodellen applicerad och ordningen ändras om. Den nya ordningen skickas
+sedan tillbaka till gränssnittet och visas för användaren.
+För att ha möjlighet att välja hur stor inverkan relevansmodellen ska ha
+på den nya resultatlistan kan en parameter relevanceBoost skickas med vid
+sökfrågetillfället. Att väva ihop resultatet från Apache Solr och relevansmodellen
+görs på följande sätt:
+Apache Solr score + relevanceBoost ∗P(d|q)h
+(3.21)
+Värden som undersöks för relevanceBoost är {1, 10, 100, −1} där −1 är ett
+specialfall för att fullständigt lita på relevansmodellen. För syftet att stänga av
+relvansmodellen används naturligt värdet 0.
+Som kan ses ges användaren själv möjlighet att välja till vilken grad denne vill
+använda sig av relevansmodellen.
+26
+3.7. UTVÄRDERING AV RESULTAT
+3.7
+Utvärdering av resultat
+Resultatet av den adaptiva relevansmodellen Zhou et al. tagit fram, utvärderas
+enligt
+träﬀsäkerheten
+hos
+förutsägelserna
+(prediction
+accuracy)
+samt
+deras
+förutsägelsegrad (predictability).
+Syftet med träﬀsäkerheten är att visa i hur stor utsträckning relevansmodellen
+ger korrekta förutsägelser. Med andra ord hur många procent av det totala antalet
+stickprov där det klickade dokumentet hamnar högre upp i resultatlistan efter
+appliceringen av relevansmodellen än för den resultatlistan som kommer från Apache
+Solr.
+Syftet med förutsägelsegraden är att visa procentandelen av de stickprov där
+relevansmodellen lyckas göra en förutsägelse. Det blir således ett mått på hur robust
+modellen är mot nya sökfrågor.
+De variabler som avses undersökas är:
+• λ, enligt ekvation 3.10 för att vikta fullmodellen mot oberoendemodellen vid
+uträkningen av den betingade sannolikhetshierarkin.
+• β,
+enligt
+ekvation
+3.19
+som
+kan
+ses
+som
+inlärningshastigheten
+för
+relevansmodellen.
+• relevanceBoost, enligt ekvation 3.21 för att se hur viktningen mellan
+relevansmodellen och Apache Solr beter sig.
+3.7.1
+Träﬀsäkerheten hos förutsägelser
+Zhou et al. deﬁnierar träﬀsäkerheten hos förutsägelser enligt följande:
+p1 = nc
+ns
+(3.22)
+där nc är antalet korrekta förutsägelser och ns är antalet totalt testade stickprov.
+De valideringsfall där det klickade dokumentet inte ﬁnns med i resultatlistan
+från Apache Solr kommer att räknas bort för uträkningen av träﬀsäkerheten. Detta
+för att träﬀsäkerheten är ett mått på i hur många fall där relevansmodellen kan
+ranka det klickade dokumentet högre än vad sökmotorn, Apache Solr, själv kan
+göra. Den nya uträkningen för träﬀsäkerheten blir således:
+p1 =
+nc
+ns −x
+(3.23)
+där x är antalet fall där klicket inte ﬁnns med i resultatlistan från Apache Solr.
+Då träﬀsäkerheten är ett mått som endast säger om ett dokument rankas
+högre av relevansmodellen, än vad det gjorde av Apache Solr, kan det leda till
+en frågeställning om det är ett bra mått att mäta med. Enligt Craswell et al. [2]
+som säger att användaren letar i ett sökresultat uppifrån och ned, torde detta mått
+säga att användaren snabbare hittar det som söks med relevansmodellen än utan.
+27
+KAPITEL 3. METOD
+Ett annat sätt skulle vara att mäta hur många gånger det sökta dokumentet hamnar
+på första plats. Dock säger inte det så mycket om hur bra en relevansmodell är, utan
+mer hur fort den skickar ett dokument högst upp i resultatlistan, vilket inte är det
+som är intressant.
+3.7.2
+Förutsägelsegrad
+Zhou et al. deﬁnierar förutsägelsegraden som:
+1 −Pf
+(3.24)
+där Pf är procentandelen för samtliga dokument d i resultatlistan för en sökfråga
+där skattningen av P(d|q) = 0, ty då gäller deﬁnitionen rent kvantitativt.
+I min implementation kommer dock en sannolikhet med 0 rent praktiskt aldrig
+inträﬀa då det ﬁnns en term i skattningen för fullmodellen i ekvation 3.19 bestående
+av
+β
+m−1 som aldrig kommer bli 0 om inte β sätts till det. Istället kommer P(d|q) ha
+samma värde för samtliga dokument i resultatlistan. Detta blir den nya deﬁnitionen
+för P(d|q) = 0, det vill säga P(d|q) =
+β
+m−1.
+De valideringsfall där det klickade dokumentet inte ﬁnns med i resultatlistan från
+Apache Solr kommer inte att räknas bort för uträkningen av förutsägelsegraden.
+Detta för att förutsägelsegraden är ett mått på i hur många fall relevansmodellen
+kan säga någonting om hur resultatlistan bör omordnas, vilket är oberoende om det
+sökta dokumentet är med i resultatlistan eller inte.
+3.7.3
+Hantering av data
+För att ta fram dessa resultat kommer tio permutationer av klickloggarna tas fram.
+Från klickloggarna går det att utvinna rena sökfrågor där det inte ﬁnns något klick
+registrerat, samt klick på dokument med tillhörande sökfråga. Samtliga av de rena
+sökfrågorna tas alltid med i varje permutation. Klicken delas upp i 80:20, där 80%
+används som träningsdata till modellen och resterande 20% som veriﬁeringsdata.
+3.7.4
+Utförande
+Från veriﬁeringsdatan som innehåller ett klick med tillhörande sökfråga, ställs varje
+sökfråga till Apache Solr med en begäran av 200 dokument i resultatlistan. På detta
+svar appliceras sedan relevansmodellen och sparas till en egen resultatlista. Dessa två
+listor kommer att jämföras efter tidigare nämnda kriterier. Det kan förekomma fall
+där det inte ﬁnns 200 dokument som matchar sökfrågan. Då kommer resultatlistan
+endast bestå av de dokument som Apache Solr har tagit fram. Det kan också
+förekomma fall där det klickade dokumentet enligt klickloggarna inte ﬁnns med
+i resultatlistan. Detta beror på att indexet har ändrats från dess att klickloggarna
+sparades till dess att jag gjorde utvärderingen mot Apache Solr en tid senare.
+Därefter jämförs de två resultatlistorna mot det dokument som fått klicket i
+valideringsdatan för att se i vilken av de två som har rankat dokumentet högst.
+28
+3.7. UTVÄRDERING AV RESULTAT
+Detta görs för varje permutation var för sig. Samtidigt undersöks också hur
+många av sökfrågorna relevansmodellen kan säga någonting om, för att beräkna
+förutsägelsegraden.
+När samtliga permutationer har fått träﬀsäkerheten och förutsägelsegraden
+beräknad sammanställs dessa resultat och redovisas enligt nedan.
+3.7.5
+Redovisning av resultat
+För att visa på spridningen hos träﬀsäkerheten och förutsägelsegraden används i
+resultatet boxplottar. Dessa delar in resultatet i fyra lika stora kvartiler och visar
+med ett tunt streck under boxen var 1
+4 av resultatet hamnar, den undre kvartilen.
+Lika så för det tunna strecket ovanför boxen som representerar den övre
+1
+4 av
+resultatet, den övre kvartilen. Värdena inuti boxen blir således var den resterande
+hälften av resultatet hamnar, den del av resultatet som ligger närmst mitten när
+resultatet är sorterat.
+Boxen tillsammans med kvartilerna ger en bra bild av spridningen hos resultatet
+i permutationerna. En utdragen box visar på ett resultat där det har varit stor
+spridning i hälften av resultaten och då en större osäkerhet ﬁnns om var det sanna
+värdet ligger, medan kvartilerna även täcker in hur stor spridning på gränsfallen som
+har förekommit. I boxplottarna ritas dessutom en horisontell linje ut för att visa vad
+medianen på alla permutationer har för värde. Med denna boxplot eftersträvas att
+visa hur relevansmodellen presterar och vilken spridning den har, i en och samma
+bild.
+Ett exempel på uppdelningen mellan kvartilerna kan ses i ﬁgur 3.2 där resultatet
+har värdena 1, 2, 3, 4, 5, 6, 7, 8, 9, 10. Uppdelningen för de 10 permutationerna till
+respektive kvartil har gjorts på följande sätt: [1], 2, [3], 4, [5, 6], 7, [8], 9, [10]. Här är
+1 lägsta värdet i den undre kvartilen och 3 det högsta. För den övre kvartilen är
+8 det lägsta och 10 det högsta värdet. Medianen blir medelvärdet mellan 5 och 6,
+nämligen 5.5.
+−5
+0
+5
+10
+15
+Figur 3.2. Exempel på hur en boxplot ser ut för resultatet 1,2,3,4,5,6,7,8,9,10.
+29
+Kapitel 4
+Resultat
+Nedan följer resultatet av analysen för min implementation av relevansmodellen.
+De mest intressanta ﬁgurerna och tabellerna presenteras i detta kapitel. Samtliga
+ﬁgurer och tabeller återﬁnns i bilaga A.
+I samtliga ﬁgurer, gällande förutsägelsegraden och träﬀsäkerheten, återﬁnns λ
+på x-axeln, för att visa hur relevansmodellen beter sig beroende på hur stor andel
+från oberoendemodellen respektive fullmodellen som används av den betingade
+sannolikhetshierarkin. Se ekvation 3.10 för hur vägningen går till. I extremvärderna
+0.0 och 1.0 hanteras även ytterligheterna att endast en av modellerna används.
+När λ = 0.0 används endast oberoendemodellen. När λ = 1.0 används endast
+fullmodellen. β beskriver hur fort modellen ska lära sig och relevanceBoost
+beskriver vägningen mellan Apache Solr och relevansmodellen enligt ekvation 3.21.
+4.1
+Innehåll i klickloggarna
+Följande resultat bygger på loggar tagna mellan datumen 2012-03-01 och 2012-05-07
+från Netlight:s sökmotor, Apache Solr. Från dessa loggar är:
+• totala antalet sökfrågor 12076 stycken.
+• antalet unika sökfrågor 6058 stycken.
+• antalet dokument som klickats 3300 stycken.
+• antalet unika dokument som klickats 2264 stycken.
+• antalet unika sökfråga-klickpar 2885 stycken.
+• antalet sökfrågor med en sökterm 6208 stycken.
+• antalet sökfrågor med två söktermer 4222 stycken.
+• antalet sökfrågor med tre söktermer 1155 stycken.
+• antalet sökfrågor i valideringsmängden 660 stycken.
+31
+KAPITEL 4. RESULTAT
+4.2
+Antal sökfrågor som inte längre var med i
+resultatlistan
+För varje valideringsfråga som ställs till Apache Solr begärs 200 resultat tillbaka.
+Dock ﬁnns inte alltid det klickade dokumentet av valideringsdatan med i
+resultatlistan från Apache Solr. Fördelningen av dessa ses i ﬁgur 4.1 där medianen
+ligger på 428 stycken av totalt 660. Det ger att 65% av svaren från Apache Solr inte
+innehåller det klickade dokumentet i resultatlistan.
+400
+420
+440
+460
+Figur 4.1. Antalet valideringsfall där det klickade dokumentet inte ﬁnns med i
+resultatlistan. Medianen är 428 stycken.
+Som kan ses är både loggarna små och 428 av sökfrågorna i valideringsmängden
+behöver räknas bort vid beräkningen av träﬀsäkerheten. Det ger att resultatet för
+träﬀsäkerheten bygger på i medeltal 232 stycken sökfrågor. Som förstås är detta
+ytterst få sökfrågor för att säkerställa resultatet och en implikation av att ha en
+begränsad mängd loggdata.
+4.3
+Förutsägelsegrad
+Figur 4.2 visar fördelningen hos förutsägelsegraden för samtliga tester av β och λ.
+Den sista variabeln relevanceBoost inkluderas inte då förutsägelsegraden enbart
+är ett mått på om relevansmodellen kan säga någonting om den nya resultatlistan
+eller inte och för det behövs inte relevanceBoost. I ﬁgur 4.2 slås ﬂera β samman
+till en ﬁgur eftersom dessa har samma resultat.
+Tabell 4.1 visar medianen hos förutsägelsegraden för samtliga β och λ. Som kan
+ses i denna tabell uppnår relevansmodellen en hög förutsägelsegrad där medianen
+ligger mellan 98.48% och 98.56%, vilket betyder att modellen i 98 fall av 100 kan
+göra någon form av bedömning hur resultatet från Apache Solr ska rankas.
+32
+4.4. TRÄFFSÄKERHET
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+97
+98
+99
+100
+β = 1, 10, 100 och 1000
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+97
+98
+99
+100
+β = 5
+%
+Figur 4.2. Förutsägelsegrad
+λ
+β
+0.0
+0.2
+0.5
+0.8
+1.0
+1
+98.48 %
+98.56 %
+98.56 %
+98.56 %
+98.56 %
+5
+98.48 %
+98.56 %
+98.56 %
+98.48 %
+98.56 %
+10
+98.48 %
+98.56 %
+98.56 %
+98.56 %
+98.56 %
+100
+98.48 %
+98.56 %
+98.56 %
+98.56 %
+98.56 %
+1000
+98.48 %
+98.56 %
+98.56 %
+98.56 %
+98.56 %
+Tabell 4.1. Median för förutsägelsegraden.
+4.4
+Träﬀsäkerhet
+Figur 4.3 till 4.6 visar fördelningen över träﬀsäkerheten hos de olika värdena på β,
+λ och relevanceBoost. Dessa ﬁgurer är grupperade efter värdet på β och därefter
+värdet på relevanceBoost för att visa hur relevansmodellen beter sig beroende på
+värdet på λ.
+Tabellerna 4.2 till 4.4 visar medianen för träﬀsäkerheten hos de olika värdena
+på β, λ och relevanceBoost. Dessa är grupperade efter värdet på relevanceBoost
+för en tydlig observation av hur β och λ inﬂuerar relevansmodellen för en ﬁx
+relevanceBoost.
+4.4.1
+Analys av parametern β
+Parametern β används för att reglera hur långsamt modellen ska lära sig. Detta blir
+tydligt genom att jämföra ﬁgur 4.3 och 4.5 med relevanceBoost= 1, vilket betyder
+att relevansmodellen har samma vikt gentemot Apache Solr:s poäng. Där ses att
+med ett litet β ökar träﬀsäkerheten och relevansmodellen får en snabbare svängning
+vilket gör att ett tidigare klickat dokument rankas högre av relevansmodellen än
+33
+KAPITEL 4. RESULTAT
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 1
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 10
+%
+Figur 4.3. Träﬀsäkerhet för β = 1.
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 100
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = −1
+%
+Figur 4.4. Träﬀsäkerhet för β = 1.
+vad Apache Solr rankar dem, således en högre träﬀsäkerhet.
+Med ett högt β, som i ﬁgur 4.5, blir träﬀsäkerheten i allmänhet lägre, vilket
+tyder på att det tar längre tid för relevansmodellen att lära sig efter ett klick. Med
+β = 1, vilket är det lägsta tillåtna värdet, hamnar medianen för träﬀsäkerheten
+mellan 58.93% för λ = 0.0 och 74.21% för λ = 1.0. För β = 1000, det högsta värdet
+som analyseras, hamnar medianen för träﬀsäkerheten mellan 19.01% för λ = 1.0
+och 30.50% för λ = 0.0, vilket kan ses i tabell 4.2.
+Med relevanceBoost konstant kan det ses i tabell 4.2, 4.3 och 4.4 att för
+samtliga värden av λ så minskar träﬀsäkerheten när β ökar. Anledningen till det
+är att skattningen av
+d
+P(d|w), enligt ekvation 3.19, minskar när β ökar och en
+lägre skattning erhålls vid sammanvägningen med Apache Solr, enligt ekvation 3.21.
+Detta gör det svårare att påverka resultatlistan vilket leder till att träﬀsäkerheten
+minskar när β ökar.
+34
+4.4. TRÄFFSÄKERHET
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 1
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 10
+%
+Figur 4.5. Träﬀsäkerhet för β = 1000.
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 100
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = −1
+%
+Figur 4.6. Träﬀsäkerhet för β = 1000.
+4.4.2
+Analys av parametern relevanceBoost
+Eftersom den slutgiltiga ordningen på resultatet beräknas enligt ekvation 3.21
+är det naturligt att ett högre värde på relevanceBoost ger en högre inverkan
+på den slutgiltiga resultatlistan från relevansmodellen. Det bästa resultat som
+denna relevansmodell kan åstadkomma ses när relevanceBoost = −1. Detta är
+ett specialfall för att frångå ekvation 3.21 och enbart göra en rankning enligt
+relevansmodellen och ignorera Apache Solr:s score.
+I
+ﬁgur
+4.3
+ses
+en
+tydlig
+skillnad
+mellan
+relevanceBoost
+=
+1
+och
+relevanceBoost = 10 där samtliga λ får en högre träﬀsäkerhet. Skillnaden mellan
+steget från relevanceBoost = 10 till relevanceBoost = 100, i ﬁgur 4.4, är inte lika
+markant, då redan när relevanceBoost = 10 verkar få större delen av klicken högre
+rankade med relevansmodellen i jämförelse med Apache Solr. Med en jämförelse
+i ﬁgur 4.4 syns att redan när relevanceBoost = 100 stagnerar träﬀsäkerheten
+för β = 1, då ﬁguren för relevanceBoost = −1 har liknande värden. Detta kan
+35
+KAPITEL 4. RESULTAT
+λ
+β
+0.0
+0.2
+0.5
+0.8
+1.0
+1
+58.93 %
+68.20 %
+72.17 %
+73.95 %
+74.21 %
+5
+52.50 %
+56.47 %
+59.38 %
+61.99 %
+62.91 %
+10
+47.95 %
+50.96 %
+52.51 %
+54.53 %
+55.61 %
+100
+33.55 %
+33.20 %
+33.32 %
+30.67 %
+27.86 %
+1000
+30.50 %
+29.15 %
+27.21 %
+23.83 %
+19.01 %
+Tabell 4.2. Median för träﬀsäkerheten när relevanceBoost = 1.
+λ
+β
+0.0
+0.2
+0.5
+0.8
+1.0
+1
+81.90 %
+83.83 %
+84.12 %
+84.33 %
+84.33 %
+5
+81.90 %
+83.41 %
+83.67 %
+84.12 %
+84.10 %
+10
+81.90 %
+82.98 %
+83.66 %
+84.12 %
+84.10 %
+100
+79.96 %
+80.18 %
+80.13 %
+81.26 %
+82.55 %
+1000
+67.43 %
+67.43 %
+67.65 %
+66.24 %
+60.40 %
+Tabell 4.3. Median för träﬀsäkerheten när relevanceBoost = 100.
+λ
+β
+0.0
+0.2
+0.5
+0.8
+1.0
+1
+82.13 %
+83.88 %
+84.33 %
+84.33 %
+84.33 %
+5
+82.13 %
+83.84 %
+83.67 %
+84.33 %
+84.33 %
+10
+82.13 %
+83.40 %
+83.87 %
+84.54 %
+84.33 %
+100
+82.13 %
+82.14 %
+83.19 %
+83.66 %
+84.33 %
+1000
+82.13 %
+82.34 %
+82.34 %
+82.12 %
+84.33 %
+Tabell 4.4. Median för träﬀsäkerheten när relevanceBoost = −1.
+veriﬁeras i tabell 4.3 och 4.4 med att det inte är mer än 1%-enhet som skiljer när
+β = 1. Det är i fallet när λ = 0, 0 som träﬀsäkerheten är 81.90% för relevanceBoost
+= 100, respektive 82.13% för relevanceBoost = −1.
+För det högsta testade värdet på β kan samma observationer göras, om än inte
+lika tydliga. I ﬁgur 4.5 ses att gå från relevanceBoost = 1 till relevanceBoost
+=
+10 ökar träﬀsäkerheten för samtliga värden på λ. Detsamma gäller från
+relevanceBoost = 10 till relevanceBoost = 100, i ﬁgur 4.6. Skillnaden nu när
+β = 1000 är att relevanceBoost behöver ett ännu högre värde än 100 för att få
+relevansmodellen att stagnera. Ty sannolikheterna från relevansmodellen är i detta
+fall för små för att mäta sig med Apache Solr:s score. För det stagnerade värdet när
+β = 1000 se ﬁgur 4.6 när relevanceBoost = −1.
+Vad som kan ses från ﬁgurerna är att när relevanceBoost ökar får
+36
+4.4. TRÄFFSÄKERHET
+relevansmodellen en högre inverkan, vilket ger en bättre träﬀsäkerhet. Detta
+veriﬁeras genom att följa relevanceBoost genom ﬁgur 4.3 och 4.4 samt 4.5 och
+4.6 när relevanceBoost ökar. Observera också att träﬀsäkerheten ökar.
+4.4.3
+λ:s inﬂytande hos relevansmodellen
+Det som kan utläsas från ﬁgur 4.3 med relevanceBoost = 1 är att med ett högre λ,
+det vill säga en högre inverkan från fullmodellen, ökar träﬀsäkerheten. I tabell 4.2 ses
+också att med den snabbaste inlärningshastigheten, β = 1, har oberoendemodellen
+en median på 58.93% i relation till fullmodellen som har en median på 74.21% för
+träﬀsäkerheten. För en snabb inlärningshastighet tyder detta på att fullmodellen
+ger en bättre träﬀsäkerhet än oberoendemodellen. Medianen för λ = 0.8 hamnar
+på 73.95% för träﬀsäkerheten. Vilket inte är långt efter de 74.21% när endast
+fullmodellen används.
+Vid ett högre β, när relevansmodellen tar längre tid på sig att lära, kan man i
+ﬁgur 4.5 och 4.6 se en tydlig inverkan av hur relevanceBoost fungerar. Vid ett lågt
+värde, relevanceBoost = 1, ger det en låg träﬀsäkerhet. Detta då sannolikheterna
+för dokumenten är låga och poängen från Apache Solr i jämförelse är höga. Det ger
+en låg inverkan av relevansmodellen. Med ett ökande av värdet för relevanceBoost
+ses att träﬀsäkerheten successivt ökar. Dock räcker inte relevanceBoost = 100 för
+att träﬀsäkerheten ska stagnera för β = 1000, vilket kan ses med en jämförelse mot
+när relevanceBoost = −1 i samma ﬁgur.
+Med en låg inlärningshastighet, β = 1000, i ﬁgur 4.5 med relevanceBoost = 1,
+kan det omvända förhållandet observeras gentemot den höga inlärningshastigheten
+som tidigare observerats i ﬁgur 4.3. Här ger oberoendemodellen en median på 30.50%
+och fullmodellen en median på 19.01%, enligt tabell 4.2. Det är alltså ett omvänt
+förhållande vid β = 1 och β = 1000 om vilken del av relevansmodellen som presterar
+bäst beroende på hur snabb inlärningen är.
+Att fullmodellen tar lång tid för att lära blir tydligare när en högre inverkan
+för relevansmodellen ges till relevanceBoost = 10 i ﬁgur 4.5. Här kan ses ett ännu
+tydligare gap när λ = 1.0 relativt övriga värden för λ. Detta gap följer även med
+i ﬁgur 4.6 när relevanceBoost = 100 och inte förrän resultatlistan helt går efter
+relevansmodellens poäng kommer fullmodellen ikapp och om för medianen, vilket
+kan ses i tabell 4.4 för β = 1000 och λ = 0.8 samt 1.0.
+I ﬁgurerna 4.3 och 4.5 kan också ses att med ett lågt β, det vill säga snabb
+inlärning, presterar fullmodellen bättre än oberoendemodellen. Dock vid ett högt
+β, långsam inlärning, är förhållandet det omvända och oberoendemodellen presterar
+bättre än fullmodellen.
+37
+Kapitel 5
+Slutsatser
+Syftet med detta examensarbete har varit att implementera och utvärdera en
+adaptiv relevansmodell och kontentan blir att en adaptiv relevansmodell ger
+bättre sökresultat och kan associera dokument till en sökfråga i ytterligare
+dimensioner jämfört med en statisk relevansmodell. För att kunna göra en mer
+relevant resultatlista tar denna implementation först hänsyn till den systembaserade
+relevansen med hjälp av tf-idf som Apache Solr använder och därefter appliceras den
+användarbaserade relevansen med hjälp av denna adaptiva relevansmodell. För att
+användaren ska få kontroll på i vilken grad denne vill lita på relevansmodellen har
+relevanceBoost lagts till som parameter. Med denna parameter ger det möjlighet
+att helt koppla bort relevansmodellen om användaren inte är nöjd med resultatet.
+Nedan presenteras de slutsatser som kan dras av resultatet.
+5.1
+Förutsägelsegrad
+Denna relevansmodell visar sig ha en hög förutsägelsegrad för de tester som utförts.
+Strax över 98% av resultatlistorna kan förändras med relevansmodellen till skillnad
+från resultatlistan från Apache Solr. Den höga förutsägelsegraden visar att om
+relevansmodellen skulle ha varit i produktion vid den tidpunkt då loggarna var
+insamlade skulle relevansmodellen endast på ett fåtal sökningar inte kunna säga
+någonting om hur dokumenten bör omordnas.
+5.2
+Träﬀsäkerhet
+Det är viktigt med både bra förutsägelsegrad och bra träﬀsäkerhet. Medianen för
+träﬀsäkerheten för denna relevansmodell ligger mellan 19% och 84% beroende på
+parametervärden. Detta betyder att i det bästa fallet, med rätt parametervärden, är
+det för 16% av sökfrågorna som relevansmodellen inte kan ge en bättre resultatlista.
+Om parametervärdena sätts till det sämsta tänkbara möjliga, av dem som testats
+här, ger 81% av fallen inte en bättre resultatlista.
+39
+KAPITEL 5. SLUTSATSER
+Träﬀsäkerheten är också präglad av alla de fall då de klick som borde funnits med
+i resultatlistan inte gjorde det. Det kan bero på att indexet har ändrats från dess att
+klicket loggades till den dagen jag körde igenom alla valideringsfall. Detta är svårt
+att veta då varje dokument är representerat som en krypterad sträng. Dokumentet
+kan ha bytt namn eller plats i ﬁlträdet eller så kan krypteringsnyckeln bytts ut.
+5.2.1
+β:s inverkan
+Resultatet visar att β fungerar som en parameter att bestämma hur långsamt
+relevansmodellen ska lära sig efter ett klick. Vid ett högt β erhålls lägre
+sannolikheter och får därmed det jobbigare att konkurrera med Apache Solr:s score,
+vilket resulterar i en lägre träﬀsäkerhet.
+5.2.2
+relevanceBoost:s inverkan
+En högre relevanceBoost ger P(d|q)h en högre inverkan för relevansmodellen mot
+Apache Solr:s score och ger därför en högre träﬀsäkerhet. När relevanceBoost
+= −1, det vill säga att endast relevansmodellen bestämmer resultatlistan, kan
+utläsas hur bra träﬀsäkerheten för denna relevansmodell är i bästa fallet. Där ligger
+medianen mellan 82% och 84%, vilket betyder att i 4 fall av 5 ger relevansmodellen
+en högre rankning av det sökta dokumentet än vad Apache Solr ensamt skulle gjort.
+5.2.3
+λ:s inverkan
+Vid en snabb inlärning, lågt β, ger en högre vikt mot fullmodellen en bättre
+träﬀsäkerhet. Det motsatta gäller vid en långsam inlärning då en högre vikt mot
+oberoendemodellen ger en bättre träﬀsäkerhet, vilket tyder på att det värde λ bör
+sättas till är i högsta grad ihopkopplat med vilket värde som väljs för β.
+Enligt den uppskattning av λ som återﬁnns i ”3.1.5 Estimering för λ” bör λ
+sättas till värdet 0.1. Mina resultat visar att om λ = 0.1 behöver β väljas till ett
+högre värde, då det ger en bättre träﬀsäkerhet än ett högt värde på λ, som till
+exempel 0.8, för samma värde på β. Om ett lägre β dock väljs för en snabbare
+inlärning bör λ inte sättas till 0.1.
+5.2.4
+Förhållandet mellan parametervärdena
+β och relevanceBoost har liknande syfte. För en långsammare inlärningshastighet
+krävs ett högre värde på relevanceBoost innan samma träﬀsäkerhet uppnås och
+vid en snabbare inlärningshastighet krävs ett lägre värde på relevanceBoost för
+att uppnå samma träﬀsäkerhet. Genom att kombinera dessa värden på olika sätt
+kan de användas för att ﬁnjustera relevansmodellen, men som tidigare sagts är även
+λ och β beroende av varandra. Detta betyder att om värdet på en parameter ändras
+kan de andra parametrarna också behövas ändras för önskad eﬀekt.
+Zhou et al. [15] kommer fram till att β = 5 och λ = 0.1 är lämplig för denna
+storlek av dokumentsamling. Vad resultatet visar är att ett lågt β är väl på sin plats
+40
+5.3. KLICKLOGGAR MED BEGRÄNSAD MÄNGD TRÄNINGSDATA
+för att få snabba förändringar, dock presterar denna relevansmodell bättre med ett
+högt värde på λ då den tar fördel av fullmodellen. Detta beror antagligen på att
+sökfrågorna till stor del bestod av en- eller tvåtermiga sökfrågor, vilket gör det mer
+sannolikt att fullmodellen redan känner till söktermerna.
+5.3
+Klickloggar med begränsad mängd träningsdata
+Trots att Joachims et al. [7] anser att ett klick bör tolkas relativt de andra
+sammanfattningarna i resultatlistan, tyder resultaten på att det går att använda
+klickloggar med begränsad mängd träningsdata och som inte säger någonting om de
+andra dokumenten i resultatlistan. Det är åt det hållet Durpet et al. [3] funderar,
+nämligen att den sanna relevansen endast kan bestämmas efter att användaren
+har tittat på dokument och således är relevansen oberoende av var i resultatlistan
+dokumentet ligger.
+Med
+en
+begränsad
+mängd
+träningsdata
+är
+det
+dock
+naturligt
+att
+relevansmodellen inte presterar i den utsträckning som den är kapabel till och
+risken ökar att relevansmodellen inte vet hur relevant ett dokument är då den
+inte tidigare sett sökfrågan. Detta borde resultera i att både förutsägelsegraden
+och träﬀsäkerheten minskar. Dock är förutsägelsegraden hög och det är 16%
+av valideringsfallen som det klickade dokumentet inte blev högre rankat av
+relevansmodellen än av Apache Solr. Detta tyder på att de klickloggar jag har
+tillgång till inte har någon större spridning bland sökfrågorna och klicken.
+5.4
+Rekommendation av parametervärden
+Till Netlight rekommenderas β = 1 för en snabb inlärning från träningsdata. Vid
+en snabb inlärningshastighet presterar fullmodellen bäst, men för att även få ta del
+av oberoendemodellen bör λ antas till värdet 0.8. Gällande relevanceBoost bör
+användaren själv få välja mellan 0 och 10 samt värdet −1 beroende på hur mycket
+denne vill lita på relevansmodellen.
+5.5
+Nästa steg
+Ett vidare steg som bör tas är att spara mer loggdata, som till exempel hur
+resultatlistan ser ut för en användare. Ty då ﬁnns möjligheten att utveckla denna
+relevansmodell ytterligare genom att utnyttja vilka dokument som var närliggande
+vid sökfrågetillfället. Därefter kan relevansmodellen utvecklas genom att tillföra
+sökfrågekedjor och sessioner för att få bättre träﬀsäkerhet i resultatet.
+41
+Litteraturförteckning
+[1]
+Pia Borlund. The concept of relevance in IR. Journal of The American Society
+for Information Science and Technology, 54:913–925, 2003.
+[2]
+Nick Craswell, Onno Zoeter, Michael Taylor, and Bill Ramsey. An experimental
+comparison of click position-bias models. In Web Search and Data Mining,
+pages 87–94, 2008.
+[3]
+Georges Dupret and Ciya Liao.
+A model to estimate intrinsic document
+relevance from the clickthrough logs of a web search engine. In Proceedings
+of the third ACM international conference on Web search and data mining,
+WSDM ’10, pages 181–190, New York, NY, USA, 2010. ACM.
+[4]
+Apache
+Software
+Foundation.
+Similarity
+(lucene
+3.5.0
+api).
+http:
+//lucene.apache.org/core/old_versioned_docs/versions/3_5_0/api/
+all/org/apache/lucene/search/Similarity.html, (2012-02-14).
+[5]
+The Apache Software Foundation.
+Apache lucene - apache solr.
+http:
+//lucene.apache.org/solr/index.html, (2012-10-08).
+[6]
+The Apache Software Foundation. Apache lucene - scoring. http://lucene.
+apache.org/core/old_versioned_docs/versions/3_5_0/scoring.html,
+(2012-10-08).
+[7]
+Thorsten Joachims, Laura Granka, Bing Pan, Helene Hembrooke, and Geri
+Gay.
+Accurately interpreting clickthrough data as implicit feedback.
+In
+Proceedings of the 28th annual international ACM SIGIR conference on
+Research and development in information retrieval, SIGIR ’05, pages 154–161,
+New York, NY, USA, 2005. ACM.
+[8]
+Yuanhua Lv and ChengXiang Zhai. Adaptive relevance feedback in information
+retrieval.
+In Proceedings of the 18th ACM conference on Information and
+knowledge management, CIKM ’09, pages 255–264, New York, NY, USA, 2009.
+ACM.
+[9]
+Christopher
+D.
+Manning,
+Prabhakar
+Raghavan,
+and
+Hinrich
+Schütze.
+Introduction to information retrieval. Cambridge University Press, New York,
+2008.
+43
+LITTERATURFÖRTECKNING
+[10] Filip Radlinski and Thorsten Joachims. Query chains: Learning to rank from
+implicit feedback. pages 239–248, 2005.
+[11] Juan Ramos. Using tf-idf to determine word relevance in document queries,
+1999.
+[12] C. J. Van Rijsbergen. Information Retrieval. Butterworth-Heinemann, Newton,
+MA, USA, 2nd edition, 1979.
+[13] S.E. Robertson and K. Sparck Jones. Relevance weighting of search terms.
+Journal of the American Society for Information Science Volume 27, pages
+129–146, May-June 1976.
+[14] Solr
+Wiki.
+Solr
+relevancy
+faq.
+http://wiki.apache.org/solr/
+SolrRelevancyFAQ, (2012-06-18).
+[15] Ding Zhou, Levent Bolelli, Jia Li, C. Lee Giles, and Hongyuan Zha. Learning
+user clicks in web search. In IJCAI, pages 1162–1167, 2007.
+44
+Bilaga A
+Samtliga resultat
+Nedan återﬁnns samtliga ﬁgurer och tabeller om hur relevansmodellen beter sig
+gällande förutsägelsegrad och träﬀsäkerhet.
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+97
+98
+99
+100
+β = 1, 10, 100 och 1000
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+97
+98
+99
+100
+β = 5
+%
+Figur A.1. Förutsägelsegrad
+λ
+β
+0.0
+0.2
+0.5
+0.8
+1.0
+1
+98.48 %
+98.56 %
+98.56 %
+98.56 %
+98.56 %
+5
+98.48 %
+98.56 %
+98.56 %
+98.48 %
+98.56 %
+10
+98.48 %
+98.56 %
+98.56 %
+98.56 %
+98.56 %
+100
+98.48 %
+98.56 %
+98.56 %
+98.56 %
+98.56 %
+1000
+98.48 %
+98.56 %
+98.56 %
+98.56 %
+98.56 %
+Tabell A.1. Median för förutsägelsegraden.
+45
+BILAGA A. SAMTLIGA RESULTAT
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 1
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 10
+%
+Figur A.2. Träﬀsäkerhet för β = 1
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 100
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = −1
+%
+Figur A.3. Träﬀsäkerhet för β = 1
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 1
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 10
+%
+Figur A.4. Träﬀsäkerhet för β = 5
+46
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 100
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = −1
+%
+Figur A.5. Träﬀsäkerhet för β = 5
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 1
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 10
+%
+Figur A.6. Träﬀsäkerhet för β = 10
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 100
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = −1
+%
+Figur A.7. Träﬀsäkerhet för β = 10
+47
+BILAGA A. SAMTLIGA RESULTAT
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 1
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 10
+%
+Figur A.8. Träﬀsäkerhet för β = 100
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 100
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = −1
+%
+Figur A.9. Träﬀsäkerhet för β = 100
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 1
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 10
+%
+Figur A.10. Träﬀsäkerhet för β = 1000
+48
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = 100
+%
+0.0
+0.2
+0.5
+0.8
+1.0
+λ
+20
+40
+60
+80
+relevanceBoost = −1
+%
+Figur A.11. Träﬀsäkerhet för β = 1000
+λ
+β
+0.0
+0.2
+0.5
+0.8
+1.0
+1
+58.93 %
+68.20 %
+72.17 %
+73.95 %
+74.21 %
+5
+52.50 %
+56.47 %
+59.38 %
+61.99 %
+62.91 %
+10
+47.95 %
+50.96 %
+52.51 %
+54.53 %
+55.61 %
+100
+33.55 %
+33.20 %
+33.32 %
+30.67 %
+27.86 %
+1000
+30.50 %
+29.15 %
+27.21 %
+23.83 %
+19.01 %
+Tabell A.2. Median för träﬀsäkerheten när relevanceBoost = 1.
+λ
+β
+0.0
+0.2
+0.5
+0.8
+1.0
+1
+77.56 %
+81.69 %
+82.15 %
+83.02 %
+82.79 %
+5
+76.90 %
+79.50 %
+80.82 %
+82.12 %
+82.33 %
+10
+76.04 %
+78.14 %
+79.53 %
+80.39 %
+80.64 %
+100
+63.36 %
+63.30 %
+61.33 %
+61.93 %
+59.91 %
+1000
+46.80 %
+46.43 %
+43.57 %
+40.31 %
+28.72 %
+Tabell A.3. Median för träﬀsäkerheten när relevanceBoost = 10.
+λ
+β
+0.0
+0.2
+0.5
+0.8
+1.0
+1
+81.90 %
+83.83 %
+84.12 %
+84.33 %
+84.33 %
+5
+81.90 %
+83.41 %
+83.67 %
+84.12 %
+84.10 %
+10
+81.90 %
+82.98 %
+83.66 %
+84.12 %
+84.10 %
+100
+79.96 %
+80.18 %
+80.13 %
+81.26 %
+82.55 %
+1000
+67.43 %
+67.43 %
+67.65 %
+66.24 %
+60.40 %
+Tabell A.4. Median för träﬀsäkerheten när relevanceBoost = 100.
+49
+BILAGA A. SAMTLIGA RESULTAT
+λ
+β
+0.0
+0.2
+0.5
+0.8
+1.0
+1
+82.13 %
+83.88 %
+84.33 %
+84.33 %
+84.33 %
+5
+82.13 %
+83.84 %
+83.67 %
+84.33 %
+84.33 %
+10
+82.13 %
+83.40 %
+83.87 %
+84.54 %
+84.33 %
+100
+82.13 %
+82.14 %
+83.19 %
+83.66 %
+84.33 %
+1000
+82.13 %
+82.34 %
+82.34 %
+82.12 %
+84.33 %
+Tabell A.5. Median för träﬀsäkerheten när relevanceBoost = −1.
+50
+www.kth.se
+Powered by TCPDF (www.tcpdf.org)
