@@ -1,47 +1,47 @@
 # 🇸🇪 Swedish Language Complexity Analysis 📊
 
-Welcome to our exciting project that compares various methods for calculating language complexity in Swedish! We're mixing traditional techniques with cutting-edge Large Language Models (LLMs) to bring you the most comprehensive analysis. Let's dive in! 🏊‍♂️
+Welcome to our comprehensive project that compares various methodologies for calculating language complexity in Swedish. This research combines traditional linguistic techniques with state-of-the-art Large Language Models (LLMs) to provide a thorough analysis. 🔬
 
 ## 🗂 Project Structure
 
-- `data/`: Our treasure trove of Swedish text samples for analysis 📚
-- `src/`: The heart of our project - all the source code for complexity analysis 💻
-- `results/`: Where the magic happens - output directory for our amazing analysis results ✨
+- `data/`: Repository of Swedish text samples for analysis 📚
+- `results/`: Output directory for analysis results and visualizations 📈
 
-## 🛠 Usage
+## 🛠 Methodology
 
-1. Set up your secret lab:
+1. Environment setup:
    ```
    pip install -r requirements.txt
    ```
 
-2. Run the analysis and watch the magic unfold:
+2. Data analysis:
    ```
-   python src/main.py
+   python calculate_complexity.py
+   python analyse_results.py
    ```
 
-3. Discover the results in the `results/` directory - prepare to be amazed! 🎉
+3. Results interpretation: Examine the output in the `results/` directory 🔍
 
-## 🧠 What's Inside?
+## 🧠 Core Components
 
-- `llm_complexity.py`: Our AI-powered complexity analyzer using GPT-4 and traditional LIX score calculation for Swedish texts. It's like having a linguist and a robot working together! 🤖🧑‍🔬
+- `llm_complexity.py`: Implements AI-driven complexity analysis using GPT-4 and traditional LIX score calculation for Swedish texts. This module combines computational linguistics with machine learning approaches. 🤖🧑‍🔬
 
-- `calculate_complexity.py`: The brains of our operation, containing various complexity metric calculations. It's crunching numbers faster than you can say "komplicerad"! 🧮
+- `calculate_complexity.py`: Contains algorithms for various complexity metric calculations, providing a multi-faceted approach to text analysis. 🧮
 
-- `analyse_results.py`: Our data detective, analyzing the complexity results and generating insightful summaries. It's connecting the dots and painting the big picture! 🕵️‍♀️🎨
+- `analyse_results.py`: Performs statistical analysis on the complexity results, generating comprehensive summaries and insights. 📊
 
-- `complexity_analysis.csv`: The raw results of our analysis - a goldmine of data waiting to be explored! 💎
+- `complexity_analysis.csv`: Raw data output from our analysis, serving as a foundation for further research. 💾
 
-- `complexity_summary.txt`: The highlight reel of our analysis, showcasing the most complex, least complex, and middle-of-the-road texts. It's like the Oscars, but for text complexity! 🏆
+- `complexity_summary.txt`: Curated report highlighting the most complex, least complex, and median complexity texts, offering a spectrum of linguistic complexity. 📋
 
-## 🚀 Get Involved
+## 🚀 Contribution Opportunities
 
-We're always looking for fellow language enthusiasts and code wizards to join our quest for understanding Swedish text complexity. Feel free to fork, star, and contribute to this project. Together, we can unravel the mysteries of the Swedish language! 🇸🇪✨
+We welcome contributions from linguists, computer scientists, and language enthusiasts. This interdisciplinary project aims to advance our understanding of Swedish text complexity. Interested researchers are encouraged to fork, star, and contribute to this project. 🇸🇪✨
 
-Remember, in the world of language complexity, we're not just crunching numbers - we're decoding the very essence of communication. So put on your linguistic hat, fire up your code editor, and let's make language analysis fun! 🎈🥳
+Our research goes beyond mere quantitative analysis; we're exploring the nuances of communication and linguistic structures. We invite you to join us in this scholarly pursuit of language complexity analysis. 🎓
 
-## 📜 License
+## 📜 Licensing
 
-This project is licensed under the MIT License - see the LICENSE file for details. Share the knowledge, spread the love! ❤️
+This project is distributed under the MIT License. Please refer to the LICENSE file for full details. We encourage the sharing and adaptation of this work in the spirit of open science. ❤️
 
-Happy analyzing! 🎉🎊
+We look forward to your engagement with this research! 🎉🔬
