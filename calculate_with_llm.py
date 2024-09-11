@@ -1,6 +1,7 @@
 import os
 import csv
 import json
+import re
 from groq import Groq
 from dotenv import load_dotenv
 
@@ -43,11 +44,12 @@ def measure_complexity(text):
     Long words are defined as words with more than 6 characters.
     Text: {text}
 
-    Please format your response as a JSON object with the following structure, when you have your answer, end your response by writing out the answer in the following format RESPONSE:
+    Please provide the result in JSON format with the following structure:
     {{
-        "score": [numerical score],
-        "explanation": [your explanation]
-    }}"""
+        "score": <LIX score>,
+        "explanation": "<explanation of the calculation>"
+    }}
+    """
 
     return call_groq_api(prompt)
 
@@ -56,11 +58,12 @@ def measure_add(text):
 
 Text: {text}
 
- Please format your response as a JSON object with the following structure, when you have your answer, end your response by writing out the answer in the following format RESPONSE:
-{{
-    "score": [numerical score],
-    "explanation": [your explanation of the calculation method]
-}}"""
+    Please provide the result in JSON format with the following structure:
+    {{
+        "score": <ADD score>,
+        "explanation": "<explanation of the calculation>"
+    }}
+    """
 
     return call_groq_api(prompt)
 
@@ -68,32 +71,34 @@ def parse_result(result):
     if result is None:
         raise ValueError("API response is None")
     try:
-        if "RESPONSE:" in result:
-            _, json_str = result.split("RESPONSE:", 1)
-        else:
-            json_str = result
-        result_json = json.loads(json_str.strip())
-        score = float(result_json['score'])
-        explanation = result_json['explanation']
+        json_result = json.loads(result)
+        score = float(json_result['score'])
+        explanation = json_result['explanation']
     except (json.JSONDecodeError, KeyError, ValueError) as e:
-        raise ValueError(f"Error parsing API response: {str(e)}")
+        print(f"Error parsing JSON response: {str(e)}")
+        print("Raw response:", result)
+        return None, None
     return score, explanation
 
 def run_analysis(text, filename):
     complexity_result = measure_complexity(text)
     add_result = measure_add(text)
-    print(complexity_result)
-    print(add_result)
+    print("Complexity result:", complexity_result)
+    print("ADD result:", add_result)
     
-    try:
-        complexity_score, complexity_explanation = parse_result(complexity_result)
-        add_score, add_explanation = parse_result(add_result)
-    except ValueError as e:
-        print(f"Error parsing API response: {str(e)}")
-        return
+    complexity_score, complexity_explanation = parse_result(complexity_result)
+    add_score, add_explanation = parse_result(add_result)
     
     # Ensure the results directory exists
     os.makedirs('results', exist_ok=True)
+    
+    # Save all responses to a file
+    with open('results/raw_api_responses.txt', 'a') as f:
+        f.write(f"File: {filename}\n")
+        f.write(f"Text: {text}\n")
+        f.write(f"Complexity result: {complexity_result}\n")
+        f.write(f"ADD result: {add_result}\n")
+        f.write("\n---\n\n")
     
     # Save complexity results
     with open('results/complexity_analysis_llm.csv', 'a', newline='') as f:
@@ -110,8 +115,40 @@ def run_analysis(text, filename):
         writer.writerow([filename, text, add_score, add_explanation])
     
     print(f"Results saved to results/complexity_analysis_llm.csv and results/add_analysis_llm.csv")
+    print(f"Raw API responses saved to results/raw_api_responses.txt")
 
 # Example usage
+# if __name__ == "__main__":
+#     sample_text = "The quantum entanglement of particles exhibits non-local correlations that challenge our classical intuitions about reality."
+#     run_analysis(sample_text, "sample.txt")
+
+
+
+def process_data_directory(data_dir):
+    for root, dirs, files in os.walk(data_dir):
+        for file in files:
+            if file.endswith('.txt'):
+                file_path = os.path.join(root, file)
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    text = f.read()
+                
+                # Take a chunk of 1000 characters and extend to the next period
+                if len(text) <= 1000:
+                    subpart = text
+                else:
+                    subpart = text[:1000]
+                    last_period = subpart.rfind('.')
+                    if last_period != -1:
+                        subpart = text[:last_period + 1]
+                    else:
+                        # If no period is found, take the whole chunk
+                        subpart = text[:1000]
+                
+                print(f"Processing file: {file}")
+                run_analysis(subpart, file)
+
 if __name__ == "__main__":
-    sample_text = "The quantum entanglement of particles exhibits non-local correlations that challenge our classical intuitions about reality."
-    run_analysis(sample_text, "sample.txt")
+    data_directory = "data"
+    process_data_directory(data_directory)
+    print("Analysis completed for all files in the data directory.")
+
