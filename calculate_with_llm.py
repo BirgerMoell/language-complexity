@@ -33,6 +33,24 @@ def call_groq_api(prompt):
         return None
 
 def measure_complexity(text):
+    # prompt = f"""Analyze the complexity of the following text with the following formula:
+
+    # Calculate the LIX (Läsbarhetsindex) score for Swedish text.
+    
+    # LIX = A + B, where:
+    # A = number of words / number of sentences
+    # B = (number of long words * 100) / number of words
+    
+    # Long words are defined as words with more than 6 characters.
+    # Text: {text}
+
+    # Please provide the result in JSON format with the following structure:
+    # {{
+    #     "score": <LIX score>,
+    #     "explanation": "<explanation of the calculation>"
+    # }}
+    # """
+
     prompt = f"""Analyze the complexity of the following text with the following formula:
 
     Calculate the LIX (Läsbarhetsindex) score for Swedish text.
@@ -41,29 +59,30 @@ def measure_complexity(text):
     A = number of words / number of sentences
     B = (number of long words * 100) / number of words
     
-    Long words are defined as words with more than 6 characters.
+    Long words are defined as words with more than 6 characters. Provide the LIX score as a floating point number and nothing else.
     Text: {text}
+     DO NOT WRITE OUT ANYTHING EXPECT THE LIX SCORE. JUST CALCULATE THE LIX SCORE AND WRITE IT OUT!
 
-    Please provide the result in JSON format with the following structure:
-    {{
-        "score": <LIX score>,
-        "explanation": "<explanation of the calculation>"
-    }}
+    
     """
+
 
     return call_groq_api(prompt)
 
 def measure_add(text):
-    prompt = f"""Analyze the following text and calculate its Average Dependency Distance (ADD). ADD is a measure of syntactic complexity that considers the average distance between syntactically related words in a sentence. Provide the ADD score and a brief explanation of how you calculated it.
+#     prompt = f"""Analyze the following text and calculate its Average Dependency Distance (ADD). ADD is a measure of syntactic complexity that considers the average distance between syntactically related words in a sentence. Provide the ADD score and a brief explanation of how you calculated it.
 
-Text: {text}
+# Text: {text}
 
-    Please provide the result in JSON format with the following structure:
-    {{
-        "score": <ADD score>,
-        "explanation": "<explanation of the calculation>"
-    }}
-    """
+#     Please provide the result in JSON format with the following structure:
+#     {{
+#         "score": <ADD score>,
+#         "explanation": "<explanation of the calculation>"
+#     }}
+#     """
+    prompt = f"""Analyze the following text and calculate its Average Dependency Distance (ADD). ADD is a measure of syntactic complexity that considers the average distance between syntactically related words in a sentence. Provide the ADD score as a floating point number and nothing else.
+        
+        Text: {text} DO NOT WRITE OUT ANYTHING EXPECT THE ADD SCORE. JUST CALCULATE THE ADD SCORE AND WRITE IT OUT!"""
 
     return call_groq_api(prompt)
 
@@ -86,14 +105,14 @@ def run_analysis(text, filename):
     print("Complexity result:", complexity_result)
     print("ADD result:", add_result)
     
-    complexity_score, complexity_explanation = parse_result(complexity_result)
-    add_score, add_explanation = parse_result(add_result)
+    # complexity_score, complexity_explanation = parse_result(complexity_result)
+    # add_score, add_explanation = parse_result(add_result)
     
     # Ensure the results directory exists
     os.makedirs('results', exist_ok=True)
     
     # Save all responses to a file
-    with open('results/raw_api_responses.txt', 'a') as f:
+    with open('results/raw_api_responses_short.txt', 'a') as f:
         f.write(f"File: {filename}\n")
         f.write(f"Text: {text}\n")
         f.write(f"Complexity result: {complexity_result}\n")
@@ -101,18 +120,20 @@ def run_analysis(text, filename):
         f.write("\n---\n\n")
     
     # Save complexity results
-    with open('results/complexity_analysis_llm.csv', 'a', newline='') as f:
+    with open('results/complexity_analysis_llm_short.csv', 'a', newline='') as f:
         writer = csv.writer(f)
         if f.tell() == 0:  # Write header if file is empty
             writer.writerow(['file', 'text', 'complexity_score', 'explanation'])
-        writer.writerow([filename, text, complexity_score, complexity_explanation])
+        #writer.writerow([filename, text, complexity_score, complexity_explanation])
+        writer.writerow([filename, text, complexity_result])
     
     # Save ADD results
-    with open('results/add_analysis_llm.csv', 'a', newline='') as f:
+    with open('results/add_analysis_llm_short.csv', 'a', newline='') as f:
         writer = csv.writer(f)
         if f.tell() == 0:  # Write header if file is empty
             writer.writerow(['file', 'text', 'add_score', 'explanation'])
-        writer.writerow([filename, text, add_score, add_explanation])
+        writer.writerow([filename, text, add_result])
+        #writer.writerow([filename, text, add_score, add_explanation])
     
     print(f"Results saved to results/complexity_analysis_llm.csv and results/add_analysis_llm.csv")
     print(f"Raw API responses saved to results/raw_api_responses.txt")
