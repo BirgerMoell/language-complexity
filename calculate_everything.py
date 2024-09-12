@@ -125,7 +125,7 @@ def extract_score(result, score_type):
         return None
 
 def run_analysis(text, filename):
-    run_name = "calculator_prompt"
+    run_name = "calculator_prompt_birger"
     complexity_result = measure_complexity(text)
     add_result = measure_add(text)
     print("Complexity result:", complexity_result)
