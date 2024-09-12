@@ -5,6 +5,9 @@ import re
 from groq import Groq
 from dotenv import load_dotenv
 from tqdm import tqdm
+from llm_complexity import calculate_lix_score
+from calculate_add import calculate_average_dependency_distance
+import time
 
 # Load environment variables
 load_dotenv()
@@ -52,26 +55,32 @@ ADD_PROMPT_NEW = """Analyze the following text and calculate its Average Depende
 Text: {text} DO NOT WRITE OUT ANYTHING EXPECT THE ADD SCORE. JUST CALCULATE THE ADD SCORE AND WRITE IT OUT!"""
 
 
-def call_groq_api(prompt):
-    try:
-        completion = client.chat.completions.create(
-            model="llama-3.1-70b-versatile",
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ],
-            temperature=1,
-            max_tokens=1024,
-            top_p=1,
-            stream=False,
-            stop=None,
-        )
-        return completion.choices[0].message.content
-    except Exception as e:
-        print(f"Error calling Groq API: {str(e)}")
-        return None
+def call_groq_api(prompt, max_retries=3, delay=5):
+    for attempt in range(max_retries):
+        try:
+            completion = client.chat.completions.create(
+                model="llama-3.1-70b-versatile",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ],
+                temperature=1,
+                max_tokens=1024,
+                top_p=1,
+                stream=False,
+                stop=None,
+            )
+            return completion.choices[0].message.content
+        except Exception as e:
+            print(f"Error calling Groq API (attempt {attempt + 1}/{max_retries}): {str(e)}")
+            if attempt < max_retries - 1:
+                print(f"Retrying in {delay} seconds...")
+                time.sleep(delay)
+            else:
+                print("Max retries reached. Returning None.")
+                return None
 
 def measure_complexity(text):
     return call_groq_api(COMPLEXITY_PROMPT.format(text=text))
@@ -108,14 +117,18 @@ def extract_score(result, score_type):
         return None
 
 def run_analysis(text, filename):
-    run_name = "prompt_3_short"
+    run_name = "prompt_3_short_everything"
     complexity_result = measure_complexity(text)
     add_result = measure_add(text)
     print("Complexity result:", complexity_result)
     print("ADD result:", add_result)
     
-    lix_score = extract_score(complexity_result, "LIX_SCORE")
-    add_score = extract_score(add_result, "ADD_SCORE")
+    lix_score = extract_score(complexity_result, "LIX_SCORE") if complexity_result else None
+    add_score = extract_score(add_result, "ADD_SCORE") if add_result else None
+    
+    # Calculate LIX and ADD using local functions
+    local_lix_score = calculate_lix_score(text)
+    local_add_score = calculate_average_dependency_distance(text)
     
     # Ensure the results directory exists
     os.makedirs('results', exist_ok=True)
@@ -126,25 +139,29 @@ def run_analysis(text, filename):
         f.write(f"ADD Prompt: {ADD_PROMPT}\n")
         f.write(f"File: {filename}\n")
         f.write(f"Text: {text}\n")
-        f.write(f"Complexity result: {complexity_result}\n")
-        f.write(f"ADD result: {add_result}\n")
+        f.write(f"Complexity result (LLM): {complexity_result}\n")
+        f.write(f"ADD result (LLM): {add_result}\n")
+        f.write(f"Complexity result (Local): {local_lix_score}\n")
+        f.write(f"ADD result (Local): {local_add_score}\n")
         f.write("\n---\n\n")
     
     # Save complexity results
-    with open(f'results/complexity_analysis_llm_{run_name}.csv', 'a', newline='') as f:
+    with open(f'results/complexity_analysis_{run_name}.csv', 'a', newline='') as f:
         writer = csv.writer(f)
         if f.tell() == 0:  # Write header if file is empty
-            writer.writerow(['file', 'complexity_score'])
-        writer.writerow([filename, lix_score])
+            writer.writerow(['file', 'llm_complexity_score', 'local_complexity_score', 'difference', 'llm_explanation'])
+        difference = abs(lix_score - local_lix_score) if lix_score is not None and local_lix_score is not None else "N/A"
+        writer.writerow([filename, lix_score, local_lix_score, difference, complexity_result])
     
     # Save ADD results
-    with open(f'results/add_analysis_llm_{run_name}.csv', 'a', newline='') as f:
+    with open(f'results/add_analysis_{run_name}.csv', 'a', newline='') as f:
         writer = csv.writer(f)
         if f.tell() == 0:  # Write header if file is empty
-            writer.writerow(['file', 'add_score'])
-        writer.writerow([filename, add_score])
+            writer.writerow(['file', 'llm_add_score', 'local_add_score', 'difference', 'llm_explanation'])
+        difference = abs(add_score - local_add_score) if add_score is not None and local_add_score is not None else "N/A"
+        writer.writerow([filename, add_score, local_add_score, difference, add_result])
     
-    print(f"Results saved to results/complexity_analysis_llm_{run_name}.csv and results/add_analysis_llm_{run_name}.csv")
+    print(f"Results saved to results/complexity_analysis_{run_name}.csv and results/add_analysis_{run_name}.csv")
     print(f"Raw API responses saved to results/raw_api_responses_{run_name}.txt")
 
 # Example usage
