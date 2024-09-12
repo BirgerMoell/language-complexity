@@ -32,7 +32,7 @@ To do this you need to do the following.
 2. Calculate the number of sentences
 3. Calculate the number of long words.
 4. Calculate A as the number of words / number of sentences
-5. Calculate B as the number of long words / number of words
+5. Calculate B as (the number of long words*100) / number of words
 
 Use a calculator to double check and make sure that your calculations are correct. End your report by providing the LIX SCORE in this format
 LIX_SCORE: 
