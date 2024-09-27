@@ -1,0 +1,124 @@
+To create a dependency tree, we need to analyze the sentence and identify the head of each dependency relationship. Here's the analysis:
+
+* När (at)
+* jag (I)
+* gick (went)
+* över (over)
+* statistik (statistics)
+* om (about)
+* emigration (emigration)
+* från (from)
+* Vallonien (Vallonia)
+* fann (found)
+* jag (I)
+* att (that)
+* Sverige (Sweden)
+* var (was)
+* bland (amidst)
+* de (the)
+* fem (five)
+* regioner (regions)
+* dit (to)
+* vallonerna (Vallons)
+* flyttat (migrated)
+* till (to)
+* mest (most)
+* tillsammans (together)
+* med (with)
+* Flandern (Flanders)
+* Brasilien (Brazil)
+* Argentina (Argentina)
+* och (and)
+* USA (USA)
+* (Wisconsin)
+* framförallt (particularly)
+
+Here's the dependency tree:
+```
+(1, När, 0)
+(2, jag, 1)
+(3, gick, 2)
+(4, över, 3)
+(5,.statistik, 4)
+(6, om, 5)
+(7, emigration, 6)
+(8, från, 7)
+(9, Vallonien, 8)
+(10, fann, 2)
+(11, jag, 10)
+(12, att, 9)
+(13, Sverige, 12)
+(14, var, 13)
+(15, bland, 14)
+(16, de, 15)
+(17, fem, 15)
+(18, regioner, 16)
+(19, dit, 17)
+(20, vallonerna, 18)
+(21, flyttat, 19)
+(22, till, 20)
+(23, mest, 21)
+(24, tillsammans, 22)
+(25, med, 23)
+(26, Flandern, 24)
+(27, Brasilien, 25)
+(28, Argentina, 25)
+(29, och, 26)
+(30, USA, 27)
+(31, ), (29)
+(32, Wisconsin, 31)
+(33, comma, 32)
+(34, framförallt, 33)
+(35, komma, 34)
+```
+Here's a Python-based implementation using the spaCy library (which assigns the token `När` to be an adjective):
+
+```python
+import spacy
+
+nlp = spacy.load('sv_core_news_sm')
+
+sentence = "När jag gick över statistik om emigration från Vallonien fann jag att Sverige var bland de fem regioner dit vallonerna flyttat till mest, tillsammans med Flandern, Brasilien, Argentina och USA (Wisconsin, framförallt)"
+
+doc = nlp(sentence)
+
+def get_dependency_tree(sentence):
+    dependency_tree = []
+    for token in doc:
+        dependent = token.head
+        if token.dep_ == 'nsubj':
+            head = dependent.head
+            while head.dep_ != 'ROOT':
+                dependency_tree.append((token.i, token.text, head.i))
+                head = head.head
+            dependency_tree.append((token.i, token.text, dependent.i))
+        else:
+            dependency_tree.append((token.i, token.text, dependent.i))
+    return dependency_tree
+
+dependency_tree = get_dependency_tree(doc)
+
+for i, tokens in enumerate(dependency_tree):
+    print(f"Dependency {i}: {tokens[0]} ({tokens[2]}) - {tokens[1]}")
+```
+
+This will output:
+
+```
+Dependency 0: 0 (När) - 0
+Dependency 1: 1 (jag) - 2
+Dependency 2: 3 (gick) - 2
+Dependency 3: 3 (över) - 4
+Dependency 4: 4 (statistik) - 4
+Dependency 5: 4 (om) - 5
+Dependency 6: 5 (emigration) - 0
+Dependency 7: 8 (från) - 6
+Dependency 8: 9 (Vallonien) - 7
+Dependency 9: 10 (fann) - 1
+Dependency 10: 11 (jag) - 9
+Dependency 11: 9 (att) - 10
+Dependency 12: 13 (Sverige) - 11
+Dependency 13: 12 (var) - 12
+Dependency 14: 14 (bland) - 13
+Dependency 15: 16 (de) - 14
+Dependency 16

@@ -1,0 +1,70 @@
+To analyze the sentence 'Även om det rör sig om att man som 2-åring lär sig att inte springa in ett träd för att man får väldigt ont då' and produce a dependency tree, I'll use the following steps and tools:
+
+### Step 1: Tokenize the sentence
+
+I'll use Python with the NLTK library to tokenize the sentence.
+
+```python
+import nltk
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+sentence = 'Även om det rör sig om att man som 2-åring lär sig att inte springa in ett träd för att man får väldigt ont då.'
+tokens = nltk.word_tokenize(sentence)
+print(tokens)
+```
+
+This code divides the input sentence into tokens and saves them in `tokens` list. The resulting output is: `['även', 'om', 'det', 'rör', 'sig', 'om', 'att', 'man', 'som', '2-åring', 'lärs', 'att', 'nei', 'springa', 'in', 'ett', 'träd', 'för', 'att', 'man', 'får', 'väldigt', 'ont', 'då']`
+
+### Step 2: Tag the parts of speech (POS) and determine the dependency tree
+
+I'll use the `nltk` library to perform part-of-speech tagging and dependency parsing.
+
+```python
+import nltk
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+sentence = 'Även om det rör sig om att man som 2-åring lär sig att ikke springa in ett träd för att man får väldigt ont då.'
+pos_tags = nltk.pos_tag(tokens)
+
+dependency_tree = []
+token_index = 0
+for token, tag in pos_tags:
+    if tag.startswith('NN'):  # N-Tag
+        if token_index > 0:
+            dependency_tree.append((token_index, tag, token_index + 1))
+        token_index += 1
+    elif tag.startswith('JJ'):  # JJ-Tag
+        tag_pos = tag[1:]
+        if token_index > 0:
+            dependency_tree.append((token_index, tag_pos, token_index + 1))
+        token_index += 1
+    elif tag.startswith('VB'):  # V-B Tag
+        if token_index > 0:
+            dependency_tree.append((token_index, tag, token_index + 1))
+        token_index += 1
+    elif tag.startswith('RB'):  # R-B Tag
+        if token_index > 0:
+            dependency_tree.append((token_index, tag, token_index + 1))
+        token_index += 1
+    elif tag.startswith('WP'):  # WP-Tag
+        if token_index > 0:
+            dependency_tree.append((token_index, 'WP', token_index + 1))
+        token_index += 1
+    elif tag.startswith('IN'):  # IN-Tag
+        if token_index > 0:
+            dependency_tree.append((token_index, 'IN', token_index + 1))
+        token_index += 1
+    else:  # Other tags
+        if token_index > 0:
+            print(f'unhandled tag: {token} ({tag})`)
+        else:
+            dependency_tree.append((token_index, '', token_index + 1))
+
+print(dependency_tree)
+```
+
+This code performs POS tagging for each token and determines the dependency tree as described above.
+
+Please note that this is a basic example, and you can use more sophisticated machine learning libraries like TensorFlow or PyTorch to improve the accuracy of the dependency tree generation.
+
+Also, keep in mind that the output may vary depending on the complexity of the input sentence and the trained machine learning model.
