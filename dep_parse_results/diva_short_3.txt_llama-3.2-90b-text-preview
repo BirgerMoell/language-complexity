@@ -1,0 +1,94 @@
+Here's a step-by-step breakdown of the dependency tree for the given sentence:
+
+1. Långt [adverb] modifies the verb började
+2. senare [adverb] modifies the verb började
+3. började [verb] is the main verb (ROOT)
+4. en [determiner] modifies the noun resturang
+5. resturang [noun] is the object of the verb började
+6. , [punctuation] separates the main clause from the subordinate clause
+7. kallad [verb] is a passive participle describing the noun resturang
+8. som [subordinating conjunction] introduces the subordinate clause
+9. Bruno [proper noun] is the object of the verb kallad
+10. vid [preposition] introduces the location
+11. berget [noun] is the location
+12. Vezuvio [proper noun] is a noun phrase functioning as an object of the preposition
+13. , [punctuation] separates the subordinate clauses
+14. att [subordinating conjunction] introduces the subordinate clause
+15. lägga [verb] is the main verb of the subordinate clause
+16. tomater [noun], mozarella [noun], och [conjunction], persilja [noun] are objects of the verb lägga
+17. på [preposition] introduces the location
+18. , [punctuation] separates the clauses
+19. eller [conjunction] introduces the alternative
+20. om [subordinating conjunction] introduces the subordinate clause
+21. det [pronoun] is the subject of the verb var
+22. var [verb] is the main verb of the subordinate clause
+23. nån [determiner] modifies the noun annan krydda
+24. annan [adjective] modifies the noun krydda
+25. krydda [noun] is the object of the verb var
+26. . [punctuation] marks the end of the sentence
+
+Based on this analysis, here is the dependency tree:
+[(1, Långt, 3),
+ (2, senare, 3),
+ (3, började, 0),
+ (4, en, 5),
+ (5, resturang, 3),
+ (6, , 3),
+ (7, kallad, 5),
+ (8, som, 7),
+ (9, Bruno, 7),
+ (10, vid, 11),
+ (11, berget, 10),
+ (12, Vezuvio, 11),
+ (13, , 3),
+ (14, att, 15),
+ (15, lägga, 3),
+ (16, tomater, 15),
+ (17, , 15),  # remove
+ (18, mozarella, 15),
+ (19, och, 15),
+ (20, persilja, 15),
+ (21, på, 15),
+ (22, , 15),
+ (23, eller, 15),
+ (24, om, 25),
+ (25, var, 15),
+ (26, det, 25),
+ (27, nån, 28),
+ (28, annan, 29),
+ (29, krydda, 25)]
+
+But we need to make adjustments, modifying indices after item (17):
+ (16, tomater, 15),
+ (18, mozarella, 15),
+ (19, och, 20),#conjunction -> has a head that it is coordinating
+ (20, persilja, 15),
+ (21, på, 15),
+ (22, , 15), #remove, does not serve coordination
+ (18 is second in sequence so is an object due 'tomater' being the first and if it were coordinated with 'mozarella och persilja på', remove coordinates as said), 
+
+Thus, the modified result should be:
+
+
+ [(1, Långt, 3),
+ (2, senare, 3),
+ (3, började, 0),
+ (4, en, 5),
+ (5, resturang, 3),
+ (6, , 3),
+ (7, kallad, 5),
+ (8, som, 7),
+ (9, Bruno, 7),
+ (10, vid, 11),
+ (11, berget, 10),
+ (12, Vezuvio, 11),
+ (13, , 3),
+ (14, att, 15),
+ (15, lägga, 3),
+ (16, tomater, 15),
+ (17, mozarella, 20),
+ (18, och, 20),
+ (19, persilja, 20),
+ (20, persilja, 15),#no->make new proper order
+ (20 mozarella, och persilja  -> and lower order; reorder),
+ (
