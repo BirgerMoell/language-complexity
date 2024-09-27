@@ -6,11 +6,86 @@ from groq import Groq
 from dotenv import load_dotenv
 from tqdm import tqdm
 
+models = ["llama-3.2-1b-preview", "llama-3.2-3b-preview", "llama-3.2-11b-text-preview", "llama-3.2-90b-text-preview"]
+
 # Load environment variables
 load_dotenv()
 
+
+COMPLEXITY_PROMPT_NEW = """Analyze the complexity of the following text with the following formula:
+
+Calculate the LIX (Läsbarhetsindex) score for Swedish text.
+
+LIX = A + B, where:
+A = number of words / number of sentences
+B = (number of long words * 100) / number of words
+
+Long words are defined as words with more than 6 characters. Provide the LIX score as a floating point number and nothing else.
+Text: {text}
+DO NOT WRITE OUT ANYTHING EXPECT THE LIX SCORE. JUST CALCULATE THE LIX SCORE AND WRITE IT OUT!
+"""
+
+
 # Initialize Groq client
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+def calculate_lix_for_models(text, filename):
+    results = []
+    for model in models:
+        try:
+            response = client.chat.completions.create(
+                messages=[
+                    {
+                        "role": "user",
+                        "content": COMPLEXITY_PROMPT_NEW.format(text=text)
+                    }
+                ],
+                model=model,
+                temperature=0.0,
+                max_tokens=1000,
+            )
+            lix_score = response.choices[0].message.content.strip()
+            results.append((filename, lix_score, model))
+            
+            # Save detailed output
+            with open(f'results/lix_output_{model}.txt', 'a', encoding='utf-8') as f:
+                f.write(f"File: {filename}\n")
+                f.write(f"Model: {model}\n")
+                f.write(f"LIX Score: {lix_score}\n")
+                f.write(f"Raw API Response: {response.choices[0].message.content}\n\n")
+        
+        except Exception as e:
+            print(f"Error processing {filename} with {model}: {str(e)}")
+    
+    return results
+
+def process_long_sentences():
+    long_sentences_dir = "/Users/birgermoell/Documents/polymath/language_complexity/long_sentences"
+    results = []
+    subdirs = ['diva_short', 'mimers_brunn_short']
+    
+    for subdir in subdirs:
+        subdir_path = os.path.join(long_sentences_dir, subdir)
+        for filename in tqdm(os.listdir(subdir_path), desc=f"Processing {subdir}"):
+            if filename.endswith('.txt'):
+                filepath = os.path.join(subdir_path, filename)
+                with open(filepath, 'r', encoding='utf-8') as file:
+                    text = file.read()
+                
+                file_results = calculate_lix_for_models(text, f"{subdir}/{filename}")
+                results.extend(file_results)
+    
+    # Save results to CSV
+    with open('results/lix_analysis_all_models.csv', 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerow(['Filename', 'LIX Score', 'Model'])
+        writer.writerows(results)
+    
+    print("Analysis completed. Results saved to results/lix_analysis_all_models.csv")
+    print("Detailed outputs saved to results/lix_output_[model].txt files")
+
+if __name__ == "__main__":
+    process_long_sentences()
 
 # Prompts
 COMPLEXITY_PROMPT = """Analyze the complexity of the following text with the following formula:
@@ -25,19 +100,6 @@ Long words are defined as words with more than 6 characters.
 Text: {text}
 Write out your explanation for calculating the LIX score in detail. After you are done with reasoning. Write out your score in the following format:
 LIX_SCORE: 
-"""
-
-COMPLEXITY_PROMPT_NEW = """Analyze the complexity of the following text with the following formula:
-
-Calculate the LIX (Läsbarhetsindex) score for Swedish text.
-
-LIX = A + B, where:
-A = number of words / number of sentences
-B = (number of long words * 100) / number of words
-
-Long words are defined as words with more than 6 characters. Provide the LIX score as a floating point number and nothing else.
-Text: {text}
-DO NOT WRITE OUT ANYTHING EXPECT THE LIX SCORE. JUST CALCULATE THE LIX SCORE AND WRITE IT OUT!
 """
 
 
@@ -181,8 +243,9 @@ def process_data_directory(data_dir):
         print(f"\nProcessing file: {file_name}")
         run_analysis(subpart, file_name)
 
-if __name__ == "__main__":
-    data_directory = "data_short"
-    process_data_directory(data_directory)
-    print("Analysis completed for all files in the data directory.")
+# if __name__ == "__main__":
+#     data_directory = "data_short"
+#     process_data_directory(data_directory)
+#     print("Analysis completed for all files in the data directory.")
+
 
