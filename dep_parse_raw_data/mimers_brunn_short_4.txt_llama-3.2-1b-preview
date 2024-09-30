@@ -1,0 +1,99 @@
+To generate the dependency tree for the given sentence, we'll need to parse the sentence and then create the dependency tree directly from the parsed data. In Swedish, the sentence structure is relatively complex and flexible, but we can still aim to create a dependency tree.
+
+Given the complexity of the sentence, we'll use a simple parsing method that recognizes the general structure of typical Swedish sentences. Here's the start of the code (Simplified version that uses a basic recursive descent parser):
+
+```python
+import re
+
+# Define a simple parser for Swedish sentence structure
+class sentenceParser:
+    def __init__(self, sentence):
+        self.head = ""
+        self.body = []
+        self.parse(sentence)
+
+    def parse(self, sentence):
+        # Split the sentence into tokens
+        tokens = sentence.replace('.', '-').replace('!', '-').split('-')
+
+        # Check if the sentence simplifies to 'Jag'
+        if tokens == ['', 'Jag']:
+            # Append the matching token (no head)
+            self.head = ""
+        elif tokens == ['', 'ä']:
+            # Append the matching token (no head)
+            if re.match(r'[adler]', tokens[-1]).Groups()[0] == "ä":
+                self.head = "ä"
+            elif tokens[-1] in ['aldr', 'anar'] and self.head == "ä":
+                self.head = "a"
+            elif tokens[-1] in ['erle', 'ellr'] and self.head == "ä":
+                self.head = "e"
+            else:
+                self.head = "e"
+        elif re.match(r'[dav],', tokens[-1]).Groups()[0] == "av" and self.body and self.head:
+            # Append the matching token (matching)
+            self.body.append("")
+        elif re.match(r'[dav],', tokens[-1]).Groups()[0] not in ['av', 'ir', 'am', 're'] and self.head == "av":
+            # Append the matching token (matching)
+            self.body.append("")
+        elif self.head not in ['av', 'ir', 'am', 're']:
+            # Append the matching token (non-matching)
+            self.body.append("")
+        elif re.match(r'[av]', tokens[-1]).Groups()[0] == "ar":
+            # Append the non-matching token (non-matching)
+            self.body.append(re.sub(r'[av]', '', str(tokens[-1])))
+        elif re.match(r'[bms]', tokens[-1]).Groups()[0] == "im" and self.head == "im":
+            # Append the value token (value)
+            self.head = "im"
+        elif tokens[-1] in ['säft', 'äfsäter', 'eräter'] and self.head == "im":
+            # Append the replacement token (replacement)
+            self.head = "im"
+        elif len(self.body) >= 2 and self.head in ['av', 'ir', 'am']:
+            # Append the non-matching prefix token (prefix)
+            self.head = "prefix" + self.body[0]
+            self.body.pop(0)
+        elif len(self.body) >= 2 and self.head in ['ir', 'am']:
+            # Append the non-matching suffix token (suffix)
+            self.head = "suffix" + self.body[0]
+            self.body.pop(0)
+        if self.body:
+            # Create a subparser for the body
+            self.body_parser = sentenceParser(self.body)
+            # Set the dependency tree
+            self.dependencyTree = self.head + re.split(r'(\d+)$', self.body[0]) + ':' + self.body_parser.dependencyTree
+        else:
+            # Set a default head token
+            self.dependencyTree = self.head + ':\n'
+
+
+def generate_trees(input_sentence):
+    parser = sentenceParser(input_sentence)
+    global heads
+    heads = parser.head
+    parser = sentenceParser(parser.body)
+    global bodyParser
+    bodyParser = sentenceParser(parser.body)
+
+    # Reconstruct the dependency tree
+    generation = []
+    dfs_traversal(heads, 1, generation, bodyParser.dependencyTree)
+
+    # Reconstruct and process the subparsers
+    for subparser in bodyParser.dependencyTree:
+        generation2 = []
+        dfs_traversal(subparser, 0, generation2, head)
+        for subparser_data in generation2:
+            if subparser_data[1] == '':
+                subparser_data[1] = '-' + subparser_data[1]
+        generation.extend([subparser_data[0] for subparser_data in generation2 if subparser_data[1] != ''])
+
+
+def dfs_traversal(head, cur_level, data, tree_string):
+    # Code implementation for DFS traversal
+    if len(head) - 1 == 1:
+        sentence = ''
+        count = 0
+        for token in head:
+            sentence += token + ' '
+            count += 1
+       
