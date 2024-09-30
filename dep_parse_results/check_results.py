@@ -40,8 +40,10 @@ filenames = ['diva_short_1.txt',
 results = []
 for name in filenames:
     truth = read_triples_from_file(f'c:/GitHub/birger/language-complexity/dep_parse_ground_truth/{name}')
-    parse = read_triples_from_file(f'c:/GitHub/birger/language-complexity/dep_parse_results/{name}_llama-3.2-90b-text-preview')
-    results.append( compute_uas(truth, parse) )
+    parse = read_triples_from_file(f'c:/GitHub/birger/language-complexity/dep_parse_results/{name}_gpt-3.5-turbo')
+    r = compute_uas(truth, parse)
+    print(r)
+    results.append(r)
 print( sum(results)/len(results) )
     
              
