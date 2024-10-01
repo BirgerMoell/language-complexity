@@ -40,7 +40,7 @@ filenames = ['diva_short_1.txt',
 results = []
 for name in filenames:
     truth = read_triples_from_file(f'c:/GitHub/birger/language-complexity/dep_parse_ground_truth/{name}')
-    parse = read_triples_from_file(f'c:/GitHub/birger/language-complexity/dep_parse_results/{name}_gpt-3.5-turbo_reasoning')
+    parse = read_triples_from_file(f'c:/GitHub/birger/language-complexity/dep_parse_results/{name}_gpt-4o-mini_reasoning')
     r = compute_uas(truth, parse)
     print(r)
     results.append(r)

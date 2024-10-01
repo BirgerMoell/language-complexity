@@ -1,0 +1,70 @@
+To create a dependency tree for the given Swedish sentence "Efter 2: a världskriget så bestämde sig 51 länder att bilda FN, Förenta nationerna," we first need to identify the tokens (words and punctuation), their indices, and how they depend on each other.
+
+1. **Tokenization**: We start by breaking the sentence into individual tokens:
+   - Efter
+   - 2:
+   - a
+   - världskriget
+   - så
+   - bestämde
+   - sig
+   - 51
+   - länder
+   - att
+   - bilda
+   - FN
+   - ,
+   - Förenta
+   - nationerna
+   - .
+
+2. **Dependency Analysis**: Next, we need to determine the syntactic structure and how each token is related to the main verb or phrase. In this sentence:
+   - "bestämde" is the main verb, so its head is 0 (indicating root).
+   - "ländern" is the subject of "bestämde".
+   - "att bilda FN" functions as an infinitival clause modifying the main verb.
+   - The word "Efter" suggests a temporal clause that modifies the entire action initiated by "bestämde".
+   - "2:" is treated as a nominal modifier to "världskriget".
+   - "Förenta nationerna" is an appositive to "FN".
+
+3. **Indexing Dependencies**:
+   - Efter (1) → bestämde (2)
+   - 2: (2) → världskriget (4)
+   - a (3) → världskriget (4)
+   - världskriget (4) → bestämde (2)
+   - så (5) → bestämde (2)
+   - bestämde (6) → 51 (8)
+   - sig (7) → bestämde (2)
+   - 51 (8) → länder (9)
+   - länder (9) → bestämde (2)
+   - att (10) → bilda (11)
+   - bilda (11) → FN (12)
+   - , (12) → Förenta (13)
+   - Förenta (13) → nationerna (14)
+   - nationerna (14) → FN (12)
+
+Combining this analysis into an output format, we obtain the following dependency tree:
+
+```
+[(1, Efter, 2), 
+ (2, 2:, 4),
+ (3, a, 4),
+ (4, världskriget, 2),
+ (5, så, 2),
+ (6, bestämde, 0),
+ (7, sig, 6),
+ (8, 51, 9),
+ (9, länder, 6),
+ (10, att, 11),
+ (11, bilda, 6),
+ (12, FN, 11),
+ (13, Förenta, 12),
+ (14, nationerna, 12),
+ (15, ., 0)]
+```
+
+Each triple in the output shows the token index, the token itself, and the index of its head token, all reflecting the logical structure of the sentence. 
+
+Final output:
+```python
+[(1, Efter, 6), (2, 2:, 4), (3, a, 4), (4, världskriget, 6), (5, så, 6), (6, bestämde, 0), (7, sig, 6), (8, 51, 9), (9, länder, 6), (10, att, 11), (11, bilda, 6), (12, FN, 11), (13, ,, 6), (14, Förenta, 12), (15, nationerna, 12)]
+```
