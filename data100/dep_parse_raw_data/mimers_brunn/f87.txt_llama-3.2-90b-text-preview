@@ -1,0 +1,94 @@
+To analyze the given Swedish sentence and create a dependency tree, we'll use the following steps:
+
+1. Tokenize the sentence: Break the sentence into individual tokens including punctuation marks.
+2. Identify the part-of-speech (POS) tags for each token: Assign a POS tag to each token (noun, verb, adjective, etc.).
+3. Determine the dependency relationships between tokens: Determine the head token for each token in the sentence.
+
+Here's the tokenized sentence with POS tags:
+```
+Medlemmar: (punctuation) 
+Det (pronoun) 
+fanns (verb) 
+172 (number) 
+medlemmar (noun) 
+i (preposition) 
+Jönköping (proper noun) 
+vid (preposition) 
+årsskiftet (noun) 
+och (conjunction) 
+i (preposition) 
+hela (adjective) 
+Sverige (proper noun) 
+cirka (adverb) 
+2500 (number) 
+. (punctuation)
+```
+
+Now, let's create the dependency tree. We'll use the following dependency labels:
+- `ROOT`: The root token of the sentence.
+- `nsubj`: Nominative subject.
+- `obl`: Oblique nominal argument.
+- `punct`: Punctuation attachment.
+- `advmod`: Adverb modifier.
+- `conj`: Conjunction.
+- `appos`: Apposition.
+- `nummod`: Numeric modifier.
+- `nmod`: Nominal modifier.
+
+The resulting dependency tree is:
+```
+[(0, Medlemmar:, 1, punct), 
+ (1, Det, 2, nsubj), 
+ (2, fanns, 0, ROOT), 
+ (3, 172, 2, nmod), 
+ (4, medlemmar, 2, nsubj), 
+ (5, i, 7, case), 
+ (6, Jönköping, 7, nmod), 
+ (7, vid, 8, obl), 
+ (8, årsskiftet, 2, obl), 
+ (9, och, 2, conj), 
+ (10, i, 12, case), 
+ (11, hela, 12, nummod), 
+ (12, Sverige, 2, nmod), 
+ (13, cirka, 15, advmod), 
+ (14, 2500, 12, nummod), 
+ (15, ., 16, punct), 
+ (16, , 2, punct)]
+ 
+However since the last comma does not make sense to depend on the whole sentence and some dependencies might not be as required by the user, 
+we may avoid them. Here is the resulting simplified output: 
+
+[(0, Medlemmar:, 1, punct), 
+ (1, Det, 2, nsubj), 
+ (2, fanns, 0, ROOT), 
+ (3, 172, 4, nummod), 
+ (4, medlemmar, 2, nsubj), 
+ (5, i, 6, case), 
+ (6, Jönköping, 7, nmod), 
+ (7, vid, 8, obl), 
+ (8, årsskiftet, 2, obl), 
+ (9, och, 10, conj), 
+ (10, i, 11, case), 
+ (11, Sverige, 9, nmod), 
+ (12, cirka, 13, advmod), 
+ (13, 2500, 11, nummod), 
+ (14, ., 0, punct)]
+ 
+However as per requirement, the following data is to be used for output as token and head: 
+
+[(0, Medlemmar:, 1), 
+ (1, Det, 2), 
+ (2, fanns, 0), 
+ (3, 172, 4), 
+ (4, medlemmar, 2), 
+ (5, i, 6), 
+ (6, Jönköping, 7), 
+ (7, vid, 8), 
+ (8, årsskiftet, 2), 
+ (9, och, 10), 
+ (10, i, 11), 
+ (11, Sverige, 9), 
+ (12, cirka, 13), 
+ (13, 2500, 11), 
+ (14, ., 0)]
+```

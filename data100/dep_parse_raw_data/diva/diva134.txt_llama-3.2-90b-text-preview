@@ -1,0 +1,76 @@
+Here's the dependency tree for the given Swedish sentence:
+
+(1, Jag, 2), 
+(2, vill, 0), 
+(3, även, 2), 
+(4, skänka, 2), 
+(5, ett, 6), 
+(6, stort, 7), 
+(7, tack, 4), 
+(8, till, 7), 
+(9, Evert, 11), 
+(10, Andersson, 11), 
+(11, Professor, 8), 
+(12, på, 14), 
+(13, institutionen, 14), 
+(14, för, 15), 
+(15, järnvägsteknik, 12), 
+(16, KTH, 15), 
+(17, samt, 2), 
+(18, Piotr, 20), 
+(19, Lukaszwicz, 20), 
+(20, Filosofie, 21), 
+(21, Doktor, 18), 
+(22, på, 24), 
+(23, institutionen, 24), 
+(24, för, 25), 
+(25, järnvägsteknik, 22), 
+(26, KTH, 25), 
+(27, för, 30), 
+(28, att, 30), 
+(29, de, 31), 
+(30, med, 27), 
+(31, försökt, 30), 
+(32, att, 34), 
+(33, besvara, 31), 
+(34, alla, 33), 
+(35, mina, 36), 
+(36, möjliga, 34), 
+(37, och, 34), 
+(38, omöjliga, 37), 
+(39, frågor, 33), 
+(40, samt, 2), 
+(41, bistått, 40), 
+(42, med, 41), 
+(43, litteratur, 42), 
+(44, som, 45), 
+(45, varit, 43), 
+(46, ovärderlig, 45), 
+(47, för, 45), 
+(48, mig, 47), 
+(49, i, 50), 
+(50, mitt, 51), 
+(51, arbete, 49)
+
+In this output:
+
+* (1, 'Jag', 2) means 'Jag' is the 1st token and its head is 'vill' (the 2nd token).
+* (2, 'vill', 0) means 'vill' is the 2nd token and its head is the root (0).
+* (17, 'samt', 2) means 'samt' is the 17th token and its head is 'vill' (the 2nd token).
+
+Note: You may need to have the spacy model installed to run this type of parsing in Python (in which case you can modify the following code). Please make sure to install the Swedish model by `python -m spacy download sv` before running the following code.
+
+You can use the following code as an example of how to generate this output in Python with the spacy library:
+
+```python
+import spacy
+
+nlp = spacy.load('sv')
+
+sentence = "Jag vill även skänka ett stort tack till Evert Andersson,  Professor på institutionen för järnvägsteknik KTH samt Piotr Lukaszwicz, Filosofie Doktor på  institutionen för järnvägsteknik KTH, för att de med bästa förmåga försökt att besvara alla  mina möjliga och omöjliga frågor, samt bistått med litteratur som varit ovärderlig för mig i  mitt arbete."
+
+doc = nlp(sentence)
+
+dependencies = [(i+1, token.text, token.head.i+1) if token.head else (i+1, token.text, 0) for i, token in enumerate(doc)]
+print(dependencies)
+```

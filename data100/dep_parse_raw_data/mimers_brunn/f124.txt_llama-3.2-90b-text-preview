@@ -1,0 +1,17 @@
+The dependency parse tree for the given Swedish sentence is as follows:
+
+[(1, Det, 2), (2, var, 0), (3, först, 2), (4, kriget, 7), (5, mot, 4), (6, Danmark, 5), (7, därefter, 8), (8, mot, 4), (9, Ryssland, 8), (10, och, 12), (11, slutligen, 12), (12, det, 13), (13, "30-åriga, 14), (14, kriget", 12), (15, vilket, 17), (16, slutade, 15), (17, med, 19), (18, den, 19), (19, Westfaliska, 20), (20, freden, 17), (21, 1648, 17)]
+
+However, this doesn't represent the correct dependency parse. The correct one would be more intricate. For example "var" should not be the root, it's a dependent of kriget isn't precise either, därefter and slutligen are dependents of an unrepresented ROOT token. Below is one way the dependency can be represented more accurately.
+
+[(0, ROOT, 0), (1, Det, 4), (2, var, 4), (3, först, 4), (4, kriget, 0), (5, mot, 4), (6, Danmark, 5), (7, därefter, 0), (8, mot, 4), (9, Ryssland, 8), (10, och, 12), (11, slutligen, 0), (12, det, 13), (13, "30-åriga, 14), (14, kriget", 12), (15, vilket, 17), (16, slutade, 15), (17, med, 19), (18, den, 19), (19, Westfaliska, 20), (20, freden, 17), (21, 1648, 17)]
+
+Or the 'vilket' part could also be attached to det "30-åriga kriget".
+
+[(0, ROOT, 0), (1, Det, 4), (2, var, 4), (3, först, 4), (4, kriget, 0), (5, mot, 4), (6, Danmark, 5), (7, därefter, 0), (8, mot, 4), (9, Ryssland, 8), (10, och, 12), (11, slutligen, 0), (12, det, 13), (13, "30-åriga, 14), (14, kriget", 12), (15, vilket, 14), (16, slutade, 15), (17, med, 19), (18, den, 19), (19, Westfaliska, 20), (20, freden, 17), (21, 1648, 17)]
+
+Finally, with regards to commas a common approach would be:
+
+[(0, ROOT, 0), (1, Det, 4), (2, var, 4), (3, först, 4), (4, kriget, 0), (5, mot, 4), (6, Danmark, 5), (7,,), 8), (8, därefter, 0), (9, mot, 4), (10, Ryssland, 9), (11, och, 12), (12, slutligen, 0), (13, det, 14), (14, "30-åriga, 15), (15, kriget", 14), (16, vilket, 14), (17, slutade, 16), (18, med, 20), (19, den, 20), (20, Westfaliska, 21), (21, freden, 18), (22, 1648, 21)]
+
+However, there are multiple potential parse trees in line with the original example.

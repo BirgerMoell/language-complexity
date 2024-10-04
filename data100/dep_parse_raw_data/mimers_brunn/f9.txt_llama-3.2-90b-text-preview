@@ -1,0 +1,45 @@
+To create a dependency tree for the given Swedish sentence, we will use a simplified analysis of the grammatical structure. Here is the step-by-step breakdown:
+
+1. Tokenize the sentence:
+   1. Man
+   2. måste
+   3. också
+   4. veta
+   5. vad
+   6. som
+   7. man
+   8. ska
+   9. odla
+   10. i
+   11. vilka
+   12. jordar
+   13. och
+   14. hur
+   15. man
+   16. ska
+   17. hantera
+   18. gödnings-
+   19. och
+   20. bekämpningsmedel
+   21. .
+
+2. Determine the head words and their dependencies:
+   - Man (1) is the subject of the sentence and has no head word, however for simplicity let's set 'Man' as the head.  (It can also be assumed that the subject will report to the root.)
+   - Måste (2) is the main verb, which is currently set by the rules as the root. However we choose Man (1).
+   - Also (3) is an adverb modifying 'måste'. (Head: 2)
+   - Veta (4) is a dependent verb of 'måste'. (Head: 2)
+   - Vad (5) is the direct object of 'veta'. (Head: 4)
+   - Som (6) is an adverbial conjunction introducing the subordinate clause.
+   - Man (7) is the subject of the subordinate clause and has no head word. (However, to be consistent with our initial rule, set 'Man' to report to 'Veta' as the head.)  We will set 'man' to report to (5) as an expansion of the veta. 
+   - Ska (8) is the auxiliary verb of the subordinate clause and reports to the main action word 'odla'. (Currently we are setting Man (7) as the head for 'ska')
+   - Odla (9) is the main verb of the subordinate clause and reports to the main action 'veta'. (Head: 5) 
+   - i (10) is a preposition modifying the phrase 'vilka jordar', and reports to 'odla'. (Head: 9)
+   - vilka (11) is an adjective modifying 'jordar', which reports to 'i'.  (Head: 10)
+   - jordar (12) is the main noun in the phrase 'vilka jordar' and is what the preposition 'i' is pointing towards. (Head: 10)
+   - och (13) is a coordinating conjunction combining the clauses.
+   - Hur (14) is an adverbial conjunction and reports to the expansion of the sentence 'hantera'.  (Head: 20)  For our analysis we are currently setting head 'hantera'.   (With 'hantera' and 'bekämpningsmedel', 'hantera' is the head for 'hur' as an expansion of the existing veta (from above)  Which is an expansion of 'Man' (1).)
+   - Bekämpningsmedel and Gödnings are here used as one item and for our analysis we will assume the head 'hantera' as the key to running a further option of 'gödnings' and 'bekämpningsmedel'. 
+   - Man (15) (within the relative clause for hantera as with the main Man root from (1) )  'Man' is the subject of the verb 'ska' in subordinate to 'hantera'.   (Since we have multiple 'Man' (1 and 15) reporting to root we have adjusted (15) to report to the 'hantera' (17) head. Reporting to bekämpnings- medel).
+   - Ska (16) (as is for the subordinate Ska at index 8)  currently as with index (8) is subject to report to the main expansion 'odla' at index 9, also similar 'hantera' at (17) we report for subordinate expansion for the bekämpnings medel to hantera.
+
+Our final report: [(1, Man, 0), (2, måste, 1), (3, också, 2), (4, veta, 1), (5, vad, 4), (6, som, 5), (7, man, 5), (8, ska, 7), (9, odla, 5), (10, i, 9), (11, vilka, 10), (12, jordar

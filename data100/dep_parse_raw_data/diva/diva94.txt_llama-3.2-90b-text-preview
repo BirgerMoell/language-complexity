@@ -1,0 +1,62 @@
+To create a dependency tree, we first need to parse the sentence. We'll use the following dependency labels:
+
+- ROOT: the root of the sentence
+- nsubj: nominal subject
+- dobj: direct object
+- nmod: nominal modifier
+- advmod: adverbial modifier
+- det: determining modifier
+- conj: conjunction
+- appos: apposition
+- punct: punctuation
+- obl: oblique argument
+
+Here's the analysis:
+
+1. Eftersom (advmod, i.e., adverbial modifier of the main clause) -> 5 (är)
+2. målet (nsubj, i.e., nominal subject) -> 3 (är)
+3. är (ROOT) -> 0
+4. en (det, i.e., determining modifier) -> 5 (produkt)
+5. produkt (dobj, i.e., direct object of 'är') -> 3 (är)
+6. som (advmod, i.e., adverbial modifier of 'lämpar') -> 7 (lämpar)
+7. lämpar (nmod, i.e., nominal modifier of 'produkt') -> 5 (produkt)
+8. sig (refl, i.e., reflexive pronoun) -> 7 (lämpar)
+9. för (advmod, i.e., adverbial modifier of 'serietillverkning') -> 10 (serietillverkning)
+10. serietillverkning (obl, i.e., oblique argument of 'lämpar') -> 7 (lämpar)
+11. har (conj, i.e., conjunction of the two clauses) -> 3 (är)
+12. inga (det, i.e., determining modifier) -> 13 (komponenter)
+13. dyra (amod, i.e., adjective modifier of 'komponenter') -> 12 (inga)
+14. eller (cc, i.e., coordinating conjunction) -> 13 (komponenter)
+15. svårtillgängliga (amod, i.e., adjective modifier of 'komponenter') -> 12 (inga)
+16. komponenter (dobj, i.e., direct object of 'använts') -> 11 (har, but har is not the head, it is a coordinating conjunction and doesn't have a dobj so its head is 3,är (by default we promote the ROOT)  and head becomes 3)
+17. använts (conj, i.e., conjunction of the sentence) -> 11 (har and head of har becomes 3 (är))
+19. med (advmod, i.e., adverbial modifier of 'undantag') -> 21 (undantag)
+20. ett (det, i.e., determining modifier) -> 21 (undantag)
+21. undantag (obl, i.e., oblique argument of 'använts') -> 17 (använts)
+18. , (punct, i.e., punctuation mark) -> 17 (använts)
+22. . (punct, i.e., punctuation mark) -> 3 (är)
+
+Considering all, the following dependency tree can be derived:
+
+([(1, Eftersom, 5), 
+(2, målet, 3), 
+(3, är, 0), 
+(4, en, 5), 
+(5, produkt, 3), 
+(6, som, 7), 
+(7, lämpar, 5), 
+(8, sig, 7), 
+(9, för, 10), 
+(10, serietillverkning, 7), 
+(11, har, 3), 
+(12, inga, 13), 
+(13, dyra, 16), 
+(14, eller, 16), 
+(15, svårtillgängliga, 16), 
+(16, komponenter, 3), 
+(17, använts, 3), 
+(18, ",", 17), 
+(19, med, 21), 
+(20, ett, 21), 
+(21, undantag, 17), 
+(22, ".", 3)]).

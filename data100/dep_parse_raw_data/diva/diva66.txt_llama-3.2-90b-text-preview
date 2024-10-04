@@ -1,0 +1,121 @@
+To analyze the given Swedish sentence and produce a dependency tree, we'll follow the Universal Dependencies (UD) annotation guidelines. Since the sentence is in English, we'll use the English UD guidelines.
+
+Here's the sentence with tokens and their indices:
+1. Possible
+2. reasons
+3. include
+4. unclear
+5. responsibilities
+6. ;
+7. short-term
+8. economic
+9. focus
+10. ;
+11. a
+12. fragmentized
+13. building
+14. process
+15. ;
+16. and
+17. lack
+18. of
+19. proper
+20. training
+21. and
+22. competence
+23. .
+
+Now, let's construct the dependency tree. We'll use the following relations:
+
+- nsubj: nominal subject
+- obj: object
+- flat: enumeration (for multiple reasons or list items)
+- punct: punctuation
+- conj: coordinating conjunction
+- prep: preposition
+- det: determiner
+- adj: adjective
+- root: root of the sentence
+
+Here's the dependency tree:
+[(1, Possible, 0),  // No parent, but it will be connected to 'reasons' via an implicit arc
+ (2, reasons, 3),
+ (3, include, 0),
+ (4, unclear, 5),
+ (5, responsibilities, 3),
+ (6, ;, 3),
+ (7, short-term, 9),
+ (8, economic, 9),
+ (9, focus, 3),
+ (10, ;, 3),
+ (11, a, 12),
+ (12, fragmentized, 14),
+ (13, building, 14),
+ (14, process, 3),
+ (15, ;, 3),
+ (16, and, 3),
+ (17, lack, 16),
+ (18, of, 20),
+ (19, proper, 20),
+ (20, training, 22),
+ (21, and, 22),
+ (22, competence, 16),
+ (23, ., 3)]
+
+However, we will connect the 'Possible' to the 'reasons'. But it's worth to note that Universal Dependencies suggests to analyze 'Possible' as an attribute of the 'reasons'. Since there is no perfect word order to make dependencies clearer in this case, we might assume 'Possible' should better be attached to 'reasons' via nsubj.
+
+(1, Possible, 2, nsubj)
+Here's a corrected version:
+[(1, Possible, 2),
+ (2, reasons, 3),
+ (3, include, 0),
+ (4, unclear, 5),
+ (5, responsibilities, 3),
+ (6, ;, 3),
+ (7, short-term, 8),
+ (8, economic, 9),
+ (9, focus, 3),
+ (10, ;, 3),
+ (11, a, 12),
+ (12, fragmentized, 14),
+ (13, building, 14),
+ (14, process, 3),
+ (15, ;, 3),
+ (16, and, 17),
+ (17, lack, 3),
+ (18, of, 20),
+ (19, proper, 20),
+ (20, training, 22),
+ (21, and, 22),
+ (22, competence, 17),
+ (23, ., 3)]
+
+However UD will most likely define multiple of those terms having 'conj' relation:
+
+(1, Possible, 2, nsubj)
+Here's an updated version:
+[(1, Possible, 2),
+ (2, reasons, 3),
+ (3, include, 0),
+ (4, unclear, 5),
+ (5, responsibilities, 3, nsubj),
+ (6, ;, 3),
+ (7, short-term, 9, flat),
+ (8, economic, 9, adj),
+ (9, focus, 3, conj),
+ (10, ;, 3),
+ (11, a, 12, det),
+ (12, fragmentized, 14, adj),
+ (13, building, 14, adj),
+ (14, process, 3, conj),
+ (15, ;, 3),
+ (16, and, 17, cc),
+ (17, lack, 3, conj),
+ (18, of, 20, prepos),
+ (19, proper, 20, amod),
+ (20, training, 22),
+ (21, and, 22, cc),
+ (22, competence, 20, conj),
+ (23, ., 3)]
+
+It might vary a little as for individual interpretation and style.

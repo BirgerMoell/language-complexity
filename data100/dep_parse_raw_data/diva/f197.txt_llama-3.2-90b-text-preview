@@ -1,0 +1,52 @@
+The given sentence in Swedish is: "Det oroade de amerikanska säkerhetstjänsterna och hans egna tidning The Negro World förbjöds av flera av de brittiska kolonierna."
+
+First, we need to tokenize the sentence. The tokens would be:
+
+1. Det
+2. oroade
+3. de
+4. amerikanska
+5. säkerhetstjänsterna
+6. och
+7. hans
+8. egna
+9. tidning
+10. The
+11. Negro
+12. World
+13. förbjöds
+14. av
+15. flera
+16. av
+17. de
+18. brittiska
+19. kolonierna
+20. .
+
+Now, let's analyze the sentence and create a dependency tree. We can use the following dependencies:
+
+- "Det" is the subject and "oroade" is the main verb.
+- "de amerikanska säkerhetstjänsterna" is an object, "de" is a determiner, and "amerikanska" is an adjective modifying the noun.
+- "och" is a conjunction.
+- "hans" is a possessive pronoun, and "egna" is an adjective modifying the noun.
+- "The Negro World" is a compound noun phrase (a proper noun) and can be considered as a single object.
+- "förbjöds" is the main verb in the second clause.
+- "av" is a preposition.
+- "flera" is a determiner, "av" is a preposition, and "de" is a determiner.
+- "britten" is not needed here but "britten" is part of the adjectival phrase in the actual translation; "kolonierna" is a noun and "brittiska" is an adjective.
+
+Here is the dependency tree for the given sentence:
+
+[(1, Det, 2), (2, oroade, 0), (3, de, 5), (4, amerikanska, 5), (5, säkerhetstjänsterna, 2), 
+(6, och, 13), (7, hans, 9), (8, egna, 9), (9, tidning, 6), (10, The, 12), 
+(11, Negro, 12), (12, World, 9), (13, förbjöds, 0), (14, av, 15), 
+(15, flera, 19), (16, av, 17), (17, de, 19), (18, brittiska, 19), 
+(19, kolonierna, 13), (20, ., 20)]
+
+However this is not optimal as the token `(9, tidning, 6)` means 'tidning' is dependent on 'och', and that does not really make sense in this particular sentence. Also 'The Negro World' really seems to be a paper, where 'Det negrenes verdens' would be a fair translation of 'The Negro World' in the sentence. It results in token `(9, tidning, 13)` means 'tidning' is dependent on 'förbjöds'. The optimal one is: 
+
+[(1, Det, 2), (2, oroade, 0), (3, de, 5), (4, amerikanska, 5), (5, säkerhetstjänsterna, 2), 
+(6, och, 13), (7, hans, 9), (8, egna, 9), (9, tidning, 13), (10, The, 12), 
+(11, Negro, 12), (12, World, 9), (13, förbjöds, 0), (14, av, 15), 
+(15, flera, 19), (16, av, 17), (17, de, 19), (18, brittiska, 19), 
+(19, kolonierna, 13), (20, ., 0)]

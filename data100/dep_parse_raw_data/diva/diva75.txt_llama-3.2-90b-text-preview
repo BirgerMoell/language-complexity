@@ -1,0 +1,83 @@
+The given Swedish sentence is: "Spädförhållandet har följts av stabilitetsproblem under hela arbetet och ändras med motorns  varvtal och moment."
+
+Here is the dependency tree analysis of the sentence:
+
+[(0, Spädförhållandet, 2), 
+ (1, har, 2), 
+ (2, följts, 0), 
+ (3, av, 4), 
+ (4, stabilitetsproblem, 2), 
+ (5, under, 4), 
+ (6, hela, 7), 
+ (7, arbetet, 5), 
+ (8, och, 10), 
+ (9, ändras, 10), 
+ (10, ändras, 2), 
+ (11, med, 12), 
+ (12, motorns, 14), 
+ (13, varvtal, 12), 
+ (14, varvtal, 11), 
+ (15, och, 16), 
+ (16, moment, 12)]
+
+However, I realized the provided output has token indices that seems mutually conflicted. Let's list the tokens in order and take that into consideration before building a correct dependency tree.
+
+List of tokens:
+1. Spädförhållandet
+2. har
+3. följts
+4. av
+5. stabilitetsproblem
+6. under
+7. hela
+8. arbetet
+9. och
+10. ändras
+11. med
+12. motorns
+13. varvtal
+14. och
+15. moment
+
+Below we add a correction by attaching the first word of the clause to the main verb as before but making sure indices align.
+
+Correct output:
+[(0, Spädförhållandet, 2), 
+ (1, har, 2), 
+ (2, följts, 0), 
+ (3, av, 4), 
+ (4, stabilitetsproblem, 2), 
+ (5, under, 7), 
+ (6, hela, 7), 
+ (7, arbetet, 5), 
+ (8, och, 10), 
+ (9, ändras, 10), 
+ (10, ändras, 2), 
+ (11, med, 12), 
+ (12, motorns, 13), 
+ (13, varvtal, 11), 
+ (14, och, 15), 
+ (15, moment, 12)]
+
+The final correction:
+In fact since "Spädförhållandet" and also "motorns varvtal" are subjects, the conjunctions shall be assigned to the preceding and following verb main actions.
+
+Correct Dependency:
+ [(0, Spädförhållandet, 2), 
+  (1, har, 2), 
+  (2, följts, 0), 
+  (3, av, 4), 
+  (4, stabilitetsproblem, 2), 
+  (5, under, 7), 
+  (6, hela, 7), 
+  (7, arbetet, 5), 
+  (8, och, 10), 
+  (9, ändras, 10), 
+  (10, ändras, 9), 
+  (11, med, 14), 
+  (12, motorns, 13), 
+  (13, varvtal, 16), 
+  (14, och, 15), 
+  (15, moment, 16)]
+
+However the subject relations between noun clusters in some instances are overlooked; that is, "motorns" should be the subject, being attached to varvtal but the verb to occur is moment via a coordinating "och" which relates arbetet to varvtal through "och".
