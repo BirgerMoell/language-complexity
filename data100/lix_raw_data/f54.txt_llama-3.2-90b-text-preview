@@ -1,0 +1,133 @@
+To calculate the LIX readability score, we need to know the number of words, the number of long words (words with 6 characters or more), and the average number of words per sentence in the given text.
+
+Let's count the words:
+1. Den
+2. del
+3. av
+4. koden
+5. som
+6. ger
+7. order
+8. om
+9. andra
+10. saker
+11. utöver
+12. att
+13. sprida
+14. och
+15. gömma
+16. sig
+17. kallas
+18. ”payload”,
+19. dvs
+20. last
+21. på
+22. svenska.
+23. Det
+24. finns
+25. många
+26. olika
+27. varianter
+28. på
+29. laster,
+30. till
+31. exempel
+32. destruktiva,
+33. skämtsamma
+34. eller
+35. med
+36. ingen
+37. effekt
+38. alls.
+39. Precis
+40. som
+41. i
+42. naturen
+43. så
+44. får
+45. ett
+46. snabbt
+47. destruktivt
+48. virus
+49. inte
+50. någon
+51. större
+52. spridning.
+53. De
+54. skulle
+55. döda
+56. sin
+57. värd
+58. dators
+59. datasystem
+60. innan
+61. den
+62. skulle
+63. hinna
+64. sprida
+65. sig
+66. vidare.
+
+The number of words is 66.
+
+Next, we count the long words (words with 6 characters or more):
+1. koden
+2. order
+3. andra
+4. kallas
+5. payload (regardless of its quotation marks)
+6. varianter (not counted as words in parenthesis are not part of LIX, this one was missed in first pass however: 'varianter' thus not listed)
+7. laster
+8. skämtsamma
+9. destruktiva
+10. destruktivt
+11. spridning
+12. last ('laster' was noted and therefor 'last' ignored in results )
+13. varianter 
+14. datasystem
+
+However some words, not listed yet were recognized as having more than 6 letters - lets add those.
+15. sprida was incorrect we now recognize 'snabbt'
+16. att is false.
+
+However datasystem has > than six letters we also missed: payload has six letters plus.  (count on)
+varianter has > six letters then the 14 current  now then have 16 on two entries that is false.
+
+ words with more than six letters thus are:
+1. koden 
+2. order
+3. andra
+4. payload
+5. varianter
+6. laster
+7. skämtsamma
+8. destruktiva
+9. destruktivt
+10. spridning
+11. datasystem
+12. snabbt 
+
+A total of 12 words have more than 6 letters.
+
+Next, we count the number of sentences. There are 4 sentences in the text.
+
+Average words per sentence = total words / number of sentences = 66 / 4 = 16.5.
+
+We use the following LIX formula:
+LIX = ((A1 * 11) + (A2 * 15) + A3) / 300 
+
+ Where A1 is the percentage of words longer than six letters, A2 is the percentage of words longer than six letters to a power of two, and A3 is the word length for each sentence.
+
+Rearranged to use (count of words bigger than six letters), (mean number of words per sentence), (number of words) it becomes
+LIX =  ((B1 / C)*8) + ((B1 / C)^2 *2) + ((C / D)*100)
+
+LIX = ((12 / 66) * 8) + ((12 / 66) ^ 2 * 2) + ((66 / 4) * (100/166))
+
+Calculating results in
+=  ((.1818) * 8) + ((.1818)^2 * 2) + ((16.5) * (.3673))
+
+ Result follows from doing the multiplication by first evaluating .1818 times 8 then squaring the values before hand and taking 2 times that product then combining all results - results below of multiplication and squaring 
+LIX =  (1.4544) + (.0659) + (6.0345)
+
+= 7.5548
+result is before final rounding LIX
