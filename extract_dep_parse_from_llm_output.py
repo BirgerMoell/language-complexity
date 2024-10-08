@@ -9,12 +9,13 @@ def extract_triples(file_path):
     
     with open(file_path, 'w', encoding='utf-8') as file:
         for match in matches:
+            print(match.strip() + '\n')
             file.write(match.strip() + '\n')
 
 import os
 
 # Replace with the actual path to your directory
-directory = 'c:/GitHub/birger/language-complexity/data100/dep_parse_results/llama'
+directory = 'c:/GitHub/birger/language-complexity/data100/dep_parse_results/gpt-4o-mini'
 
 for root, dirs, files in os.walk(directory):
     for file in files:

@@ -1,0 +1,164 @@
+Certainly! Let's analyze the provided Swedish sentence by first tokenizing it, constructing the dependency tree, and then calculating the average dependency distance.
+
+### **Provided Sentence:**
+```
+Afrikas odlingarDet kan vara ganska svårt att livnära sig på växter i Afrika, eftersom det är så torr mark.
+```
+
+**Note:** It appears there might be a missing space or punctuation between "odlingar" and "Det". For accurate analysis, we'll assume it's meant to be two separate components:
+1. "Afrikas odlingar."
+2. "Det kan vara ganska svårt att livnära sig på växter i Afrika, eftersom det är så torr mark."
+
+### **Tokenization:**
+We'll tokenize the sentence, including punctuation marks as separate tokens.
+
+| Index | Token       |
+|-------|-------------|
+| 1     | Afrikas     |
+| 2     | odlingar    |
+| 3     | .           |
+| 4     | Det         |
+| 5     | kan         |
+| 6     | vara        |
+| 7     | ganska      |
+| 8     | svårt       |
+| 9     | att         |
+| 10    | livnära     |
+| 11    | sig         |
+| 12    | på          |
+| 13    | växter      |
+| 14    | i           |
+| 15    | Afrika      |
+| 16    | ,           |
+| 17    | eftersom    |
+| 18    | det         |
+| 19    | är          |
+| 20    | så          |
+| 21    | torr        |
+| 22    | mark        |
+| 23    | .           |
+
+### **Dependency Tree:**
+Each tuple is in the format `(Index, Token, Head Index)`.
+
+1. **Sentence 1: "Afrikas odlingar."**
+   - **1 Afrikas odlingar Additive (Possessive):**
+     - **1 Afrikas (Possessive Modifier) → 2 odlingar**
+     - **2 odlingar (Root) → 0**
+
+   - **3 . (Punctuation) → 2 odlingar**
+
+2. **Sentence 2: "Det kan vara ganska svårt att livnära sig på växter i Afrika, eftersom det är så torr mark."**
+   - **4 Det (Subject) → 5 kan**
+   - **5 kan (Auxiliary Verb) → 6 vara**
+   - **6 vara (Main Verb) → 0**
+   - **7 ganska (Adverbial Modifier) → 8 svårt**
+   - **8 svårt (Adjective) → 6 vara**
+   - **9 att (Marker for Infinitive) → 10 livnära**
+   - **10 livnära (Infinitive Verb) → 8 svårt**
+   - **11 sig (Reflexive Pronoun) → 10 livnära**
+   - **12 på (Preposition) → 10 livnära**
+   - **13 växter (Object of Preposition) → 12 på**
+   - **14 i (Preposition) → 13 växter**
+   - **15 Afrika (Object of Preposition) → 14 i**
+   - **16 , (Punctuation) → 6 vara**
+   - **17 eftersom (Subordinating Conjunction) → 6 vara**
+   - **18 det (Subject) → 19 är**
+   - **19 är (Verb) → 17 eftersom**
+   - **20 så (Adverbial Modifier) → 21 torr**
+   - **21 torr (Adjective) → 19 är**
+   - **22 mark (Object) → 21 torr**
+   - **23 . (Punctuation) → 6 vara**
+
+**Combined Dependency Tree:**
+```
+[(1, Afrikas, 2),
+ (2, odlingar, 0),
+ (3, ., 2),
+ (4, Det, 5),
+ (5, kan, 6),
+ (6, vara, 0),
+ (7, ganska, 8),
+ (8, svårt, 6),
+ (9, att, 10),
+ (10, livnära, 8),
+ (11, sig, 10),
+ (12, på, 10),
+ (13, växter, 12),
+ (14, i, 13),
+ (15, Afrika, 14),
+ (16, ,, 6),
+ (17, eftersom, 6),
+ (18, det, 19),
+ (19, är, 17),
+ (20, så, 21),
+ (21, torr, 19),
+ (22, mark, 21),
+ (23, ., 6)]
+```
+
+### **Average Dependency Distance Calculation:**
+
+The dependency distance for each token is the absolute difference between its index and its head's index.
+
+| Token Index | Head Index | Dependency Distance |
+|------------|------------|----------------------|
+| 1          | 2          | 1                    |
+| 2          | 0          | 2                    |
+| 3          | 2          | 1                    |
+| 4          | 5          | 1                    |
+| 5          | 6          | 1                    |
+| 6          | 0          | 6                    |
+| 7          | 8          | 1                    |
+| 8          | 6          | 2                    |
+| 9          | 10         | 1                    |
+| 10         | 8          | 2                    |
+| 11         | 10         | 1                    |
+| 12         | 10         | 2                    |
+| 13         | 12         | 1                    |
+| 14         | 13         | 1                    |
+| 15         | 14         | 1                    |
+| 16         | 6          | 10                   |
+| 17         | 6          | 11                   |
+| 18         | 19         | 1                    |
+| 19         | 17         | 2                    |
+| 20         | 21         | 1                    |
+| 21         | 19         | 2                    |
+| 22         | 21         | 1                    |
+| 23         | 6          | 17                   |
+
+**Sum of Dependency Distances:** 1 + 2 + 1 + 1 + 1 + 6 + 1 + 2 + 1 + 2 + 1 + 2 + 1 + 1 + 1 + 10 + 11 + 1 + 2 + 1 + 2 + 1 + 17 = **61**
+
+**Number of Tokens:** 23
+
+**Average Dependency Distance:** 61 / 23 ≈ **2.65**
+
+### **Summary:**
+- **Dependency Tree:** 
+  ```
+  [(1, Afrikas, 2),
+   (2, odlingar, 0),
+   (3, ., 2),
+   (4, Det, 5),
+   (5, kan, 6),
+   (6, vara, 0),
+   (7, ganska, 8),
+   (8, svårt, 6),
+   (9, att, 10),
+   (10, livnära, 8),
+   (11, sig, 10),
+   (12, på, 10),
+   (13, växter, 12),
+   (14, i, 13),
+   (15, Afrika, 14),
+   (16, ,, 6),
+   (17, eftersom, 6),
+   (18, det, 19),
+   (19, är, 17),
+   (20, så, 21),
+   (21, torr, 19),
+   (22, mark, 21),
+   (23, ., 6)]
+  ```
+  
+- **Average Dependency Distance:** ≈ **2.65**

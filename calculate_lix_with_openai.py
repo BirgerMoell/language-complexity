@@ -16,15 +16,15 @@ open_ai_client = OpenAI(
 )
 
 #models = ["gpt-3.5-turbo"]
-models = ["gpt-4o-mini"]
+models = ["o1-mini"]
 
 LIX_PROMPT = "Analyze the following Swedish text and compute a LIX readibility score from it. Use a calculator and explain how you got your result. Finally, write the result on the form 'LIX=' followed by the score. Here is the text: {text}"
 
-def get_text_from_open_ai(prompt, model="gpt-3.5-turbo"):
+def get_text_from_open_ai(prompt, model):
     completion = open_ai_client.chat.completions.create(
         model=model,
         messages=[
-            {"role": "system", "content": "You are a world class expert on computational linguistics. Answer in a concise and accurate way."},
+            #{"role": "system", "content": "You are a world class expert on computational linguistics. Answer in a concise and accurate way."},
             #{"role": "system", "content": "You are a world class expert on computational linguistics. Before giving your final answer, explain how you reasoned to obtain the answer."},
             {"role": "user", "content": prompt}
         ]
@@ -56,8 +56,7 @@ def get_text_from_open_ai(prompt, model="gpt-3.5-turbo"):
 def process_long_sentences():
     # Ensure the results directory exists
     os.makedirs('c:/GitHub/birger/language-complexity/data100/lix_raw_data/diva', exist_ok=True)
-    os.makedirs('c:/GitHub/birger/language-complexity/data100/lix_raw_data/mimers_brunn', exist_ok=True)
-
+    
     with open( "c:/GitHub/birger/language-complexity/data/extracted_paragraphs.csv", "r", encoding="utf-8") as f:
         reader = csv.reader(f, delimiter=',')
         for row in reader:

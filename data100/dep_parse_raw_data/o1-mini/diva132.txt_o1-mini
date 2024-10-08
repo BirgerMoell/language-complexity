@@ -1,0 +1,81 @@
+Här är analysen av den svenska meningen med ett beroendeträd och beräkningen av det genomsnittliga beroendeavståndet:
+
+### Beroendeträd
+
+```plaintext
+[
+  (1, Varje, 2),
+  (2, projekt, 3),
+  (3, är, 0),
+  (4, unikt, 3),
+  (5, och, 3),
+  (6, kravspecifikation, 7),
+  (7, varierar, 5),
+  (8, beroende, 7),
+  (9, på, 8),
+  (10, beställaren, 9),
+  (11, ,, 10),
+  (12, vem, 14),
+  (13, som, 14),
+  (14, är, 7),
+  (15, kvalitetsansvarig, 14),
+  (16, ,, 15),
+  (17, kommunala, 18),
+  (18, bygginspektören, 7),
+  (19, ,, 18),
+  (20, den, 22),
+  (21, tillfälliga, 22),
+  (22, konsultgruppen, 7),
+  (23, och, 7),
+  (24, inblandade, 25),
+  (25, entreprenörer, 23),
+  (26, ., 25)
+]
+```
+
+### Beräkning av Genomsnittligt Beroendeavstånd
+
+För att beräkna det genomsnittliga beroendeavståndet tar vi den absoluta skillnaden mellan varje tokens position och dess huvuds tokens position, summerar dessa avstånd och dividerar med det totala antalet tokens.
+
+**Steg för steg:**
+
+1. **Beräkna Avståndet för Varje Token:**
+
+| Token | Index | Head | Avstånd |
+|-------|-------|------|---------|
+| Varje | 1     | 2    | 1       |
+| projekt | 2   | 3    | 1       |
+| är     | 3    | 0    | 3       |
+| unikt  | 4    | 3    | 1       |
+| och    | 5    | 3    | 2       |
+| kravspecifikation | 6 | 7 | 1     |
+| varierar | 7  | 5    | 2       |
+| beroende | 8   | 7    | 1       |
+| på      | 9   | 8    | 1       |
+| beställaren | 10 | 9 | 1       |
+| ,        | 11 | 10 | 1       |
+| vem      | 12 | 14 | 2       |
+| som      | 13 | 14 | 1       |
+| är       | 14 | 7  | 7       |
+| kvalitetsansvarig | 15 | 14 | 1  |
+| ,        | 16 | 15 | 1       |
+| kommunala   | 17 | 18 | 1     |
+| bygginspektören | 18 | 7 | 11   |
+| ,           | 19 | 18 | 1     |
+| den         | 20 | 22 | 2     |
+| tillfälliga  | 21 | 22 | 1     |
+| konsultgruppen | 22 | 7 | 15    |
+| och          | 23 | 7 | 16      |
+| inblandade   | 24 | 25 | 1     |
+| entreprenörer | 25 | 23 | 2    |
+| .            | 26 | 25 | 1     |
+
+2. **Summera Alla Avstånd:**
+   
+   \( 1 + 1 + 3 + 1 + 2 + 1 + 2 + 1 + 1 + 1 + 1 + 2 + 1 + 7 + 1 + 1 + 1 + 11 + 1 + 2 + 1 + 15 + 16 + 1 + 2 + 1 = 78 \)
+
+3. **Beräkna Genomsnittligt Avstånd:**
+
+   \( \frac{78}{26} = 3 \)
+
+**Genomsnittligt Beroendeavstånd:** **3**

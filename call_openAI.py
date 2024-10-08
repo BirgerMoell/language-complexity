@@ -16,15 +16,15 @@ open_ai_client = OpenAI(
 )
 
 #models = ["gpt-3.5-turbo"]
-models = ["gpt-4o-mini"]
+models = ["o1-mini"]
 
-PARSE_PROMPT = "Analyze the following Swedish sentence and produce a dependency tree from it. For example, the sentence 'Han köper en bok' should result in the following output: [(1, Han, 2), (2, köper, 0), (3, en, 4), (4, bok, 2)], where the first number in each triple is the token index, the second entry is the token itself, and the final number is the index of the head token. Don't forget that punctuation marks like commas, full stops, question marks etc. should be tokens as well. Here is the sentence: {text}"
+PARSE_PROMPT = "Analyze the following Swedish sentence and produce a dependency tree from it. For example, the sentence 'Han köper en bok' should result in the following output: [(1, Han, 2), (2, köper, 0), (3, en, 4), (4, bok, 2)], where the first number in each triple is the token index, the second entry is the token itself, and the final number is the index of the head token. Don't forget that punctuation marks like commas, full stops, question marks etc. should be tokens as well. Finally, compute the average dependency distance for the sentence.Here is the sentence: {text}"
 
-def get_text_from_open_ai(prompt, model="gpt-3.5-turbo"):
+def get_text_from_open_ai(prompt, model):
     completion = open_ai_client.chat.completions.create(
         model=model,
         messages=[
-            {"role": "system", "content": "You are a world class expert on computational linguistics. Answer in a concise and accurate way."},
+            #{"role": "system", "content": "You are a world class expert on computational linguistics. Answer in a concise and accurate way."},
             #{"role": "system", "content": "You are a world class expert on computational linguistics. Before giving your final answer, explain how you reasoned to obtain the answer."},
             {"role": "user", "content": prompt}
         ]
@@ -56,7 +56,7 @@ def get_text_from_open_ai(prompt, model="gpt-3.5-turbo"):
 def process_long_sentences():
     # Ensure the results directory exists
     os.makedirs('c:/GitHub/birger/language-complexity/data100/dep_parse_raw_data/diva', exist_ok=True)
-    os.makedirs('c:/GitHub/birger/language-complexity/data100/dep_parse_raw_data/mimers_brunn', exist_ok=True)
+    #os.makedirs('c:/GitHub/birger/language-complexity/data100/dep_parse_raw_data/mimers_brunn', exist_ok=True)
 
     skip = True
     with open( "c:/GitHub/birger/language-complexity/data/extracted_paragraphs.csv", "r", encoding="utf-8") as f:
@@ -64,10 +64,10 @@ def process_long_sentences():
         skip = True
         for row in reader:
             filename = row[0].replace('\\','/')
-            if skip and filename != "diva/f67.txt" :
-                continue
-            else:
-                skip = False
+            #if skip and filename != "diva/f67.txt" :
+            #    continue
+            #else:
+            #    skip = False
             text = row[3]
             if not text:
                 continue
