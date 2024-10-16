@@ -1,0 +1,49 @@
+To calculate the average dependency distance, we need to parse the sentence into its dependencies. Here is one possible way to do this:
+
+1. Spädförhållandet - subject of 'har' (Dependency distance: 1)
+2. har - head (root)
+ -> depends on Spädförhållandet (distance: 1)
+3. följts - complement of 'har' (Dependency distance: 2)
+ -> depends on har (distance: 2)
+4. av - preposition in the phrase 'av stabilitetsproblem' (Dependency distance: 3)
+ -> depends on följts (distance: 3)
+5. stabilitetsproblem - object of the preposition 'av' (Dependency distance: 4)
+ -> depends on av (distance: 4)
+6. under - preposition in the phrase 'under hela arbetet' (Dependency distance: 5)
+ -> depends on följts (distance: 5)
+7. hela - modifier of 'arbetet' (Dependency distance: 6)
+ -> depends on arbetet (distance: 1, adjusted distance: 6)
+8. arbetet - object of the preposition 'under' (Dependency distance: 7)
+ -> depends on under (distance: 1, adjusted distance: 7)
+9. och - coordinating 'ärbetet' and 'ändras' (Dependency distance: 8)
+ -> depends on har (distance: 6)
+10. ändras - verb (Dependency distance: 9)
+ -> depends on har through 'och' (distance: 7)
+11. med - preposition in the phrase 'med motorns varvtal' (Dependency distance: 10)
+ -> depends on ändras (distance: 1, adjusted distance: 10)
+12. motorns - modifier of 'varvtal' (Dependency distance: 11)
+ -> depends on varvtal (distance: 1, adjusted distance: 11)
+13. varvtal - object of the preposition 'med' (Dependency distance: 12)
+ -> depends on med (distance: 1, adjusted distance: 12)
+14. och - coordinating 'varvtal' and 'moment' (Dependency distance: 13)
+ -> depends on varvtal through 'med' and 'motorns' (distance: 3, adjusted distance: 13)
+15. moment - object (Dependency distance: 14)
+ -> depends on med through 'motorns varvtal' and 'och' (distance: 5)
+
+Now, let's calculate the average dependency distance by taking the sum of all dependency distances and dividing by the total number of tokens (excluding punctuation marks):
+
+Dependency distances (in order): 1, 2, 3, 4, 5, 6, 1, 7, 8, 6, 9, 1, 10, 12, 13, 3, 14
+
+However since the sentence ends with a word 'moment' that has a head, but the dependency for the last token (punctuation mark) full stop '.' has not been included yet '.',' therefore will get a dependency distance for it.
+
+16 '.': (Dependency distance from sentence head:)10 ('.' is outside any dependency or head)
+
+Dependency distances (in final order from distance 1 to 14 with extra distance): 1, 1, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 9, 10, 10, 12, 13, 14 
+
+Total distance = 1 + 1 + 1 + 2 + 3 + 3 + 4 + 5 + 6 + 6 + 7 + 8 + 9 + 10 + 10 + 12 + 13 + 14  = 121 
+
+The total number of tokens is 16 tokens not including the last token '.': 
+(16 + 1) total 17 
+
+The average dependency distance: 
+121  / 17  =  7.118.

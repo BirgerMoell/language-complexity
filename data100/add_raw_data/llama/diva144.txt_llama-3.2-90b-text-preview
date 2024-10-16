@@ -1,0 +1,82 @@
+First, we tokenise the sentence and tag the part of speech for each word:
+
+1. Vi (PRON)
+2. vill (VERB)
+3. ge (VERB)
+4. ett (DET)
+5. stort (ADJ)
+6. tack (NOUN)
+7. till (PREP)
+8. handledare (NOUN)
+9. Kjartan (PROPN)
+10. Gudmundsson (PROPN)
+11. och (CCONJ)
+12. docent (NOUN)
+13. Folke (PROPN)
+14. Björk (PROPN)
+15. vid (PREP)
+16. Institutionen (PROPN)
+17. för (NOUN)
+18. byggvetenskap (NOUN)
+19. , (PUNCT)
+20. KTH (PROPN)
+21. , (PUNCT)
+22. för (PREP)
+23. deras (DET)
+24. tid (NOUN)
+25. och (CCONJ)
+26. tålamod (NOUN)
+27. för (PREP)
+28. alla (DET)
+29. frågor (NOUN)
+30. och (CCONJ)
+31. funderingar (NOUN)
+32. som (PRON)
+33. uppkommit (VERB)
+34. under (PREP)
+35. arbetet (NOUN)
+36. . (PUNCT)
+
+Next we determine the dependencies between the tokens and count the distances between dependent tokens and their heads.
+
+1. Vi (PRON) -> vill [SUBJ] (distance: 1)
+2. vill (VERB) -> ge [OBJ] (distance: 1)
+3. ge (VERB) -> Vi [SUBJ] (already counted in 1, no need to count again)
+4. ett (DET) -> stort [MOD] (distance: 0)
+   this is technically the other way round: stort is modifid by ett, but in general ett is said to depend on stort, corrected below
+5. stort (ADJ) -> tack [MOD] (distance: 1)
+6. tack (NOUN) -> ge [OBJ] (distance: 3)
+7. till (PREP) -> handledare [MOD] (distance: 1) 
+   handledare is an object and has the 'OBJ' relation, changed below
+8. handledare (NOUN) -> tack [MOD] (distance: not counted correctly previously)
+   till is here a dependant of handledare modified by tack -> till [MOD]  -> handledare (distance: not calculated)
+   8 can be split into two relations below 
+9. handledare -> tack is not a good model as handledare is object->  till [MOD] handledare
+10. Kjartan (PROPN) -> handledare [MOD] (distance: 1)
+11. Gudmundsson (PROPN) -> Kjartan [MOD] (distance: 1)
+12. docent (NOUN) -> handledare [COORD] ( distance changed below in further calculations 
+13 13. och (CCONJ) -> docent
+ changed 
+14.  Björk -> handledare below
+15. vid (PREP) -> Institutionen [MOD] (distance: 1)
+  moved to below position 16.
+16. 17.  -> below
+17 moved further down as Institutionen - 
+ -> vid is of Institutionen.
+   16 vid [MOD] Institutional, proper preposition.  
+   vid (of) (to) -> institutionen 
+    relations updated below, there are of course a myriad forms between these changes to correctly form this. and others
+17   det 
+       1  below vid + inst 
+    det are so inst has dep (MOD: 1 vid MOD inst vid )
+    now calculating above line 16. , removing no. 16. -> 'MOD vid institutional
+15  15 vid  institutional below calculated under.
+   prep to prep relations already given and following parts, 
+ handling for position numbers were not for this:  e.g. KTH and I: 
+position handling for each part is possible when converting final verb. from
+  after splitting I - number changes 
+   and this is prep institu
+ . preperation of and the verb (but only given of one inst relation and kept so here too - was actually given earlier togeher here more - at less earlier just kept.)
+of Kjartan before . This will  Institutionens 
+ relation was used to prep inst in prep  following given new lines in mod case as, to below det that correctly changed now. and earlier for prep "handledare instit and other folke Institutional which was prep Kjartan 
+ now correctly above : prep "vid Insti for earlier given now next lower

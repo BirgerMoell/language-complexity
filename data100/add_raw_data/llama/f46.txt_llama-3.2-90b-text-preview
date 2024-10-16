@@ -1,0 +1,38 @@
+To calculate the average dependency distance of the given Swedish sentence, we first need to identify the dependencies and their distances. The sentence is:
+
+"Den första expansionen Utbyggnaden av nätet blev enkelt och snabbt för att man inte behövde någon speciell datormodell för att ansluta sig, det enda kravet var att datorerna kunde kommunicera med varandra."
+
+Here's the analysis:
+
+1. Den (dependent) -> expansionen (head) (distance: 2 - including the word "första" which is a dependant of expansionen)
+2. första (dependent) -> expansionen (head) (distance: 1)
+3. expansionen (dependent) ->  Utbyggnaden (head) (distance: 1)
+4. Utbyggnaden (dependent) -> blev (head) (distance: 5 - including the words "av nätet")
+5. av (dependent) -> Utbyggnaden (head) (distance: 1, reverse: since "av" is a dependant of Utbyggnaden)
+6. nätet (dependent) -> Utbyggnaden (head) (distance: 1, reverse: since "nätet" is a dependant of Utbyggnaden)
+7. blev (dependent) -> enkelt (head) (distance: 1)
+8. enkelt (dependent) -> och (head, but 'enkelt' depends on 'blev', 'och' is the conjunction that coords with snabbt) ( incorrect distance: just distance between blev and enkelt is 1, 'enkelt' depends on 'blev')
+9. och (dependent, but since this is a conjunction it doesn't depend on the two other dependants we'll put this distance as 0 internally to the coordination and make one distance value)
+10. blev (dependent) -> snabbt (head, distance: 2)
+11. för (dependent) -> att (head, but this distance might be dubious due to more distance being used to denote dependency that is embedded) (distance: 1)
+12. att (dependent) -> ansluta sig (head but more specifically 'ansluta') (distance: 8)
+13. man (dependent) -> ansluta sig ( head but more specifically 'ansluta') (distance: 6)
+14. inte (dependent) -> behövde ( head) (distance: 2)
+15. behövde (dependent) -> ansluta sig ( head but more specifically 'ansluta') (distance: 4)
+16. någon (dependent) -> datormodell (head) (distance: 2)
+17. speciell (dependent) -> datormodell (head) (distance: 1)
+18. datormodell (dependent) -> ansluta sig ( head but more specifically 'ansluta') (distance: 5)
+19. för (dependent) -> ansluta sig (head but more specifically 'ansluta') (distance: 5, distance from the fifth "för")
+20. ansluta sig (dependent) -> var (head, though it depends on more embedded clauses ) (distance: 2)
+21. det (dependent) -> kravet ( head) (distance: 3, inclusive with word "enda" since each of these words depends on the other in different respects that the head points towards)
+22. enda (dependent) -> kravet (head) (distance: 1, but since 'det' is also dependant on 'kravet' when including "enda" it may mean 'det(enda)' is found where 
+ det has become dependant with enda becoming head )
+23. kravet (dependent) -> var (head) (distance: 1)
+24. var (dependent) -> att (head, a dependant at comma separation prior possibly the comma "is impliedly placed") (distance: 1)
+25. att (dependent) -> kommunicera ( head but because there is "kunde" between it refers directly "att" depends on head  "kunde" also having)  ( distance 4)
+26. datorerna (dependent) -> kunde (head) (distance: 1, head is as can here signify to enable)
+27. kunde (dependent) -> kommunikera (head) (distance: 1)
+28. med (dependent) -> varandra (head) (distance: 1)
+29. varandra (dependent) -> kommunicera ( head) (distance: 2)
+
+Total dependence distances -> 2 + 1 + 1 + 5 + 1 + 1 + 1 + 2 + 1 + 8 + 6 +

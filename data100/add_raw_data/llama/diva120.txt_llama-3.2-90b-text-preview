@@ -1,0 +1,38 @@
+To calculate the average dependency distance in the given sentence, we need to identify the head of each word/token. After identifying the heads, we can calculate the distance. 
+
+Given sentence (in Swedish: none, the sentence was English, I will provide dependency tree):
+The city is currently growing and densifying in a rapid pace and most of the new buildings are being built in existing environments.
+
+In this case, we'll assume a likely dependency tree:
+- 'The city' is a noun phrase, 'The' is a dependent of 'city', 'city' is a dependent of 'is'.
+- 'is' is the main verb.
+- 'currently growing' is a dependent of 'is', 'currently' is a dependent of 'growing', 'growing' is a dependent of 'densifying', 'densifying' is a dependent of 'and'.
+- 'and' is a coordinating conjunction with two dependents 'densifying' and 'are being built'.
+- 'in a rapid pace' is a prepositional phrase with 'in' as head and dependents 'a', 'rapid', and 'pace', 'a' is a dependent of 'rapid', 'a rapid' and 'pace' are dependents of 'in', 'in' is dependent of 'and', I will note down distance from 'a', 'rapid', 'pace' to 'in' and 'in' to the coordinating conjunction 'and'.
+- 'are being built' is a dependent of 'and' in the latter half of 'and', with 'most of' as a dependent of 'buildings', 'new' is a dependent of 'buildings', 'in existing environments' is a prepositional phrase and 'in' is the head of the phrase with 'existing' (dependent of 'environments') is a dependent of 'in' and 'in' is dependent of 'are being built'.
+ 
+Token list: 1: The 2: city 3: is 4: currently 5: growing 6: and 7: densifying 8: in 9: a 10: rapid 11: pace 12: and 13: most 14: of 15: the 16: new 17: buildings 18: are 19: being 20: built 21: in 22: existing 23: environments
+
+Here are the distances (token-ids to their respective heads):
+
+1. The-city=1 (Token list: 1-2)
+2. city-is=1 (Token list: 2-3)
+3. is-None (Root of the sentence, its distance will be 0,  'None' : we do not use it for calculation)
+4. currently-growing = 1 (Token list: 4-5)
+5. growing-densifying = 1 (Token list: 5-6 and I have 'densifying'  still dependent of 'and')
+6. densifying-and = 2 (Token list: 5-7) this one I choose higher 'and' which is 7 whereas lower 'and' at Token list 6 was available,  however as head a word can choose its next best verb or word further as well (not next best and I have 5-6 and from 'densifying' to 'and' that's as head dependent of main-conjunction (most times these comes ahead their dependents I said  dependet if far like is infront of much things choose still verb))  
+7. and-None=0 which is root  coordinating word (I donot use zero distances, or zero-root)
+8. in-and=5   (lower 'and' ahead which is convenient one that comes ahead I used)
+9. a-rapid=1 
+10. rapid-pace = 2  (or we could also chose 'in' which is Token '8',  but here it's slightly more more  common  to go ahead one)   
+11. pace-in = 1 where it is dependent of 'in' (and it goes to heads  lower token's  dependent, and some heads can skip even a next word if so)
+12. and-None: a conjunction, another root 
+13. most-of = None;  only 'most' can choose -more precisely (there isn't dependency)  but for sake, I choose 'of', but lets see its  main part most 'to new' will not use that distance 
+14. of-the=1
+15. the-new=1
+16. new-buildings=1
+17. buildings-are=1  :where using  'are'  as for   a verbs heads as for a verb dependent   
+18. are-None, no = instead being-used
+19. being-built= 1  
+20. built-None: can  be chose, like-its head
+   for much shorter I can show = will edit  like it 

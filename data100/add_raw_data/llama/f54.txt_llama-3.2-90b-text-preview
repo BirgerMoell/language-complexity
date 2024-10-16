@@ -1,0 +1,51 @@
+To analyze the given Swedish sentence, we first need to parse the sentence into its dependency structure. Here's the sentence tokenized and labeled with parts of speech:
+
+1. Den (Det) - the subject
+2. del (N) - part of the head 'koden'
+3. av (Prp) - part of the prepositional phrase 'av koden'
+4. koden (N) - head of 'koden' with dependents 'Den del' and 'som'
+5. som (C) - head of the dependent clause 'som ger order...'
+6. ger (V) - head of the dependent clause 'som ger order...'
+7. order (N) - dependent of 'ger'
+8. om (Prp) - part of the prepositional phrase 'om andra saker'
+9. andra (Adj) - dependent of 'saker'
+10. saker (N) - dependent of 'om'
+11. utöver (Prp) - head of the preposition phrase 'utöver...'
+12. att (Inf) - part of the infinitive phrase 'att sprida och gömma sig'
+13. sprida (V) - dependent of 'utöver'
+14. och (C) - coordinating conjunction 'och'
+15. gömma (V) - dependent of 'utöver'
+16. sig (Pron) - dependent of 'gömma'
+17. kallas (V) - dependent of 'den del av koden'
+18. ” (Punct) - start of quote marks
+19. payload (N) - dependent of 'kallas'
+20. ” (Punct) - end of quote marks
+21. , (Punct) - comma separating 'payload' and 'dvs...'
+22. dvs (Abbr) - abbreviation
+23. last (N) - dependent of 'dvs'
+24. på (Prp) - part of preposition phrase 'på svenska'
+25. svenska (N) - dependent of 'på'
+
+The dependency distance is the distance between the dependent and its head. Note that some words (like "och" which functions like a coordinator) do not affect the overall dependency structure. Here are the calculated dependencies:
+
+1. Den -> koden (distance: 2)
+2. del -> koden (distance: 1)
+3. av -> koden (distance: 2)
+4. koden -> ger (distance: 3, via Dependent Clause 'som')
+5. ger -> koden (distance: 0, assuming copula effect, assume ger and koden actually switch places. As Dependent.)
+   -> koden -> som (distance from head: 0 - adjust this distance calculation afterwards).
+6. order -> ger (distance: 1)
+7. om -> ger (distance: 2)
+8. andra -> saker (distance: 1)
+9. saker -> om (distance: 2)
+10. utöver -> ger (distance: 4, previous location)
+11. att -> utöver (Distance not counted - assume no structural placement on main sentence word token with this pre-head in the dependency grammar structure used here).
+12. sprida -> utöver
+   -> Distance assumed same to 'gömma' as to head ger with sprida, use utöver as assumed upper level head - Distance from head utöver is 1.
+13. gömma -> utöver  Distance from head utöver is 2.
+   -> sig -> gömma Distance from head is 1.
+14. payload -> kallas (distance: 2 using Dependent)
+15.payload including Quotations -> Total Dependencies Count=2,
+16. kallas -> av (distance): if it really refers to "den del av koden" then 3 else assume - dvs simply 'uses kallas' without an existing subject
+17. dvs -> kallas distance 1 assuming use (Not necessarily the usage which requires main effect)
+18. last -> på Distance from head is 1.

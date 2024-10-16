@@ -1,0 +1,78 @@
+To analyze the sentence and calculate the average dependency distance, we need to first parse the sentence and identify the head of each token. Here is the sentence broken down into its constituent tokens:
+
+1. Stockholm
+2. ,
+3. oktober
+4. år
+5. 2009
+6. Elina
+7. Wetterblad
+8. ii
+9. iii
+10. Sammanfattning
+11. Under
+12. tidigare
+13. delen
+14. av
+15. 1960-talet
+16. var
+17. det
+18. akut
+19. bostadskris
+20. i
+21. Sverige
+22. .
+
+We then need to establish the grammatical relationships between each token, which will require some assumptions about the sentence structure. The sentence is a combination of two parts, the first part is a list of the author and publication details (tokens 1-10), and the second part is a descriptive sentence about a period of crisis in Sweden.
+
+Assumptions:
+- The head for the first part is ambiguous, and grammatical relationships between tokens can only be roughly defined.
+- For simplicity, assume the relationship is the closest token related. In the list, the head for the author (Elina Wetterblad), dates etc., can be roughly related to "Sammanfattning", with the relationship connecting further downstream to the description
+
+A breakdown of the inferred grammatical relationships in the first part:
+- 'Stockholm' is a subject/starting phrase (head distance: 6)
+- ',' is a punctuation (will ignore its head distance in the average)
+- 'oktober' and 'år 2009' describe publication data (rough head distance for 'oktober': 8; rough head distance for 'år 2009': 9)
+- 'Elina Wetterblad' is the author (rough head distance: 3)
+- 'ii' and 'iii' possibly refer to some ordering data in the publication (will ignore their effective relationship due to high relative ambiguity, assuming relationship established will not affect greatly overall average)
+- 'Sammanfattning' is the starting token for the list description related
+
+A breakdown of the inferred grammatical relationships in the second part:
+
+- 'Under' (description leader, does not have a distinct head here but related to further downstream)
+- 'tidigare delen av 1960-talet' describes the previous time in Sweden (rough head distance of 'Under': in this calculation approx. '1', to 'tidigare': in this case approx. '2', will calculate head distance of 'delen' as '0')
+- 'var' (linking verb in Swedish with approximate head distance of '2')
+- 'det' is the subject and is described (head distance: 4)
+- 'akut bostadskris' describes 'det' (head distance: '1')
+- 'i Sverige' describes the location (rough head distance of 'Sverige' to 'i': 0; rough head distance of 'i' to 'Sverige' is '0' while from 'i' to '1960-talet' is rough '7').
+
+If looking to '1960-talet' from 'i Sverige' which then completes a simple illustration and would define what defines the descriptive sentence we can compute '7'.
+
+Summation:
+We will leave some of the ambiguous tokens without explicit head references (given by '?'): 
+For better clarity of computation:
+   Compute (rough) head distance = | number of words |
+   * Stockholm = | 6 | = 6 
+   * oktober = | 8 | = 8 
+   * år 2009 = | 9 | = 9
+   * Elina = | 3 | = 3 
+   * Sammanfattning = | ? | 
+   * Under = | ? | = 1 
+   * tidigare = | 2 | = 2 
+   * delen = | 0 | 
+   * av = | 0 | 
+   * det = | 4 |
+   * akut = | 1 |
+   * bostadskris = | 1 |
+   * i = | 0 | 
+   * Sverige = | 0 | 
+   * 1960-talet = | 7 | 
+   * year/dates i.e. ii, iii unknown as its distance connection is weak.
+ 
+The unadjusted Average (non-puctuation-adjusted version for calculations):
+ Head-dist for Total tokens: 
+ 6 + 8 + 9 + 3 + 1 + 2 + 0 + 0 + 4 + 1 + 1 + 0 + 0 + 7 = 42
+ Total non unknown Total tokens:
+ 14 non unknown.
+
+ Average Unadjusted: 42/14 = 

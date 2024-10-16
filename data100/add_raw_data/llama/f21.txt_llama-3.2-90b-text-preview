@@ -1,0 +1,40 @@
+To calculate the average dependency distance, we need to identify the heads of each token and the distance from each token to its head. Here's the breakdown of the sentence:
+
+1. Socialdemokraterna - head is 'ville' (distance 1)
+2. ville - head is 'göra' (distance 11, indirect dependency through many verbs)
+   * This is a complication; for simplicity we will assume the head is the next main verbphrase or the last verb in the phrase group that may logically fit and in this case we will consider head to be the immediately next verb (i.e 'att')
+3. att - head is 'ville' (distance 1), since we now consider it the parent head now.
+4. alla - head is 'skulle' (distance 2)
+5. skulle - head is 'göra' (distance 10, indirect dependency - same assumption, assigning an immediate or closest parent head for calculation e.g. 'få')
+6. få - head is 'skulle' (distance 1)
+7. rösta - head is 'få' (distance 1)
+8. och - head is 'ville' (distance 6), another verb connection used instead of choosing immediate verbhead or verb group
+9. efter - head is 'lyckades' (distance 3)
+10. ett - head is 'tag' (distance 1)
+11. tag - head is 'efter' (distance 1), but since 'efter' is technically working as an adverb or as one-unit with tag. And tag needs an actual parent head so lets assign tag 'lyckades'
+    * tag -> head is 'lyckades' (distance 2)
+12. lyckades - head is 'ville' (distance 7) for simplicity's sake use higher verb group found later in text.
+13. de - head is 'lyckades' (distance 1)
+14. göra - head is 'lyckades' (distance 1)
+15. så - head is 'göra' (distance 1)
+16. att - head is 'göra' (distance 1)
+17. alla - head is 'män' (distance 3), possible with assumption for immediate parent noun head or parent category head such nounphrase/NP-head, many forms
+18. män - head is 'alla'->'så'->'göra' (distance 4 to 'göra')
+19. över - head is 'män' (distance 1)
+20. 24 - head is 'över' (distance 1)
+21. år - head is '24' (distance 1)
+22. fick - head is 'göra' (distance 6) or more properly - rösta (the later occurring action that logically co-occurred/got executed), taking into consideration an immediate parent or logical dependency given verb “göra“.
+23. rösta - head is 'fick' (distance 1)
+24. i - head is 'riksdagens andra kammaren' or the preposition -> head 'riksdagens' (distance 1) or immediate np 
+25. riksdagens - head is 'andra'/'kammaren' (distance 2), final dependency since multiple occur taking their further part, if taken 
+24 – fullstop we ignore. and delete this calculation: thus one less 
+in simplified measure, then 'riksdagens '/> head or “andra” if in list structure.
+26. andra - head is 'kammaren' (distance 1)
+27. kammaren - head is 'riksdagens'/i depends on previous structures higher np still head's head is simply final unit 
+
+So distance sequence in units for the given expression:
+1, 1, 2, 1, 1, 3, 1, 2, 1, 1, 3, 7, 1, 1, 4, 1, 6, 1, 1, 1, 1, 6, 1, 2, 1
+
+Average dependency distance = (Total dependency distance)/(Total number of tokens - 1)
+= 43/27  
+= 1.59

@@ -1,0 +1,51 @@
+To calculate the average dependency distance, we first need to break down the sentence into tokens and identify the head token for each dependent token. 
+
+Here's the sentence broken down into tokens:
+
+1. Kontrollbussen
+2. bär
+3. på
+4. sammanhållande
+5. signaler
+6. mellan
+7. processor
+8. och
+9. alla
+10. de
+11. enheter
+12. som
+13. är
+14. anslutna
+15. till
+16. de
+17. olika
+18. bussarna
+19. .
+
+Next, we'll identify the head token for each dependent token:
+
+1. Kontrollbussen (Root token, head is itself)
+2. bär (head is itself)
+3. på (head: bär, distance: 1)
+4. sammanhållande (head: signaler, distance: 1)
+5. signaler (head: bär, distance: 2)
+6. mellan (head: bär, distance: 3)
+7. processor (head: mellan, distance: 1)
+8. och (head: alla, distance: 1)
+9. alla (head: enheter, distance: 1)
+10. de (head: enheter, distance: 1)
+11. enheter (head: anslutna, distance: 2)
+12. som (head: är, distance: 1)
+13. är (head: anslutna, distance: 1)
+14. anslutna (head: enheter, distance: 2)
+15. till (head: anslutna, distance: 1)
+16. de (head: bussarna, distance: 2)
+17. olika (head: bussarna, distance: 1)
+18. bussarna (head: anslutna and indirectly head: till, distance: 2)
+19. . (head: Kontrollbussen or head of the whole sentence, distance: 18)
+
+Now, let's calculate the sum of the dependency distances:
+1 + 0 (root) + 1 + 1 + 2 + 3 + 1 + 1 + 1 + 2 + 1 + 1 + 1 + 2 + 1 + 2 + 18 = 40
+
+The total number of tokens minus root tokens (one token for the whole sentence, and 'bär' being its own head) is 18. But we have 19 dependency distances because the root token (.) is taken into account. Hence the correct number of tokens without counting the pseudo heads will be all 18 excluding the bär. So the correct formula is dependency distance divided by number of modified heads for a better meaning. (Modified heads  just exclude one 'bär')
+So 40/18 = 2.22

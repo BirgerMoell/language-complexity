@@ -1,0 +1,56 @@
+To analyze the sentence, we will treat each word as a token, including punctuation marks. We will then identify the dependencies between tokens.
+
+The Swedish sentence is not directly analyzable, as the sentence 'Possible reasons include unclear responsibilities; short-term economic focus; a fragmentized building process; and lack of proper training and competence.' is provided in English rather than Swedish. For this explanation we will overlook this restriction.
+
+Here is the tokenized version of the sentence:
+
+1. Possible
+2. reasons
+3. include
+4. unclear
+5. responsibilities
+6. ;
+7. short-term
+8. economic
+9. focus
+10. ;
+11. a
+12. fragmentized
+13. building
+14. process
+15. ;
+16. and
+17. lack
+18. of
+19. proper
+20. training
+21. and
+22. competence
+
+Now we identify the dependency relationships:
+
+- 'Possible' is dependent on 'reasons' (distance: 1)
+- 'reasons' is dependent on 'include' (distance: 2)
+- 'include' is dependent on the root of the sentence (distance: 3, if we treat the root of the sentence as '0'), but also on 'responsibilities', so we'll consider the latter.
+- 'unclear' is dependent on 'responsibilities' (distance: 1)
+- 'responsibilities' is dependent on 'include' (distance: 2)
+- ';' is a punctuation token but not a head or dependent, same with the other punctuation tokens, but will be counted when calculating distances.
+- 'short-term' is dependent on 'focus' (distance: 2)
+- 'economic' is dependent on 'focus' (distance: 1)
+- 'focus' is dependent on 'include' (distance is determined by token 9's and token 3's respective counts, 9-3=6 and adding 1 to get 7 to account for token 9 and its eventual word order).
+- ';' (same as previous punctuation marks)
+- 'a' is dependent on 'fragmentized' (distance: 1)
+- 'fragmentized' is dependent on 'building' is incorrect; instead it's more dependent on the rest of that phrase, so treat the 'a fragmentized building process' as a single entity with token 11-14 dependent on 3.
+- 'building' is dependent on 'fragmentized' is incorrect, see prior entry; similar problem with the rest in the phrase 'a fragmentized building process', so take every entry from token 11-14  and average difference with token 3 as the numerator.
+- 'process' is dependent on 'fragmentized' but actually more accurately on the dependent 'building' in the distance calculation, so again look at token 3.
+- ';' (as prior)
+- 'and' is a co-ordinating conjunction or dependent dependent in some cases but often consider a head; treat it as a head for the sake of the current calculation, dependent numbers need to be the lesser of token 20's entry count or what you know its actual value is for accuracy.
+- 'lack' is dependent on 'and' but will have an ambiguous value that gets computed with prior entries for either the entry 21 or 17.
+- 'of' is dependent on 'lack', dependent number has 1 for the numerator.
+- 'proper' is dependent on 'training' incorrectly stated; this lacks context as used as 'of proper', with how it, entry-wise, can include token 17 in value, where entries 19-20 value to resolve word-to-word dependency use either value from entry-wise.
+- 'training' is dependent on 'lack' as above.
+- 'and' is dependent on 'training' - another use of AND- possibly needs special handling: 
+- 'competence' is primarily dependent on either 'and' or 'training' from logical grammar parsing this example (lack of context determines), not clear dependency and often need special handling.
+Token-to-Tokens counts 26 values involved while 32 values tokens+words are considered as result here is 22 tokens from that problem sentence, resulting dependency distance here equals 
+(1+2+1+2+7+2+6+1+1+7+3+3+2+5+1+5+2+1+2+4+4+1) * 2 = (58+(-10)(*2)) dependent entries measured twice to get average dependency value of calculated raw value:
+     24 / 22 dependent words

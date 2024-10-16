@@ -1,0 +1,89 @@
+To calculate the average dependency distance, we first need to identify the tokens, heads, and dependencies in the sentence. Let's analyze the given sentence:
+
+1. 1985 (i USA) lanserades NES (Nintendo Entertainment System) 1982 hade spelindustrin formligen kollapsat (brukar kallas The Great Video Game Crash Of 1983).
+
+Tokenized sentence:
+1. 1985
+2. (
+3. i
+4. USA
+5. )
+6. lanserades
+7. NES
+8. (
+9. Nintendo
+10. Entertainment
+11. System
+12. )
+13. 1982
+14. hade
+15. spelindustrin
+16. formligen
+17. kollapsat
+18. (
+19. brukar
+20. kallas
+21. The
+22. Great
+23. Video
+24. Game
+25. Crash
+26. Of
+27. 1983
+28. )
+29. .
+
+Identified dependencies and their distances:
+
+- 1985 -> lanserades (distance: 5)
+- i -> i has no direct head in the given sentence, so it's ignored.
+- USA -> i has no direct head in the given sentence, so it's ignored.
+- lanserades -> root
+- NES -> lanserades (distance: 1)
+- Nintendo -> NES has no direct head in the given sentence, so NES is the head in this case.
+- Entertainment -> Nintendo 
+- System -> Entertainment 
+- 1982 -> hade (distance: 1), also can be the head, since it can be the 'time' for 'hade'.
+- hade -> root
+- spelindustrin -> hade (distance: 1)
+- formligen -> kollapsat is more likely to be the head, but let's consider hade as the head, as an analysis may vary depending on the interpretation.
+- kollapsat -> hade (distance: 3)
+- (brukar kallas ...) is a separate clause, parenthesis is not being considered in this case.
+- brukar -> kallas (distance: 1)
+- kallas -> root
+- The -> Great (distance: 1)
+- Great -> Video 
+- Video -> Game 
+- Game -> Crash 
+- Crash 
+- Of -> for the overall context is considered as a part of this specific sequence and thus is counted as: the Crash happened in the year Of 1983 (distance: 1)
+- 1983 -> kallas is likely the head as an analysis can also be interpreted with Crash. 
+
+Let's ignore 'i' and 'USA' since they don't have clear dependencies, 'parenthesized clause for explanation' from NES, use alternative interpretation from (spelindustrin-) formligen, use NES for Nintendo, Entertainment and System when adding those separate tokens so we keep interpretation coherent as possible without over estimating original data for required analysis.
+
+The calculated dependencies are:
+- 1985 -> lanserades (distance: 5)
+- NES -> lanserades (distance: 1)
+- Nintendo (as the whole compound 'Nintendo Entertainment System) is tied -> to NES, then NES to 'lanserades' (not calculated since this won't be separate).
+- 1982 -> hade (distance: 1), we'll choose this analysis over hades separate distance for root though other choices remain technically more accurate both interpretations hold different positions overall data usage here however) 
+- spelindustrin -> hade (distance: 1)
+- formligen -> hade (distance: 2)
+- kollapsat -> hade (distance: 3)
+- brukar -> kallas (distance: 1)
+- The -> Great (distance: 1)
+- Great -> Video (distance: 1)
+- Video -> Game (distance: 1)
+- Game -> Crash (distance: 1)
+- Of -> 1983 (for the sake of use analysis have had to for now merge 'Of' location dependency on Crash; however other more exact parsing tools exists) (distance: 1)
+- 1983 -> (Crash most intuitive as 'kallas'). distance as root kallas already being used under 'the entire dependency for gamecrisis by now) by current estimates, ignoring their uncounted values.
+
+Sum of the dependencies' distances (calculated ones thus no entire of sentence analysis have this unmodified requirement usage of even then data, it results in):
+5 + 1 + 1 + 2 + 3 + 1 + 1 + 1 + 1 + 1 = 18
+
+Total number of the calculated dependencies:
+10
+
+Now, let's calculate the average dependency distance:
+Average dependency distance = Total distance / Total number of dependencies
+Average dependency distance = 18 / 10
+Average dependency distance = 1.8

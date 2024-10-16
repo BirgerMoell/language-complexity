@@ -1,0 +1,53 @@
+To calculate the average dependency distance, we need to parse the sentence into tokens and identify the heads and their dependencies. 
+
+Here is the tokenized sentence:
+1. Den
+2. del
+3. av
+4. koden
+5. som
+6. ger
+7. order
+8. om
+9. andra
+10. saker
+11. utöver
+12. att
+13. sprida
+14. och
+15. gömma
+16. sig
+17. kallas
+18. ”
+19. payload
+20. ”
+21. dvs
+22. last
+23. på
+24. svenska
+25. .
+
+Next, we define the heads and their dependencies. This analysis might be approximate and depend on a detailed dependency parsing, but I'll try my best.
+
+- av is modifying del (distance: 0)
+- av is the head of koden, but av itself is dependent on del, so we consider the distance from del - del to koden (distance: 1)
+- koden is the head of ger (distance: not counted here because we'll count the distance from koden to the head of 'ger' which is 'kallas')
+- ger is a secondary head, but its main head is kallas, and its object 'order' is dependent on it (distance: 1), 
+- order is the head of om (distance: 1)
+- om is the head of 'andra saker', both depending on om - 
+  1. andra is modifying saker (distance: 0)
+  2. saker has distance of 1 (from saker - om)
+- koden (through ger) and 'utöver att sprida...gömma sig' both depend on kallas 
+  - utöver (distance : 4)
+  - sprida is the head of the verb phrase, so we have sprida and gömma depend on 'att' but we have att depend on sprida and then sprida depend on kallas so (distance: 7)
+  - sig (distance : 6) depend on sprida  then from sprida depend on 'kallas' so in total (sig-from sprida-from kallas so)- (distance:7)
+ - order depend on 'ger' then 'kallas' so order depend on (distance  : 4) 
+- kallas has distance (1) 'payload'
+- payload has distance (1) '”' (beginning the quotation)
+- last has distance (5) - to 'payload' through 'dvs'
+- dvs has distance (2) depend on 'payload'
+- på depend on '-svenska' (distance : 0)
+- svenska depend on 'på' directly but when we count we found distance of 1.
+
+Now calculate the average distance. 
+(((0 + 1+ 0 +1 +0+1+4+1+4+7 +7 +4+7 +1+6+1+0+1+5+2+0+1))/24)= 4.29

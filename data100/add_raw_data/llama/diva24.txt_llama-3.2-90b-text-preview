@@ -1,0 +1,55 @@
+To analyze the sentence and calculate the average dependency distance, we need to identify the dependencies between tokens. I'll assume a dependency parser that identifies the grammatical relationships between tokens.
+
+The first step is to annotate the sentence with the part-of-speech tags and grammatical dependencies. 
+
+Here is a possible annotation:
+
+1. Till (To) - case marker (denna anledning)
+   Dependency: denna anledning -> Till (distance 1)
+2. denna (this) - pronoun (modifer, anledning)
+   Dependency: anledning -> denna (distance 1)
+   Dependency: anledning -> denna anledning (distance 2, but the head 'anledning' of the noun phrase 'denna anledning' is the only one that is considered)
+3. anledning (cause, reason) - noun (main dependency)
+4. gjordes (was made) - verb (main dependency)
+   Dependency: gjordes -> anledning (distance 2, but anledning's dependency on 'gjordes' is further from the root 'gjordes' than on 'Till')
+5. en (a) - determiner (modifer, modifiering)
+   Dependency: modifiering -> en (distance 1)
+6. modifiering (modification) - noun (main dependency)
+   Dependency: gjordes -> modifiering (distance 1)
+7. i (in) - preposition (modifer, modellen)
+   Dependency: modellen -> i (distance 1)
+8. modellen (the model) - noun (main dependency)
+   Dependency: i modellen -> modifiering (distance 2)
+   Dependency: modellen -> modifiering (distance 2, but in modellen's dependency on 'modifiering' is further from the root 'gjordes' than on 'modifiering' directly)
+9. i (in) - preposition (modifer, syfte)
+   Dependency: syfte -> i (distance 1)
+10. syfte (aim, purpose) - noun (main dependency)
+    Dependency: att göra systemet användbart -> syfte (distance 2, but as no further children of syfte to the right exist, 'att göra systemet...' is connected directly to modifiering in stead)
+11. att (to) - infinitive marker (modifiering's aim)
+12. göra (to make) - verb (main dependency)
+    Dependency: att göra ... (-> modifiering) is considered via dependency on main verb (göra -> att is distance 1, assume att to be main head from now on, it will just be one unit further away)
+13. systemet (the system) - noun (main dependency)
+    Dependency: användbart -> systemet (distance 1, then the system must be a child of att which is already a child of modifiering so distance 2)
+14. användbart (usable) - adjective (main dependency)
+    Dependency: göra -> användbart (distance 2)
+15. för (for) - preposition (modifer, laborationsuppgift)
+16. en (a) - determiner (modifer, laborationsuppgift)
+17. laborationsuppgift (laboratory task) - noun (main dependency)
+18. för (for) - preposition (modifer, reglering)
+19. reglering (control) - noun (main dependency)
+20. med (with) - preposition (modifer, regulator)
+21. en (a) - determiner (modifer, regulator)
+22. lead-lag (leading-lagging) - (attribute of) adjectival (no hyphen connecting but due still in one token lead-lag is considered one word 
+23. regulator (regulator) - noun (main dependency)
+    Dependency: lead-lag regulator distances itself on a chain starting from användbart : (dist lead-lag regulator -> (en, med being a dependency of lead -> distance-3/ + distance2 through regulator (anled or a reg+ator)+ 0 distance (object of)) main anledning/användbar+distance 14 'modifiering'), 5. distance = 18
+
+Here are the calculated distances:
+1. denna anledning -> Till (distance 1)
+2. denna anledning -> anledning (distance 0) is an exception for this particular consideration so it has been left out
+3. anledning -> denna anledning -> Till (distance 2)
+4. anledning -> gjordes (distance 2)
+5. en -> modifiering (distance 1)
+6. modifiering -> en (distance 0) same reasoning as above
+7. modifiering ->  i (distance does not register)
+8. modifiering -> en (distance 1)
+9. modifier

@@ -1,0 +1,63 @@
+To analyze the sentence and calculate the average dependency distance, we need to break down the sentence into its constituent tokens and then determine their dependencies.
+
+Here's the sentence broken down into tokens:
+1. Olika
+2. discipliners
+3. och
+4. individers
+5. sätt
+6. att
+7. agera
+8. och
+9. tänka
+10. i
+11. byggprocessen
+12. förklaras
+13. genom
+14. en
+15. intervjustudie
+16. som
+17. genomförts
+18. .
+
+We'll assume that punctuation marks are tokens, but we'll ignore them when calculating average dependency distance because punctuation is not typically given a dependency relation.
+
+Here are the assumed dependency relations in the sentence:
+- 'Olika' modifies 'discipliners' (distance: 1)
+- 'discipliners' is part of a coordination with 'individers' (distance: not calculated because coordination is not well-defined with distance)
+- 'och' is a dependent of 'discipliners' (distance: 1)
+- 'individers' is part of a coordination with 'discipliners' (distance: not calculated because coordination is not well-defined with distance)
+- 'och' is a dependent of 'individers' (distance: 1)
+- 'sätt' is the object of 'tänka' and 'agera' (the 'att' is assumed to be the head of an unlexicalized conjunction, which is then the head of the infinitive phrase that 'sätt' is part of, distance: 3 for 'agera' and 4 for 'tänka')
+- 'att' is the subordinating conjunction for 'agera' (distance: 1, 'att' -> 'agera') and 'tänka' (distance: has to skip 'agera')
+- 'agera' is a dependent of 'tänka' (has to skip 'att')
+- 'och' is the dependent of 'agera' or 'tänka', pick one (distance: 1)
+- 'tänka' is one of the coordinands in the predicate nominative phrase led by 'sätt att agera och tänka' (distance: not calculated because coordinand dependency is not well-defined with distance)
+- 'i' is a preposition, and is the head of the prepositional phrase with dependent 'byggprocessen' (distance: 1)
+- 'byggprocessen' is a dependent of 'i' (distance: 1)
+- 'förklaras' is the head of the sentence with no objects (so calculating no distance) 
+- 'genom' is a preposition and has as a dependent the noun 'en intervjustudie' (distance: 1)
+- 'en' modifies 'intervjustudie' (distance: 1)
+- 'intervjustudie' is the object of the preposition 'genom' (no, actually 'genom en intervjustudie' is an adverbial phrase object of 'förklaras' that indicates the method of some action 'förklaras')
+   * since then:  'intervjustudie' is an object of the prep phrase headed by 'genom' (distance: 1)
+- 'som' is the dependent of 'intervjustudie' (distance: 1)
+- 'genomförts' is the dependent of 'som' (distance: 1)
+
+The calculated average dependency distance for the non-coordinating and non-comma and other exceptions in this Swedish sentence are based on 15 out of a possible 18 (given that we drop punctuation):
+- 1 ('Olika' to 'discipliners')
+- 1 ('och' to 'discipliners')
+- 1 ('och' to 'individers')
+- 3 ('sätt' to 'agera')
+- 4 ('sätt' to 'tänka')
+- 1 ('att' to 'agera')
+- 2 ('att' to 'tänka', skipping 'agera')
+- 1 ('att' has 2 dependents which we then also need to calculate distances for from this root)
+- 2 ('tänka', depending on 'att')
+- 1 ('och', tänka has two of these )
+- 1 ('i' to 'byggprocessen')
+- 1 ('genom' to 'en intervjustudie')
+- 1 ('en' to 'intervjustudie')
+- 1 ('intervjustudie' to 'genom')
+- 1 ('som' to 'intervjustudie')
+- 1 ('genomförts' to 'som')
+Totals 22, and there are 16

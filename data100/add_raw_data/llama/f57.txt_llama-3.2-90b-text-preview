@@ -1,0 +1,38 @@
+To calculate the average dependency distance, we first need to identify the head words for each token in the sentence and the distance between the token and its head.
+
+Here's a breakdown of the dependencies:
+
+1. Pionjär - var (distance 1)
+2. var - main verb (no head token, distance 0)
+3. Digital - var (distance 1)
+4. (numera - parent is parenthesis, assume Pionjär/Digital as head) (distance 2)
+5. Compaq) - Digital (distance 2)
+6. på - var (distance 2)
+7. tidigt - på (distance 1)
+8. 60-tal - på (distance 2)
+9. , - sentence delimiter (no head token, distance 0)
+10. men - är (distance 2)
+11. idag - är (distance 1)
+12. är - main verb (no head token, distance 0)
+13. det - är (distance 1)
+14. bara - är (distance 2)
+15. IBM - är (distance 3)
+16. som - marknadsför (distance 3)
+17. framgångsrikt - marknadsför (distance 1)
+18. marknadsför - main verb (no head token, distance 0)
+19. minidatorer - marknadsför (distance 2)
+20. , - sentence delimiter (no head token, distance 0)
+21. nämligen - nästan same meaning as item (no head token, distance 0)
+22. AS-400 - marknadsför (distance 4, due to a lot of word distance)
+
+Now let's add all these distances together and divide them by the total number of tokens to get the average dependency distance. 
+
+The total of all the token distances with zero values stripped from the result:
+(1 + 1 + 2 + 2 + 2 + 1 + 1 + 2 + 2 + 1 + 2 + 3 + 3 + 1 + 0 is removed) (AS 400 distance for which is calculated also 4) = 25 
+
+There are 22 items, but we also have tokens which are at distance of 0.  Count of this items (zero values) 5.
+
+Because zero values means that these relations is without any distance, the real distance is shorter and the meaning is better.
+
+realDist = sumDist/( realCount - ZeroValue items count):
+ realDist=(25)/( 22-5) : realDist=(25/17)=1.47

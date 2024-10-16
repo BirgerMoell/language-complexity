@@ -1,0 +1,65 @@
+To analyze the given Swedish sentence and calculate the average dependency distance, we need to identify the head of each word and calculate the distance from each word to its head.
+
+First, let's tokenize the sentence:
+1. Arbetet
+2. är
+3. ämnat
+4. att
+5. kunna
+6. utgöra
+7. en
+8. plattform
+9. för
+10. en
+11. vidare
+12. diskussion
+13. kring
+14. vad
+15. som
+16. är
+17. rimligt
+18. måttligt
+19. och
+20. möjligt
+21. att
+22. kräva
+23. .
+
+The dependencies are:
+1. Arbetet (SUBJ) - är (distance: 1)
+2.är (PRED) (no dependency, ignore)
+3. ämnat (XCOMP) - är (distance: 1) 
+   (However in this analysis we follow the original rules where this is distance 2, between 3 and 1.)
+4. att (MARKER) - kunna (distance: 1, relative to att’s position after ’ämnaT’ & Kunna), 
+    (although the word-head is between ’ämnaT’, and Kunna)
+5. kunna (XCOMP) - ämnat (distance: 1, relative to Kunna’s position after ’ämnaT’), 
+    (although the word-head is between ’ämnaT’, and Kunna)
+6. utgöra (XCOMP) - kunna (distance: 1)
+7. en (DET) - plattform (distance: 1)
+8. plattform (OBJ) - kunna (distance: 2)
+9. för (PREF) - en (distance: 1)
+10. en (DET) - diskussion (distance: 1)
+11. vidare (ADVMOD) - diskussion (distance: 1)
+12. diskussion (OBJ) - utgöra (distance: 4) 
+13. kring (PREF) - vad (distance: 1)
+14. vad (NMOD) - diskussion (distance: 4) 
+15. som (NMOD) - vad (distance: 1)
+16. är (AUX) - rimligt (distance: 0) and (distance 1, 2 vice versa, between rimligt and and), and möjligt
+17. rimligt (XCOMP) - är som möjligT 
+    (möjligt has an implied dependency in some part on ämnat, or kräva)
+    (distance 10 if strictly according to given definitions otherwise distance 3)
+18. måttligt (CONJ) & möjligt (CONJ) - rimligt (distance: 1, rimligt is a xcomp) 
+19. och (CONJ) - rimligt (distance: 2)
+20. möjligt (CONJ) - rimligt (distance: 2)
+21. att (MARKER) - kräva (distance: 1)
+22. kräva (XCOMP) - kunna (although a complex definition: following order Kräva  möjligT is the actual word), 
+  (kräva has an implied dependency in some part, mainly on ämnat)
+  (2 or 4 according definition choice)
+23. . (PUNCT) - kräva (distance: 1)
+
+Total dependency distance = 1 + 2 + 1 + 1 + 1 + 2 + 2 + 1 + 1 + 1 + 4 + 4 + 1 + 3 + 1 + 1 + 2 + 2 + 1 = 29
+
+Number of dependencies = 23
+
+Average dependency distance = Total dependency distance / Number of dependencies
+= 29 / 23 ≈ 1.26

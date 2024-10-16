@@ -1,0 +1,66 @@
+To calculate the average dependency distance, we first need to parse the sentence and identify the head words for each token. 
+
+Here is the sentence broken down into tokens:
+
+1. Man
+2. startar
+3. oftast
+4. FTP
+5. genom
+6. att
+7. liksom
+8. med
+9. TELNET
+10. skriva
+11. FTP
+12. och
+13. sen
+14. domännamnet
+15. på
+16. dn
+17. dator
+18. som
+19. du
+20. vill
+21. koppla
+22. upp
+23. dig
+24. till.
+
+The dependency relationships are as follows:
+- startar (head) -> Man (subject) = 1
+- startar (head) -> oftast (modifier) = 2
+- startar (head) -> FTP (object) = 3
+- genom (head) -> startar (modifier of startar) = 4, but since genom is a subordinating preposition, we will let startar be the head, and then the other head for the 'genom-att' construction is the verb in the subordinate clause:
+  - skriva (head) -> att (subordinating conjunction) = 0
+- skriva (head) -> liksom (modifier) = 5
+- liksom (head) -> med (modifier of liksom) = 1
+- med (head) -> TELNET (object) = 1
+- skriva (head) -> FTP (object) = 5
+- och (head) -> skriva (conjunction) = 7
+- skriva (head) -> sen (modifier) = 7
+- vill (head) -> skriva (modifier of the auxiliary 'vill') and sen is the temporal modifier of 'vill' which will be counted later as we can't see 'vill' and only take distances once we reach the root, which we identified (at the time of writing the partial parse) to be 'startar', but had not realized there would be more words, so now we have not identified which word can be the root. Hence the token vill will be assigned a temporary head word which is sen.
+  - vill (head) -> sen (temporary head, actual head skriva) = 6
+- vill (head) -> domännamnet (object) = ? - too early to declare, hence assign a temporary 1
+- vill (head) -> på (subordinating preposition) = ? - too early to declare, hence assign a temporary 1
+- på (head) -> dn (modifier) = 1
+- på (head) -> dator (object) = 2
+- vill (head) -> som (subordinating conjunction/relative pronoun) = ? - too early to declare, hence assign a temporary 1
+- vill (head) -> du (subject) = ? - too early to declare, hence assign a temporary 1
+- vill (head) -> vill (auxiliary) = ? - cannot assign distance yet.
+  -   will (head) -> koppla (main verb, also modifies vill) = ? - cannot assign distance yet.
+  -   will (head) -> upp (modifier of the main verb 'koppla') = ? - cannot assign distance yet.
+  -   will (head) -> dig (object) = ? - too early to declare.
+  -   will (head) -> till (prepositional complement of the main verb 'koppla') = ? - too early to declare.
+  
+Here is the list with these assigned distances with head of 'vill', and going from that, sen is assigned to head to skriva. That means the temporary headword 'sen' is in turn assigned to the head 'skriva'. These are temporarily changed to head = skriva:
+- koppla (head) -> will (auxiliary) = 5
+- koppla (head) -> upp (modifier) = 1
+- koppla (head) -> dig (object) = 2
+- koppla (head) -> till (prepositional complement) = 3
+Now, from this second root word identified 'koppla', and taking distances from the root word. Now taking these distances starting from the identified head 'koppla', 
+- till (head) -> koppla =  8
+- till (head) -> skriva (head) = 10, 
+Taking the full list, from skriva the full distances would then be:
+- till (head) -> att (first root in a root word list)  = 11 
+To eventually produce the length of the whole 'att'-root that is needed, a dependency parse where start

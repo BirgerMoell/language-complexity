@@ -1,0 +1,78 @@
+To analyze the sentence, I will first break it down into tokens:
+
+1. Min
+2. förhoppning
+3. är
+4. att
+5. beskrivningen
+6. i
+7. denna
+8. rapport
+9. av
+10. hur
+11. referenssystemsbytet
+12. gjordes
+13. ,
+14. kan
+15. vara
+16. till
+17. nytta
+18. för
+19. de
+20. kommuner
+21. som
+22. av
+23. olika
+24. anledningar
+25. ännu
+26. inte
+27. kommit
+28. igång
+29. med
+30. motsvarande
+31. arbete
+32. .
+
+Then, I will determine the head of each token and the dependency distance. The dependency distance is calculated as the number of tokens between a word and its head. A negative distance is not allowed in the context here; for a word 'A' to the right of its head 'B', distance counts the number of words to the left of 'A' ('A' is to their right in the dependency representation we calculate from). For a word 'C' to the left of its head 'D', distance counts the number of words between 'C' and 'D' ( 'D' is to their right).
+
+Dependency distances are as follows:
+
+1. Min - förhoppning: 1
+2. är - förhoppning: 1
+3. att - är: 1
+4. beskrivningen - att: 1
+5. i - beskrivningen: 1
+6. denna - rapport: 3
+7. rapport - av (dependency with av): 2  (But, rapport can also depends on beskrivningen in i denna rapport; here rapport has 2 dependencies; with i/beskrivningen and av/hur respectively. av here (the position) is taken for av has strong dependency over hur than beskrivningen. the position of i is considered being more of an accompaniment).
+8. av - rapport (dependency with rapport): 1 ( same explanation as for denna - rapport: dependency not for above or below, just that av dependency below counted as required)
+9. hur - av: 1
+10. referenssystemsbytet - hur (dependency with av not possible as done as below explanation because two conjunctions together are always in the same place structure-wise): 3 ( referenssystem used here could be also considered an object under av here.)
+11. gjordes - referenssystemsbytet: 1
+12. , - gjordes: 1 (Comma generally depends on the preceding verb here. Same distance)
+13. kan - , : 1 
+14. vara - kan: 1 
+15. till - vara: 1
+16. nytta - till: 1
+17. för - nytta: 1
+18. de - för: 1 
+19. kommuner - de: 1 
+20. som - kommuner: 1 
+21. av - som: 1 
+22. olika - av: 1 
+23. anledningar - olika: 1
+24. ännu - anledningar: 1 (dependency distance still stands but av and som are here required and if av/som is being dependency more, please ignore explanation about dependency above being added here.) There is then sometimes flexibility of head of 'igång' determined whether dependency would count up or from any)
+25. inte - ännu (for negative sentence structure  - having no effect on real distance change): 1
+26. kommit - igång : igång head below (kommit - same) - 3 (still below it stands because having effect just by choosing its correct head below and choosing right most when having two heads possible distance of -3+4 can also be counted towards including flexibility determining head.)
+27. igång - (kommit or som above - not considering second possible above 'som' now ignored) -1 +3 = 2
+28. med - igång/comparison/kommit for continuous as same as considered - : 1 
+29. motsvarande - arbete : 1 
+30. arbete - med : 2 
+
+
+After making calculation of all tokens distance without a head for 'Min' were calculated with its head given a dependency in the whole sentence.
+
+Distance for 'Min' considering from dependency grammar would be counted as equal its head which it cant be in this instance hence keeping position of 1, thus giving 
+   head = förhoppning = är 
+
+
+The average dependency distance for the sentence is (1 + 1 + 1 + 1 + 1 + 3 + 2

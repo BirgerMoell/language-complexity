@@ -1,0 +1,53 @@
+To calculate the average dependency distance in the Swedish sentence, first we need to identify the parts of speech, parse the sentence (i.e., determine the grammatical structure), and then calculate the distance between each token and its head.
+
+The given sentence is:
+"InledningVi såg en film som handlade om att vänskap övervinner allt, även fördomar och olika bakgrunder."
+
+Parsing the sentence:
+1. Inledning - Vi (appositive phrase 'Inledningen Vi' can be considered as the main subject)
+2. Vi (subject) - såg (verb)
+3. en (determiner) - film (noun)
+4. som (subordinator) - handlade (verb)
+5. film (noun) - handlade (verb)
+6. handlade (verb) - om (subordinating preposition)
+7. att (subordinating conjunction) - vänskap (noun)
+   vänskap - övervinner (verb)
+8. övervinner (verb) - allt (noun)
+9. allt (noun) - , (punctuation)
+10. även (adverb) - fördomar (noun)
+11. och (coordinating conjunction) - olika (adverb)
+12. olika (adverb) - bakgrunder (noun)
+
+token    head     distance
+1. Inledning    Vi        1
+2. Vi          såg       1
+3. såg         -         (Vi's head is not among the tokens we are counting)
+4. en          film      1
+5. film        såg       2
+    film        handlade  2 (choose the longer one)
+6. som         handlade  1
+7. handlade    såg       2
+    handlade    vänskap   2 (choose the longer one)
+8. om          handlade  1
+    att         handlade  2
+    om          vänskap    3
+       att       vänskap   3    (choose the longer one)
+9. vänskap     övervinner 1
+10. övervinner  -        (no head, same issue with 'såg')
+    övervinner  handlade  3
+    övervinner  vänskap    3  (choose the longer one)
+11. allt        övervinner 1
+    allt        handlade   3
+       allt        vänskap   4    (choose the longer one)
+12. ,           övervinner 2
+13. även        fördomar   1
+14. fördomar    övervinner 3
+    fördomar    handlade   3 
+       fördomar    vänskap    4   (replaced on account of another 'handlade' instance further away)
+15. och         bakgrunder  1
+16. olika       bakgrunder  1
+17. bakgrunder  övervinner 3
+
+Sum of all the distances is 35. The total number of tokens (including punctuation) with identifiable heads is 17. We do not account for tokens for which the head is unclear (såg and övervinner).
+
+Average dependency distance is 35/17 = 2.06.

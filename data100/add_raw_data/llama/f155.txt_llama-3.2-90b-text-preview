@@ -1,0 +1,60 @@
+To analyze the Swedish sentence and calculate the average dependency distance, we first break it into tokens:
+
+1. Därför
+2. genmodifierar
+3. vi
+4. växterna
+5. dvs
+6. man
+7. ändrar
+8. på
+9. växternas
+10. gener
+11. för
+12. att
+13. få
+14. fram
+15. den
+16. växt
+17. med
+18. de
+19. egenskaper
+20. man
+21. söker
+
+Then, we identify the head of each token and the corresponding dependency distance:
+
+1. Därför (head: Därför) - distance = 0 (no dependency)
+   or if genmodifierar (head: genmodifierar) is taken - distance = 1 (to its head)
+   note that the correct dependency direction may depend on parsing of the sentence.
+2. genmodifierar (head: genmodifierar) - distance = 0 
+3. vi (head: genmodifierar) - distance = 1 
+4. växterna (head: genmodifierar) - distance = 2 
+5. dvs (head: dvs) - distance = 0 
+6. man (head: ändrar) - distance = 1 
+7. ändrar (head: ändrar) - distance = 0 
+8. på (head: ändrar) - distance = 1 
+9. växternas (head: ändrar) - distance = 2 
+10. gener (head: ändrar) - distance = 3 
+11. för (head: ändrar or ändrar is taken as head of 'att', both give same dependency distance here) - distance = 4
+12. att (head: ändrar) - distance = 5 
+13. få (head: att) - distance = 1 
+14. fram (head: få) - distance = 1 
+15. den (head: växt) - distance = 4 
+16. växt (head: växt, though the direct head could be 'med' or the words following 'med') - distance = 0 
+17. med (head: växt) - distance = 1 
+   or if the token 'söker' (head of which is a verb) were to be considered the head - distance = 4 
+18. de (head: egenskaper) - distance = 1 
+19. egenskaper (head: egenskaper) - distance = 0 
+    but some analyses take 'söker's direct head 'egenskaper'- distance = 1 
+20. man (head: söker) - distance = 3 
+21. söker (head: söker) - distance = 0 
+
+Given the head and distances identified above. 
+However, one should still recognize these identified dependencies and heads may not be totally accurate as only direct sequence of the sentence has been considered.
+
+sum of all distances = 32
+
+number of dependencies = 20.
+
+Thus, the average dependency distance is 32/20 = 1.6.

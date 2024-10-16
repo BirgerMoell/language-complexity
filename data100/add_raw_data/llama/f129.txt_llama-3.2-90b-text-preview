@@ -1,0 +1,93 @@
+To calculate the average dependency distance, we first need to split the sentence into tokens and identify the grammatical dependencies. We'll use the following abbreviations to represent the tokens and their respective parts of speech:
+
+1. Även (_Adv)_
+2. på (Pp)
+3. 1800-talet (N)
+4. och (C)
+5. tidigare (Adv)
+6. var (V)
+7. vi (Pron)
+8. starkt (Adv)
+9. påverkade (V)
+10. av (Pp)
+11. Tyskland (N)
+12. och (C)
+13. kontinenten (N)
+14. i (Pp)
+15. rasfrågor (N)
+16. och (C)
+17. i (Pp)
+18. synnerhet (Adv)
+19. i (Pp)
+20. synsättet (N)
+21. på (Pp)
+22. judar (N)
+23. , (Punct)
+24. den (Det)
+25. nedvärderande (Adj)
+26. synen (N)
+27. på (Pp)
+28. judarna (N)
+29. var (V)
+30. bland (Pp)
+31. annat (Adv)
+32. ett (Det)
+33. sätt (N)
+34. för (Pp)
+35. kyrkan (N)
+36. att (Pp)
+37. stärka (V)
+38. sin (Poss-Pron)
+39. hegemoni (N)
+40. över (Pp)
+41. befolkningen (N)
+42. . (Punct)
+
+Next, we need to identify the heads for each token and calculate the distance between each token and its respective head. Here is one possible dependency tree:
+
+1. stärka->...
+  - Även(5)
+  - på(6)
+  - över(3)
+  - befolkningen(Head of NounPhrase: 4)
+
+(This is not exhaustive as there are multiple possible sentences structures as well as only show those tokens used in above explanation, all tokens are for calculation only)
+
+Here are the calculated distances and heads:
+ 
+1. Även:  stärka: 40-1 = 39 (This calculation is not fair because this two tokens are used as head in a different way in different sentence structure)
+2. på: 1800-talet: 3-2=1
+3. 1800-talet: stärka:  41-3 = 38 
+4. och: Även: 
+  ... ( Same issue)
+5. tidigare: var: 6-5=1
+6. var: stärka:
+  ... 
+7. vi: påverkade: 9-7=2
+8. starkt: påverkade: 9-8=1
+9. påverkade: stärka:  38 
+10. av: påverkade: 9-10=1
+11. Tyskland: påverkade: 9-11=2
+12. och: påverkade: 9-12=3
+13. kontinenten: påverkade: 9-13=4
+14. i: rasfrågor: 15-14=1
+15. rasfrågor: påverkade: 9-15=6
+16. och: rasfrågor: 9-16=7
+17. i: synsättet: 20-17=3
+18. synnerhet: i: 19-18=1
+19. i: synnerhet: 20 (as same head of  synsättet, not shown for simplicity.) 
+20. synsättet: påverkade:  9-20=11 
+21. på: judar: 22-21=1
+22. judar: påverkade:  9-22=13 
+23. ,: judar: 22-23=1
+24. den: synen: 26-24=2
+25. nedvärderande: synen: 26-25=1
+26. synen: var:  29-26=3 
+27. på: judarna: 28-27=1
+28. judarna: synen: 26-28=2
+29. var: synen: 26-29 ( Same issue)
+30. bland: var: 29-30=1
+31. annat: bland: 30-31=1
+32. ett: sätt: 33-32=1
+33. sätt: var: 29-33 ( Same issue)
+34. för: s

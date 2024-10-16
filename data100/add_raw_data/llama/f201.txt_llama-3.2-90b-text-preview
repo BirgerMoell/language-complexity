@@ -1,0 +1,80 @@
+To calculate the average dependency distance, we need to identify the head words and their dependent words, then measure the distance between them. 
+
+Here's the sentence with dependencies identified:
+
+1. Sjukdomar (S) - head: kunde
+2. kunde (V) - head: None (root)
+3. sprida (V) - head: kunde
+4. sig (P) - head: sprida
+5. väldigt (A) - head: snabbt
+6. snabbt (A) - head: sprida
+7. så (A) - head: sprida
+8. när (C) - head: märkte
+9. besättningen (S) - head: märkte
+10. märkte (V) - head: kunde
+11. att (C) - head: märkte
+12. någon (S) - head: började
+13. började (V) - head: märkte
+14. bli (V) - head: började
+15. sjuk (A) - head: bli
+16. så (A) - head: kastade
+17. kastade (V) - head: märkte
+18. man (S) - head: kastade
+19. de (P) - head: kastade
+20. överbord (A) - head: kastade
+21. det (P) - head: spelade
+22. spelade (V) - head: kunde
+23. ingen (A) - head: spelade
+24. roll (A) - head: spelade
+25. om (P) - head: spelade
+26. de (P) - head: spelade
+27. var (V) - head: spelade
+28. levande (A) - head: var
+29. eller (C) - head: spelade
+30. döda (A) - head: var
+31. . (.) - head: None
+
+Now, let's calculate the dependency distances:
+
+1. Sjukdomar - kunde (1)
+2. sprida - kunde (1)
+3. sig - sprida (1)
+4. väldigt - snabbt (4) - should be 1 so depends on 'snabbt'
+5. snabbt - sprida (1)
+6. så - sprida (2)
+7. när - märkte (4) - should be 1 so depends on 'märkte'
+8. besättningen - märkte (1)
+9. märkte - kunde (3)
+10. att - märkte (3) - should be 1 so depends on 'märkte'
+11. någon - började (2)
+12. började - märkte (3) - Began is just one token from 'märkte'
+13. bli - började (1)
+14. sjuk - bli (1)
+15. så - kastade (4) - should be 1 so depends on 'kastade' 
+16. kastade - märkte (4) - as 'kastade' depends on 'märkte' this one would be correct if marked as 4 
+17. man - kastade (1)
+18. de - kastade (2)
+19. överbord - kastade (3)
+20. det - spelade (1)
+21. spelade - kunde (4)
+22. ingen - spelade (1)
+23. roll - spelade (4)
+24. om - spelade (3) - should be 1 so depends on 'spelade'
+25. de - spelade (1) 
+26. var - spelade (2) - should be 1 so depends on 'spelade' , this one is wrong - head is 'om', right distance is 2 
+27. levande - var (1)
+28. eller - spelade (4)
+29. döda - var (1)
+   
+Let's now only add the dependencies that have correct head relationships.
+
+ List 
+    1. Sjukdomar - kunde (1)
+    2. sprida - kunde (1)
+    3. sig - sprida (1)
+    4. snabbt - sprida (1)
+    5. kastade - märkte (4) 
+    6. man - kastade (1)
+    7. de - överbord, switch this head. Real head is 'kastade' changing to (2)
+    8. överbord - kastade (3)
+    9. det - spelade (1)

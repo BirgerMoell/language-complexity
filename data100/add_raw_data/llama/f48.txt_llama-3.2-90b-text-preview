@@ -1,0 +1,42 @@
+To calculate the average dependency distance, we need to break down the sentence into tokens and identify their dependencies:
+
+1. Då
+2. ändrade
+3. ordet
+4. hacker
+5. mening
+6. till
+7. att
+8. betyda
+9. ungefär
+10. En
+11. person
+12. som
+13. arbetar
+14. sover
+15. och
+16. lever
+17. med
+18. datorer
+19. .
+
+Here's the dependency analysis:
+
+- "Då" depends on the root of the sentence, so its dependency distance is not directly calculable. However, for the sake of calculation, we can consider its head to be the root, with a distance of 0 (because it's the first word) or consider it the first word and its head being the first word with a dependency.
+- "ändrade" is the main verb, so we consider it as the head for now. Its dependency distance is not calculable yet.
+- "ordet" depends on "ändrade" with a distance of 1.
+- "hacker" depends on "objectionable words were not fully parsed", however 'hacker' appears to depend on the root 'ordet' in this context so its dependency distance is 1 (from 'hacker' to 'ordet').
+- "mening" depends on "ändrade" with a distance of 2.
+- "till" is the head for a subordinate clause. In this case, we can consider 'till' as prep and 'att' as the complement, it is not exactly calculable but it can be 1 for calculation, so, to 'till' we consider a dependency of its main verb of the subordinate 'betyda', with a distance of 3 (due to mening and ordet's object, however there are other dependencies like 'att', we count 3 because this is a prep with main clause coming before this - we consider an approximation of distance 3 because it can be exact but with given complexity we take one head word ahead with main action coming prior to this one as mentioned above which also should get a similar number we assume) 
+- "att" depends on the head "till" with a dependency distance of 1
+- "betyda" depends on "att" with a dependency distance of 1
+- "ungefär" is an adverb that depends on the whole phrase "till att betyda", but it is more related to its second more related action clause coming prior. So its prior relation makes its index 1 for 'ungefär'.
+- "En" depends on "person" with a dependency distance of 1.
+- "person" depends on "betyda" with a dependency distance of 4 (4 due to action dependency in second clause by taking some relation approx.)
+- "som" is the head for a subordinate clause. Its closest related word is 'person'. 
+- "arbetar" and other "sover",  "lever"  and the coordinating conjunction "och" depend on "som". Their distances can be 1 for 'arbetar', 'och' and 'lever', (due to equal depth given som). "och" needs to start after a minimum dependency. If a coordinating word comes to next dependency level then after 'sover' its distance is the dependency of 'sover' plus one level thus distance 2. (one for 'sover'  from related some + one inside level ahead which sover also gets 1 so is assigned a dependency distance of 2).
+- "med" has head "arbetar", "lever", their dependency will be distance 2.
+- "datorer" have main head 'arbetar', 'lever', in above given list, we consider distance as given prior with head - they can't hold dependency greater than a certain point which also follows the actions of object to which they hold. Its dependency we keep equivalent. 
+- the sentence "Då ändrade ordet hacker mening till att betyda ungefär..." ends with ". ". for some definition purposes take the dependencies given the range or head so approximate distance. Having dependency does not provide us main advantage because if we don't have relation and don't keep them the outcome becomes other relation if "då" considered for " root". In this case let’s set dependency at distance 7.
+
+The average dependency distance is (0 + 1 + 1 + 1 + 2 + 3 + 1 + 1 + 1 + 1 + 4 + 1 + 1 + 1 + 2 + 2 + 2 + 7 + 1)/19 (average). If however "då" is assumed dependency with one and whole dependency without  considered other "Då" with given dependencies then (

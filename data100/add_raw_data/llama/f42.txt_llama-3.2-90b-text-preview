@@ -1,0 +1,76 @@
+To calculate the average dependency distance of the given sentence, we first need to break down the sentence into tokens, identify the grammatical dependencies, and then calculate the dependency distance for each token. 
+
+The given sentence can be tokenized as follows: 
+
+1. beskriv 
+2. krypteringsprogramet 
+3. pgp 
+4. PGP 
+5. är 
+6. ett 
+7. av 
+8. de 
+9. populäraste 
+10. krypterings 
+11. program 
+12. pretty 
+13. good 
+14. privacy 
+15. den 
+16. arbetar 
+17. med 
+18. komplexa 
+19. algoritmer 
+20. som 
+21. gör 
+22. informationen 
+23. kan 
+24. få 
+25. en 
+26. hög 
+27. nivå 
+28. av 
+29. säkerhet 
+30. nära 
+31. på 
+32. militära 
+33. säkerhets 
+34. nivåer 
+35. , 
+36. programet 
+37. kunna 
+38. ge 
+39. privatpersoner 
+40. och 
+41. företag 
+42. samma 
+43. säkerhet 
+
+Identifying the grammatical dependencies (dependencies may vary depending on the exact parsing model), we get:
+
+1. beskriv (0) -> 5 (är) (distance = 4)
+2. krypteringsprogramet (2) -> 5 (är) (distance = 3)
+3. pgp (4) -> 5 (är) (distance = 2 - not directly depend on 'är', assume it as an appositive for now)
+4. PGP (5)  (appositive - distance is unknown for PGP, assuming as zero for this calculation - actual dependency might be directly to the head of some parent phrase or,  a root node, so hard to measure, taking = 0 for PGP -)
+5. är (5) ->  (ROOT) 
+6. ett (7) -> 8 (de) (distance = 2 - or 7 might be as adjunct -  actual dependency can be also 'ett' -> 5)
+7. av (9) -> 8 (de) (distance = 1 -  actual dependency can be also 'av' -> 5)
+8. de (9) -> 9 (populäraste) (distance = 1)
+9. populäraste (10) -> 11 (program) (distance = 1 - or adjunct  to program)
+10. krypterings (11) -> 11 (program) (distance = 0)
+11. program (11) -> 5 (är) (distance = 5)
+12. pretty (13)  (appositive - dependency can be -  on 14 - dependent on pretty (adjective modifying 'good') (assume 0)
+13. good (14)  (appositive - assume that it is modifying the head ('privatitet' - would be added but is missing  'privatitet' -)) taking in average = 1 (using average dependency, though most times might not depend on the immediate following token ))
+14. privacy (15)  -> 16 (den) (distance = 1)  - adding actual  ' Privacity' as a head -  it seems an appositive in our structure,  and actual  in this would count as main noun for our phrase (0).
+15. den (16) -> 16 (arbetar) (distance = 1)
+16. arbetar (17)  -> 19 (komplexa) (assuming distance as its dependent, though actual can also on its object ) (distance = 2)
+17. med (19)  -> 19 (algoritmer) (distance = 0)
+18. komplexa (19)  -> 19 (algoritmer) (distance = 0)
+19. algoritmer (20)  -> 20 (som) (distance = 1)
+20. som (21)  -> 22 (gör) (distance = 2))
+21. gör (22)  -> 23 (kan) (distance = 1 - actual is its object - distance as 1 and finally also to some object - as (but do not appearing ).)
+22. informationen (24)  -> 24 (kan) (distance = 2 - actual has distance 2 due sub tree)
+23. kan (24) -> 24 (få) (distance = 1)
+24. få (25) -> 26 (en) (distance = 1)
+25. en (26)  -> 26 (hög) (distance = 1)
+26. en

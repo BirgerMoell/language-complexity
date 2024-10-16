@@ -1,0 +1,37 @@
+To calculate the average dependency distance for the sentence, we first need to tokenise and assign the head and dependency relationships for each word:
+
+1. På (ADP) -> depends on började (head: 1)
+2. 1890-talet (NOUN) -> depends on började (head: 2)
+3. började (VERB) -> head
+4. industriföretag (NOUN) -> depends on började (head: 3)
+5. bygga (VERB) -> depends on började (head: 4)
+6. egna (ADJ) -> depends on kraftverk (head: 3)
+7. kraftverk (NOUN) -> depends on bygga (head: 2)
+8. för (ADP) -> depends on att (head: 3)
+9. att (VERB) -> depends on få (head: 1)
+10. få (VERB) -> depends on bygga (head: 4)
+11. el (NOUN) -> depends on få (head: 2)
+12. i (ADP) -> depends on sina (head: 3)
+13. sina (PRON) -> depends on fabriker (head: 2)
+14. fabriker (NOUN) -> depends on i (head: 3), but a more correct relationship is: fabriker depends on att (head: 6)
+   0-- replace dependency above: fabriker (NOUN) -> depends on att (head: 6)
+15. , (PUNCT) -> depends on började (head: 10)
+16. bland (ADP) -> depends on annat (head: 2)
+17. annat (PRON) -> depends on bland (head: 1), but a more correct relationship is: annat depends on i (head: 5)
+   1-- replace dependency above: annat (PRON) -> depends on i (head: 5)
+18. i (ADP) -> depends on järnverken (head: 1)
+19. järnverken (NOUN) -> depends on i (head: 3), but a more correct relationship is: järnverken depends on annat (head: 3)
+   2-- replace dependency above: järnverken (NOUN) -> depends on annat (head: 3)
+20. i (ADP) -> depends on massafabriker (head: 5)
+21. Bergslagen (NOUN) -> depends on i (head: 5), but a more correct relationship is: Bergslagen depends on järnverken (head: 4)
+   3-- replace dependency above: Bergslagen (NOUN) -> depends on järnverken (head: 4)
+22. , (PUNCT) -> depends on började (head: 17)
+23. i (ADP) -> depends on massafabriker (head: 2)
+24. massafabriker (NOUN) -> depends on i (head: 5), and has the relation 'or' to other words of that subset of nouns, its main dependency also relies on: depends on annat (head: 8)
+   4-- replace dependency above: massafabriker (NOUN) -> depends on annat (head: 8)
+25. och (CONJ) -> depends on pappersbruk (head: 2), and its more direct dependency is on massafabriker (head: 1)
+   0-- replace dependency above  there is not sufficient information to decide the main head as follows this word would be seen linked directly with its other half ('massafabriker'). A word can’t act as its own component’s main dependency. replace the first integer inside brackets, namely ‘pappersbruk’ and corresponding values above and insert ‘massafabriker’ in parentheses as: depends on massafabriker and insert '1' where first integer of head is as follows (correct integer inserted into parentheses in this explanation): och (CONJ)  – depends on massafabriker, (head: 1)
+26. och (CONJ) is taken as CONJ that relates to massafabriker where its length is +1 dependant variable added above at the base CONJ.
+ 25- 'och’ -result altered in new CONJ (ADJ) of dependency and will be considered adjusted without the addition of a + CONJ for integer altering addition dependency integers related information above 
+27. i (ADP) -> depends on pappersbruk (head: 3)
+28. pappersbruk (NOUN) -> depends on

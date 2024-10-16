@@ -1,0 +1,35 @@
+To calculate the average dependency distance, we first need to parse the sentence and identify the head of each word. 
+
+Here's a breakdown of the sentence:
+
+1. Omröstningen - head: föreföll (distance: 1)
+2. föreföll - head: None ( root of the sentence)
+3. lämpa - head: föreföll (distance: 2)
+4. sig - head: lämpa (distance: 1)
+5. bäst - head: föreföll (or lämpa, but we'll choose föreföll as main verb) (distance: 4)
+6. då - head: visade (distance in the subordinate clause: 1, but considering the whole sentence: 5)
+7. denna - head: visade (distance: 1)
+8. visade - head: None (or föreföll, but we'll consider it as root of the subordinate clause)
+9. minst - head: visade (distance: 1, attached to 'visade' for this analysis)
+10. fördröjning - head: visade (distance: 2)
+11. för - head: fördröjning (distance: 1)
+12. att - head: upptäcka (distance: 1, in the subordinate clause, but 7 from 'visade')
+13. upptäcka - head: visade (or fördröjning, we choose 'visade' as head) (distance: 2 in the clause, 8 in the whole sentence)
+14. temperaturförändringar - head: upptäcka (distance: 1)
+15. och - head: None (conjunction, not analyzing in this context)
+16. för - head: erfordrade (distance: 1, in the subordinate clause, but 11 from 'visade')
+17. att - head: den (distance: 1, but 12 in the whole sentence)
+18. den - head: erfordrade (distance: 2)
+19. erfordrade - head: visade (or 'och' then 'erfordrade', we choose 'visade' as head) (distance: 2 in the clause, 13 in the whole sentence)
+20. mindre - head: erfordrade (distance: 1)
+21. kommunikation - head: erfordrade (distance: 2)
+22. mellan - head: smolken (distance: 1)
+23. smolken - head: erfordrade (or kommunikation, we choose 'erfordrade' as head) (distance: 2)
+Full stop - head: None (consider root of the sentence or no dependency)
+
+Average dependency distance calculation:
+(sum of all dependency distances) / (number of dependencies)
+Here it can be done as follows:
+Sum of dependencies = 1+0+2+1+4+5+1+0+2+4+1+7+8+1+0+11+12+2+13+2+5 (it is more suitable for those ranges that are quite in depth with extra tokens in them for smaller word sets being explained from a relatively lower point in the example - there then exists no zero as well in such an analyzed example) +1+2
+(number of dependencies) = 24 (includes the full stop but leaves the commas, I can revise the information if they can be included)
+Hence average distance= 63 / 24=2.625

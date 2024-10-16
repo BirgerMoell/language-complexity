@@ -1,0 +1,33 @@
+To calculate the average dependency distance of the sentence, I need to break down the sentence into tokens, identify the head of each word, and calculate the distance between each word and its head. 
+
+Here's the breakdown of the sentence:
+
+1. Examensarbetet (token 1)
+2. har (token 2, head: Examensarbetet, distance: 1)
+3. utförts (token 3, head: Examensarbetet, distance: 2)
+4. vid (token 4, head: utförts, distance: 1)
+5. institutionen (token 5, head: utförts, distance: 2)
+6. för (token 6, head: institutionen, distance: 1)
+7. Transportteknik (token 7, head: institutionen, distance: 2)
+8. avdelningen (token 8, head: för is likely conjunction here and head is assumed as 'institutionen', distance: 4)
+9. för (token 9, head: avdelningen, distance: 1)
+10. Väg- (token 10, head: avdelningen, no distance can be determined due to it being part of compound word. This token is hence left out of calculations)
+11. och (token 11, head: (avdelningen likely functioning as coordinate conjunction here) so ( institutionen) is used hence distance 6)
+12. Banteknik (token 12, head: avdelningen, distance same as with 'och' which is 6)
+13. på (token 13, head: utförts, distance from  the 'utförts'  at a 4)
+14. uppdrag (token 14, head: utförts, distance from  the 'utförts' 5)
+15. av (token 15, head: uppdrag, distance: 1)
+16. Structor (token 16, head: av, distance: 1)
+17. Mark (token 17, head: Structor, no distance can be determined due to it being part of compound word. This token is hence left out of calculations)
+18. Stockholm (token 18, head: Structor  Mark Stockholm, head as previous is part of this compound word so assuming distance 2)
+19. AB (token 19, head: Structor), this is also part of previous compund head (distance: 3)
+20. och (token 20, head: (utförts likely functioning as coordinate conjunction here, distance: 7 from utförts) 
+21. omfattar (token 21, head omitted from here due to new sentence as assumed main head - to actually depend on previous conjunction distance will differ but assuming 1 ), (distance: 0 if depends to next otherwise to and hence is dependent)
+1
+22. 30 (token 22, head: omfattar, distance: 1)
+23. högskolepoäng (token 23, head: omfattar, distance from the word "högskolepoäng"  2)
+
+Given multiple tokens left un-true head relation an average could therefore follow logic derived here (based heavily assumptions made which many might change):
+ Average Dependency Distance = (Total dependency distance of all tokens)/(Total number of tokens, here 23)
+ Distance = (1 + 2 + 1 + 2 + 2 + 4 + 6 + 6 + 4 + 5 + 1 + 1 + 2 + 3 + 7 + 0 + 1 + 2 )
+ = total distance is 45 and average of 2.26
