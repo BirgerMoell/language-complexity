@@ -2,7 +2,7 @@ import os
 import re
 
 # Replace with the actual path to your directory
-directory = 'c:/GitHub/birger/language-complexity/data100/lix_raw_data/gemini-pro'
+directory = 'c:/GitHub/birger/language-complexity/data100/lix_raw_data/long_prompt/gemini-pro'
 
 output_file = 'c:/GitHub/birger/language-complexity/data100/lix_results_gemini-pro.txt'
 
