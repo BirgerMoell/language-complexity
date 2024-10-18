@@ -2,9 +2,9 @@ import os
 import re
 
 # Replace with the actual path to your directory
-directory = 'c:/GitHub/birger/language-complexity/data100/lix_raw_data/diva'
+directory = 'c:/GitHub/birger/language-complexity/data100/lix_raw_data/gemini-pro'
 
-output_file = 'c:/GitHub/birger/language-complexity/data100/lix_results_o1-mini.txt'
+output_file = 'c:/GitHub/birger/language-complexity/data100/lix_results_gemini-pro.txt'
 
 with open(output_file, 'w', encoding='utf-8') as out_file:
     for root, dirs, files in os.walk(directory):
