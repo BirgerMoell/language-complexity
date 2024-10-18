@@ -15,10 +15,10 @@ open_ai_client = OpenAI(
     api_key=OPEN_AI_API_KEY,
 )
 
-#models = ["gpt-3.5-turbo"]
-models = ["o1-mini"]
+models = ["gpt-4o-mini"]
+#models = ["o1-mini"]
 
-LIX_PROMPT = "Analyze the following Swedish text and compute a LIX readibility score from it. Use a calculator and explain how you got your result. Finally, write the result on the form 'LIX=' followed by the score. Here is the text: {text}"
+LIX_PROMPT = "Analyze the following Swedish text and compute a LIX readibility score from it. LIX is calculated as follows: (number of words)/(number of sentences)+(number of words longer than 6 letters)*100/(number of words). Use a calculator and explain how you got your result. Finally, write the result on the form 'LIX=' followed by the score. Here is the text: {text}"
 
 def get_text_from_open_ai(prompt, model):
     completion = open_ai_client.chat.completions.create(
@@ -35,17 +35,15 @@ def get_text_from_open_ai(prompt, model):
 
 
 def process_long_sentences():
-    # Ensure the results directory exists
-    os.makedirs('c:/GitHub/birger/language-complexity/data100/lix_raw_data/diva', exist_ok=True)
-    
     with open( "c:/GitHub/birger/language-complexity/data/extracted_paragraphs.csv", "r", encoding="utf-8") as f:
         reader = csv.reader(f, delimiter=',')
         for row in reader:
             filename = row[0].replace('\\','/')
             text = row[1]
             for model in models:
+                os.makedirs(f'c:/GitHub/birger/language-complexity/data100/lix_raw_data/long_prompt/{model}/', exist_ok=True)
                 parse_results = get_text_from_open_ai(LIX_PROMPT.format(text=text), model)
-                with open(f'c:/GitHub/birger/language-complexity/data100/lix_raw_data/{filename}_{model}', 'w', newline='', encoding='utf-8') as f:
+                with open(f'c:/GitHub/birger/language-complexity/data100/lix_raw_data/long_prompt/{model}/{filename}', 'w', newline='', encoding='utf-8') as f:
                     f.write( parse_results )
                     print( filename )
 

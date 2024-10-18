@@ -11,7 +11,7 @@ if "GENAI_API_KEY" not in os.environ:
 
 genai.configure(api_key=os.environ["GENAI_API_KEY"])
 
-LIX_PROMPT = "Analyze the following Swedish text and compute a LIX readibility score from it. Use a calculator and explain how you got your result. Finally, write the result on the form 'LIX=' followed by the score. Here is the text: {text}"
+LIX_PROMPT = "Analyze the following Swedish text and compute a LIX readibility score from it. LIX is calculated as follows: (number of words)/(number of sentences)+(number of words longer than 6 letters)*100/(number of words). Use a calculator and explain how you got your result. Finally, write the result on the form 'LIX=' followed by the score. Here is the text: {text}"
 
 models = ["gemini-pro"]
 
@@ -25,18 +25,16 @@ def get_text_from_gemini(prompt, modelname):
         return None
 
 def process_long_sentences():
-    # Ensure the results directory exists
-    os.makedirs('c:/GitHub/birger/language-complexity/data100/lix_raw_data/', exist_ok=True)
-    
     with open("c:/GitHub/birger/language-complexity/data/extracted_paragraphs.csv", "r", encoding="utf-8") as f:
         reader = csv.reader(f, delimiter=',')
         for row in reader:
             filename = row[0].replace('diva\\','')
             text = row[1]
             for model in models:
+                os.makedirs(f'c:/GitHub/birger/language-complexity/data100/lix_raw_data/long_prompt/{model}/', exist_ok=True)
                 parse_results = get_text_from_gemini(LIX_PROMPT.format(text=text), model)
                 if parse_results:
-                    with open(f'c:/GitHub/birger/language-complexity/data100/lix_raw_data/{filename}_{model}', 'w', newline='', encoding='utf-8') as f:
+                    with open(f'c:/GitHub/birger/language-complexity/data100/lix_raw_data/long_prompt/{model}/{filename}', 'w', newline='', encoding='utf-8') as f:
                         f.write(parse_results)
                         print(filename)
                 else:
