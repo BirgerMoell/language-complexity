@@ -3,7 +3,7 @@ import os
 
 # File paths
 extracted_paragraphs_path = 'c:/GitHub/birger/language-complexity/data/extracted_paragraphs.csv'
-lix_llama_results_path = 'c:/GitHub/birger/language-complexity/data100/lix_results_o1-mini.txt'
+lix_llama_results_path = 'c:/GitHub/birger/language-complexity/data100/lix_results_gemini-pro.txt'
 
 # Dictionary to store values from extracted_paragraphs.csv
 extracted_values = {}

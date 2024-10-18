@@ -32,26 +32,7 @@ def get_text_from_open_ai(prompt, model):
     text = completion.choices[0].message.content
     return text
 
-# def process_long_sentences():
-#     # Ensure the results directory exists
-#     os.makedirs('c:/GitHub/birger/language-complexity/data/dep_parse_raw_data', exist_ok=True)
-    
-#     long_sentences_dir = "c:/GitHub/birger/language-complexity/long_sentences"
-#     subdirs = ['diva_short', 'mimers_brunn_short']
 
-#     for subdir in subdirs:
-#         subdir_path = os.path.join(long_sentences_dir, subdir)
-#         for filename in tqdm(os.listdir(subdir_path), desc=f"Processing {subdir}"):
-#             if filename.endswith('.txt'):
-#                 filepath = os.path.join(subdir_path, filename)
-#                 with open(filepath, 'r', encoding='utf-8') as file:
-#                     text = file.read()
-#                     for model in models:
-#                         file_results = get_text_from_open_ai(PARSE_PROMPT.format(text=text), model)
-
-#                 #with open(f'c:/GitHub/birger/language-complexity/data100/dep_parse_raw_data/{filename}_{model}', 'w', newline='', encoding='utf-8') as f:
-#                 with open(f'c:/GitHub/birger/language-complexity/data100/dep_parse_raw_data/{filename}_{model}_reasoning', 'w', newline='', encoding='utf-8') as f:
-#                     f.write( file_results )
 
 def process_long_sentences():
     # Ensure the results directory exists

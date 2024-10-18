@@ -32,8 +32,6 @@ def process_long_sentences():
         reader = csv.reader(f, delimiter=',')
         for row in reader:
             filename = row[0].replace('diva\\','')
-            if "103" in filename:
-                return
             text = row[1]
             for model in models:
                 parse_results = get_text_from_gemini(LIX_PROMPT.format(text=text), model)

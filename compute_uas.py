@@ -3,8 +3,8 @@ import csv
 import statistics
 
 ground_truth_dir = 'c:/GitHub/birger/language-complexity/data100/ground_truth'
-o1_mini_dir = 'c:/GitHub/birger/language-complexity/data100/dep_parse_results/gpt-4o-mini'
-output_file = 'c:/GitHub/birger/language-complexity/data100/uas_results_gpt-4o-mini.csv'
+input_dir = 'c:/GitHub/birger/language-complexity/data100/dep_parse_results/gemini-pro'
+output_file = 'c:/GitHub/birger/language-complexity/data100/uas_results_gemini-pro.csv'
 
 def count_matching_lines(file1, file2):
     with open(file1, 'r', encoding='utf-8') as f1, open(file2, 'r', encoding='utf-8') as f2:
@@ -40,10 +40,11 @@ results = []
 
 for filename in os.listdir(ground_truth_dir):
     ground_truth_file = os.path.join(ground_truth_dir, filename)
-    o1_mini_file = os.path.join(o1_mini_dir, f"{filename}_gpt-4o-mini")
+    input_file = os.path.join(input_dir, f"{filename}_gemini-pro")
     
-    if os.path.isfile(ground_truth_file) and os.path.isfile(o1_mini_file):
-        matching, total = count_matching_lines(ground_truth_file, o1_mini_file)
+    if os.path.isfile(ground_truth_file) and os.path.isfile(input_file):
+        print( input_file )
+        matching, total = count_matching_lines(ground_truth_file, input_file)
         uas = matching / total if total > 0 else 0
         results.append((filename, matching, total, uas))
 
