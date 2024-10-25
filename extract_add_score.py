@@ -2,8 +2,9 @@ import os
 import re
 import csv
 
-input_dir = 'c:/GitHub/birger/language-complexity/data100/dep_parse_raw_data/o1-mini'
-output_file = 'c:/GitHub/birger/language-complexity/data100/add_results_o1-mini.csv'
+model = "gemini-pro"
+input_dir = f'c:/GitHub/birger/language-complexity/data100/add_raw_data/{model}'
+output_file = f'c:/GitHub/birger/language-complexity/data100/add_results_{model}.csv'
 
 results = []
 
