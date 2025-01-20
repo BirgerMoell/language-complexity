@@ -1,0 +1,135 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average distance:
+
+1. **Understand the Goal:** The core task is to create a dependency tree for a given Swedish sentence and calculate the average dependency distance. The output format is specified.
+
+2. **Tokenization:** The first crucial step is to break the sentence down into individual tokens. This seems straightforward, but it's important to treat punctuation as separate tokens. Go through the sentence word by word and symbol by symbol:
+
+   * Så
+   * fort
+   * man
+   * misstänker
+   * att
+   * datorn
+   * är
+   * smittad
+   * av
+   * ett
+   * virus
+   * så
+   * ska
+   * man
+   * genast
+   * sätta
+   * den
+   * i
+   * karantän
+   * ,
+   * alltså
+   * genom
+   * att
+   * dra
+   * ut
+   * alla
+   * nätverkssladdar
+   * ,
+   * modem
+   * och
+   * kommunikationsenheter
+   * .
+
+3. **Identify the Root:** The root of the dependency tree is the main verb or predicate of the sentence. Scanning the sentence, "ska sätta" (should put/place) seems like the central action. While "misstänker" is a verb, it's part of a subordinate clause. Therefore, "sätta" is likely the root, and its head will be 0.
+
+4. **Establish Core Dependencies (Clause by Clause):**  Break down the sentence into smaller, more manageable chunks, often based on conjunctions and punctuation.
+
+   * **Main Clause:** "Så ... så ska man genast sätta den i karantän..."  The main action is "ska sätta". Who is doing the putting? "man". What is being put? "den". Where is it being put? "i karantän". "genast" modifies "sätta". "Så" (the second one) seems to introduce the main clause, depending on "sätta".
+
+   * **Subordinate Clause 1:** "man misstänker att datorn är smittad av ett virus". The verb is "misstänker". Who suspects? "man". What is suspected?  "att datorn är smittad av ett virus". This entire clause functions as the object of "misstänker".
+
+   * **Subordinate Clause within Subordinate Clause 1:** "datorn är smittad av ett virus". The verb is "är smittad". What is infected? "datorn". By what? "av ett virus". "ett" modifies "virus".
+
+   * **Apposition:** ", alltså genom att dra ut alla nätverkssladdar, modem och kommunikationsenheter." This phrase clarifies "i karantän". "alltså" likely modifies the preceding clause or "karantän". "genom att dra" explains the *how* of putting in quarantine.
+
+   * **Subordinate Clause within Apposition:** "dra ut alla nätverkssladdar, modem och kommunikationsenheter". The verb is "dra ut". What is being pulled out?  "nätverkssladdar", "modem", and "kommunikationsenheter". "alla" modifies "nätverkssladdar". "och" conjoins "modem" and "kommunikationsenheter".
+
+5. **Assign Heads and Create Triples:** Now, go through each token and determine its head. This requires understanding grammatical relationships (subject, object, modifier, etc.). Assign the index of the head token.
+
+   * **så (1):** Modifies "sätta" (16) – how quickly?
+   * **fort (2):** Part of the adverbial phrase modifying "misstänker" (4).
+   * **man (3):** Subject of "misstänker" (4).
+   * **misstänker (4):** Modified by "sätta" (16) - the event that triggers the action.
+   * **att (5):** Introduces the subordinate clause, depending on "misstänker" (4).
+   * **datorn (6):** Subject of "är smittad" (7).
+   * **är (7):** Part of the verb phrase "är smittad", dependent on "misstänker" (4).
+   * **smittad (8):**  Predicate adjective, dependent on "är" (7).
+   * **av (9):** Preposition introducing the agent, dependent on "smittad" (8).
+   * **ett (10):** Determiner modifying "virus" (11).
+   * **virus (11):** Object of the preposition "av" (9).
+   * **så (12):** Connects the subordinate and main clauses, dependent on "sätta" (16).
+   * **ska (13):** Auxiliary verb, dependent on "sätta" (16).
+   * **man (14):** Subject of "ska sätta" (16).
+   * **genast (15):** Adverb modifying "sätta" (16).
+   * **sätta (16):** Root of the main clause (head is 0).
+   * **den (17):** Object of "sätta" (16).
+   * **i (18):** Preposition modifying "sätta" (16).
+   * **karantän (19):** Object of the preposition "i" (18).
+   * **, (20):** Separates clauses, dependent on "sätta" (16).
+   * **alltså (21):** Explains the preceding, dependent on "sätta" (16).
+   * **genom (22):** Preposition introducing the means, dependent on "alltså" (21).
+   * **att (23):** Introduces the infinitive phrase, dependent on "genom" (22).
+   * **dra (24):** Verb in the infinitive phrase, dependent on "att" (23).
+   * **ut (25):** Particle of the phrasal verb "dra ut", dependent on "dra" (24).
+   * **alla (26):** Determiner modifying "nätverkssladdar" (27).
+   * **nätverkssladdar (27):** Object of "dra ut" (24).
+   * **, (28):** Separates items in a list, dependent on "nätverkssladdar" (27).
+   * **modem (29):** Conjoined with "nätverkssladdar", dependent on "nätverkssladdar" (27).
+   * **och (30):** Connects "modem" and "kommunikationsenheter", dependent on "nätverkssladdar" (27).
+   * **kommunikationsenheter (31):** Conjoined with "modem", dependent on "nätverkssladdar" (27).
+   * **. (32):** Punctuation, dependent on "sätta" (16).
+
+6. **Calculate Dependency Distances:**  For each triple (token_index, token, head_index), calculate the absolute difference between the token index and the head index.
+
+   * |1 - 16| = 15
+   * |2 - 4| = 2
+   * |3 - 4| = 1
+   * |4 - 16| = 12
+   * |5 - 4| = 1
+   * |6 - 7| = 1
+   * |7 - 4| = 3
+   * |8 - 7| = 1
+   * |9 - 8| = 1
+   * |10 - 11| = 1
+   * |11 - 9| = 2
+   * |12 - 16| = 4
+   * |13 - 16| = 3
+   * |14 - 16| = 2
+   * |15 - 16| = 1
+   * |16 - 0| = 16
+   * |17 - 16| = 1
+   * |18 - 16| = 2
+   * |19 - 18| = 1
+   * |20 - 16| = 4
+   * |21 - 16| = 5
+   * |22 - 21| = 1
+   * |23 - 22| = 1
+   * |24 - 23| = 1
+   * |25 - 24| = 1
+   * |26 - 27| = 1
+   * |27 - 24| = 3
+   * |28 - 27| = 1
+   * |29 - 27| = 2
+   * |30 - 27| = 3
+   * |31 - 27| = 4
+   * |32 - 16| = 16
+
+7. **Calculate the Average:** Sum the dependency distances and divide by the total number of dependencies (which is the number of tokens minus the root, or the number of non-zero head indices). In this case, 32 tokens, so 31 dependencies.
+
+   Sum of distances = 15 + 2 + 1 + 12 + 1 + 1 + 3 + 1 + 1 + 1 + 2 + 4 + 3 + 2 + 1 + 16 + 1 + 2 + 1 + 4 + 5 + 1 + 1 + 1 + 1 + 1 + 3 + 1 + 2 + 3 + 4 + 16 = 111
+
+   Average distance = 111 / 32 = 3.46875
+
+8. **Format the Output:** Present the dependency tree in the specified format and clearly state the average dependency distance.
+```
+[(1, Så, 16), (2, fort, 4), (3, man, 4), (4, misstänker, 16), (5, att, 4), (6, datorn, 7), (7, är, 5), (8, smittad, 7), (9, av, 8), (10, ett, 11), (11, virus, 9), (12, så, 16), (13, ska, 16), (14, man, 16), (15, genast, 16), (16, sätta, 0), (17, den, 16), (18, i, 16), (19, karantän, 18), (20, ,, 16), (21, alltså, 16), (22, genom, 21), (23, att, 22), (24, dra, 23), (25, ut, 24), (26, alla, 27), (27, nätverkssladdar, 25), (28, ,, 27), (29, modem, 27), (30, och, 27), (31, kommunikationsenheter, 27), (32, ., 16)]
+```
+
+Average dependency distance: 111 / 32 = 3.46875

@@ -1,0 +1,117 @@
+Here's a breakdown of the thought process to generate the dependency tree and average dependency distance:
+
+1. **Understand the Goal:** The main goal is to create a dependency tree representation of a Swedish sentence and calculate the average dependency distance. The required output format is a list of tuples, where each tuple represents a dependency relation: `(dependent_index, dependent_word, head_index)`.
+
+2. **Tokenization:** The first crucial step is to break down the sentence into individual tokens. This is relatively straightforward in this case. We need to be mindful of punctuation as requested.
+
+   * Sentence: `De allmänna lagarna införs eller ändras genom att riksdagsledamöterna röstar om en lag som införs eller inte beroende på vad majoriteten röstar.`
+   * Tokens: `De`, `allmänna`, `lagarna`, `införs`, `eller`, `ändras`, `genom`, `att`, `riksdagsledamöterna`, `röstar`, `om`, `en`, `lag`, `som`, `införs`, `eller`, `inte`, `beroende`, `på`, `vad`, `majoriteten`, `röstar`, `.`
+
+3. **Dependency Parsing (Manual):**  Since we're not using a dependency parser, we need to manually identify the head of each token. This involves understanding the grammatical relationships between the words. This is the most complex part and requires linguistic knowledge.
+
+   * **Start with the Main Verb:**  The core of the sentence often revolves around the main verb. In this sentence, "införs" and "ändras" are coordinated verbs. Let's consider "införs" as a central point initially.
+
+   * **Identify Subjects and Objects:**  Who or what is being "införs"? "De allmänna lagarna". So, "lagarna" is likely the head, with "De" and "allmänna" modifying it.
+
+   * **Connect Prepositional Phrases:** "genom att riksdagsledamöterna röstar..."  "genom" is a preposition, and "att riksdagsledamöterna röstar" is a clause acting as its object. The verb "röstar" is the head of this clause. "riksdagsledamöterna" is the subject of "röstar".
+
+   * **Handle Coordination:** "införs eller ändras". "eller" connects these verbs, and conventionally, the first of the coordinated elements acts as the head for the conjunction. So, "införs" is the head of "eller", and "införs" is also the implied head of "ändras" (or they could share a higher coordinating node if modeling that level of detail, but in a simpler dependency tree, the first coordinator is often the head).
+
+   * **Relative Clauses:** "...en lag som införs...". "som" introduces a relative clause modifying "lag". The verb "införs" within this clause depends on "som".
+
+   * **Subordinate Clauses:** "...beroende på vad majoriteten röstar."  "beroende" is a participle acting somewhat like a preposition. "på" is a preposition within that phrase. "vad majoriteten röstar" is the object of "på". "röstar" is the verb, and "majoriteten" is the subject. "vad" introduces the subordinate clause and depends on "röstar".
+
+   * **Negation:** "...införs eller inte". "inte" modifies "införs".
+
+   * **Putting it Together (Iterative Process):** This is a trial-and-error process. You might adjust connections as you go. For instance, you might initially think "införs" is the root, but as you connect more elements, you realize the coordination ("införs eller ändras") means they are linked.
+
+4. **Assign Indices:** Once the dependencies are reasonably clear, assign indices to each token starting from 1.
+
+5. **Generate the Dependency Tree Output:**  Iterate through the tokens and create the tuples based on the identified heads. The root of the sentence (the main verb or the coordinating verb in this case) will have a head index of 0.
+
+6. **Calculate Dependency Distances:**
+   * For each dependency relation `(dependent_index, dependent_word, head_index)`, calculate the absolute difference between `dependent_index` and `head_index`: `abs(dependent_index - head_index)`.
+   * Sum these distances.
+   * Divide the sum by the total number of dependencies (which is the number of tokens minus 1, or simply the number of tuples in the dependency tree).
+
+7. **Double-Check:** Review the generated tree and distances to ensure they make grammatical sense. Are there any obvious errors in head assignments?  Does the average distance seem reasonable for the sentence length?
+
+**Self-Correction/Refinement during the process:**
+
+* **Initial thought:** Maybe "införs" is the main verb and the root.
+* **Correction:** Realize the coordination with "ändras" means they are at the same level or one coordinates the other. Choosing "införs" as the coordinator for simplicity.
+* **Initial thought:** How does "beroende" fit in?
+* **Correction:** Recognize it functions similarly to a preposition introducing a clause.
+* **Initial thought:**  Is "att" part of the infinitive phrase or a conjunction?
+* **Correction:**  In this case, it introduces a subordinate clause functioning as the object of "genom".
+
+This step-by-step process, combining linguistic knowledge with careful attention to detail, allows for the manual construction of a dependency tree and the subsequent calculation of the average dependency distance. For more complex sentences, automated dependency parsers become essential.
+Here's the analysis of the Swedish sentence and the dependency tree:
+
+**Sentence:** De allmänna lagarna införs eller ändras genom att riksdagsledamöterna röstar om en lag som införs eller inte beroende på vad majoriteten röstar.
+
+**Tokenization and Dependency Analysis:**
+
+1. **De:**  Determiner, modifying "lagarna".
+2. **allmänna:** Adjective, modifying "lagarna".
+3. **lagarna:** Noun, subject of "införs" and "ändras".
+4. **införs:** Verb (passive), one of the main verbs.
+5. **eller:** Coordinating conjunction, connecting "införs" and "ändras".
+6. **ändras:** Verb (passive), coordinated with "införs".
+7. **genom:** Preposition, introducing a prepositional phrase.
+8. **att:** Subordinating conjunction, introducing a subordinate clause.
+9. **riksdagsledamöterna:** Noun, subject of "röstar" in the subordinate clause.
+10. **röstar:** Verb, the main verb of the subordinate clause.
+11. **om:** Preposition, introducing a prepositional phrase within the subordinate clause.
+12. **en:** Determiner, modifying "lag".
+13. **lag:** Noun, object of "om".
+14. **som:** Relative pronoun, subject of "införs" in the relative clause.
+15. **införs:** Verb (passive), in the relative clause modifying "lag".
+16. **eller:** Coordinating conjunction, connecting "införs" and "inte".
+17. **inte:** Adverb, negating "införs".
+18. **beroende:** Participle/Preposition, introducing a prepositional phrase.
+19. **på:** Preposition, introducing a prepositional phrase.
+20. **vad:** Relative pronoun/Subordinating conjunction, introducing a subordinate clause.
+21. **majoriteten:** Noun, subject of "röstar" in the subordinate clause.
+22. **röstar:** Verb, the main verb of the subordinate clause.
+23. **.:** Punctuation mark (full stop).
+
+**Dependency Tree:**
+
+[(1, De, 3), (2, allmänna, 3), (3, lagarna, 4), (4, införs, 0), (5, eller, 4), (6, ändras, 4), (7, genom, 4), (8, att, 10), (9, riksdagsledamöterna, 10), (10, röstar, 7), (11, om, 10), (12, en, 13), (13, lag, 11), (14, som, 15), (15, införs, 13), (16, eller, 15), (17, inte, 15), (18, beroende, 4), (19, på, 18), (20, vad, 22), (21, majoriteten, 22), (22, röstar, 19), (23, ., 4)]
+
+**Average Dependency Distance:**
+
+To calculate the average dependency distance, we sum the absolute differences between the head and dependent indices and then divide by the number of dependencies.
+
+* |1 - 3| = 2
+* |2 - 3| = 1
+* |3 - 4| = 1
+* |4 - 0| = 4
+* |5 - 4| = 1
+* |6 - 4| = 2
+* |7 - 4| = 3
+* |8 - 10| = 2
+* |9 - 10| = 1
+* |10 - 7| = 3
+* |11 - 10| = 1
+* |12 - 13| = 1
+* |13 - 11| = 2
+* |14 - 15| = 1
+* |15 - 13| = 2
+* |16 - 15| = 1
+* |17 - 15| = 2
+* |18 - 4| = 14
+* |19 - 18| = 1
+* |20 - 22| = 2
+* |21 - 22| = 1
+* |22 - 19| = 3
+* |23 - 4| = 19
+
+Sum of distances = 2 + 1 + 1 + 4 + 1 + 2 + 3 + 2 + 1 + 3 + 1 + 1 + 2 + 1 + 2 + 1 + 2 + 14 + 1 + 2 + 1 + 3 + 19 = **69**
+
+Number of dependencies = 23 (the number of tokens) - 1 (the root has no head) = **22**
+
+Average dependency distance = 69 / 22 ≈ **3.14**
+
+**Therefore, the average dependency distance for the sentence is approximately 3.14.**

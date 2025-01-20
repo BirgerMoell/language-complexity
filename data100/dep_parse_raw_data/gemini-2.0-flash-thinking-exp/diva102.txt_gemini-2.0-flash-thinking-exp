@@ -1,0 +1,152 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average distance:
+
+1. **Understand the Goal:** The primary goal is to create a dependency tree representation of the Swedish sentence and calculate the average dependency distance. This means identifying the head-dependent relationships between words.
+
+2. **Tokenization:** The first step is to break the sentence into individual tokens. This is relatively straightforward. We need to ensure that punctuation marks are treated as separate tokens.
+
+   * Examensarbetet
+   * fokuserar
+   * på
+   * hur
+   * lärarna
+   * definierar
+   * och
+   * använder
+   * sajten
+   * för
+   * kunskapsdelning
+   * samt
+   * vilka
+   * förbättringar
+   * som
+   * kan
+   * göras
+   * för
+   * att
+   * upprätthålla
+   * och
+   * i
+   * bästa
+   * fall
+   * öka
+   * kunskapsdelningen
+   * mellan
+   * medlemmarna
+   * .
+
+3. **Dependency Parsing (Manual - since no tool is specified):** This is the core and most complex part. We need to identify the head word for each dependent word. This requires some understanding of Swedish grammar. I'll go through the sentence token by token and make decisions:
+
+   * **Examensarbetet (1):**  This is the subject, and the main verb is "fokuserar". So, "fokuserar" is the head. `(1, Examensarbetet, 2)`
+   * **fokuserar (2):** This is the main verb of the main clause. It doesn't depend on any other word *within this sentence*. Therefore, its head is the root (represented by 0). `(2, fokuserar, 0)`
+   * **på (3):** This is a preposition modifying "fokuserar". `(3, på, 2)`
+   * **hur (4):** This introduces a subordinate clause functioning as the object of "på". `(4, hur, 3)`
+   * **lärarna (5):** This is the subject of the subordinate clause "hur lärarna definierar...". The verb in this clause is "definierar". `(5, lärarna, 6)`
+   * **definierar (6):**  This is the main verb of the first part of the subordinate clause. It's headed by "hur". `(6, definierar, 4)`
+   * **och (7):** This conjunction connects "definierar" and "använder". It coordinates them, so typically the first conjunct's head becomes the head of the conjunction, and the second conjunct depends on the first. `(7, och, 6)`
+   * **använder (8):** This is the second verb being coordinated. It depends on "definierar". `(8, använder, 6)`
+   * **sajten (9):** This is the direct object of both "definierar" and "använder". Let's choose "definierar" as the immediate head. `(9, sajten, 6)`
+   * **för (10):** This preposition introduces a purpose clause modifying "sajten". `(10, för, 9)`
+   * **kunskapsdelning (11):** This is the object of the preposition "för". `(11, kunskapsdelning, 10)`
+   * **samt (12):** This conjunction connects the first part of the sentence about how teachers define and use the site with the second part about improvements. It seems to coordinate with the main verb "fokuserar". `(12, samt, 2)`
+   * **vilka (13):**  This introduces a relative clause acting as the object of "samt". `(13, vilka, 12)`
+   * **förbättringar (14):** This is the subject of the relative clause "vilka förbättringar som kan göras". The verb is "kan göras". `(14, förbättringar, 16)`
+   * **som (15):** This is the relative pronoun, connecting "förbättringar" and the verb. It modifies "förbättringar". `(15, som, 14)`
+   * **kan (16):** This is an auxiliary verb. It modifies the main verb "göras". `(16, kan, 14)`
+   * **göras (17):** This is the main verb of the relative clause. It's headed by "vilka". `(17, göras, 13)`
+   * **för (18):** This preposition introduces a purpose clause modifying "göras". `(18, för, 17)`
+   * **att (19):** This is the subordinator for the infinitive clause. It depends on the preposition "för". `(19, att, 18)`
+   * **upprätthålla (20):** This is the first infinitive verb. It depends on "att". `(20, upprätthålla, 19)`
+   * **och (21):** This conjunction connects "upprätthålla" and "öka". It's coordinated with "upprätthålla". `(21, och, 20)`
+   * **i (22):** This preposition introduces a phrase modifying "öka". `(22, i, 25)`
+   * **bästa (23):** This adjective modifies "fall". `(23, bästa, 24)`
+   * **fall (24):** This is the object of the preposition "i". `(24, fall, 22)`
+   * **öka (25):** This is the second infinitive verb being coordinated. It depends on "upprätthålla". `(25, öka, 20)`
+   * **kunskapsdelningen (26):** This is the direct object of "öka". `(26, kunskapsdelningen, 25)`
+   * **mellan (27):** This preposition modifies "kunskapsdelningen". `(27, mellan, 26)`
+   * **medlemmarna (28):** This is the object of the preposition "mellan". `(28, medlemmarna, 27)`
+   * **. (29):**  Punctuation usually depends on the main verb of the clause. `(29, ., 2)`
+
+4. **Construct the Dependency Tree Representation:**  Assemble the triples based on the decisions made above.
+
+5. **Calculate Dependency Distances:** For each dependency, calculate the absolute difference between the head index and the dependent index.
+
+   * |Head| Dependent| Head Index | Dependent Index | Distance |
+   * |---|---|---|---|---|
+   * |fokuserar| Examensarbetet| 2| 1| 1|
+   * |fokuserar|  | 0| 2| 2|
+   * |fokuserar| på| 2| 3| 1|
+   * |på| hur| 3| 4| 1|
+   * |definierar| lärarna| 6| 5| 1|
+   * |hur| definierar| 4| 6| 2|
+   * |definierar| och| 6| 7| 1|
+   * |definierar| använder| 6| 8| 2|
+   * |definierar| sajten| 6| 9| 3|
+   * |sajten| för| 9| 10| 1|
+   * |för| kunskapsdelning| 10| 11| 1|
+   * |fokuserar| samt| 2| 12| 10|
+   * |samt| vilka| 12| 13| 1|
+   * |kan| förbättringar| 16| 14| 2|
+   * |förbättringar| som| 14| 15| 1|
+   * |vilka| kan| 13| 16| 3|
+   * |vilka| göras| 13| 17| 4|
+   * |göras| för| 17| 18| 1|
+   * |för| att| 18| 19| 1|
+   * |att| upprätthålla| 19| 20| 1|
+   * |upprätthålla| och| 20| 21| 1|
+   * |öka| i| 25| 22| 3|
+   * |fall| bästa| 24| 23| 1|
+   * |i| fall| 22| 24| 2|
+   * |upprätthålla| öka| 20| 25| 5|
+   * |öka| kunskapsdelningen| 25| 26| 1|
+   * |kunskapsdelningen| mellan| 26| 27| 1|
+   * |mellan| medlemmarna| 27| 28| 1|
+   * |fokuserar| .| 2| 29| 27|
+
+6. **Calculate Average Distance:** Sum the distances and divide by the number of dependencies.
+
+   Sum of distances = 1 + 2 + 1 + 1 + 1 + 2 + 1 + 2 + 3 + 1 + 1 + 10 + 1 + 2 + 1 + 3 + 4 + 1 + 1 + 1 + 1 + 3 + 1 + 2 + 5 + 1 + 1 + 1 + 27 = 83
+   Number of dependencies = 29
+   Average distance = 83 / 29 ≈ 2.86
+
+7. **Final Output Formatting:** Ensure the output matches the requested format.
+```
+[(1, Examensarbetet, 2), (2, fokuserar, 0), (3, på, 2), (4, hur, 6), (5, lärarna, 6), (6, definierar, 3), (7, och, 8), (8, använder, 6), (9, sajten, 8), (10, för, 9), (11, kunskapsdelning, 10), (12, samt, 2), (13, vilka, 17), (14, förbättringar, 17), (15, som, 14), (16, kan, 17), (17, göras, 12), (18, för, 20), (19, att, 18), (20, upprätthålla, 19), (21, och, 25), (22, i, 25), (23, bästa, 24), (24, fall, 22), (25, öka, 20), (26, kunskapsdelningen, 25), (27, mellan, 26), (28, medlemmarna, 27), (29, ., 2)]
+```
+
+**Dependency Distances:**
+
+* 1 -> 2: |1 - 2| = 1
+* 2 -> 0: |2 - 0| = 2
+* 3 -> 2: |3 - 2| = 1
+* 4 -> 6: |4 - 6| = 2
+* 5 -> 6: |5 - 6| = 1
+* 6 -> 3: |6 - 3| = 3
+* 7 -> 8: |7 - 8| = 1
+* 8 -> 6: |8 - 6| = 2
+* 9 -> 8: |9 - 8| = 1
+* 10 -> 9: |10 - 9| = 1
+* 11 -> 10: |11 - 10| = 1
+* 12 -> 2: |12 - 2| = 10
+* 13 -> 17: |13 - 17| = 4
+* 14 -> 17: |14 - 17| = 3
+* 15 -> 14: |15 - 14| = 1
+* 16 -> 17: |16 - 17| = 1
+* 17 -> 12: |17 - 12| = 5
+* 18 -> 20: |18 - 20| = 2
+* 19 -> 18: |19 - 18| = 1
+* 20 -> 19: |20 - 19| = 1
+* 21 -> 25: |21 - 25| = 4
+* 22 -> 25: |22 - 25| = 3
+* 23 -> 24: |23 - 24| = 1
+* 24 -> 22: |24 - 22| = 2
+* 25 -> 20: |25 - 20| = 5
+* 26 -> 25: |26 - 25| = 1
+* 27 -> 26: |27 - 26| = 1
+* 28 -> 27: |28 - 27| = 1
+* 29 -> 2: |29 - 2| = 27
+
+**Sum of Dependency Distances:** 1 + 2 + 1 + 2 + 1 + 3 + 1 + 2 + 1 + 1 + 1 + 10 + 4 + 3 + 1 + 1 + 5 + 2 + 1 + 1 + 4 + 3 + 1 + 2 + 5 + 1 + 1 + 1 + 27 = 83
+
+**Number of Dependencies:** 29
+
+**Average Dependency Distance:** 83 / 29 ≈ 2.86

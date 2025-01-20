@@ -1,0 +1,199 @@
+Here's a breakdown of the thought process to analyze the Swedish sentence and generate the dependency tree:
+
+1. **Understanding the Goal:** The objective is to create a dependency tree representation of the provided Swedish sentence and calculate the average dependency distance. The output format requires tuples of (token_index, token, head_index).
+
+2. **Tokenization:**  The first crucial step is to break down the sentence into individual tokens. This includes words, punctuation, and even compound words should ideally be treated as single units for the purpose of dependency parsing, unless explicitly required otherwise by the specific dependency scheme. Carefully go through the sentence and identify each distinct token.
+
+   *  Sammanfattning
+   *  Syftet
+   *  med
+   *  uppsatsen
+   *  var
+   *  att
+   *  analysera
+   *  vad
+   *  som
+   *  kan
+   *  ge
+   *  arbetsglädje
+   *  samt
+   *  utvärdera
+   *  effekter
+   *  på
+   *  upplevd
+   *  hälsa
+   *  ,
+   *  gott
+   *  liv
+   *  och
+   *  arbetsglädje
+   *  av
+   *  de
+   *  ergonomiska
+   *  åtgärder
+   *  som
+   *  vidtagits
+   *  på
+   *  ett
+   *  större
+   *  livsmedelsföretag
+   *  .
+
+3. **Dependency Parsing (Conceptual):** This is the core of the task. For each token, identify its *head* – the word it directly depends on. The head provides the grammatical and semantic context. Think about the relationships between words. A good approach is to start with the main verb and work outwards. Consider questions like:
+
+    * What is the main verb/action? (`var`)
+    * What is the subject? (`Syftet`)
+    * What is being analyzed? (`vad som kan ge arbetsglädje` and `utvärdera effekter...`)
+    * How are these connected? (`samt`)
+    * What kind of effects? (`effekter på...`)
+    * What is the nature of the actions? (`ergonomiska åtgärder`)
+    * Where were these actions taken? (`på ett större livsmedelsföretag`)
+    * What is the purpose of the "att"? (introduces an infinitive clause)
+
+4. **Assigning Heads and Indices (Iterative Process):**  Go through each token and determine its head. Simultaneously assign token indices starting from 1.
+
+   * **Sammanfattning (1):** This acts as a heading or introductory element. It's loosely related to the following sentence but doesn't directly depend on a word *within* that sentence. A common approach for such initial elements is to link them to the root (0).
+   * **Syftet (2):**  The subject of the sentence; its head is the main verb `var`.
+   * **med (3):**  Preposition modifying `Syftet`.
+   * **uppsatsen (4):** Object of the preposition `med`.
+   * **var (5):** The main verb of the first part of the sentence – the root for this clause.
+   * **att (6):** Introduces the infinitive verb `analysera`. It depends on `var`.
+   * **analysera (7):** The first infinitive verb. It depends on `att`.
+   * **vad (8):** The object of `analysera`.
+   * **som (9):**  Relative pronoun modifying `vad`.
+   * **kan (10):** Auxiliary verb for `ge`.
+   * **ge (11):** Verb depending on `kan`, with `vad` as the subject.
+   * **arbetsglädje (12):** Object of the verb `ge`.
+   * **samt (13):**  Conjunction connecting the two infinitive clauses. It often attaches to the first verb being conjoined.
+   * **utvärdera (14):** The second infinitive verb, coordinated with `analysera`. Its head is also `att`.
+   * **effekter (15):**  Object of the verb `utvärdera`.
+   * **på (16):** Preposition modifying `effekter`.
+   * **upplevd (17):**  Attribute adjective modifying `hälsa`.
+   * **hälsa (18):**  Part of the prepositional phrase starting with `på`.
+   * **, (19):** Punctuation – it can be attached to the preceding word or the root of its clause. Attaching it to the preceding content word often reflects its role in separating elements.
+   * **gott (20):** Attribute adjective modifying `liv`.
+   * **liv (21):**  Coordinated with `hälsa`. The head is typically the first element in the coordination.
+   * **och (22):** Coordinating conjunction, linking `liv` and `arbetsglädje`. It attaches to the second element.
+   * **arbetsglädje (23):** Coordinated with `liv`.
+   * **av (24):** Preposition modifying `effekter`.
+   * **de (25):** Determiner for `åtgärder`.
+   * **ergonomiska (26):** Attribute adjective modifying `åtgärder`.
+   * **åtgärder (27):** Object of the preposition `av`.
+   * **som (28):** Relative pronoun modifying `åtgärder`.
+   * **vidtagits (29):** Verb depending on `som`.
+   * **på (30):** Preposition modifying `vidtagits`.
+   * **ett (31):** Determiner for `livsmedelsföretag`.
+   * **större (32):** Attribute adjective modifying `livsmedelsföretag`.
+   * **livsmedelsföretag (33):** Object of the preposition `på`.
+   * **. (34):** Sentence-ending punctuation, typically attached to the root verb.
+
+5. **Constructing the Dependency Tree (Output Format):**  Assemble the information into the required tuple format: `(token_index, token, head_index)`.
+
+6. **Calculating Average Dependency Distance:**
+
+   * For each token (excluding the root), calculate the absolute difference between its index and its head's index.
+   * Sum these distances.
+   * Divide the sum by the total number of dependencies (which is the number of tokens minus 1, as the root has no head).
+
+7. **Review and Refine:** Double-check the dependency relations and the average distance calculation for any errors. Ensure the tokenization is accurate and the head assignments make grammatical sense. Consider if there are alternative valid dependency structures, acknowledging that dependency parsing can sometimes have multiple interpretations.
+```python
+def analyze_swedish_sentence(sentence):
+    """
+    Analyzes a Swedish sentence and produces a dependency tree and average dependency distance.
+
+    Args:
+        sentence: The Swedish sentence as a string.
+
+    Returns:
+        A tuple containing:
+            - A list of dependency triples: (token_index, token, head_index)
+            - The average dependency distance.
+    """
+
+    tokens = [token.strip() for token in sentence.split()]
+    dependency_tree = []
+    # Manually assigning dependencies based on understanding of the sentence structure.
+    # This is a simplified approach and a proper parser would be needed for complex cases.
+    # The root of the main clause is 'var' (was).
+
+    dependency_tree.append((1, tokens[0], 5))  # Sammanfattning -> var
+    dependency_tree.append((2, tokens[1], 5))  # Syftet -> var
+    dependency_tree.append((3, tokens[2], 2))  # med -> Syftet
+    dependency_tree.append((4, tokens[3], 3))  # uppsatsen -> med
+    dependency_tree.append((5, tokens[4], 0))  # var -> ROOT
+    dependency_tree.append((6, tokens[5], 5))  # att -> var
+    dependency_tree.append((7, tokens[6], 6))  # analysera -> att
+    dependency_tree.append((8, tokens[7], 7))  # vad -> analysera
+    dependency_tree.append((9, tokens[8], 11)) # som -> ge
+    dependency_tree.append((10, tokens[9], 11)) # kan -> ge
+    dependency_tree.append((11, tokens[10], 8)) # ge -> vad
+    dependency_tree.append((12, tokens[11], 11)) # arbetsglädje -> ge
+    dependency_tree.append((13, tokens[12], 7)) # samt -> analysera (coordination)
+    dependency_tree.append((14, tokens[13], 6)) # utvärdera -> att
+    dependency_tree.append((15, tokens[14], 14)) # effekter -> utvärdera
+    dependency_tree.append((16, tokens[15], 15)) # på -> effekter
+    dependency_tree.append((17, tokens[16], 18)) # upplevd -> hälsa
+    dependency_tree.append((18, tokens[17], 16)) # hälsa -> på
+    dependency_tree.append((19, tokens[18], 18)) # , -> hälsa (punctuation often attached to the preceding word)
+    dependency_tree.append((20, tokens[19], 21)) # gott -> liv
+    dependency_tree.append((21, tokens[20], 16)) # liv -> på (part of the coordinated phrase)
+    dependency_tree.append((22, tokens[21], 21)) # och -> liv (coordination)
+    dependency_tree.append((23, tokens[22], 16)) # arbetsglädje -> på (part of the coordinated phrase)
+    dependency_tree.append((24, tokens[23], 15)) # av -> effekter
+    dependency_tree.append((25, tokens[24], 27)) # de -> åtgärder
+    dependency_tree.append((26, tokens[25], 27)) # ergonomiska -> åtgärder
+    dependency_tree.append((27, tokens[26], 24)) # åtgärder -> av
+    dependency_tree.append((28, tokens[27], 27)) # som -> åtgärder
+    dependency_tree.append((29, tokens[28], 28)) # vidtagits -> som
+    dependency_tree.append((30, tokens[29], 29)) # på -> vidtagits
+    dependency_tree.append((31, tokens[30], 33)) # ett -> livsmedelsföretag
+    dependency_tree.append((32, tokens[31], 33)) # större -> livsmedelsföretag
+    dependency_tree.append((33, tokens[32], 30)) # livsmedelsföretag -> på
+    dependency_tree.append((34, tokens[33], 5)) # . -> var (punctuation attached to the root)
+
+    total_distance = 0
+    for head_index, _, dependent_index in dependency_tree:
+        if dependent_index != 0:
+            total_distance += abs(head_index - dependent_index)
+
+    average_distance = total_distance / (len(tokens) -1 ) if len(tokens) > 1 else 0
+
+    return dependency_tree, average_distance
+
+swedish_sentence = "Sammanfattning  Syftet med uppsatsen var att analysera vad som kan ge arbetsglädje samt  utvärdera effekter på upplevd hälsa, gott liv och arbetsglädje av de ergonomiska  åtgärder som vidtagits på ett större livsmedelsföretag."
+dependency_tree, avg_distance = analyze_swedish_sentence(swedish_sentence)
+
+print(dependency_tree)
+print(f"Average Dependency Distance: {avg_distance}")
+```
+
+**Explanation of the Dependency Tree:**
+
+Each tuple in the `dependency_tree` list represents a dependency relation:
+
+* **(token_index, token, head_index)**
+    * `token_index`: The position of the token in the sentence (starting from 1).
+    * `token`: The actual word or punctuation mark.
+    * `head_index`: The `token_index` of the word this token depends on. The head is the grammatical parent of the dependent. `0` indicates the root of the sentence.
+
+**Breakdown of Key Dependencies:**
+
+* **`var` (5)** is the main verb and the root of the main clause (head index 0).
+* **`Syftet` (2)** is the subject of `var`.
+* **`med uppsatsen` (3, 4)** modifies `Syftet`.
+* **`att analysera` (6, 7)** is an infinitive phrase acting as a complement to `var`.
+* **`vad som kan ge arbetsglädje` (8, 9, 10, 11, 12)** is the object of `analysera`.
+* **`samt utvärdera` (13, 14)** coordinates with `analysera`.
+* **`effekter på upplevd hälsa, gott liv och arbetsglädje` (15-23)** is the object of `utvärdera`.
+* **`av de ergonomiska åtgärder som vidtagits på ett större livsmedelsföretag` (24-33)** modifies `effekter`.
+* Punctuation marks like the comma (19) and the full stop (34) are also included as tokens and are typically attached to the word they are most closely associated with syntactically.
+
+**Average Dependency Distance Calculation:**
+
+The average dependency distance is calculated by:
+
+1. Finding the absolute difference between the index of each token and its head.
+2. Summing these distances.
+3. Dividing the sum by the total number of dependencies (which is the number of tokens minus 1, as the root has no head).
+
+In this case, the average dependency distance reflects the average "jump" between related words in the sentence structure. A higher distance generally suggests a more complex or less direct dependency.

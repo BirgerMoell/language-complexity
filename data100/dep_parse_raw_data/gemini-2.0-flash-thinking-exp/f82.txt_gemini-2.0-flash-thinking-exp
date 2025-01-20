@@ -1,0 +1,130 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average dependency distance:
+
+1. **Understanding the Goal:** The objective is to create a dependency tree representation of the Swedish sentence and calculate the average dependency distance. The format for the tree is specified: `(token_index, token, head_index)`.
+
+2. **Tokenization:** The first step is to break down the sentence into individual tokens. This involves identifying words, punctuation marks, and other meaningful units. Care needs to be taken with compound expressions like "gå på lunch tillsammans."
+
+3. **Identifying Heads and Dependents:** This is the core of dependency parsing. For each token, we need to determine its head – the word it syntactically depends on. This requires knowledge of Swedish grammar. Here's a more detailed look at how the head-finding might go:
+
+    * **Start with the main verb:**  Often, the main verb is the root of the sentence (head index 0). In this sentence, "uttryckte" seems like the main verb.
+
+    * **Analyze Phrases and Clauses:**  Break the sentence down into clauses and phrases. The conjunction "att" introduces a subordinate clause.
+
+    * **Prepositional Phrases:**  Prepositions like "med" govern their objects.
+
+    * **Conjunctions and Coordination:**  Conjunctions like "och" often link elements with the same head. Pay attention to the scope of the conjunction. The commas and the final dash act as coordinating elements.
+
+    * **Determiners and Nouns:** Determiners like "en" depend on the noun they modify.
+
+    * **Adverbs and Verbs/Adjectives:** Adverbs like "tydligt" often modify verbs.
+
+    * **Subject-Verb Relationship:**  The subject "Hon" depends on the verb "uttryckte."
+
+    * **Relative Clauses (Implicit):** The phrase "allt från de minsta handlingar till de större" acts as a kind of relative clause modifying the preceding list. "allt" seems to be the main noun here.
+
+    * **Modal Verbs:** The modal verb "hade kunnat" functions as a single verbal complex. "kunnat" depends on "hade".
+
+    * **Auxiliary Verbs:** "hade" functions as an auxiliary verb. In the subordinate clause "det hade räckt," "räckt" is the main verb and "hade" is its auxiliary.
+
+    * **Pronouns:**  Pronouns like "det" and "hennes" depend on the verbs or nouns they relate to.
+
+    * **Punctuation:** Punctuation generally depends on the element it is closest to and modifies or separates.
+
+4. **Assigning Head Indices:** Once the head-dependent relationships are identified, assign the index of the head token to each dependent token. Remember that the root verb gets a head index of 0.
+
+5. **Iterative Refinement:**  Dependency parsing can be iterative. You might initially make a decision and then revise it as you analyze more of the sentence. For example, you might initially think a particular noun is the head of a phrase, but later realize a verb is more appropriate.
+
+6. **Creating the Dependency Tree Representation:**  Format the output according to the specified format: `(token_index, token, head_index)`. Make sure the token indices are correct and sequential.
+
+7. **Calculating Dependency Distance:**
+
+    * **For each dependency:** Calculate the absolute difference between the index of the head and the index of the dependent.
+    * **Sum the distances:** Add up all the individual dependency distances.
+    * **Divide by the number of dependencies:** The number of dependencies is the total number of tokens minus one (the root has no head).
+
+**Self-Correction/Double-Checking during the Process:**
+
+* **Ensure every token has a head:**  Except for the root.
+* **Check for circular dependencies:** A token shouldn't directly or indirectly depend on itself.
+* **Verify grammatical correctness:** Does the dependency structure make sense grammatically?  Does the head govern the dependent in a meaningful way?
+* **Pay attention to conjunctions and coordination:** These can be tricky. Make sure the dependencies accurately reflect the parallel structure.
+* **Handle punctuation consistently:**  Decide on a reasonable head for each punctuation mark. Often, it's the preceding word or the word it directly separates.
+
+By following these steps and carefully considering the grammatical relationships between words, we can arrive at the correct dependency tree and calculate the average dependency distance. The process requires a good understanding of sentence structure and how words relate to each other.
+```
+[(1, Hon, 2), (2, uttryckte, 0), (3, tydligt, 2), (4, att, 7), (5, det, 7), (6, hade, 7), (7, räckt, 2), (8, med, 7), (9, en, 10), (10, hälsning, 8), (11, ,, 10), (12, ett, 13), (13, SMS, 10), (14, ,, 10), (15, en, 16), (16, fråga, 10), (17, om, 16), (18, att, 19), (19, gå, 17), (20, på, 19), (21, lunch, 20), (22, tillsammans, 19), (23, -, 10), (24, allt, 2), (25, från, 24), (26, de, 27), (27, minsta, 28), (28, handlingar, 25), (29, till, 24), (30, de, 31), (31, större, 24), (32, hade, 33), (33, kunnat, 24), (34, förändra, 33), (35, situationen, 34), (36, för, 35), (37, hennes, 38), (38, dotter, 36), (39, ., 2)]
+```
+
+**Dependency Tree Analysis:**
+
+* **Root:** The main verb "uttryckte" (expressed) is the root of the sentence (head index 0).
+* **Subject:** "Hon" (She) is the subject and depends on "uttryckte".
+* **Adverb:** "tydligt" (clearly) modifies the verb "uttryckte".
+* **Subordinate Clause:** "att det hade räckt med en hälsning..." is a subordinate clause introduced by "att" (that). "räckt" (sufficed) is the main verb of this clause.
+* **Subject of Subordinate Clause:** "det" (it) is the subject of "räckt".
+* **Auxiliary Verb:** "hade" (had) is an auxiliary verb for "räckt".
+* **Prepositional Phrase:** "med en hälsning..." is a prepositional phrase modifying "räckt".
+* **Noun Phrases:** "en hälsning" (a greeting), "ett SMS" (a text message), and "en fråga" (a question) are noun phrases. The determiners "en" and "ett" depend on their respective nouns. They are coordinated and depend on the preposition "med".
+* **Infinitive Clause:** "om att gå på lunch tillsammans" (about going to lunch together) is an infinitive clause modifying "fråga". "gå" (go) is the main verb of this clause.
+* **Prepositional Phrase within Infinitive Clause:** "på lunch" (to lunch) is a prepositional phrase modifying "gå".
+* **Adverb:** "tillsammans" (together) modifies "gå".
+* **Apposition:** "allt från de minsta handlingar till de större" (everything from the smallest actions to the larger ones) acts as an apposition to the preceding list.
+* **Prepositional Phrases modifying "allt":** "från de minsta handlingar" and "till de större" are prepositional phrases modifying "allt".
+* **Determiners and Adjectives:** "de" (the) is a determiner. "minsta" (smallest) and "större" (larger) are adjectives modifying "handlingar" (actions).
+* **Modal Verb Construction:** "hade kunnat" (could have) is a modal verb construction where "kunnat" depends on "hade".
+* **Object:** "förändra situationen" (change the situation) is the object of "kunnat".
+* **Prepositional Phrase modifying "situationen":** "för hennes dotter" (for her daughter) modifies "situationen".
+* **Possessive Pronoun:** "hennes" (her) is a possessive pronoun modifying "dotter" (daughter).
+* **Punctuation:** Commas, the hyphen, and the full stop depend on the elements they are closely associated with.
+
+**Average Dependency Distance Calculation:**
+
+To calculate the average dependency distance, we sum the absolute differences between the head and dependent indices for each token and then divide by the number of dependencies (which is the number of tokens minus 1).
+
+| Token Index | Token        | Head Index | Distance |
+|-------------|--------------|------------|----------|
+| 1           | Hon          | 2          | 1        |
+| 2           | uttryckte    | 0          | 2        |
+| 3           | tydligt      | 2          | 1        |
+| 4           | att          | 7          | 3        |
+| 5           | det          | 7          | 2        |
+| 6           | hade         | 7          | 1        |
+| 7           | räckt        | 2          | 5        |
+| 8           | med          | 7          | 1        |
+| 9           | en           | 10         | 1        |
+| 10          | hälsning     | 8          | 2        |
+| 11          | ,            | 10         | 1        |
+| 12          | ett          | 13         | 1        |
+| 13          | SMS          | 10         | 3        |
+| 14          | ,            | 10         | 4        |
+| 15          | en           | 16         | 1        |
+| 16          | fråga        | 10         | 6        |
+| 17          | om           | 16         | 1        |
+| 18          | att          | 19         | 1        |
+| 19          | gå           | 17         | 2        |
+| 20          | på           | 19         | 1        |
+| 21          | lunch        | 20         | 1        |
+| 22          | tillsammans | 19         | 3        |
+| 23          | -            | 10         | 13       |
+| 24          | allt         | 2          | 22       |
+| 25          | från         | 24         | 1        |
+| 26          | de           | 27         | 1        |
+| 27          | minsta       | 28         | 1        |
+| 28          | handlingar   | 25         | 3        |
+| 29          | till         | 24         | 5        |
+| 30          | de           | 31         | 1        |
+| 31          | större       | 24         | 7        |
+| 32          | hade         | 33         | 1        |
+| 33          | kunnat       | 24         | 9        |
+| 34          | förändra     | 33         | 1        |
+| 35          | situationen  | 34         | 1        |
+| 36          | för          | 35         | 1        |
+| 37          | hennes       | 38         | 1        |
+| 38          | dotter       | 36         | 2        |
+| 39          | .            | 2          | 37       |
+| **Total**   |              |            | **153**  |
+
+Number of tokens = 39
+Number of dependencies = 39 - 1 = 38
+
+Average Dependency Distance = Total Distance / Number of Dependencies = 153 / 38 ≈ **4.03**

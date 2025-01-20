@@ -1,0 +1,143 @@
+Here's a breakdown of the thought process to generate the dependency tree and calculate the average dependency distance:
+
+1. **Understanding the Request:** The request asks for two main things: a dependency tree representation of a Swedish sentence and the calculation of the average dependency distance. The output format for the dependency tree is clearly specified.
+
+2. **Tokenization:** The first step is to break the sentence down into individual tokens. This is crucial for the dependency parsing. Care must be taken to treat punctuation as individual tokens. Let's tokenize the given sentence:
+
+   "Serbien inledde genast en kolonisering av Kosovo , runt 100 000 serber och montenegriner flyttade in och tilldelades konfiskerad mark ( tagen mark ) ."
+
+   This results in the following tokens and their indices:
+
+   | Index | Token        |
+   |-------|--------------|
+   | 1     | Serbien      |
+   | 2     | inledde      |
+   | 3     | genast       |
+   | 4     | en           |
+   | 5     | kolonisering |
+   | 6     | av           |
+   | 7     | Kosovo       |
+   | 8     | ,            |
+   | 9     | runt         |
+   | 10    | 100 000      |
+   | 11    | serber       |
+   | 12    | och          |
+   | 13    | montenegriner|
+   | 14    | flyttade     |
+   | 15    | in           |
+   | 16    | och          |
+   | 17    | tilldelades  |
+   | 18    | konfiskerad  |
+   | 19    | mark         |
+   | 20    | (            |
+   | 21    | tagen        |
+   | 22    | mark         |
+   | 23    | )            |
+   | 24    | .            |
+
+3. **Dependency Parsing (The Core Task):** This is the most complex part. We need to determine the grammatical relationships between the tokens. For each token, we need to identify its *head* – the word it directly depends on. The root of the sentence will have a head of 0. This process requires understanding Swedish grammar. Here's a thought process for each token:
+
+   * **Serbien (1):**  The subject of the main verb "inledde". Head: `inledde` (2)
+   * **inledde (2):** The main verb of the sentence. Root. Head: `0`
+   * **genast (3):**  Adverb modifying "inledde". Head: `inledde` (2)
+   * **en (4):** Determiner for "kolonisering". Head: `kolonisering` (5)
+   * **kolonisering (5):** Direct object of "inledde". Head: `inledde` (2)
+   * **av (6):** Preposition introducing the prepositional phrase. Head: `kolonisering` (5)
+   * **Kosovo (7):** Object of the preposition "av". Head: `av` (6)
+   * **, (8):** Punctuation, likely modifying the clause it follows. Head: `inledde` (2) - This is a bit of a simplification; coordinating conjunctions and punctuation can have more complex relationships.
+   * **runt (9):**  Preposition modifying the noun phrase "100 000 serber och montenegriner". Head: `serber` (11) - While "runt" might modify the entire phrase, attaching it directly to the first prominent noun is a common practice in basic dependency parsing.
+   * **100 000 (10):** Numeral modifying "serber". Head: `serber` (11)
+   * **serber (11):** One of the subjects of "flyttade". Head: `flyttade` (14)
+   * **och (12):** Coordinating conjunction connecting "serber" and "montenegriner". Head: `serber` (11) -  The first conjunct is often the head.
+   * **montenegriner (13):**  The other subject of "flyttade". Head: `serber` (11) - Connected by the conjunction.
+   * **flyttade (14):**  One of the verbs in the coordinated clause. Head: `inledde` (2) - Coordinating conjunctions often link clauses that depend on the main verb.
+   * **in (15):** Particle modifying "flyttade". Head: `flyttade` (14)
+   * **och (16):** Coordinating conjunction connecting the clauses "Serbien...flyttade in" and "...tilldelades konfiskerad mark". Head: `inledde` (2) - Connecting the main verbs of the two clauses.
+   * **tilldelades (17):** The second verb in the coordinated clause. Head: `inledde` (2)
+   * **konfiskerad (18):** Adjective modifying "mark". Head: `mark` (19)
+   * **mark (19):** Direct object of "tilldelades". Head: `tilldelades` (17)
+   * **( (20):**  Opening parenthesis, modifying "mark". Head: `mark` (19)
+   * **tagen (21):** Adjective modifying "mark". Head: `mark` (22) -  Within the parentheses.
+   * **mark (22):** Noun within the parenthesis, explaining the previous "mark". Head: `mark` (19) - Connecting the parenthetical explanation.
+   * **) (23):** Closing parenthesis, modifying "mark". Head: `mark` (19)
+   * **. (24):** Sentence-ending punctuation. Head: `inledde` (2)
+
+4. **Constructing the Dependency Tree Output:** Based on the head assignments, we can now create the list of tuples in the specified format: `(token_index, token, head_index)`.
+
+5. **Calculating Dependency Distances:**  The dependency distance is the absolute difference between the index of the head and the index of the dependent. We calculate this for each dependency:
+
+   * | Dependent Index | Head Index | Distance |
+     |-----------------|------------|----------|
+     | 1               | 2          | 1        |
+     | 2               | 0          | 2        |
+     | 3               | 2          | 1        |
+     | 4               | 5          | 1        |
+     | 5               | 2          | 3        |
+     | 6               | 5          | 1        |
+     | 7               | 6          | 1        |
+     | 8               | 2          | 6        |
+     | 9               | 11         | 2        |
+     | 10              | 11         | 1        |
+     | 11              | 14         | 3        |
+     | 12              | 11         | 1        |
+     | 13              | 11         | 2        |
+     | 14              | 2          | 12       |
+     | 15              | 14         | 1        |
+     | 16              | 2          | 14       |
+     | 17              | 2          | 15       |
+     | 18              | 19         | 1        |
+     | 19              | 17         | 2        |
+     | 20              | 19         | 1        |
+     | 21              | 22         | 1        |
+     | 22              | 19         | 3        |
+     | 23              | 19         | 4        |
+     | 24              | 2          | 22       |
+
+6. **Calculating the Average:** Sum the distances and divide by the number of dependencies (which is the number of tokens minus 1, or the number of non-zero head indices).
+
+   Sum of distances = 1 + 2 + 1 + 1 + 3 + 1 + 1 + 6 + 2 + 1 + 3 + 1 + 2 + 12 + 1 + 14 + 15 + 1 + 2 + 1 + 1 + 3 + 4 + 22 = 97
+   Number of dependencies = 24
+
+   Average dependency distance = 97 / 24 = 4.041666...
+
+7. **Finalizing the Output:**  Format the dependency tree and the average distance according to the request. Round the average distance to a reasonable number of decimal places.
+```
+[(1, Serbien, 2), (2, inledde, 0), (3, genast, 2), (4, en, 5), (5, kolonisering, 2), (6, av, 5), (7, Kosovo, 6), (8, ,, 2), (9, runt, 11), (10, 100 000, 11), (11, serber, 14), (12, och, 11), (13, montenegriner, 11), (14, flyttade, 2), (15, in, 14), (16, och, 17), (17, tilldelades, 14), (18, konfiskerad, 19), (19, mark, 17), (20, (, 19), (21, tagen, 22), (22, mark, 20), (23, ), 19), (24, ., 2)]
+```
+
+**Average Dependency Distance Calculation:**
+
+To calculate the average dependency distance, we sum the distances between each token and its head and then divide by the total number of dependencies (which is the number of tokens minus 1, as the root has no head).
+
+Dependencies and their distances:
+
+* (1, Serbien, 2): |1 - 2| = 1
+* (2, inledde, 0): |2 - 0| = 2
+* (3, genast, 2): |3 - 2| = 1
+* (4, en, 5): |4 - 5| = 1
+* (5, kolonisering, 2): |5 - 2| = 3
+* (6, av, 5): |6 - 5| = 1
+* (7, Kosovo, 6): |7 - 6| = 1
+* (8, ,, 2): |8 - 2| = 6
+* (9, runt, 11): |9 - 11| = 2
+* (10, 100 000, 11): |10 - 11| = 1
+* (11, serber, 14): |11 - 14| = 3
+* (12, och, 11): |12 - 11| = 1
+* (13, montenegriner, 11): |13 - 11| = 2
+* (14, flyttade, 2): |14 - 2| = 12
+* (15, in, 14): |15 - 14| = 1
+* (16, och, 17): |16 - 17| = 1
+* (17, tilldelades, 14): |17 - 14| = 3
+* (18, konfiskerad, 19): |18 - 19| = 1
+* (19, mark, 17): |19 - 17| = 2
+* (20, (, 19): |20 - 19| = 1
+* (21, tagen, 22): |21 - 22| = 1
+* (22, mark, 20): |22 - 20| = 2
+* (23, ), 19): |23 - 19| = 4
+* (24, ., 2): |24 - 2| = 22
+
+Sum of distances = 1 + 2 + 1 + 1 + 3 + 1 + 1 + 6 + 2 + 1 + 3 + 1 + 2 + 12 + 1 + 1 + 3 + 1 + 2 + 1 + 1 + 2 + 4 + 22 = 72
+
+Number of dependencies = 24
+
+Average dependency distance = 72 / 24 = **3.0**

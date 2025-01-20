@@ -1,0 +1,112 @@
+Here's a breakdown of the thought process to analyze the Swedish sentence and produce the dependency tree and average dependency distance:
+
+1. **Understand the Goal:** The objective is to create a dependency tree representation and calculate the average dependency distance for a given Swedish sentence. The output format is specific: `[(token_index, token, head_index), ...]`.
+
+2. **Tokenization:** The first step is to break down the sentence into individual tokens. This involves separating words and punctuation. Care must be taken to handle conjunctions like "på" and articles like "de."
+
+   * *Initial thought:* Just split by spaces.
+   * *Correction:* Need to handle punctuation separately. Commas and periods are distinct tokens.
+
+   This results in: `Kontrollbussen`, `bär`, `på`, `sammanhållande`, `signaler`, `mellan`, `processor`, `och`, `alla`, `de`, `enheter`, `som`, `är`, `anslutna`, `till`, `de`, `olika`, `bussarna`, `.`.
+
+3. **Dependency Parsing (Conceptual):**  Now, the core task is to determine the relationships between these tokens. This involves identifying the head (governor) of each token. This is where grammatical knowledge comes in.
+
+   * *Start with the verb:*  The verb is often the root of the sentence or a clause. In this case, "bär" (carries) seems like the main verb.
+
+   * *Identify the subject:*  What carries? "Kontrollbussen" (the control bus). So, "bär" is the head of "Kontrollbussen."
+
+   * *Identify objects/complements:* What does the bus carry? "signaler" (signals). "bär" is the head of "signaler."
+
+   * *Prepositional Phrases:*  "på sammanhållande signaler" - "på" is a preposition governing "signaler."
+
+   * *More Complex Phrases:*  "mellan processor och alla de enheter" - "mellan" (between) is a preposition taking two arguments connected by "och."  The arguments are "processor" and "alla de enheter."
+
+   * *Relative Clauses:* "som är anslutna till de olika bussarna" - "som" (which/that) introduces a relative clause modifying "enheter."  The verb in this clause is "är anslutna" (are connected). "enheter" is the head of "som."
+
+   * *Prepositional Phrase within the Relative Clause:* "till de olika bussarna" - "till" (to) governs "bussarna."  "olika" (different) modifies "bussarna." "de" is a determiner for "bussarna."
+
+   * *Putting it all together systematically (Trial and Error):* It might not be immediately obvious what the exact head of every word is. It's often iterative.
+
+    *  *Example of an initial guess:* Perhaps "mellan" modifies "signaler."
+    *  *Correction:* "mellan" requires two arguments, and grammatically it's clearer that it links "processor" and "enheter."  The signals *are* between these things. So "signaler" is the head of "mellan."
+
+4. **Assigning Head Indices:** Once the dependency relationships are established, assign the numerical indices. Remember that the root of the sentence has a head index of 0.
+
+   * Start with the main verb "bär" (index 2). Its head is 0.
+   * "Kontrollbussen" (index 1) is the subject of "bär," so its head is 2.
+   * "på" (index 3) modifies "signaler" (index 5), so its head is 5.
+   * Continue this process for all tokens.
+
+5. **Creating the Output Format:** Translate the determined head-dependent relationships into the specified `(token_index, token, head_index)` format.
+
+6. **Calculating Dependency Distances:**
+
+   * **Definition:** The dependency distance is the absolute difference between the index of a token and the index of its head.
+   * **Iterate through the dependency tree:** For each tuple `(token_index, token, head_index)`, calculate `abs(token_index - head_index)`.
+   * **Sum the distances.**
+   * **Divide by the total number of dependencies (number of tokens minus 1, or the number of non-root tokens).**
+
+   *Example Calculation:*
+   * `Kontrollbussen`: `abs(1 - 2) = 1`
+   * `bär`:  (root, distance not considered in the average)
+   * `på`: `abs(3 - 5) = 2`
+   * ...and so on.
+
+7. **Review and Verify:**  Double-check the dependency tree and the distance calculations for any errors. Does the tree make grammatical sense? Are the distances calculated correctly?  For complex sentences, it can be helpful to visualize the tree.
+
+This systematic approach, combining grammatical knowledge with careful indexing and calculation, leads to the correct dependency tree and average dependency distance. For someone with linguistic training, much of the dependency parsing happens fairly intuitively. For an AI, this process might involve statistical models trained on large amounts of parsed text data.
+Here's the dependency tree for the Swedish sentence and the calculation of the average dependency distance:
+
+**Dependency Tree:**
+
+[(1, Kontrollbussen, 2), (2, bär, 0), (3, på, 5), (4, sammanhållande, 5), (5, signaler, 2), (6, mellan, 5), (7, processor, 6), (8, och, 6), (9, alla, 11), (10, de, 11), (11, enheter, 8), (12, som, 14), (13, är, 14), (14, anslutna, 11), (15, till, 14), (16, de, 17), (17, olika, 18), (18, bussarna, 15), (19, ., 2)]
+
+**Explanation of Dependencies:**
+
+* **2 bär (carries) -> 1 Kontrollbussen (Control bus):** The subject of the verb.
+* **2 bär (carries) -> 5 signaler (signals):** The direct object of the verb.
+* **5 signaler (signals) -> 3 på (on):**  A preposition modifying the object.
+* **5 signaler (signals) -> 4 sammanhållande (cohesive):** An adjective modifying the object.
+* **5 signaler (signals) -> 6 mellan (between):** A preposition modifying the object, indicating what the signals are between.
+* **6 mellan (between) -> 7 processor (processor):** The first part of the "between...and" construction.
+* **6 mellan (between) -> 8 och (and):** The conjunction connecting the two parts of the "between...and" construction.
+* **8 och (and) -> 11 enheter (units):** The second part of the "between...and" construction.
+* **11 enheter (units) -> 9 alla (all):** A quantifier modifying the noun.
+* **11 enheter (units) -> 10 de (the):** A determiner modifying the noun.
+* **11 enheter (units) -> 14 anslutna (connected):**  The head of the relative clause modifying "enheter".
+* **14 anslutna (connected) -> 12 som (that/which):** The relative pronoun.
+* **14 anslutna (connected) -> 13 är (are):** The auxiliary verb in the relative clause.
+* **14 anslutna (connected) -> 15 till (to):** A preposition modifying the verb in the relative clause.
+* **15 till (to) -> 18 bussarna (the buses):** The object of the preposition.
+* **18 bussarna (the buses) -> 16 de (the):** A determiner modifying the noun.
+* **18 bussarna (the buses) -> 17 olika (different):** An adjective modifying the noun.
+* **2 bär (carries) -> 19 . (period):** Punctuation attached to the main verb.
+
+**Calculation of Average Dependency Distance:**
+
+1. **Calculate the dependency distance for each token (absolute difference between token index and head index):**
+   * |1 - 2| = 1
+   * |2 - 0| = 2
+   * |3 - 5| = 2
+   * |4 - 5| = 1
+   * |5 - 2| = 3
+   * |6 - 5| = 1
+   * |7 - 6| = 1
+   * |8 - 6| = 2
+   * |9 - 11| = 2
+   * |10 - 11| = 1
+   * |11 - 8| = 3
+   * |12 - 14| = 2
+   * |13 - 14| = 1
+   * |14 - 11| = 3
+   * |15 - 14| = 1
+   * |16 - 17| = 1
+   * |17 - 18| = 1
+   * |18 - 15| = 3
+   * |19 - 2| = 17
+
+2. **Sum the dependency distances:** 1 + 2 + 2 + 1 + 3 + 1 + 1 + 2 + 2 + 1 + 3 + 2 + 1 + 3 + 1 + 1 + 1 + 3 + 17 = 47
+
+3. **Divide the sum by the number of dependencies (number of tokens minus 1, as the root has no head):** 47 / 19 = 2.47368421053
+
+**Average Dependency Distance:** Approximately **2.47**

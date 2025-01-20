@@ -1,0 +1,163 @@
+Here's a breakdown of the thought process to analyze the Swedish sentence and generate the dependency tree:
+
+1. **Understand the Goal:** The objective is to create a dependency tree representation of a given Swedish sentence and calculate the average dependency distance. The output format is specific: a list of tuples, where each tuple represents a dependency relation (child_index, child_token, head_index).
+
+2. **Tokenization:** The first step is to break down the sentence into individual tokens. This includes words and punctuation marks.
+
+   *Sentence:* Till sist vill jag rikta ett tack till alla hantverkare på arbetsplatserna som tagit sig  tid att delta i enkätundersökningen och gjort detta arbete möjligt.
+
+   *Tokens:* Till, sist, vill, jag, rikta, ett, tack, till, alla, hantverkare, på, arbetsplatserna, som, tagit, sig, tid, att, delta, i, enkätundersökningen, och, gjort, detta, arbete, möjligt, .
+
+3. **Identify the Root:** The core of the sentence is the main verb. In this case, "rikta" (to direct/address) is the main action being performed. The auxiliary verbs "vill" (want) modify it, but "rikta" is the central verb. Therefore, "rikta" will be the root of the dependency tree (represented by a head index of 0).
+
+4. **Establish Dependencies - Iterative Process:**  Now, connect each token to its head. This often involves considering:
+
+   * **Subject-Verb Relationship:** Who is performing the action? "Jag" (I) is the subject of "rikta."
+   * **Object Relationship:** What is being directed? "ett tack" (a thank you) is the direct object of "rikta."
+   * **Prepositional Phrases:** Prepositions introduce phrases that modify other elements. "Till sist" (finally) modifies the entire action. "till alla hantverkare" (to all the craftsmen) modifies "tack." "på arbetsplatserna" (at the workplaces) modifies "hantverkare." "i enkätundersökningen" (in the survey) modifies "delta."
+   * **Relative Clauses:** "som tagit sig tid" (who have taken the time) modifies "hantverkare."
+   * **Infinitives:** "att delta" (to participate) depends on "tid."
+   * **Conjunctions:** "och" (and) conjoins clauses. "gjort detta arbete möjligt" is conjoined with the main clause.
+   * **Auxiliary Verbs:** "vill" modifies "rikta."
+   * **Determiners and Adjectives:** "ett" modifies "tack." "alla" modifies "hantverkare." "enkätundersökningen" acts like a compound noun/noun phrase. "detta" modifies "arbete." "möjligt" is a predicate adjective modifying "arbete."
+   * **Reflexive Pronouns:** "sig" refers back to the subject of "tagit."
+   * **Punctuation:** Typically depends on the verb or the phrase it concludes.
+
+5. **Assign Head Indices and Create Tuples (Crucial Step with Ordering):**  Go through the tokens sequentially and determine the head for each one. Keep track of the token index.
+
+   * **Till (1):** Modifies "rikta" (5). (1, Till, 5)
+   * **sist (2):**  Modifies "rikta" (5). (2, sist, 5)
+   * **vill (3):**  Auxiliary verb modifying "rikta" (5). (3, vill, 5)
+   * **jag (4):** Subject of "rikta" (5). (4, jag, 5)
+   * **rikta (5):** Root of the sentence. (5, rikta, 0)
+   * **ett (6):** Determiner modifying "tack" (7). (6, ett, 7)
+   * **tack (7):** Direct object of "rikta" (5). (7, tack, 5)
+   * **till (8):** Preposition introducing a prepositional phrase modifying "tack" (7). (8, till, 7)
+   * **alla (9):** Determiner modifying "hantverkare" (10). (9, alla, 10)
+   * **hantverkare (10):** Object of the preposition "till" (8). (10, hantverkare, 8)
+   * **på (11):** Preposition introducing a prepositional phrase modifying "hantverkare" (10). (11, på, 10)
+   * **arbetsplatserna (12):** Object of the preposition "på" (11). (12, arbetsplatserna, 11)
+   * **som (13):** Relative pronoun referring to "hantverkare" (10), subject of "tagit" (14). (13, som, 10)
+   * **tagit (14):** Verb in the relative clause, modifies "hantverkare" (10). (14, tagit, 10)
+   * **sig (15):** Reflexive pronoun, object of "tagit" (14). (15, sig, 14)
+   * **tid (16):** Direct object of "tagit" (14). (16, tid, 14)
+   * **att (17):** Introduces an infinitive clause modifying "tid" (16). (17, att, 16)
+   * **delta (18):** Verb in the infinitive clause, depends on "att" (17). (18, delta, 17)
+   * **i (19):** Preposition introducing a prepositional phrase modifying "delta" (18). (19, i, 18)
+   * **enkätundersökningen (20):** Object of the preposition "i" (19). (20, enkätundersökningen, 19)
+   * **och (21):** Conjunction connecting the two main clauses. (21, och, 5) -  It often connects to the main verb of the first clause.
+   * **gjort (22):** Verb in the second conjoined clause, with "rikta" (5) as its conceptual head. (22, gjort, 5)
+   * **detta (23):** Determiner modifying "arbete" (24). (23, detta, 24)
+   * **arbete (24):** Direct object of "gjort" (22). (24, arbete, 22)
+   * **möjligt (25):** Predicate adjective modifying "arbete" (24). (25, möjligt, 22)
+   * **. (26):** Punctuation, depends on the root verb (5). (26, ., 5)
+
+6. **Calculate Dependency Distances:** For each dependency relation, calculate the absolute difference between the head index and the child index.
+
+   * | Child | Head | Distance |
+     |---|---|---|
+     | 1 | 5 | 4 |
+     | 2 | 5 | 3 |
+     | 3 | 5 | 2 |
+     | 4 | 5 | 1 |
+     | 5 | 0 | 5 |
+     | 6 | 7 | 1 |
+     | 7 | 5 | 2 |
+     | 8 | 7 | 1 |
+     | 9 | 10 | 1 |
+     | 10 | 8 | 2 |
+     | 11 | 10 | 1 |
+     | 12 | 11 | 1 |
+     | 13 | 10 | 3 |
+     | 14 | 10 | 4 |
+     | 15 | 14 | 1 |
+     | 16 | 14 | 2 |
+     | 17 | 16 | 1 |
+     | 18 | 17 | 1 |
+     | 19 | 18 | 1 |
+     | 20 | 19 | 1 |
+     | 21 | 5 | 16 |
+     | 22 | 5 | 17 |
+     | 23 | 24 | 1 |
+     | 24 | 22 | 2 |
+     | 25 | 22 | 3 |
+     | 26 | 5 | 21 |
+
+7. **Compute Average Distance:** Sum the distances and divide by the number of dependencies (which is the number of tokens minus 1, or the number of non-root dependencies).
+
+   * Total distance = 4 + 3 + 2 + 1 + 5 + 1 + 2 + 1 + 1 + 2 + 1 + 1 + 3 + 4 + 1 + 2 + 1 + 1 + 1 + 1 + 16 + 17 + 1 + 2 + 3 + 21 = 97
+   * Number of dependencies = 26
+   * Average distance = 97 / 26 ≈ 3.73
+
+This systematic approach, combining linguistic knowledge with careful tracking of token indices, allows for the accurate construction of the dependency tree and calculation of the average dependency distance. Double-checking the relationships is important to ensure correctness.
+Here is the dependency tree for the given Swedish sentence:
+
+```
+[(1, Till, 5), (2, sist, 5), (3, vill, 5), (4, jag, 5), (5, rikta, 0), (6, ett, 7), (7, tack, 5), (8, till, 7), (9, alla, 10), (10, hantverkare, 8), (11, på, 10), (12, arbetsplatserna, 11), (13, som, 10), (14, tagit, 13), (15, sig, 14), (16, tid, 14), (17, att, 18), (18, delta, 16), (19, i, 18), (20, enkätundersökningen, 19), (21, och, 5), (22, gjort, 21), (23, detta, 24), (24, arbete, 22), (25, möjligt, 22), (26, ., 5)]
+```
+
+**Explanation of the Dependencies:**
+
+* **5 rikta** - The main verb 'rikta' (direct) is the root of the sentence (head 0).
+* **1 Till, 2 sist** - The adverbial phrase 'Till sist' (Finally) modifies the verb 'rikta'.
+* **3 vill** - The auxiliary verb 'vill' (want) modifies the verb 'rikta'.
+* **4 jag** - The subject pronoun 'jag' (I) is the subject of the verb 'rikta'.
+* **7 tack** - The noun 'tack' (thank you) is the object of the verb 'rikta'.
+* **6 ett** - The determiner 'ett' (a) modifies the noun 'tack'.
+* **8 till** - The preposition 'till' (to) introduces a prepositional phrase modifying 'tack'.
+* **10 hantverkare** - The noun 'hantverkare' (craftsmen) is the object of the preposition 'till'.
+* **9 alla** - The determiner 'alla' (all) modifies the noun 'hantverkare'.
+* **11 på** - The preposition 'på' (at/on) introduces a prepositional phrase modifying 'hantverkare'.
+* **12 arbetsplatserna** - The noun 'arbetsplatserna' (the workplaces) is the object of the preposition 'på'.
+* **13 som** - The relative pronoun 'som' (who/that) refers to 'hantverkare' and is the subject of the verb 'tagit'.
+* **14 tagit** - The verb 'tagit' (taken) is the verb in the relative clause, modifying 'hantverkare'.
+* **15 sig** - The reflexive pronoun 'sig' refers back to the subject of 'tagit'.
+* **16 tid** - The noun 'tid' (time) is the direct object of the verb 'tagit'.
+* **17 att** - The infinitive marker 'att' introduces the infinitive phrase.
+* **18 delta** - The verb 'delta' (participate) is the verb in the infinitive phrase, dependent on 'att'.
+* **19 i** - The preposition 'i' (in) introduces a prepositional phrase modifying 'delta'.
+* **20 enkätundersökningen** - The noun 'enkätundersökningen' (the survey) is the object of the preposition 'i'.
+* **21 och** - The conjunction 'och' (and) connects the two main clauses. Here it's connecting to the first main verb.
+* **22 gjort** - The verb 'gjort' (made/done) is the verb in the second part of the conjunction.
+* **23 detta** - The determiner 'detta' (this) modifies the noun 'arbete'.
+* **24 arbete** - The noun 'arbete' (work) is the direct object of the verb 'gjort'.
+* **25 möjligt** - The adjective 'möjligt' (possible) is the object complement of the verb 'gjort', describing 'arbete'.
+* **26 .** - The full stop punctuates the sentence and is dependent on the main verb.
+
+**Average Dependency Distance Calculation:**
+
+To calculate the average dependency distance, we sum the absolute differences between the head and dependent indices and divide by the total number of dependencies (which is the number of tokens minus 1, or the number of non-zero head indices).
+
+| Token | Head | Distance |
+|---|---|---|
+| 1 | 5 | 4 |
+| 2 | 5 | 3 |
+| 3 | 5 | 2 |
+| 4 | 5 | 1 |
+| 5 | 0 | - |
+| 6 | 7 | 1 |
+| 7 | 5 | 2 |
+| 8 | 7 | 1 |
+| 9 | 10 | 1 |
+| 10 | 8 | 2 |
+| 11 | 10 | 1 |
+| 12 | 11 | 1 |
+| 13 | 10 | 3 |
+| 14 | 13 | 1 |
+| 15 | 14 | 1 |
+| 16 | 14 | 2 |
+| 17 | 18 | 1 |
+| 18 | 16 | 2 |
+| 19 | 18 | 1 |
+| 20 | 19 | 1 |
+| 21 | 5 | 16 |
+| 22 | 21 | 1 |
+| 23 | 24 | 1 |
+| 24 | 22 | 2 |
+| 25 | 22 | 3 |
+| 26 | 5 | 21 |
+| **Total** |  | **72** |
+
+Number of dependencies = 26
+
+Average dependency distance = 72 / 26 ≈ **2.77**

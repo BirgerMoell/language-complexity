@@ -1,0 +1,123 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average dependency distance:
+
+1. **Understand the Request:** The core tasks are:
+    * Create a dependency tree for the Swedish sentence.
+    * Format the tree as a list of tuples: `(token_index, token, head_index)`.
+    * Include punctuation as tokens.
+    * Calculate the average dependency distance.
+
+2. **Tokenization:**  The first step is to break the sentence down into individual tokens. This is relatively straightforward in this case, as spaces and punctuation clearly delimit the tokens. Care must be taken with "att," which isn't a single word in this context.
+
+    Tokens: `Man`, `startar`, `oftast`, `FTP`, `genom`, `att`, `,`, `liksom`, `med`, `TELNET`, `,`, `skriva`, `FTP`, `och`, `sen`, `domännamnet`, `på`, `dn`, `dator`, `som`, `du`, `vill`, `koppla`, `upp`, `dig`, `till`, `.`
+
+3. **Dependency Parsing (Manual - no actual parser being used here):** This is the most complex part. I need to determine the grammatical relationships between the tokens. I'll go through the sentence word by word and consider what each word modifies or is modified by. This requires understanding basic Swedish grammar.
+
+    * **`Man` (1) `startar` (2):** "Man" is the subject performing the action of "startar."  So, `startar` is the head. -> `(1, Man, 2)`
+    * **`startar` (2) `oftast` (3):** "Oftast" (often) modifies the verb "startar." -> `(3, oftast, 2)`
+    * **`startar` (2) `FTP` (4):** "FTP" is the direct object of "startar." -> `(4, FTP, 2)`
+    * **`startar` (2) `genom` (5):** "Genom" (through/by) introduces a prepositional phrase modifying the way the action is done. -> `(5, genom, 2)`
+    * **`genom` (5) `att` (6):**  "Att" in this construction introduces an infinitive clause. It depends on "genom." -> `(6, att, 5)`
+    * **`att` (6) `,` (7):** The comma separates clauses. It weakly attaches to the "att." -> `(7, ,, 6)`
+    * **`,` (7) `liksom` (8):** "Liksom" (like) starts a comparative phrase, modifying the "att" clause. It can attach to the preceding comma or "att." Attaching to the comma seems reasonable for marking the boundary. -> `(8, liksom, 7)`
+    * **`liksom` (8) `med` (9):**  "Med" (with) is governed by "liksom." -> `(9, med, 8)`
+    * **`med` (9) `TELNET` (10):** "TELNET" is the object of the preposition "med." -> `(10, TELNET, 9)`
+    * **`att` (6) `,` (11):** Another comma separating clauses. Again, weakly attached to "att." -> `(11, ,, 6)`
+    * **`att` (6) `skriva` (12):**  "Skriva" (to write) is the main verb of the infinitive clause introduced by "att." -> `(12, skriva, 6)`
+    * **`skriva` (12) `FTP` (13):** "FTP" is the direct object of "skriva." -> `(13, FTP, 12)`
+    * **`skriva` (12) `och` (14):** "Och" (and) conjoins the two infinitive phrases. It attaches to the first verb. -> `(14, och, 12)`
+    * **`skriva` (12) `sen` (15):**  "Sen" (then) modifies "skriva," indicating temporal order. -> `(15, sen, 12)`
+    * **`sen` (15) `domännamnet` (16):**  "Domännamnet" (the domain name) is another direct object of "skriva," coordinated by "och." It makes sense to attach it to "sen" as the immediate element after "och." -> `(16, domännamnet, 15)`
+    * **`domännamnet` (16) `på` (17):** "På" (on) is a preposition modifying "domännamnet." -> `(17, på, 16)`
+    * **`på` (17) `dn` (18):**  "Dn" (your) modifies "dator." It seems grammatically linked to "på." -> `(18, dn, 17)`
+    * **`på` (17) `dator` (19):** "Dator" (computer) is the object of the preposition "på." -> `(19, dator, 17)`
+    * **`dator` (19) `som` (20):** "Som" (that/which) introduces a relative clause modifying "dator." -> `(20, som, 19)`
+    * **`som` (20) `du` (21):** "Du" is the subject of the relative clause. It depends on the verb of the relative clause. -> `(21, du, 22)`
+    * **`som` (20) `vill` (22):** "Vill" (want) is the main verb of the relative clause. -> `(22, vill, 20)`
+    * **`vill` (22) `koppla` (23):** "Koppla" (to connect) is the infinitive verb governed by "vill." -> `(23, koppla, 22)`
+    * **`koppla` (23) `upp` (24):** "Upp" is a particle verb part of "koppla upp" (to connect up). -> `(24, upp, 23)`
+    * **`koppla` (23) `dig` (25):** "Dig" (yourself) is the object of the phrasal verb "koppla upp." -> `(25, dig, 23)`
+    * **`koppla` (23) `till` (26):** "Till" (to) is a preposition indicating direction. -> `(26, till, 23)`
+    * **`till` (26) `.` (27):** The period marks the end of the sentence. It attaches to the main verb. -> `(27, ., 2)`
+
+4. **Verify Dependencies:** Review the connections to ensure they make grammatical sense. Are there any obvious errors?  For example, does every word (except the root) have a head?
+
+5. **Calculate Dependency Distances:** For each tuple `(token_index, token, head_index)`, calculate the absolute difference between `token_index` and `head_index`.
+
+    * |1 - 2| = 1
+    * |3 - 2| = 1
+    * |4 - 2| = 2
+    * |5 - 2| = 3
+    * |6 - 5| = 1
+    * |7 - 6| = 1
+    * |8 - 7| = 1
+    * |9 - 8| = 1
+    * |10 - 9| = 1
+    * |11 - 6| = 5
+    * |12 - 6| = 6
+    * |13 - 12| = 1
+    * |14 - 12| = 2
+    * |15 - 12| = 3
+    * |16 - 15| = 1
+    * |17 - 16| = 1
+    * |18 - 17| = 1
+    * |19 - 17| = 2
+    * |20 - 19| = 1
+    * |21 - 22| = 1
+    * |22 - 20| = 2
+    * |23 - 22| = 1
+    * |24 - 23| = 1
+    * |25 - 23| = 2
+    * |26 - 23| = 3
+    * |27 - 2| = 25
+
+6. **Calculate Average Distance:** Sum the dependency distances and divide by the number of dependencies (which is the number of tokens minus 1, since the root has no head).
+
+    Sum of distances = 1 + 1 + 2 + 3 + 1 + 1 + 1 + 1 + 1 + 5 + 6 + 1 + 2 + 3 + 1 + 1 + 1 + 2 + 1 + 1 + 2 + 1 + 1 + 2 + 3 + 25 = 64
+    Number of dependencies = 27 - 1 = 26
+    Average distance = 64 / 26 ≈ 2.46
+
+7. **Format Output:** Present the dependency tree and the average distance in the specified format.
+```
+[(1, Man, 2), (2, startar, 0), (3, oftast, 2), (4, FTP, 2), (5, genom, 2), (6, att, 5), (7, ,, 6), (8, liksom, 7), (9, med, 8), (10, TELNET, 9), (11, ,, 6), (12, skriva, 6), (13, FTP, 12), (14, och, 12), (15, sen, 12), (16, domännamnet, 15), (17, på, 16), (18, dn, 19), (19, dator, 17), (20, som, 19), (21, du, 22), (22, vill, 20), (23, koppla, 22), (24, upp, 23), (25, dig, 23), (26, till, 23), (27, ., 2)]
+```
+
+**Average Dependency Distance Calculation:**
+
+To calculate the average dependency distance, we need to find the absolute difference between the head index and the dependent index for each dependency and then average these distances.
+
+1. **Calculate the distance for each dependency:**
+   - |2 - 1| = 1
+   - |0 - 2| = 2 (This is not a real dependency distance, as 0 represents the root. We'll exclude this for the average calculation)
+   - |2 - 3| = 1
+   - |2 - 4| = 2
+   - |2 - 5| = 3
+   - |5 - 6| = 1
+   - |6 - 7| = 1
+   - |7 - 8| = 1
+   - |8 - 9| = 1
+   - |9 - 10| = 1
+   - |6 - 11| = 5
+   - |6 - 12| = 6
+   - |12 - 13| = 1
+   - |12 - 14| = 2
+   - |12 - 15| = 3
+   - |15 - 16| = 1
+   - |16 - 17| = 1
+   - |19 - 18| = 1
+   - |17 - 19| = 2
+   - |19 - 20| = 1
+   - |22 - 21| = 1
+   - |20 - 22| = 2
+   - |22 - 23| = 1
+   - |23 - 24| = 1
+   - |23 - 25| = 2
+   - |23 - 26| = 3
+   - |2 - 27| = 25
+
+2. **Sum the distances:** 1 + 1 + 2 + 3 + 1 + 1 + 1 + 1 + 1 + 5 + 6 + 1 + 2 + 3 + 1 + 1 + 1 + 2 + 1 + 1 + 2 + 1 + 1 + 2 + 3 + 25 = 64
+
+3. **Count the number of dependencies:** There are 27 tokens, and each token (except the root) has one head, so there are 26 dependencies.
+
+4. **Calculate the average distance:** 64 / 26 = 2.4615384615384617
+
+**Average Dependency Distance:** 2.46

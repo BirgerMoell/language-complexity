@@ -1,0 +1,147 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average distance:
+
+1. **Understanding the Goal:** The objective is to create a dependency tree and calculate the average dependency distance for a given Swedish sentence. The tree representation needs to be in a specific format: `(token_index, token, head_index)`.
+
+2. **Initial Sentence Analysis (Tokenization and Basic Grammar):**  First, break down the sentence into individual tokens. This is relatively straightforward. Then, start thinking about the grammatical roles of each word. Even without deep linguistic knowledge, some basic connections are apparent.
+
+   * "Plankalkül" seems like the subject or a prominent noun.
+   * "hette" is clearly a verb (to be called/named).
+   * "den" is a pronoun (it/that).
+   * "första" is an adjective (first).
+   * "datorns" is a noun (computer's).
+   * "som" is a relative pronoun (that/which).
+   * "gjorde" is a verb (made/did).
+   * "i Tyskland" is a prepositional phrase indicating location (in Germany).
+   * "den" (again) is a pronoun.
+   * "används" is a passive verb (is used).
+   * "för" is a preposition (for).
+   * "inom millitäten" is a prepositional phrase (within the military).
+   * "." is punctuation.
+
+3. **Identifying the Root:**  The central verb of the main clause is usually the root of the dependency tree. In this sentence, "hette" seems like a good candidate.
+
+4. **Connecting Dependent Tokens:**  Now, systematically go through each token and determine its head. This involves understanding grammatical relationships.
+
+   * **Plankalkül:** What names "Plankalkül"?  It *is called* "Plankalkül". So "hette" is the head. `(1, Plankalkül, 2)`
+   * **hette:** This is the root, so its head is 0. `(2, hette, 0)`
+   * **den:** This pronoun refers to "Plankalkül". It's closely linked to it within the naming. Perhaps it modifies "hette"? `(3, den, 2)` (Initially I might consider it a subject, but "Plankalkül" seems to fulfill that role).
+   * **första:** This adjective describes "datorns". `(4, första, 5)`
+   * **datorns:** This is the noun that "första" modifies. The phrase "första datorns" acts as a description for something. What is it describing?  It's a description of the "datorns" that *made* something. So, the verb "gjorde" feels like the head of this phrase. `(5, datorns, 7)`
+   * **som:** This relative pronoun introduces a relative clause modifying "datorns". It connects to the verb within that clause. `(6, som, 7)`
+   * **gjorde:** This verb is the core of the relative clause. It relates to "datorns". `(7, gjorde, 5)`
+   * **i:** This preposition introduces the location. `(8, i, 7)` (Modifies the action of "gjorde").
+   * **Tyskland:** This is the object of the preposition "i". `(9, Tyskland, 8)`
+   * **den:** This pronoun refers back to "Plankalkül" (the computer). It's the subject of the second main clause. The main verb of this clause is "används". `(10, den, 11)`
+   * **används:** This is the main verb of the second clause. What is being used?  "den" (Plankalkül). `(11, används, 2)`  (Connecting back to the initial verb makes sense as it continues the thought about the same subject).
+   * **för:** This preposition introduces the purpose. `(12, för, 11)` (Modifies the verb "används").
+   * **inom:** This preposition starts another prepositional phrase specifying further. `(13, inom, 12)` (Modifies the preposition "för").
+   * **millitäten:** This is the object of the preposition "inom". `(14, millitäten, 13)`
+   * **.:** Punctuation usually attaches to the main verb of the sentence/clause. Since "används" feels like the final action, it's a good candidate. `(15, ., 11)`
+
+5. **Review and Refine:** Look at the connections and see if they make grammatical sense. Are there any dangling modifiers?  Does the overall structure flow logically? In this case, the connections seem reasonable, reflecting the sentence's meaning.
+
+6. **Calculating Dependency Distances:**  Once the tree is established, calculate the absolute difference between the token index and the head index for each token.
+
+   * |Plankalkül - hette| = |1 - 2| = 1
+   * |hette - root| = |2 - 0| = 2
+   * |den - hette| = |3 - 2| = 1
+   * |första - datorns| = |4 - 5| = 1
+   * |datorns - gjorde| = |5 - 7| = 2
+   * |som - gjorde| = |6 - 7| = 1
+   * |gjorde - datorns| = |7 - 5| = 2
+   * |i - gjorde| = |8 - 7| = 1
+   * |Tyskland - i| = |9 - 8| = 1
+   * |den - används| = |10 - 11| = 1
+   * |används - hette| = |11 - 2| = 9
+   * |för - används| = |12 - 11| = 1
+   * |inom - för| = |13 - 12| = 1
+   * |millitäten - inom| = |14 - 13| = 1
+   * |.- används| = |15 - 11| = 4
+
+7. **Calculating the Average:** Sum the distances and divide by the number of tokens. 1 + 2 + 1 + 1 + 2 + 1 + 2 + 1 + 1 + 1 + 9 + 1 + 1 + 1 + 4 = 30. 30 / 15 = 2.
+
+This systematic approach, combining basic grammatical knowledge with careful consideration of dependencies, leads to the correct dependency tree and average distance. It involves some trial and error and revisiting connections as needed.
+Here's the dependency tree analysis for the Swedish sentence:
+
+**Sentence:** Plankalkül hette den första datorns som gjorde i Tyskland den används för inom millitäten.
+
+**Tokenization:**
+
+1. Plankalkül
+2. hette
+3. den
+4. första
+5. datorns
+6. som
+7. gjorde
+8. i
+9. Tyskland
+10. den
+11. används
+12. för
+13. inom
+14. millitäten
+15. .
+
+**Dependency Tree:**
+
+[(1, Plankalkül, 2),
+ (2, hette, 0),
+ (3, den, 2),
+ (4, första, 5),
+ (5, datorns, 7),
+ (6, som, 7),
+ (7, gjorde, 5),
+ (8, i, 7),
+ (9, Tyskland, 8),
+ (10, den, 11),
+ (11, används, 2),
+ (12, för, 11),
+ (13, inom, 12),
+ (14, millitäten, 13),
+ (15, ., 11)]
+
+**Explanation of Dependencies:**
+
+* **hette** (was called) is the main verb of the first part of the sentence and the root (head 0).
+* **Plankalkül** is the subject of "hette".
+* The first **den** refers to Plankalkül and acts as a determiner or pronoun associated with it.
+* **första** (first) modifies **datorns** (the computer's).
+* **datorns** is part of the noun phrase being described by the relative clause.
+* **som** (that/which) is the relative pronoun connecting the clause.
+* **gjorde** (made/did) is the verb within the relative clause, modifying "datorns".
+* **i** (in) is a preposition modifying **gjorde**, indicating location.
+* **Tyskland** (Germany) is the object of the preposition "i".
+* The second **den** refers back to "Plankalkül" and is the subject of the second clause.
+* **används** (is used) is the main verb of the second part of the sentence, related to "hette".
+* **för** (for) is a preposition modifying **används**, indicating purpose.
+* **inom** (within) is a preposition modifying **för**, further specifying the purpose.
+* **militäten** (the military) is the object of the preposition "inom".
+* **.** is punctuation attached to the main verb of the clause it ends.
+
+**Calculating Average Dependency Distance:**
+
+To calculate the average dependency distance, we sum the absolute differences between the token index and the head index for each token and then divide by the total number of tokens.
+
+| Token Index | Token        | Head Index | Distance |
+|-------------|--------------|------------|----------|
+| 1           | Plankalkül   | 2          | |1-2| = 1  |
+| 2           | hette        | 0          | |2-0| = 2  |
+| 3           | den          | 2          | |3-2| = 1  |
+| 4           | första       | 5          | |4-5| = 1  |
+| 5           | datorns      | 7          | |5-7| = 2  |
+| 6           | som          | 7          | |6-7| = 1  |
+| 7           | gjorde       | 5          | |7-5| = 2  |
+| 8           | i            | 7          | |8-7| = 1  |
+| 9           | Tyskland     | 8          | |9-8| = 1  |
+| 10          | den          | 11         | |10-11| = 1 |
+| 11          | används      | 2          | |11-2| = 9 |
+| 12          | för          | 11         | |12-11| = 1 |
+| 13          | inom         | 12         | |13-12| = 1 |
+| 14          | millitäten   | 13         | |14-13| = 1 |
+| 15          | .            | 11         | |15-11| = 4 |
+| **Total**   |              |            | **30**   |
+
+**Average Dependency Distance = Total Distance / Number of Tokens**
+
+Average Dependency Distance = 30 / 15 = **2**

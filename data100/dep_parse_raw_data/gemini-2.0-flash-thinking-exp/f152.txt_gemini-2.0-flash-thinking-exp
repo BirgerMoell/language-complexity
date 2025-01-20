@@ -1,0 +1,205 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average dependency distance:
+
+1. **Understand the Task:** The goal is to create a dependency tree representation of a Swedish sentence and then calculate the average dependency distance. The output format for the tree is specified.
+
+2. **Tokenization:** The first step is to break down the sentence into individual tokens, including punctuation. This is relatively straightforward:
+
+   * Men
+   * på
+   * Gotland
+   * så
+   * har
+   * vi
+   * ju
+   * inte
+   * det
+   * problemet
+   * speciellt
+   * mycket
+   * eftersom
+   * vi
+   * har
+   * en
+   * kalkstens
+   * berggrund
+   * ,
+   * och
+   * den
+   * är
+   * basisk
+   * ,
+   * men
+   * det
+   * är
+   * ändå
+   * så
+   * att
+   * till
+   * och
+   * med
+   * här
+   * har
+   * faktiskt
+   * regnet
+   * och
+   * allt
+   * sådant
+   * blivit
+   * surare
+   * .
+
+3. **Dependency Parsing (Manual Approach):** Since a specific parser isn't being used, a manual parsing approach is required. This involves identifying the head of each word and the dependent words. This is iterative and involves understanding the grammatical relationships. Here's a possible thought process for some key parts:
+
+   * **Main Clauses:** Identify the main verbs. There are several conjunctions, so there will be multiple clauses. "har vi" is a clause, "har vi" again, "är" is a verb, and "är" again. "har blivit" is also a main verb.
+
+   * **Clause 1: "Men på Gotland så har vi ju inte det problemet speciellt mycket"**
+      * `har` is the main verb (index 5).
+      * `vi` is the subject of `har` (index 6).
+      * `på Gotland`: `på` modifies `Gotland`, and together they modify `har`.
+      * `så` is an adverbial particle modifying `har`.
+      * `ju` is a particle modifying `har`.
+      * `inte` negates `har`.
+      * `det problemet`: `problemet` is the direct object of `har`, and `det` is a determiner for `problemet`.
+      * `speciellt mycket`: `mycket` modifies `har` (how much), and `speciellt` modifies `mycket`.
+
+   * **Clause 2: "eftersom vi har en kalkstens berggrund"**
+      * `har` is the main verb (index 15).
+      * `vi` is the subject of `har` (index 14).
+      * `en kalkstens berggrund`: `berggrund` is the direct object, `kalkstens` modifies `berggrund`, and `en` is a determiner for `berggrund`.
+      * `eftersom` introduces this subordinate clause and modifies the preceding main clause's verb `har`.
+
+   * **Clause 3: "och den är basisk"**
+      * `är` is the main verb (index 22).
+      * `den` is the subject of `är` (index 21).
+      * `basisk` is the predicative adjective modifying `den`.
+      * `och` connects this clause to the previous one.
+
+   * **Clause 4: "men det är ändå så att till och med här har faktiskt regnet och allt sådant blivit surare."**
+      * `har blivit` is the compound verb (index 35).
+      * `regnet och allt sådant`:  `regnet` is the subject. `allt` is part of a compound subject and `sådant` modifies `allt`. `och` connects `regnet` and `allt`.
+      * `surare` is the predicative adjective.
+      * `det är så att`:  This is a common construction. `är` is the verb, `det` is the subject, and the `att`-clause acts as a complement.
+      * `ändå` modifies `är`.
+      * `till och med här`: `här` is modified by `med`, `och`, and `till`.
+      * `faktiskt` modifies `har blivit`.
+
+   * **Punctuation:**  Punctuation typically attaches to the head of the clause or phrase it terminates.
+
+4. **Constructing the Dependency Tree (Triples):**  As the dependencies are identified, create the triples in the specified format. Be meticulous about the token indices.
+
+5. **Calculating Dependency Distance:**
+
+   * Iterate through the dependency tree (the list of triples).
+   * For each triple `(dependent_index, dependent_token, head_index)`, calculate the absolute difference between `dependent_index` and `head_index`. This is the dependency distance.
+   * Sum up all the dependency distances.
+   * Divide the sum by the total number of dependencies (which is the number of tokens minus the root, or equivalently, the number of triples if the root has a head of 0).
+
+6. **Review and Refine:** After the initial pass, review the dependency tree and distances. Check for:
+   * Correctness of head-dependent relationships.
+   * Accuracy of token indices.
+   * Correct calculation of distances.
+   * Consistency in handling punctuation.
+
+This systematic approach, combining grammatical knowledge with careful tracking of token indices, allows for accurate construction of the dependency tree and calculation of the average dependency distance. The manual parsing is the most time-consuming part and requires a good understanding of Swedish syntax.
+```
+[
+    (1, 'Men', 5),
+    (2, 'på', 3),
+    (3, 'Gotland', 5),
+    (4, 'så', 5),
+    (5, 'har', 0),
+    (6, 'vi', 5),
+    (7, 'ju', 5),
+    (8, 'inte', 5),
+    (9, 'det', 10),
+    (10, 'problemet', 5),
+    (11, 'speciellt', 12),
+    (12, 'mycket', 5),
+    (13, 'eftersom', 15),
+    (14, 'vi', 15),
+    (15, 'har', 13),
+    (16, 'en', 18),
+    (17, 'kalkstens', 18),
+    (18, 'berggrund', 15),
+    (19, ',', 5),
+    (20, 'och', 22),
+    (21, 'den', 22),
+    (22, 'är', 5),
+    (23, 'basisk', 22),
+    (24, ',', 5),
+    (25, 'men', 35),
+    (26, 'det', 27),
+    (27, 'är', 25),
+    (28, 'ändå', 27),
+    (29, 'så', 27),
+    (30, 'att', 35),
+    (31, 'till', 34),
+    (32, 'och', 31),
+    (33, 'med', 31),
+    (34, 'här', 35),
+    (35, 'har', 27),
+    (36, 'faktiskt', 35),
+    (37, 'regnet', 35),
+    (38, 'och', 37),
+    (39, 'allt', 37),
+    (40, 'sådant', 39),
+    (41, 'blivit', 35),
+    (42, 'surare', 41),
+    (43, '.', 35)
+]
+```
+
+**Average Dependency Distance Calculation:**
+
+To calculate the average dependency distance, we sum the absolute difference between the head and dependent indices for each token and then divide by the total number of dependencies (which is the number of tokens minus 1, as the root has no head).
+
+| Dependent Index | Head Index | Distance |
+|---|---|---|
+| 1 | 5 | 4 |
+| 2 | 3 | 1 |
+| 3 | 5 | 2 |
+| 4 | 5 | 1 |
+| 5 | 0 | 5 |
+| 6 | 5 | 1 |
+| 7 | 5 | 2 |
+| 8 | 5 | 3 |
+| 9 | 10 | 1 |
+| 10 | 5 | 5 |
+| 11 | 12 | 1 |
+| 12 | 5 | 7 |
+| 13 | 15 | 2 |
+| 14 | 15 | 1 |
+| 15 | 13 | 2 |
+| 16 | 18 | 2 |
+| 17 | 18 | 1 |
+| 18 | 15 | 3 |
+| 19 | 5 | 14 |
+| 20 | 22 | 2 |
+| 21 | 22 | 1 |
+| 22 | 5 | 17 |
+| 23 | 22 | 1 |
+| 24 | 5 | 19 |
+| 25 | 35 | 10 |
+| 26 | 27 | 1 |
+| 27 | 25 | 2 |
+| 28 | 27 | 1 |
+| 29 | 27 | 2 |
+| 30 | 35 | 5 |
+| 31 | 34 | 3 |
+| 32 | 31 | 1 |
+| 33 | 31 | 2 |
+| 34 | 35 | 1 |
+| 35 | 27 | 8 |
+| 36 | 35 | 1 |
+| 37 | 35 | 2 |
+| 38 | 37 | 1 |
+| 39 | 37 | 2 |
+| 40 | 39 | 1 |
+| 41 | 35 | 6 |
+| 42 | 41 | 1 |
+| 43 | 35 | 8 |
+
+**Sum of distances:** 134
+**Number of dependencies:** 43
+
+**Average dependency distance:** 134 / 43 = **3.116** (approximately)

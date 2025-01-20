@@ -1,0 +1,178 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average dependency distance for the given Swedish sentence:
+
+1. **Understand the Task:** The goal is to create a dependency tree representation of a Swedish sentence and then calculate the average dependency distance. The output format for the tree is specified as `(token_index, token, head_index)`.
+
+2. **Tokenization:** The first step is to break the sentence down into individual tokens. This includes words, punctuation marks, and particles. It's important to be precise here.
+
+   *Sentence:* Först efter en diskussion där han imponerat på gruppen i skolans bibliotek, och efter sitt andra besök hos Julian, får Richard tillåtelse att slopa alla andra ämnen utom engelskan och satsa helhjärtat på studierna i klassisk grekiska.
+
+   *Tokens (Initial Draft - might need refinement):* Först, efter, en, diskussion, där, han, imponerat, på, gruppen, i, skolans, bibliotek, ,, och, efter, sitt, andra, besök, hos, Julian, ,, får, Richard, tillåtelse, att, slopa, alla, andra, ämnen, utom, engelskan, och, satsa, helhjärtat, på, studierna, i, klassisk, grekiska, .
+
+3. **Dependency Parsing (The Core Task):**  This is the most complex part. We need to determine the grammatical relationships between the tokens. This involves understanding Swedish grammar, including:
+
+    * **Verb as the Head:**  Main verbs often act as the head of the clause.
+    * **Prepositional Phrases:** Prepositions are heads of phrases, and the noun phrase they govern depends on them.
+    * **Subordinate Clauses:**  Conjunctions often introduce subordinate clauses, and the main verb of the subordinate clause depends on the verb of the main clause.
+    * **Coordination:**  Conjunctions like "och" (and) coordinate elements, often with the second element depending on the first.
+    * **Determiners and Modifiers:** Determiners (like "en," "alla") modify nouns. Adjectives (like "klassisk") modify nouns.
+    * **Infinitives:**  Infinitives often depend on a preceding verb.
+
+4. **Iterative Refinement of Dependencies:**  This is a trial-and-error process. It's helpful to work through the sentence piece by piece.
+
+   * **"Först efter en diskussion där han imponerat på gruppen i skolans bibliotek,"**:
+      * "efter" is a preposition, heading the phrase "efter en diskussion".
+      * "diskussion" is the object of "efter".
+      * "en" is a determiner for "diskussion".
+      * "där" introduces a relative clause modifying "diskussion".
+      * "imponerat" is the verb in the relative clause, and "han" is the subject.
+      * "på" is a preposition, heading the phrase "på gruppen".
+      * "i" is a preposition, heading the phrase "i skolans bibliotek".
+      * "skolans" is a genitive determiner for "bibliotek".
+
+   * **"och efter sitt andra besök hos Julian,"**:
+      * "och" coordinates with the previous prepositional phrase. "efter" is still the implied head.
+      * "sitt" is a possessive determiner for "besök".
+      * "andra" is an adjective modifying "besök".
+      * "hos" is a preposition, heading the phrase "hos Julian".
+
+   * **"får Richard tillåtelse att slopa alla andra ämnen utom engelskan och satsa helhjärtat på studierna i klassisk grekiska."**:
+      * "får" is the main verb of the sentence, so its head is 0.
+      * "Richard" is the subject of "får".
+      * "tillåtelse" is the object of "får".
+      * "att" introduces an infinitive clause.
+      * "slopa" is the verb in the infinitive clause, dependent on "tillåtelse".
+      * "alla" is a determiner for "ämnen".
+      * "andra" is an adjective modifying "ämnen".
+      * "utom" is a preposition, heading the phrase "utom engelskan".
+      * "och" coordinates with "slopa".
+      * "satsa" is the second verb in the coordinated infinitive clause, dependent on "tillåtelse".
+      * "helhjärtat" is an adverb modifying "satsa".
+      * "på" is a preposition, heading the phrase "på studierna".
+      * "i" is a preposition, heading the phrase "i klassisk grekiska".
+      * "klassisk" is an adjective modifying "grekiska".
+
+5. **Assigning Indices:** Once the dependencies are established, assign numerical indices to each token, starting from 1. This is crucial for the output format.
+
+6. **Creating the Dependency Tree Output:**  Go through each token and create the `(token_index, token, head_index)` tuple based on the identified head.
+
+7. **Calculating Dependency Distances:** The dependency distance is the absolute difference between the index of the token and the index of its head.
+
+8. **Calculating the Average Dependency Distance:** Sum the individual dependency distances and divide by the total number of tokens.
+
+9. **Review and Refine:**  Double-check the dependencies, especially for complex structures like coordination and subordinate clauses. Ensure the indices are correct and the calculations are accurate. For instance, ensure the coordination with "och" is handled correctly, and the relative clause is properly linked to its antecedent. The punctuation marks also need to be incorporated as tokens and assigned dependencies.
+
+This iterative process of understanding grammatical relations, assigning dependencies, and calculating distances, along with careful review, allows for the accurate construction of the dependency tree and the computation of the average dependency distance.
+```python
+def analyze_swedish_sentence(sentence):
+    """
+    Analyzes a Swedish sentence and produces a dependency tree and average dependency distance.
+
+    Args:
+        sentence: The Swedish sentence as a string.
+
+    Returns:
+        A tuple containing:
+            - A list of dependency triples (token_index, token, head_index).
+            - The average dependency distance.
+    """
+
+    tokens = sentence.split(" ")
+    dependency_tree = []
+
+    # Manually assigning dependencies (this is a simplified approach and would ideally be done with an NLP library)
+    # This assignment is based on grammatical understanding of the sentence.
+    dependencies = [
+        (1, "Först", 21),  # Först (adverbial) modifies får
+        (2, "efter", 4),  # efter (preposition) heads prepositional phrase
+        (3, "en", 4),  # en (determiner) modifies diskussion
+        (4, "diskussion", 21),  # diskussion (noun) is object of the implicit preposition
+        (5, "där", 7),  # där (relative pronoun) modifies diskussion, heads relative clause
+        (6, "han", 7),  # han (subject) of imponerat
+        (7, "imponerat", 4),  # imponerat (verb) modifies diskussion
+        (8, "på", 9),  # på (preposition) heads prepositional phrase
+        (9, "gruppen", 7),  # gruppen (noun) is object of på
+        (10, "i", 11),  # i (preposition) heads prepositional phrase
+        (11, "skolans", 12),  # skolans (genitive) modifies bibliotek
+        (12, "bibliotek", 10),  # bibliotek (noun) is object of i
+        (13, ",", 4),  # Comma connects the two prepositional phrases
+        (14, "och", 2),  # och (conjunction) connects the two prepositional phrases headed by efter
+        (15, "efter", 18), # efter (preposition) heads prepositional phrase
+        (16, "sitt", 18), # sitt (determiner) modifies besök
+        (17, "andra", 18), # andra (adjective) modifies besök
+        (18, "besök", 15), # besök (noun) is object of efter
+        (19, "hos", 20), # hos (preposition) heads prepositional phrase
+        (20, "Julian", 18), # Julian (noun) is object of hos
+        (21, ",", 18), # Comma connects the two prepositional phrases
+        (22, "får", 0),  # får (main verb) - head is 0
+        (23, "Richard", 22), # Richard (subject) of får
+        (24, "tillåtelse", 22), # tillåtelse (object) of får
+        (25, "att", 26),  # att (infinitive marker) heads infinitive clause
+        (26, "slopa", 24),  # slopa (verb in infinitive) depends on tillåtelse
+        (27, "alla", 28),  # alla (determiner) modifies ämnen
+        (28, "andra", 29),  # andra (adjective) modifies ämnen
+        (29, "ämnen", 26),  # ämnen (object) of slopa
+        (30, "utom", 31),  # utom (preposition) heads prepositional phrase
+        (31, "engelskan", 29),  # engelskan (noun) is object of utom
+        (32, "och", 26),  # och (conjunction) connects slopa and satsa
+        (33, "satsa", 24),  # satsa (verb in infinitive) depends on tillåtelse
+        (34, "helhjärtat", 33),  # helhjärtat (adverb) modifies satsa
+        (35, "på", 36),  # på (preposition) heads prepositional phrase
+        (36, "studierna", 33),  # studierna (noun) is object of på
+        (37, "i", 38),  # i (preposition) heads prepositional phrase
+        (38, "klassisk", 39),  # klassisk (adjective) modifies grekiska
+        (39, "grekiska", 37),  # grekiska (noun) is object of i
+        (40, ".", 22)   # Punctuation often attached to the main verb
+    ]
+
+    for head_index in dependencies:
+        token_index = head_index[0]
+        token = tokens[token_index - 1]
+        head_index_val = head_index[2]
+        dependency_tree.append((token_index, token, head_index_val))
+
+    total_distance = 0
+    for dep in dependency_tree:
+        distance = abs(dep[0] - dep[2])
+        total_distance += distance
+
+    average_distance = total_distance / len(dependency_tree) if dependency_tree else 0
+
+    return dependency_tree, average_distance
+
+sentence = "Först efter en diskussion där han imponerat på gruppen i skolans bibliotek, och efter sitt andra besök hos Julian, får Richard tillåtelse att slopa alla andra ämnen utom engelskan och satsa helhjärtat på studierna i klassisk grekiska."
+dependency_tree, avg_distance = analyze_swedish_sentence(sentence)
+
+print(dependency_tree)
+print(f"Average dependency distance: {avg_distance}")
+```
+
+**Explanation of the Dependency Tree:**
+
+Each tuple in the `dependency_tree` list represents a dependency relation:
+
+* **First number:** The index of the dependent token in the sentence (starting from 1).
+* **Second entry:** The dependent token itself.
+* **Third number:** The index of the head token that the dependent token modifies or is governed by. A head index of 0 indicates the root of the dependency tree, which is usually the main verb.
+
+**Explanation of the Dependencies:**
+
+The dependency assignments are based on the grammatical roles of the words:
+
+* **får (gets):** This is the main verb and the root of the sentence (head index 0).
+* **Richard:** The subject of the verb "får".
+* **tillåtelse (permission):** The object of the verb "får".
+* **att slopa... och satsa... (to drop... and focus...):** This is an infinitive phrase acting as a complement to "tillåtelse". "slopa" and "satsa" depend on "tillåtelse".
+* **alla andra ämnen (all other subjects):** "ämnen" is the object of "slopa", with "alla" and "andra" as determiners/modifiers.
+* **utom engelskan (except English):** A prepositional phrase modifying "ämnen".
+* **helhjärtat (wholeheartedly):** An adverb modifying "satsa".
+* **på studierna (on the studies):** A prepositional phrase modifying "satsa".
+* **i klassisk grekiska (in classical Greek):** A prepositional phrase modifying "studierna".
+* **The initial parts of the sentence ("Först efter en diskussion..." and "och efter sitt andra besök hos Julian,"):** These are adverbial phrases modifying the main clause, indicating the time or circumstances under which Richard gets permission. The prepositions "efter" are the heads of these phrases. The relative clause "där han imponerat på gruppen i skolans bibliotek" modifies "diskussion".
+
+**Average Dependency Distance:**
+
+The average dependency distance is calculated by summing the absolute differences between the indices of each dependent token and its head token, and then dividing by the total number of dependencies (which is the same as the number of tokens). This metric gives an indication of the average "distance" between related words in the sentence structure. A smaller distance generally indicates a more tightly clustered structure.
+
+**Important Note:**
+
+The dependency tree generated here is based on a manual analysis and might not be perfectly aligned with the output of a sophisticated dependency parser. For real-world applications, using a dedicated NLP library like SpaCy (with Swedish language models) or Stanza is highly recommended for accurate and automated dependency parsing.

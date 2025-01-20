@@ -1,0 +1,204 @@
+Here's a breakdown of the thought process to analyze the Swedish sentence and generate the dependency tree:
+
+1. **Understanding the Request:** The core task is to create a dependency tree for a given Swedish sentence. Key constraints include:
+    * Representing the tree as a list of tuples: `(token_index, token, head_index)`.
+    * Numbering tokens starting from 1.
+    * Head index 0 signifies the root of the sentence (usually the main verb).
+    * Including punctuation as tokens.
+    * Calculating the average dependency distance.
+
+2. **Tokenization:** The first step is to break down the sentence into individual tokens. This is relatively straightforward in Swedish, generally using spaces as delimiters. Punctuation needs careful handling to ensure it's treated as separate tokens.
+
+    *Initial Tokenization (Mental or Rough):* Somalia, har, jättehög, spädbarnsdödlighet, och, relativt, låg, medel, livsålder, ,, det, beror, på, att, landet, har, sämre, sjukvård, än, vad, Sverige, har, ,, landet, har, extrem, ekonomibrist, och, pengarna, läggs, inte, ner, på, sjukvården, ,, väldigt, dåliga, vattenförhållanden, ,, dålig, miljö, ,, klanverksamheten, och, inbördeskriget, är, stora, bidragande, faktorer, till, Somalias, låga, medel, livsålder, .
+
+3. **Dependency Parsing (The Core Challenge):** This is the most complex part. It involves identifying the grammatical relationships between words. Here's a possible sub-process:
+
+    * **Identify the main clauses:**  Sentences can have multiple clauses. In this case, there are several connected by conjunctions and punctuation. The main clauses seem to be:
+        * "Somalia har jättehög spädbarnsdödlighet och relativt låg medel livsålder"
+        * "det beror på att landet har sämre sjukvård än vad Sverige har"
+        * "landet har extrem ekonomibrist och pengarna läggs inte ner på sjukvården"
+        * "väldigt dåliga vattenförhållanden, dålig miljö, klanverksamheten och inbördeskriget är stora bidragande faktorer till Somalias låga medel livsålder"
+
+    * **Identify the main verbs:** Within each clause, the main verb is crucial.
+        * Clause 1: `har`
+        * Clause 2: `beror`
+        * Clause 3: `har`, `läggs`
+        * Clause 4: `är`
+
+    * **Determine the subject and objects for each verb:**
+        * `har` (Somalia):  `jättehög spädbarnsdödlighet` and `relativt låg medel livsålder` (coordinated)
+        * `beror` (det): `på att landet har sämre sjukvård än vad Sverige har` (prepositional phrase acting as an adjunct)
+        * `har` (landet): `extrem ekonomibrist`
+        * `läggs` (pengarna): `inte ner på sjukvården`
+        * `är` (väldigt dåliga vattenförhållanden, dålig miljö, klanverksamheten, inbördeskriget): `stora bidragande faktorer`
+
+    * **Analyze modifiers and adjuncts:**  Identify how adjectives, adverbs, and prepositional phrases modify other words.
+        * `jättehög` modifies `spädbarnsdödlighet`
+        * `relativt låg` modifies `medel livsålder`
+        * `sämre` modifies `sjukvård`
+        * `än vad Sverige har` modifies `sämre sjukvård`
+        * `extrem` modifies `ekonomibrist`
+        * `inte` modifies `läggs ner`
+        * `på sjukvården` modifies `läggs ner`
+        * `väldigt` modifies `dåliga`
+        * `till Somalias låga medel livsålder` modifies `faktorer`
+
+    * **Connect clauses:**  Identify the words that connect the clauses.
+        * `och` connects `spädbarnsdödlighet` and `medel livsålder`
+        * `det` refers to the previous clause.
+        * `att` introduces a subordinate clause.
+        * `än` introduces a comparative clause.
+        * `och` connects `ekonomibrist` and the following clause about `pengarna`.
+        * Punctuation (commas) also plays a role in separating elements.
+
+4. **Constructing the Dependency Tree (Iterative Process):**  As the relationships are identified, the tuples can be formed. It's helpful to work clause by clause and then connect them.
+
+    * **Clause 1:** Start with the main verb `har` as the root (head index 0 within the clause initially, then adjust for the overall sentence).
+    * **Clause 2:** Connect `beror` to `det`. Connect the subordinate clause to `på`.
+    * **Clause 3:** Connect `har` to `landet` and `ekonomibrist`. Connect `läggs` to `pengarna`.
+    * **Clause 4:** Connect `är` to the coordinated subjects and `faktorer`.
+
+5. **Assigning Token Indices:**  After establishing the relationships, assign the sequential token indices from 1 onwards.
+
+6. **Determining Head Indices:** Based on the dependency relationships, assign the head index for each token. The main verb of the main clause will have a head index of 0.
+
+7. **Handling Coordination and Punctuation:**  Ensure that coordinating conjunctions connect the coordinated elements to the same head. Punctuation usually attaches to the main verb or the head of the phrase it separates.
+
+8. **Calculating Average Dependency Distance:**
+    * Calculate the dependency distance for each token: `abs(token_index - head_index)`.
+    * Sum the distances.
+    * Divide the sum by the total number of tokens.
+
+9. **Review and Refinement:**  Double-check the relationships, token indices, and head indices for accuracy. Ensure the tree structure is correct and all tokens are included. This might involve some adjustments based on a deeper linguistic understanding. For instance, "vad" might be considered to have "har" as its head in the comparative clause.
+
+**Self-Correction Example during the process:**
+
+*Initial Thought:*  Maybe "på" should be the head of "att landet har...".
+*Correction:*  No, "beror" is the main verb, and "på att landet har..." is a prepositional phrase acting as an argument/adjunct to "beror". So, "på" attaches to "beror". Then, within the subordinate clause, "har" is the main verb.
+
+By following these steps and iteratively refining the analysis, we arrive at the final dependency tree and the average dependency distance. The process requires a good understanding of grammatical relationships and sentence structure. For complex sentences, it can be helpful to draw the tree visually as you go.
+```python
+import nltk
+
+def analyze_swedish_sentence(sentence):
+    """
+    Analyzes a Swedish sentence and produces a dependency tree and average dependency distance.
+
+    Args:
+        sentence: The Swedish sentence to analyze (string).
+
+    Returns:
+        A tuple containing:
+            - dependency_tree: A list of tuples representing the dependency tree.
+            - average_dependency_distance: The average dependency distance for the sentence.
+    """
+
+    tokens = nltk.word_tokenize(sentence)
+    dependency_tree = []
+    # Manually assigning dependencies - this is a simplified approach and for a real application,
+    # a dependency parser like Stanza or UDPipe would be needed.
+    # The following dependencies are based on linguistic understanding of the sentence.
+    dependencies = {
+        1: (2, "SS"),  # Somalia -> har (Subject)
+        2: (0, "ROOT"), # har (root)
+        3: (4, "AMOD"), # jättehög -> spädbarnsdödlighet (Adjective Modifier)
+        4: (2, "OBJ"),  # spädbarnsdödlighet -> har (Object)
+        5: (8, "CC"),   # och -> livsålder (Coordinating Conjunction)
+        6: (7, "ADV"),  # relativt -> låg (Adverbial Modifier)
+        7: (8, "AMOD"), # låg -> livsålder (Adjective Modifier)
+        8: (4, "CONJ"), # livsålder -> spädbarnsdödlighet (Conjunct)
+        9: (2, "PUNCT"), # , -> har (Punctuation)
+        10: (11, "SS"),  # det -> beror (Subject)
+        11: (2, "PCOMP"), # beror -> har (Predicate Complement - linking to the first clause)
+        12: (11, "MARK"), # på -> beror (Marker for subordinate clause)
+        13: (16, "MARK"), # att -> har (Marker for subordinate clause)
+        14: (16, "SS"),  # landet -> har (Subject)
+        15: (16, "AMOD"), # sämre -> sjukvård (Adjective Modifier)
+        16: (13, "CCOMP"),# har -> att (Clausal Complement)
+        17: (16, "COMP"), # än -> har (Complementizer for comparison)
+        18: (19, "SS"),  # vad -> har (Subject within comparative clause)
+        19: (17, "CCOMP"),# Sverige -> än (Clausal Complement within comparative clause)
+        20: (16, "PUNCT"),# har -> att (Punctuation)
+        21: (22, "SS"),  # landet -> har (Subject)
+        22: (11, "CONJ"),# har -> beror (Conjunct)
+        23: (24, "AMOD"), # extrem -> ekonomibrist (Adjective Modifier)
+        24: (22, "OBJ"), # ekonomibrist -> har (Object)
+        25: (27, "CC"),   # och -> läggs (Coordinating Conjunction)
+        26: (27, "SS"),  # pengarna -> läggs (Subject - passive)
+        27: (22, "CONJ"),# läggs -> har (Conjunct)
+        28: (27, "NEG"),  # inte -> läggs (Negation)
+        29: (27, "ADV"),  # ner -> läggs (Adverbial Particle)
+        30: (29, "CASE"), # på -> sjukvården (Case marker for prepositional phrase)
+        31: (29, "OBL"),  # sjukvården -> ner (Oblique - prepositional object)
+        32: (27, "PUNCT"),# , -> läggs (Punctuation)
+        33: (34, "ADV"),  # väldigt -> dåliga (Adverbial Modifier)
+        34: (35, "AMOD"), # dåliga -> vattenförhållanden (Adjective Modifier)
+        35: (44, "LIST"),# vattenförhållanden -> är (List item)
+        36: (44, "PUNCT"),# , -> är (Punctuation)
+        37: (38, "AMOD"), # dålig -> miljö (Adjective Modifier)
+        38: (44, "LIST"),# miljö -> är (List item)
+        39: (44, "PUNCT"),# , -> är (Punctuation)
+        40: (44, "CC"),   # och -> inbördeskriget (Coordinating Conjunction)
+        41: (44, "LIST"),# klanverksamheten -> är (List item)
+        42: (41, "CC"),   # och -> inbördeskriget (Coordinating Conjunction)
+        43: (44, "SS"),  # inbördeskriget -> är (Subject)
+        44: (11, "CONJ"),# är -> beror (Conjunct)
+        45: (46, "AMOD"), # stora -> faktorer (Adjective Modifier)
+        46: (44, "OBJ"), # faktorer -> är (Object)
+        47: (46, "CASE"), # till -> livsålder (Case marker for prepositional phrase)
+        48: (51, "GEN"),  # Somalias -> livsålder (Genitive modifier)
+        49: (50, "AMOD"), # låga -> livsålder (Adjective Modifier)
+        50: (47, "OBL"),  # medel -> till (Oblique - prepositional object)
+        51: (50, "CONJ"), # livsålder -> medel (Conjunct)
+        52: (44, "PUNCT") # . -> är (Punctuation)
+    }
+
+    for i, token in enumerate(tokens):
+        token_index = i + 1
+        if token_index in dependencies:
+            head_index, _ = dependencies[token_index]
+            dependency_tree.append((token_index, token, head_index))
+
+    total_distance = 0
+    for token_index, _, head_index in dependency_tree:
+        total_distance += abs(token_index - head_index)
+
+    average_dependency_distance = total_distance / len(dependency_tree) if dependency_tree else 0
+
+    return dependency_tree, average_dependency_distance
+
+swedish_sentence = "Somalia har jättehög spädbarnsdödlighet och relativt låg medel livsålder, det beror på att landet har sämre sjukvård än vad Sverige har, landet har extrem ekonomibrist och pengarna läggs inte ner på sjukvården, väldigt dåliga vattenförhållanden, dålig miljö, klanverksamheten och inbördeskriget är stora bidragande faktorer till Somalias låga medel livsålder."
+dependency_tree, avg_distance = analyze_swedish_sentence(swedish_sentence)
+
+print(dependency_tree)
+print(f"Average Dependency Distance: {avg_distance}")
+```
+
+**Explanation of the Dependency Tree:**
+
+Each tuple in the `dependency_tree` list represents a dependency relation:
+
+* **First element (index):** The index of the dependent token in the sentence (starting from 1).
+* **Second element (token):** The actual token (word or punctuation mark).
+* **Third element (head_index):** The index of the head token that the dependent token is governed by. A head index of 0 indicates the root of the sentence.
+
+**Example Breakdown:**
+
+* `(1, 'Somalia', 2)`: The token "Somalia" (index 1) is dependent on "har" (index 2), acting as the subject (SS).
+* `(2, 'har', 0)`: The token "har" (index 2) is the root of the main clause (ROOT).
+* `(3, 'jättehög', 4)`: The token "jättehög" (index 3) is dependent on "spädbarnsdödlighet" (index 4), acting as an adjectival modifier (AMOD).
+* `(9, ',', 2)`: The comma (index 9) is dependent on "har" (index 2), acting as punctuation (PUNCT).
+
+**Average Dependency Distance:**
+
+The average dependency distance is calculated by:
+
+1. Finding the absolute difference between the index of each token and its head token.
+2. Summing up these distances.
+3. Dividing the sum by the total number of tokens in the dependency tree.
+
+This metric gives an indication of how "long-range" the dependencies are in the sentence. A higher average distance suggests that related words are further apart in the sentence structure.
+
+**Important Note:**
+
+The dependency tree provided above is based on a manual interpretation of the sentence's structure. For accurate and robust dependency parsing, especially for complex sentences, it's highly recommended to use dedicated Natural Language Processing (NLP) libraries that incorporate pre-trained dependency parsing models. Libraries like **Stanza** (formerly StanfordNLP) or **UDPipe** are excellent choices for this task and support Swedish. The manual approach here is for illustrative purposes to understand the concept.

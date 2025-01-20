@@ -1,0 +1,228 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average dependency distance:
+
+1. **Understand the Task:** The goal is to analyze a Swedish sentence, create a dependency tree representation, and calculate the average dependency distance. The output format for the tree is specified.
+
+2. **Tokenization:** The first step is to break down the sentence into individual tokens. This includes words and punctuation marks. I need to be careful with compound words or phrases that might be treated as single units in some linguistic contexts but should be separated for this dependency parsing task.
+
+    *När* *du* *egentligen* *bara* *vill* *gå* *hem* *och* *slippa* *den* *här* *skiten* *som* *visas* *på* *filmduken* *så* *kommer* *snåljåpsmonstret* *och* *säger* *:*-* *Du* *har* *faktiskt* *betalat* *för* *att* *se* *den* *här* *filmen* *och* *om* *du* *går* *ifrån* *nu* *så* *är* *det* *70* *spänn* *som* *bara* *försvinner* *ifrån* *din* *lön/månadspeng* *.
+
+3. **Dependency Parsing (Conceptual):**  The core of the task is to identify the head of each token. This requires understanding the grammatical relationships between the words. I will go through each word and determine which other word it depends on. The root of the sentence (the main verb) will have a head of 0.
+
+4. **Iterative Parsing and Head Identification:**  This is the most complex part and often involves going back and forth and making adjustments. I will process the sentence roughly from left to right, but sometimes the head of a word further down the sentence will influence the connections earlier on.
+
+    * **När:**  Connects to the main clause verb, *kommer*.
+    * **du:** Subject of *vill*.
+    * **egentligen:** Adverb modifying *vill*.
+    * **bara:** Adverb modifying *vill*.
+    * **vill:**  Verb, part of the subordinate clause. Its subject is *du*. The infinitives *gå* and *slippa* depend on it.
+    * **gå:**  Infinitive depending on *vill*. The adverb *hem* modifies it.
+    * **hem:** Adverb modifying *gå*.
+    * **och:**  Conjunction connecting *gå* and *slippa*. It will typically attach to the first of the conjoined elements.
+    * **slippa:** Infinitive depending on *vill*.
+    * **den:**  Determiner for *skiten*.
+    * **här:** Determiner for *skiten*.
+    * **skiten:** Object of *slippa*.
+    * **som:** Relative pronoun, subject of *visas*.
+    * **visas:** Verb in the relative clause, modifying *skiten*.
+    * **på:** Preposition modifying *filmduken*.
+    * **filmduken:** Object of the preposition *på*.
+    * **så:** Conjunction connecting the subordinate clause to the main clause. It attaches to the main verb.
+    * **kommer:** The main verb of the sentence. Its subject is *snåljåpsmonstret*.
+    * **snåljåpsmonstret:** Subject of *kommer*.
+    * **och:** Conjunction connecting *kommer* and *säger*.
+    * **säger:** Another main verb, with the same subject *snåljåpsmonstret*.
+    * **:-:** Punctuation, attached to *säger*.
+    * **Du:** Subject of *har*.
+    * **har:** Auxiliary verb for *betalat*.
+    * **faktiskt:** Adverb modifying *betalat*.
+    * **betalat:** Verb, the main verb of this quoted clause.
+    * **för:** Subordinating conjunction introducing an infinitive clause. Attaches to *betalat*.
+    * **att:**  Part of the infinitive marker. Attaches to *se*.
+    * **se:** Infinitive depending on *för*. The object is *filmen*.
+    * **den:** Determiner for *filmen*.
+    * **här:** Determiner for *filmen*.
+    * **filmen:** Object of *se*.
+    * **och:** Conjunction connecting the two clauses within the quote. Attaches to *betalat*.
+    * **om:** Subordinating conjunction introducing a conditional clause. Attaches to *är*.
+    * **du:** Subject of *går*.
+    * **går:** Verb in the conditional clause.
+    * **ifrån:** Particle modifying *går*.
+    * **nu:** Adverb modifying *går*.
+    * **så:** Conjunction connecting the conditional clause to the main clause within the quote. Attaches to *är*.
+    * **är:** The main verb of the second quoted clause.
+    * **det:**  Expletive subject.
+    * **70:** Numeral modifying *spänn*.
+    * **spänn:**  Subject complement of *är*.
+    * **som:** Relative pronoun, subject of *försvinner*.
+    * **bara:** Adverb modifying *försvinner*.
+    * **försvinner:** Verb in the relative clause, modifying *spänn*.
+    * **ifrån:** Preposition modifying *lön/månadspeng*.
+    * **din:** Possessive pronoun modifying *lön/månadspeng*.
+    * **lön/månadspeng:** Object of the preposition *ifrån*.
+    * **.:** Punctuation, attached to *säger*.
+
+5. **Constructing the Dependency Tree (Output Format):**  Now, I go through my analysis and create the triples in the specified format: `(index, token, head_index)`. It's crucial to get the indices correct.
+
+6. **Calculating Average Dependency Distance:**
+    * **Dependency Distance:** For each token, the dependency distance is the absolute difference between its index and its head's index.
+    * **Sum the Distances:** Add up the dependency distances for all tokens (excluding the root which has a distance of 0).
+    * **Divide by the Number of Dependencies:** Divide the sum by the total number of dependencies (which is the number of tokens minus 1).
+
+7. **Verification and Refinement:**  Review the dependency tree and the average distance. Does the tree make sense grammatically? Are there any obvious errors in head assignments?  Double-check the index calculations. For complex sentences, it's easy to make mistakes.
+
+This systematic process, combining linguistic understanding with careful bookkeeping, allows for accurate dependency parsing and distance calculation. Tools like dependency parsers can automate this, but understanding the underlying principles is essential for this task.
+```python
+def analyze_swedish_sentence(sentence):
+    """
+    Analyzes a Swedish sentence and produces a dependency tree and average dependency distance.
+
+    Args:
+        sentence: The Swedish sentence as a string.
+
+    Returns:
+        A tuple containing:
+            - A list of dependency triples: [(index, token, head_index), ...]
+            - The average dependency distance.
+    """
+    tokens = [token for token in sentence.split(' ')]
+    dependencies = []
+    # Manually assigning dependencies based on grammatical understanding
+    # This is a simplified manual dependency parsing - a real parser would use algorithms and models
+    dependencies.append((1, tokens[0], 18))  # När -> kommer
+    dependencies.append((2, tokens[1], 5))  # du -> vill
+    dependencies.append((3, tokens[2], 5))  # egentligen -> vill
+    dependencies.append((4, tokens[3], 5))  # bara -> vill
+    dependencies.append((5, tokens[4], 18))  # vill -> kommer
+    dependencies.append((6, tokens[5], 5))  # gå -> vill
+    dependencies.append((7, tokens[6], 6))  # hem -> gå
+    dependencies.append((8, tokens[7], 6))  # och -> gå
+    dependencies.append((9, tokens[8], 5))  # slippa -> vill
+    dependencies.append((10, tokens[9], 12)) # den -> skiten
+    dependencies.append((11, tokens[10], 12)) # här -> skiten
+    dependencies.append((12, tokens[11], 9)) # skiten -> slippa
+    dependencies.append((13, tokens[12], 14)) # som -> visas
+    dependencies.append((14, tokens[13], 12)) # visas -> skiten
+    dependencies.append((15, tokens[14], 14)) # på -> visas
+    dependencies.append((16, tokens[15], 15)) # filmduken -> på
+    dependencies.append((17, tokens[16], 18)) # så -> kommer
+    dependencies.append((18, tokens[17], 0)) # kommer -> ROOT
+    dependencies.append((19, tokens[18], 18)) # snåljåpsmonstret -> kommer
+    dependencies.append((20, tokens[19], 18)) # och -> kommer
+    dependencies.append((21, tokens[20], 18)) # säger -> kommer
+    dependencies.append((22, tokens[21], 21)) # :- -> säger
+    dependencies.append((23, tokens[22], 24)) # Du -> har
+    dependencies.append((24, tokens[23], 21)) # har -> säger
+    dependencies.append((25, tokens[24], 24)) # faktiskt -> har
+    dependencies.append((26, tokens[25], 24)) # betalat -> har
+    dependencies.append((27, tokens[26], 26)) # för -> betalat
+    dependencies.append((28, tokens[27], 29)) # att -> se
+    dependencies.append((29, tokens[28], 27)) # se -> för
+    dependencies.append((30, tokens[29], 32)) # den -> filmen
+    dependencies.append((31, tokens[30], 32)) # här -> filmen
+    dependencies.append((32, tokens[31], 29)) # filmen -> se
+    dependencies.append((33, tokens[32], 26)) # och -> betalat
+    dependencies.append((34, tokens[33], 37)) # om -> är
+    dependencies.append((35, tokens[34], 37)) # du -> är
+    dependencies.append((36, tokens[35], 37)) # går -> är
+    dependencies.append((37, tokens[36], 26)) # ifrån -> betalat #Connecting the conditional clause to the main clause verb
+    dependencies.append((38, tokens[37], 36)) # nu -> går
+    dependencies.append((39, tokens[38], 37)) # så -> är
+    dependencies.append((40, tokens[39], 26)) # är -> betalat # Connecting the result clause to the main clause verb
+    dependencies.append((41, tokens[40], 42)) # det -> spänn
+    dependencies.append((42, tokens[41], 40)) # 70 -> är
+    dependencies.append((43, tokens[42], 42)) # spänn -> är
+    dependencies.append((44, tokens[43], 45)) # som -> försvinner
+    dependencies.append((45, tokens[44], 43)) # bara -> spänn
+    dependencies.append((46, tokens[45], 43)) # försvinner -> spänn
+    dependencies.append((47, tokens[46], 46)) # ifrån -> försvinner
+    dependencies.append((48, tokens[47], 49)) # din -> lön/månadspeng
+    dependencies.append((49, tokens[48], 47)) # lön/månadspeng -> ifrån
+    dependencies.append((50, tokens[49], 21)) # . -> säger
+
+    dependency_distances = [abs(head - index) for index, token, head in dependencies if head != 0]
+    average_distance = sum(dependency_distances) / len(dependency_distances) if dependency_distances else 0
+
+    return dependencies, average_distance
+
+sentence = "När du egentligen bara vill gå hem och slippa den här skiten som visas på filmduken så kommer snåljåpsmonstret och säger:- Du har faktiskt betalat för att se den här filmen och om du går ifrån nu så är det 70 spänn som bara försvinner ifrån din lön/månadspeng."
+dependency_tree, avg_distance = analyze_swedish_sentence(sentence)
+
+print(dependency_tree)
+print(f"Average Dependency Distance: {avg_distance}")
+```
+
+**Explanation of the Dependency Tree:**
+
+Each tuple in the list represents a dependency relation: `(token_index, token, head_index)`.
+
+* **Head:** The word that governs or determines the structure of the phrase.
+* **Dependent:** The word that is governed by the head.
+* **Index:** The position of the token in the sentence (starting from 1).
+* **Head Index of 0:** Indicates the root of the sentence, which is the main verb (`kommer` in this case).
+
+**Breakdown of the Dependencies (Simplified):**
+
+* **När (1) depends on kommer (18):** The subordinate clause "När..." modifies the main clause.
+* **du (2) depends on vill (5):** "du" is the subject of "vill".
+* **egentligen (3) depends on vill (5):** "egentligen" modifies "vill".
+* **bara (4) depends on vill (5):** "bara" modifies "vill".
+* **vill (5) depends on kommer (18):**  The verb "vill" is part of the subordinate clause modifying "kommer".
+* **gå (6) depends on vill (5):** "gå" is the infinitive verb dependent on "vill".
+* **hem (7) depends on gå (6):** "hem" modifies "gå".
+* **och (8) depends on gå (6):** "och" conjoins "gå" and "slippa".
+* **slippa (9) depends on vill (5):** "slippa" is the infinitive verb dependent on "vill".
+* **den (10) depends on skiten (12):** "den" is a determiner for "skiten".
+* **här (11) depends on skiten (12):** "här" is a determiner for "skiten".
+* **skiten (12) depends on slippa (9):** "skiten" is the object of "slippa".
+* **som (13) depends on visas (14):** "som" is the subject of the relative clause verb "visas".
+* **visas (14) depends on skiten (12):** The relative clause "som visas på filmduken" modifies "skiten".
+* **på (15) depends on visas (14):** "på" is a preposition modifying "visas".
+* **filmduken (16) depends on på (15):** "filmduken" is the object of the preposition "på".
+* **så (17) depends on kommer (18):**  "så" connects the subordinate clause to the main clause.
+* **kommer (18) depends on ROOT (0):**  "kommer" is the main verb of the sentence.
+* **snåljåpsmonstret (19) depends on kommer (18):** "snåljåpsmonstret" is the subject of "kommer".
+* **och (20) depends on kommer (18):** "och" conjoins the verbs "kommer" and "säger".
+* **säger (21) depends on kommer (18):** "säger" is conjoined with "kommer".
+* **:- (22) depends on säger (21):** Punctuation attached to "säger".
+* **Du (23) depends on har (24):** Subject of the quoted clause.
+* **har (24) depends on säger (21):**  Main verb of the quoted clause.
+* **faktiskt (25) depends on har (24):** Modifies "har".
+* **betalat (26) depends on har (24):**  The main verb in this part of the quote.
+* **för (27) depends on betalat (26):** Introduces the infinitive clause.
+* **att (28) depends on se (29):** Part of the infinitive marker.
+* **se (29) depends on för (27):** Infinitive verb.
+* **den (30) depends on filmen (32):** Determiner.
+* **här (31) depends on filmen (32):** Determiner.
+* **filmen (32) depends on se (29):** Object of "se".
+* **och (33) depends on betalat (26):** Conjoins clauses within the quote.
+* **om (34) depends on är (37):** Introduces a conditional clause.
+* **du (35) depends on är (37):** Subject of the conditional clause.
+* **går (36) depends on är (37):** Verb in the conditional clause.
+* **ifrån (37) depends on betalat (26):** Connecting the conditional clause to the main clause.
+* **nu (38) depends on går (36):** Modifies "går".
+* **så (39) depends on är (37):** Connects the conditional clause to the result clause.
+* **är (40) depends on betalat (26):** Main verb of the result clause within the quote.
+* **det (41) depends on spänn (42):** Expletive subject.
+* **70 (42) depends on är (40):** Modifies "spänn".
+* **spänn (43) depends on är (40):** Subject complement.
+* **som (44) depends on försvinner (45):** Subject of the relative clause.
+* **bara (45) depends on spänn (43):** Modifies "spänn".
+* **försvinner (46) depends on spänn (43):** Relative clause verb.
+* **ifrån (47) depends on försvinner (46):** Preposition.
+* **din (48) depends on lön/månadspeng (49):** Possessive pronoun.
+* **lön/månadspeng (49) depends on ifrån (47):** Object of the preposition.
+* **. (50) depends on säger (21):** Sentence-ending punctuation.
+
+**Average Dependency Distance:**
+
+The average dependency distance is calculated by:
+
+1. Finding the dependency distance for each token (the absolute difference between the head index and the token index).
+2. Summing these distances.
+3. Dividing the sum by the number of dependencies (total tokens - 1).
+
+This metric gives an idea of how "long-range" the dependencies are in the sentence. A higher average distance suggests more complex sentence structure with dependencies spanning larger parts of the sentence.
+
+**Important Note:**
+
+This dependency parsing is done manually for demonstration purposes. For real-world applications, you would typically use sophisticated Natural Language Processing (NLP) libraries and models trained on large datasets to perform dependency parsing automatically and more accurately.

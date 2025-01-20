@@ -1,0 +1,145 @@
+Here's a breakdown of the thought process to generate the dependency tree and calculate the average dependency distance for the Swedish sentence:
+
+1. **Understand the Goal:** The objective is to create a dependency tree representation and calculate the average dependency distance for a given Swedish sentence. The output format is a list of tuples, with each tuple representing a dependency relation (child token index, child token, head token index).
+
+2. **Tokenization:** The first step is to break down the sentence into individual tokens. This is relatively straightforward, treating punctuation marks as separate tokens:
+
+   "Hon", "hade", "många", "poser", ",", "jag", "tyckte", "inte", "de", "var", "så", "speciella", ",", "hon", "var", "flickan", "alla", "tjejer", "konstigt", "nog", "ville", "vara", "och", "alla", "killar", "ville", "ta", "på", "."
+
+3. **Assign Token Indices:**  Assign a unique index to each token, starting from 1:
+
+   1: Hon, 2: hade, 3: många, 4: poser, 5: ,, 6: jag, 7: tyckte, 8: inte, 9: de, 10: var, 11: så, 12: speciella, 13: ,, 14: hon, 15: var, 16: flickan, 17: alla, 18: tjejer, 19: konstigt, 20: nog, 21: ville, 22: vara, 23: och, 24: alla, 25: killar, 26: ville, 27: ta, 28: på, 29: .
+
+4. **Dependency Parsing (The Core Task):** This is the most complex part. We need to identify the head of each token. This involves understanding grammatical relationships in Swedish. Here's a possible thought process for determining the dependencies, proceeding through the sentence:
+
+   * **"Hon hade många poser":**  "hade" is the main verb. "Hon" is the subject of "hade". "många" modifies "poser". "poser" is the object of "hade".
+     * (1, Hon, 2)
+     * (3, många, 4)
+     * (4, poser, 2)
+
+   * **", jag tyckte inte de var så speciella":** This is a separate clause connected by a comma. "tyckte" is the main verb of this clause. "jag" is the subject. "inte" negates "tyckte". The clause "de var så speciella" is the object of "tyckte". Within this clause, "var" is the verb, "de" is the subject, "så" modifies "speciella", and "speciella" is the predicative adjective.
+     * (6, jag, 7)
+     * (8, inte, 7)
+     * (9, de, 10)
+     * (10, var, 7)  (The entire clause is the object, but its head is the verb)
+     * (11, så, 12)
+     * (12, speciella, 10)
+
+   * **", hon var flickan alla tjejer konstigt nog ville vara och alla killar ville ta på":** Another clause connected by a comma. "var" is the main verb. "hon" is the subject. "flickan" is the predicative noun.
+
+   * **"alla tjejer konstigt nog ville vara":**  This modifies "flickan". "ville" is the main verb of this subordinate clause. "tjejer" is the subject. "alla" modifies "tjejer". "konstigt nog" is an adverbial phrase modifying "ville". "vara" is the infinitive verb complementing "ville".
+     * (14, hon, 15)
+     * (16, flickan, 15)
+     * (17, alla, 18)
+     * (18, tjejer, 21)
+     * (19, konstigt, 21)
+     * (20, nog, 19)
+     * (21, ville, 16)
+     * (22, vara, 21)
+
+   * **"och alla killar ville ta på":**  This is conjoined with the previous modifying clause using "och". "ville" is the main verb. "killar" is the subject. "alla" modifies "killar". "ta på" is a phrasal verb, with "på" modifying "ta".
+     * (24, alla, 25)
+     * (25, killar, 26)
+     * (26, ville, 16)  (Connected to the main noun "flickan")
+     * (27, ta, 26)
+     * (28, på, 27)
+
+   * **Punctuation:** Commas typically attach to the head of the clause they separate or the main verb. The period attaches to the root.
+     * (5, ,, 2)
+     * (13, ,, 7)
+     * (23, och, 21)  (Connects the two "ville" clauses)
+     * (29, ., 15)
+
+   * **Root:** Identify the main verb of the entire sentence. In this case, it's arguably the first "hade", though the structure is complex. The later "var" connecting to "flickan" feels like the core of the latter part. A more robust analysis might link both to a higher abstract root, but for simplicity, we can consider the most prominent verb. Given the flow, "var" (index 15) linking "hon" to "flickan" seems central to the second major part of the sentence. The first part, however, stands somewhat alone. A possible point of connection could be the comma. Let's tentatively make the comma connecting the two main clauses subordinate to the later "var".
+
+5. **Refine Dependencies and Head Selection:**  Review the dependencies, especially for complex clauses and conjunctions. The head selection needs to reflect the core grammatical relationship.
+
+6. **Construct the Dependency Tree Output:** Combine the token indices, tokens, and head indices into the required list of tuples.
+
+7. **Calculate Dependency Distances:**
+   * For each tuple `(child_index, child_token, head_index)`, calculate the absolute difference: `abs(child_index - head_index)`.
+   * Sum these distances.
+   * Divide the sum by the total number of dependencies (which is the number of tokens minus one, excluding the root).
+
+8. **Final Check:** Ensure the output format matches the requirements and that all tokens are included in the dependency tree.
+
+This iterative process of tokenization, dependency parsing, and refinement is essential for accurate dependency tree creation. Understanding grammatical roles and relationships is crucial for the dependency parsing step.
+Here's the dependency tree for the Swedish sentence and the calculation of the average dependency distance:
+
+**Dependency Tree:**
+
+```
+[(1, Hon, 2), (2, hade, 7), (3, många, 4), (4, poser, 2), (5, ,, 7), (6, jag, 7), (7, tyckte, 0), (8, inte, 7), (9, de, 10), (10, var, 7), (11, så, 12), (12, speciella, 10), (13, ,, 7), (14, hon, 15), (15, var, 7), (16, flickan, 15), (17, alla, 18), (18, tjejer, 21), (19, konstigt, 21), (20, nog, 19), (21, ville, 16), (22, vara, 21), (23, och, 21), (24, alla, 25), (25, killar, 26), (26, ville, 21), (27, ta, 26), (28, på, 27), (29, ., 7)]
+```
+
+**Explanation of Dependencies:**
+
+* **(1, Hon, 2):** "Hon" (She) is the subject of "hade" (had).
+* **(2, hade, 7):** "hade" (had) is the main verb of the first clause and is linked to the main verb of the second clause "tyckte" (thought).
+* **(3, många, 4):** "många" (many) modifies "poser" (poses).
+* **(4, poser, 2):** "poser" (poses) is the object of "hade" (had).
+* **(5, ,, 7):** The comma separates the first clause and is linked to the main verb of the second clause.
+* **(6, jag, 7):** "jag" (I) is the subject of "tyckte" (thought).
+* **(7, tyckte, 0):** "tyckte" (thought) is the root of the main clause.
+* **(8, inte, 7):** "inte" (not) modifies "tyckte" (thought).
+* **(9, de, 10):** "de" (they) is the subject of "var" (were).
+* **(10, var, 7):** "var" (were) is part of the clause that "jag tyckte" (I thought).
+* **(11, så, 12):** "så" (so) modifies "speciella" (special).
+* **(12, speciella, 10):** "speciella" (special) is the predicative adjective describing "de" (they).
+* **(13, ,, 7):** The comma separates the second clause and is linked to its main verb.
+* **(14, hon, 15):** "hon" (she) is the subject of "var" (was).
+* **(15, var, 7):** "var" (was) connects "hon" to the description that follows and is linked to the main verb of the second clause.
+* **(16, flickan, 15):** "flickan" (the girl) is the predicative noun.
+* **(17, alla, 18):** "alla" (all) modifies "tjejer" (girls).
+* **(18, tjejer, 21):** "tjejer" (girls) is the subject of "ville vara" (wanted to be).
+* **(19, konstigt, 21):** "konstigt" (strangely) modifies "ville" (wanted).
+* **(20, nog, 19):** "nog" (enough) modifies "konstigt" (strangely).
+* **(21, ville, 16):** "ville" (wanted) is the main verb of the clause describing "flickan". It's attached to "flickan".
+* **(22, vara, 21):** "vara" (to be) is the infinitive verb depending on "ville" (wanted).
+* **(23, och, 21):** "och" (and) conjoins the two clauses modifying "flickan". It's linked to the first "ville".
+* **(24, alla, 25):** "alla" (all) modifies "killar" (boys).
+* **(25, killar, 26):** "killar" (boys) is the subject of "ville ta på" (wanted to touch).
+* **(26, ville, 21):** "ville" (wanted) is the main verb of the second clause describing "flickan". It's attached to the first "ville" through the conjunction.
+* **(27, ta, 26):** "ta" (to touch/take) is the infinitive verb depending on "ville" (wanted).
+* **(28, på, 27):** "på" (on) is a particle belonging to the phrasal verb "ta på" (to touch).
+* **(29, ., 7):** The period marks the end of the sentence and is attached to the main verb.
+
+**Average Dependency Distance Calculation:**
+
+1. **Calculate the dependency distance for each token:**
+   * |1 - 2| = 1
+   * |2 - 7| = 5
+   * |3 - 4| = 1
+   * |4 - 2| = 2
+   * |5 - 7| = 2
+   * |6 - 7| = 1
+   * |8 - 7| = 1
+   * |9 - 10| = 1
+   * |10 - 7| = 3
+   * |11 - 12| = 1
+   * |12 - 10| = 2
+   * |13 - 7| = 6
+   * |14 - 15| = 1
+   * |15 - 7| = 8
+   * |16 - 15| = 1
+   * |17 - 18| = 1
+   * |18 - 21| = 3
+   * |19 - 21| = 2
+   * |20 - 19| = 1
+   * |21 - 16| = 5
+   * |22 - 21| = 1
+   * |23 - 21| = 2
+   * |24 - 25| = 1
+   * |25 - 26| = 1
+   * |26 - 21| = 5
+   * |27 - 26| = 1
+   * |28 - 27| = 1
+   * |29 - 7| = 22
+
+2. **Sum the dependency distances:**
+   1 + 5 + 1 + 2 + 2 + 1 + 1 + 1 + 3 + 1 + 2 + 6 + 1 + 8 + 1 + 1 + 3 + 2 + 1 + 5 + 1 + 2 + 1 + 1 + 5 + 1 + 1 + 22 = 80
+
+3. **Divide the sum by the total number of dependencies (number of tokens - 1):**
+   80 / 28 = 2.857 (approximately)
+
+**Therefore, the average dependency distance for the sentence is approximately 2.86.**

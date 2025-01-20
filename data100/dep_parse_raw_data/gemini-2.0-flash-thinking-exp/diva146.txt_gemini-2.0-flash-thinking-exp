@@ -1,0 +1,262 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average distance:
+
+1. **Understand the Task:** The goal is to create a dependency tree for a Swedish sentence, representing the head-dependent relationships between words. The output should be a list of tuples: `(token_index, token, head_index)`. Punctuation is a token. Finally, calculate the average dependency distance.
+
+2. **Tokenization:** The first step is to break the sentence into individual tokens. This is relatively straightforward, separating words by spaces and treating punctuation as separate tokens.
+
+   * "Today,"
+   * "new"
+   * "buildings"
+   * "are"
+   * "already"
+   * "being"
+   * "constructed"
+   * "on"
+   * "contaminated"
+   * "land"
+   * ","
+   * "and"
+   * "in"
+   * "the"
+   * "future"
+   * "contaminated"
+   * "land"
+   * "will"
+   * "probably"
+   * "constitute"
+   * "an"
+   * "important"
+   * "part"
+   * "of"
+   * "the"
+   * "exploitable"
+   * "land"
+   * "with"
+   * "population"
+   * "growing"
+   * "."
+
+3. **Assign Token Indices:** Number each token starting from 1. This is crucial for the tuple representation.
+
+   * (1, "Today,")
+   * (2, "new")
+   * (3, "buildings")
+   * (4, "are")
+   * (5, "already")
+   * (6, "being")
+   * (7, "constructed")
+   * (8, "on")
+   * (9, "contaminated")
+   * (10, "land")
+   * (11, ",")
+   * (12, "and")
+   * (13, "in")
+   * (14, "the")
+   * (15, "future")
+   * (16, "contaminated")
+   * (17, "land")
+   * (18, "will")
+   * (19, "probably")
+   * (20, "constitute")
+   * (21, "an")
+   * (22, "important")
+   * (23, "part")
+   * (24, "of")
+   * (25, "the")
+   * (26, "exploitable")
+   * (27, "land")
+   * (28, "with")
+   * (29, "population")
+   * (30, "growing")
+   * (31, ".")
+
+4. **Identify the Root:** The root of the sentence is the main verb. In this case, there are two clauses connected by "and". We need to find the main verbs of each. The first clause's main verb is "constructed", and the second is "constitute". Since the clauses are coordinated, one might consider "and" as the overall root, but let's stick to having verbs as clause roots for simplicity and common dependency parsing practice. Let's make "constructed" the root of the first part and "constitute" the root of the second part. "and" will link these clauses.
+
+5. **Establish Head-Dependent Relationships (Iterative Process):** This is the core of dependency parsing and requires grammatical understanding. Go through the sentence word by word and determine which word each word depends on.
+
+   * **"Today," (1):** Modifies the verb "constructed" (7).
+   * **"new" (2):** Modifies the noun "buildings" (3).
+   * **"buildings" (3):**  Subject of the verb "are being constructed" (7).
+   * **"are" (4):** Auxiliary verb for "constructed" (7).
+   * **"already" (5):**  Adverb modifying "being constructed" (7).
+   * **"being" (6):** Auxiliary verb for "constructed" (7).
+   * **"constructed" (7):** This is a main verb (root of the first clause).
+   * **"on" (8):** Preposition modifying "constructed" (7), introducing a prepositional phrase.
+   * **"contaminated" (9):** Modifies the noun "land" (10).
+   * **"land" (10):** Object of the preposition "on" (8).
+   * **"," (11):** Punctuation, often attached to the preceding main verb (7).
+   * **"and" (12):** Conjunction, linking the two clauses. Its head could be the main verb of the first clause (7) or the main verb of the second (20). Let's link it to the first for now.
+   * **"in" (13):** Preposition modifying "constitute" (20), introducing a prepositional phrase.
+   * **"the" (14):** Determiner for "future" (15).
+   * **"future" (15):** Object of the preposition "in" (13).
+   * **"contaminated" (16):** Modifies the noun "land" (17).
+   * **"land" (17):** Subject of the verb "will constitute" (20).
+   * **"will" (18):** Auxiliary verb for "constitute" (20).
+   * **"probably" (19):** Adverb modifying "constitute" (20).
+   * **"constitute" (20):** Main verb of the second clause.
+   * **"an" (21):** Determiner for "part" (23).
+   * **"important" (22):** Modifies the noun "part" (23).
+   * **"part" (23):** Direct object of "constitute" (20).
+   * **"of" (24):** Preposition modifying "part" (23), introducing a prepositional phrase.
+   * **"the" (25):** Determiner for "land" (27).
+   * **"exploitable" (26):** Modifies the noun "land" (27).
+   * **"land" (27):** Object of the preposition "of" (24).
+   * **"with" (28):** Preposition modifying "land" (27), introducing a prepositional phrase.
+   * **"population" (29):** Subject of the gerund "growing" (30). Or, depending on the analysis, "with population growing" could be a modifying phrase for "land". Let's treat "growing" as modifying "population" and "with" connecting to "land."
+   * **"growing" (30):**  Part of the prepositional phrase headed by "with" (28), dependent on "population" (29).
+   * **"." (31):** Punctuation, attached to the main verb of the second clause (20).
+
+6. **Assemble the Dependency Tree (Tuples):** Convert the head-dependent relationships into the required tuple format.
+
+7. **Calculate Dependency Distances:** For each tuple (excluding the root which has a head of 0), calculate the absolute difference between the token index and the head index: `abs(token_index - head_index)`.
+
+8. **Calculate Average Dependency Distance:** Sum the individual dependency distances and divide by the total number of dependencies (number of tokens minus 1, as the root has no head).
+
+This iterative process of identifying heads and dependents, especially when dealing with coordinating conjunctions and prepositional phrases, might involve some adjustments and revisions to ensure the relationships are grammatically sound. Understanding Swedish grammar is key for accuracy.
+Here's the dependency tree and the average dependency distance for the given Swedish sentence:
+
+**Sentence:** Today, new buildings are  already being constructed on contaminated land, and in the future contaminated land will  probably constitute and important part of the exploitable land with population growing.
+
+**Dependency Tree:**
+
+[(1, 'Today,', 7),
+ (2, 'new', 3),
+ (3, 'buildings', 7),
+ (4, 'are', 7),
+ (5, 'already', 7),
+ (6, 'being', 7),
+ (7, 'constructed', 0),
+ (8, 'on', 7),
+ (9, 'contaminated', 10),
+ (10, 'land', 8),
+ (11, ',', 7),
+ (12, 'and', 20),
+ (13, 'in', 20),
+ (14, 'the', 15),
+ (15, 'future', 13),
+ (16, 'contaminated', 17),
+ (17, 'land', 20),
+ (18, 'will', 20),
+ (19, 'probably', 20),
+ (20, 'constitute', 7),
+ (21, 'an', 23),
+ (22, 'important', 23),
+ (23, 'part', 20),
+ (24, 'of', 23),
+ (25, 'the', 27),
+ (26, 'exploitable', 27),
+ (27, 'land', 24),
+ (28, 'with', 27),
+ (29, 'population', 30),
+ (30, 'growing', 28),
+ (31, '.', 20)]
+
+**Token Indices and Words:**
+
+1. Today,
+2. new
+3. buildings
+4. are
+5. already
+6. being
+7. constructed
+8. on
+9. contaminated
+10. land
+11. ,
+12. and
+13. in
+14. the
+15. future
+16. contaminated
+17. land
+18. will
+19. probably
+20. constitute
+21. an
+22. important
+23. part
+24. of
+25. the
+26. exploitable
+27. land
+28. with
+29. population
+30. growing
+31. .
+
+**Explanation of Dependencies:**
+
+* **constructed (7)** is the main verb of the first clause, hence its head is 0.
+* **Today, (1)** modifies the verb "constructed" (7).
+* **new (2)** modifies the noun "buildings" (3).
+* **buildings (3)** is the subject of "constructed" (7).
+* **are (4)** is an auxiliary verb for "constructed" (7).
+* **already (5)** modifies the verb "constructed" (7).
+* **being (6)** is an auxiliary verb for "constructed" (7).
+* **on (8)** is a preposition modifying "constructed" (7).
+* **contaminated (9)** modifies the noun "land" (10).
+* **land (10)** is the object of the preposition "on" (8).
+* **, (11)** is punctuation and is attached to the main verb of the clause "constructed" (7).
+* **and (12)** is a conjunction connecting the two clauses, we link it to the main verb of the second clause "constitute" (20).
+* **in (13)** is a preposition modifying "constitute" (20).
+* **the (14)** is a determiner for "future" (15).
+* **future (15)** is the object of the preposition "in" (13).
+* **contaminated (16)** modifies the noun "land" (17).
+* **land (17)** is the subject of "constitute" (20) in the second clause.
+* **will (18)** is an auxiliary verb for "constitute" (20).
+* **probably (19)** modifies the verb "constitute" (20).
+* **constitute (20)** is the main verb of the second clause, and is coordinated with the first clause by "and" (12). We've chosen to link "and" to the second verb.
+* **an (21)** is a determiner for "part" (23).
+* **important (22)** modifies the noun "part" (23).
+* **part (23)** is the direct object of "constitute" (20).
+* **of (24)** is a preposition modifying "part" (23).
+* **the (25)** is a determiner for "land" (27).
+* **exploitable (26)** modifies the noun "land" (27).
+* **land (27)** is the object of the preposition "of" (24).
+* **with (28)** is a preposition modifying "land" (27).
+* **population (29)** is the subject of the participle "growing" (30).
+* **growing (30)** is part of the prepositional phrase introduced by "with" (28), modifying "land".
+* **. (31)** is punctuation and is attached to the main verb of the clause "constitute" (20).
+
+**Average Dependency Distance Calculation:**
+
+To calculate the average dependency distance, we sum the absolute differences between the head and dependent indices for each token (excluding the root) and then divide by the number of dependencies.
+
+| Token Index | Head Index | Distance |
+|---|---|---|
+| 1 | 7 | 6 |
+| 2 | 3 | 1 |
+| 3 | 7 | 4 |
+| 4 | 7 | 3 |
+| 5 | 7 | 2 |
+| 6 | 7 | 1 |
+| 8 | 7 | 1 |
+| 9 | 10 | 1 |
+| 10 | 8 | 2 |
+| 11 | 7 | 4 |
+| 12 | 20 | 8 |
+| 13 | 20 | 7 |
+| 14 | 15 | 1 |
+| 15 | 13 | 2 |
+| 16 | 17 | 1 |
+| 17 | 20 | 3 |
+| 18 | 20 | 2 |
+| 19 | 20 | 1 |
+| 21 | 23 | 2 |
+| 22 | 23 | 1 |
+| 23 | 20 | 3 |
+| 24 | 23 | 1 |
+| 25 | 27 | 2 |
+| 26 | 27 | 1 |
+| 27 | 24 | 3 |
+| 28 | 27 | 1 |
+| 29 | 30 | 1 |
+| 30 | 28 | 2 |
+| 31 | 20 | 11 |
+| **Total Distance:** |  | **73** |
+| **Number of Dependencies:** |  | **30** |
+
+**Average Dependency Distance = Total Distance / Number of Dependencies = 73 / 30 = 2.4333...**
+
+**Therefore, the average dependency distance for the sentence is approximately 2.43.**

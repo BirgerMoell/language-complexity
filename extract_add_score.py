@@ -2,8 +2,8 @@ import os
 import re
 import csv
 
-model = "gemini-pro"
-input_dir = f'c:/GitHub/birger/language-complexity/data100/add_raw_data/{model}'
+model = "gemini-2.0-flash-thinking-exp"
+input_dir = f'c:/GitHub/birger/language-complexity/data100/dep_parse_raw_data/{model}'
 output_file = f'c:/GitHub/birger/language-complexity/data100/add_results_{model}.csv'
 
 results = []

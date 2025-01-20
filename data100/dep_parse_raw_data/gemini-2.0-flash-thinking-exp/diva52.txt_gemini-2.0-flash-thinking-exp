@@ -1,0 +1,140 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average dependency distance:
+
+1. **Understand the Goal:** The main task is to create a dependency tree for a given Swedish sentence. This involves identifying the head (governor) of each word (dependent). We also need to calculate the average dependency distance.
+
+2. **Tokenization:** The first step is to break the sentence down into individual tokens. This is relatively straightforward for this sentence. Punctuation needs to be considered as separate tokens.
+
+3. **Dependency Parsing (Manual):** This is the core of the task and requires linguistic knowledge of Swedish grammar. We need to go through the sentence word by word and determine the relationships between them. Here's a possible thought process for each token:
+
+    * **Den:**  This is a determiner modifying "modell". So, "modell" is the head.
+    * **modell:** This is the main noun in the first part of the sentence. What is it doing?  The verb "har visat" is the main verb. So, "har visat" is likely the head.
+    * **som:**  This is a relative pronoun referring back to "modell". It introduces a relative clause where "har skapats" is the verb. "Har skapats" is the head.
+    * **har:**  Auxiliary verb for "skapats". "Skapats" is the head.
+    * **skapats:**  This is the main verb of the relative clause, modifying "modell".
+    * **har:** Auxiliary verb for "visat". "Visat" is the head.
+    * **visat:**  This is the main verb of the first clause, describing what the "modell" has done. It controls "sig" and "producera".
+    * **sig:** Reflexive pronoun, object of "visat".
+    * **producera:**  Infinitive verb, complement of "visat".
+    * **mycket:** Adverb modifying "bra". "Bra" is the head.
+    * **bra:** Adjective modifying "resultat". "Resultat" is the head.
+    * **resultat:** Noun, object of "producera".
+    * **och:** Conjunction joining the two main clauses. The second clause's main verb ("är") will be the head.
+    * **de:** Determiner modifying "slutsatser". "Slutsatser" is the head.
+    * **slutsatser:** Noun, subject of the second clause.
+    * **som:** Relative pronoun referring back to "slutsatser". It introduces a relative clause with "kan dras". "Kan dras" is the head.
+    * **kan:** Auxiliary verb for "dras". "Dras" is the head.
+    * **dras:** Main verb of the relative clause, modifying "slutsatser".
+    * **av:** Preposition modifying "dras".
+    * **detta:** Determiner modifying "arbete". "Arbete" is the head.
+    * **arbete:** Noun, object of the preposition "av".
+    * **är:** Main verb of the second clause, linking "slutsatser" to the following noun phrase.
+    * **att:** Subordinating conjunction introducing the noun clause functioning as the predicate of "är".
+    * **vattenkraften:** Subject of the clause introduced by "att". The verb of this clause is "har".
+    * **har:** Main verb of the clause introduced by "att". It governs "möjligheter".
+    * **mycket:** Adverb modifying "goda". "Goda" is the head.
+    * **goda:** Adjective modifying "möjligheter". "Möjligheter" is the head.
+    * **möjligheter:** Noun, object of "har".
+    * **att:** Infinitive marker for "balansera".
+    * **balansera:** Infinitive verb, modifying "möjligheter".
+    * **den:** Determiner modifying "ojämna vindkraftsproduktionen".
+    * **ojämna:** Adjective modifying "vindkraftsproduktionen". "Vindkraftsproduktionen" is the head.
+    * **vindkraftsproduktionen:** Noun, object of "balansera".
+    * **.:**  Punctuation, dependent on the root of the sentence. The root is the main verb of the second clause ("är").
+
+4. **Assigning Head Indices:** Once the dependencies are identified, assign the numerical index of the head word to each dependent word. Remember that the root of the sentence has a head index of 0.
+
+5. **Formatting the Output:**  Organize the information into the requested format: `(token_index, token, head_index)`.
+
+6. **Calculating Dependency Distance:**
+    * Iterate through the dependency tree.
+    * For each token, calculate the absolute difference between its index and the index of its head.
+    * Sum up these distances.
+    * Divide the sum by the total number of tokens to get the average dependency distance.
+
+7. **Review and Verification:**  Double-check the dependencies, especially for complex parts of the sentence. Make sure the head indices are correct. Verify the average dependency distance calculation. Consider if any alternative valid dependency structures exist and why the chosen structure is preferred (though for this exercise, the goal is *a* correct structure, not necessarily the *only* correct one).
+
+This systematic process, combining linguistic knowledge with careful tracking of indices, allows for the creation of the dependency tree and the calculation of the average dependency distance. It might involve some back-and-forth and adjustments as you work through the sentence.
+```python
+def analyze_swedish_sentence(sentence):
+    tokens = sentence.split()
+    dependencies = []
+
+    # Manually assigning dependencies based on linguistic analysis
+    # (This is a simplified approach and might not be perfect for all sentences)
+    dependencies.append((1, tokens[0], 2))   # Den -> modell
+    dependencies.append((2, tokens[1], 7))   # modell -> har
+    dependencies.append((3, tokens[2], 5))   # som -> skapats
+    dependencies.append((4, tokens[3], 5))   # har -> skapats
+    dependencies.append((5, tokens[4], 2))   # skapats -> modell
+    dependencies.append((6, tokens[5], 7))   # har -> visat
+    dependencies.append((7, tokens[6], 0))   # visat -> ROOT
+    dependencies.append((8, tokens[7], 7))   # sig -> visat
+    dependencies.append((9, tokens[8], 7))   # producera -> visat
+    dependencies.append((10, tokens[9], 11))  # mycket -> bra
+    dependencies.append((11, tokens[10], 12)) # bra -> resultat
+    dependencies.append((12, tokens[11], 9))  # resultat -> producera
+    dependencies.append((13, tokens[12], 22)) # och -> är
+    dependencies.append((14, tokens[13], 15)) # de -> slutsatser
+    dependencies.append((15, tokens[14], 22)) # slutsatser -> är
+    dependencies.append((16, tokens[15], 18)) # som -> dras
+    dependencies.append((17, tokens[16], 18)) # kan -> dras
+    dependencies.append((18, tokens[17], 15)) # dras -> slutsatser
+    dependencies.append((19, tokens[18], 18)) # av -> dras
+    dependencies.append((20, tokens[19], 21)) # detta -> arbete
+    dependencies.append((21, tokens[20], 19)) # arbete -> av
+    dependencies.append((22, tokens[21], 7))  # är -> visat
+    dependencies.append((23, tokens[22], 22)) # att -> är
+    dependencies.append((24, tokens[23], 25)) # vattenkraften -> har
+    dependencies.append((25, tokens[24], 22)) # har -> är
+    dependencies.append((26, tokens[25], 27)) # mycket -> goda
+    dependencies.append((27, tokens[26], 28)) # goda -> möjligheter
+    dependencies.append((28, tokens[27], 25)) # möjligheter -> har
+    dependencies.append((29, tokens[28], 30)) # att -> balansera
+    dependencies.append((30, tokens[29], 28)) # balansera -> möjligheter
+    dependencies.append((31, tokens[30], 32)) # den -> vindkraftsproduktionen
+    dependencies.append((32, tokens[31], 33)) # ojämna -> vindkraftsproduktionen
+    dependencies.append((33, tokens[32], 30)) # vindkraftsproduktionen -> balansera
+    dependencies.append((34, tokens[33], 7))  # . -> visat
+
+    total_distance = 0
+    for dep in dependencies:
+        total_distance += abs(dep[0] - dep[2])
+
+    average_distance = total_distance / len(dependencies)
+
+    return dependencies, average_distance
+
+sentence = "Den modell som har skapats har visat sig producera mycket bra resultat och de slutsatser som  kan dras  av  detta  arbete är att  vattenkraften har mycket goda  möjligheter att balansera den  ojämna  vindkraftsproduktionen."
+dependencies, avg_distance = analyze_swedish_sentence(sentence)
+
+for dep in dependencies:
+    print(dep)
+
+print(f"\nAverage Dependency Distance: {avg_distance}")
+```
+
+**Explanation of the Dependency Tree:**
+
+The output `[(1, 'Den', 2), (2, 'modell', 7), ...]` represents the dependency relationships in the sentence. Let's break down a few examples:
+
+* **`(1, 'Den', 2)`:** The token "Den" (index 1) depends on "modell" (index 2). "Modell" is the head of "Den".
+* **`(2, 'modell', 7)`:** The token "modell" (index 2) depends on "har" (index 7). "Har" is part of the verb phrase "har visat" and governs "modell".
+* **`(7, 'visat', 0)`:** The token "visat" (index 7) has a head index of 0. This indicates that "visat" is the root of the main clause.
+* **`(12, 'resultat', 9)`:** The token "resultat" (index 12) depends on "producera" (index 9). "Resultat" is the object of the verb "producera".
+
+**Average Dependency Distance:**
+
+The average dependency distance is calculated by:
+
+1. **Finding the absolute difference** between the index of each token and the index of its head.
+2. **Summing up these differences** for all tokens.
+3. **Dividing the sum** by the total number of tokens.
+
+In this case, the calculated average dependency distance reflects the average "distance" between related words in the sentence structure. A smaller average distance generally indicates a more "right-branching" structure where dependents appear closer to their heads.
+
+**Important Notes:**
+
+* **Manual Analysis:** The provided code performs a manual dependency analysis. For complex sentences, this can be time-consuming and prone to errors.
+* **NLP Libraries:** For more robust and accurate dependency parsing, you would typically use dedicated Natural Language Processing (NLP) libraries like SpaCy or Stanza, which have pre-trained models for various languages, including Swedish.
+* **Subjectivity:** Dependency parsing can sometimes have multiple valid interpretations, especially for complex sentences. The provided analysis represents one possible interpretation.
+* **Tokenization:**  The tokenization here is based on simple whitespace splitting. More sophisticated tokenizers might handle contractions or other linguistic nuances differently.

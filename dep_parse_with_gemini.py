@@ -13,7 +13,7 @@ genai.configure(api_key=os.environ["GENAI_API_KEY"])
 
 PARSE_PROMPT = "Analyze the following Swedish sentence and produce a dependency tree from it. For example, the sentence 'Han köper en bok' should result in the following output: [(1, Han, 2), (2, köper, 0), (3, en, 4), (4, bok, 2)], where the first number in each triple is the token index, the second entry is the token itself, and the final number is the index of the head token. Don't forget that punctuation marks like commas, full stops, question marks etc. should be tokens as well. Finally, compute the average dependency distance for the sentence.Here is the sentence: {text}"
 
-models = ["gemini-pro"]
+models = ['gemini-2.0-flash-thinking-exp']
 
 def get_text_from_gemini(prompt, modelname):
     try:

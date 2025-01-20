@@ -1,0 +1,121 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average distance:
+
+1. **Understand the Goal:** The objective is to create a dependency tree for a complex Swedish sentence, represent it in the specified format, and calculate the average dependency distance.
+
+2. **Tokenization:** The first step is to break the sentence into individual tokens. This includes words, punctuation, and special characters. Carefully iterate through the sentence, separating each element. A key aspect is recognizing that punctuation like commas, colons, and quotation marks are separate tokens.
+
+3. **Dependency Parsing (Conceptual):**  This is the most complex part. Think about how the words relate to each other grammatically. Consider the main verb and how other words modify or depend on it. This often involves asking questions like:
+    * What is the main action/verb? (In this case, it's the implicit act of thanking, driven by "vill tacka")
+    * Who is doing the action? ("vi")
+    * What are they thanking for? (The reasons will be attached to the thanking action)
+    * What are the specific things they are thanking *specific people* for? (This leads to attaching phrases to the mentioned names).
+    * What is the function of the prepositions and conjunctions? ("på," "för," "att," "till," "med," "av," "samt," "och").
+
+4. **Dependency Parsing (Iterative and Incremental):** It's rarely straightforward to build the entire tree at once. It's more effective to work through the sentence piece by piece:
+
+    * **Start with the core:** "vi vill tacka" is a key unit. "tacka" is the head verb, "vill" modifies it, and "vi" is the subject.
+    * **Connect modifiers:** "Vidare" modifies the entire action of thanking. "så" often connects clauses or intensifies.
+    * **Handle lists and appositives:**  The colon introduces a list of people being thanked. Mats Vallmark is thanked, and the following prepositional phrase "på Isover" modifies him. The commas separate the individuals.
+    * **Address clauses:** "för att vi fått tillgång till programmet Isover Energi" is a *reason* clause for thanking Mats Vallmark. "fått" is the head verb within this clause, and "tillgång" is its object. "till programmet Isover Energi" modifies "tillgång."
+    * **Recognize parallel structures:** The sentence has multiple people being thanked for different things. Look for similar structures to apply consistent dependency rules. For example, "för lånet av David‐32" has the same structure as the previous "för att..." clause, just shorter.
+    * **Manage conjunctions:** "samt" and "och" connect elements. Decide what the conjunction is coordinating. "samt" connects the thanking for "lånet" and the thanking for "hjälp." "och" connects "support" and "tillgång."
+    * **Deal with prepositional phrases:** Phrases like "på Blocon," "med CAD," "avdelningen Byggnadsteknik," "för support," and "till programmet" need to be attached to the words they modify.
+    * **Handle quotations:** Treat quoted phrases as noun phrases.
+    * **Pay attention to punctuation:**  Commas often separate list items or clauses. The colon introduces a list. The period ends the sentence.
+
+5. **Assign Heads and Create Triples:** As you understand the dependencies, assign a head token index to each token (except the root, which has 0). The root is typically the main verb or action. Form the triples `(token_index, token, head_index)`. Number the tokens sequentially starting from 1.
+
+6. **Verification and Refinement:** Review the created tree. Does it make grammatical sense? Are there any obvious errors in the head assignments?  Sometimes, you need to adjust the dependencies as you see the bigger picture. For instance, initially, you might attach "för" directly to "tacka," but then realize it introduces a clause, and the verb within that clause is the more direct dependent.
+
+7. **Calculate Dependency Distances:**  Once the dependency tree is complete, calculate the absolute difference between the token index and its head's index for each token (excluding the root).
+
+8. **Calculate Average Distance:** Sum the individual dependency distances and divide by the total number of dependencies (which is the number of tokens minus 1, as the root has no head).
+
+**Self-Correction Example During the Process:**
+
+Initially, I might have connected "Mats Vallmark" directly to "tacka." However, realizing the colon signifies an enumeration or explanation, it becomes clearer that "tacka" acts as a higher-level head, and the reasons for thanking relate back to that action. The phrases about specific individuals and their contributions are then attached to those individuals, who are, in turn, part of the list introduced by the colon after "tacka." Similarly, the preposition "för" introduces clauses or reasons for the thanking, not direct objects of "tacka."
+
+By following these steps, iteratively building the tree, and constantly checking for grammatical correctness, you can arrive at the final dependency tree and average distance. It's a process that involves both linguistic knowledge and careful, systematic analysis.
+```
+[(1, Vidare, 3), (2, så, 3), (3, vill, 0), (4, vi, 3), (5, tacka, 3), (6, :, 5), (7, Mats, 8), (8, Vallmark, 5), (9, på, 8), (10, Isover, 9), (11, ,, 8), (12, för, 14), (13, att, 14), (14, vi, 18), (15, fått, 14), (16, tillgång, 15), (17, till, 16), (18, programmet, 17), (19, Isover, 20), (20, Energi, 18), (21, ,, 5), (22, Gunnar, 23), (23, Anderlind, 5), (24, för, 25), (25, lånet, 23), (26, av, 25), (27, David‐32, 26), (28, samt, 25), (29, för, 31), (30, den, 31), (31, hjälp, 28), (32, vi, 33), (33, fått, 31), (34, med, 33), (35, programmet, 34), (36, ,, 5), (37, Thomas, 38), (38, Blomberg, 5), (39, på, 38), (40, Blocon, 39), (41, för, 42), (42, lånet, 38), (43, av, 42), (44, Heat2, 43), (45, ,, 5), (46, Sven, 47), (47, Ahlund, 5), (48, för, 49), (49, hjälp, 47), (50, med, 49), (51, CAD, 50), (52, ,, 5), (53, Gudni, 54), (54, Johannesson, 5), (55, ,, 54), (56, avdelningen, 54), (57, Byggnadsteknik, 56), (58, ,, 54), (59, KTH, 54), (60, ,, 5), (61, för, 62), (62, support, 5), (63, och, 62), (64, tillgång, 63), (65, till, 64), (66, programmet, 65), (67, ”, 66), (68, Consolis, 69), (69, Energy, 66), (70, +, 69), (71, ”, 66), (72, ., 3)]
+```
+
+**Dependency Distances:**
+
+* Vidare: |1 - 3| = 2
+* så: |2 - 3| = 1
+* vi: |4 - 3| = 1
+* tacka: |5 - 3| = 2
+* :: |6 - 5| = 1
+* Mats: |7 - 8| = 1
+* Vallmark: |8 - 5| = 3
+* på: |9 - 8| = 1
+* Isover: |10 - 9| = 1
+* ,: |11 - 8| = 3
+* för: |12 - 14| = 2
+* att: |13 - 14| = 1
+* vi: |14 - 18| = 4
+* fått: |15 - 14| = 1
+* tillgång: |16 - 15| = 1
+* till: |17 - 16| = 1
+* programmet: |18 - 17| = 1
+* Isover: |19 - 20| = 1
+* Energi: |20 - 18| = 2
+* ,: |21 - 5| = 16
+* Gunnar: |22 - 23| = 1
+* Anderlind: |23 - 5| = 18
+* för: |24 - 25| = 1
+* lånet: |25 - 23| = 2
+* av: |26 - 25| = 1
+* David‐32: |27 - 26| = 1
+* samt: |28 - 25| = 3
+* för: |29 - 31| = 2
+* den: |30 - 31| = 1
+* hjälp: |31 - 28| = 3
+* vi: |32 - 33| = 1
+* fått: |33 - 31| = 2
+* med: |34 - 33| = 1
+* programmet: |35 - 34| = 1
+* ,: |36 - 5| = 31
+* Thomas: |37 - 38| = 1
+* Blomberg: |38 - 5| = 33
+* på: |39 - 38| = 1
+* Blocon: |40 - 39| = 1
+* för: |41 - 42| = 1
+* lånet: |42 - 38| = 4
+* av: |43 - 42| = 1
+* Heat2: |44 - 43| = 1
+* ,: |45 - 5| = 40
+* Sven: |46 - 47| = 1
+* Ahlund: |47 - 5| = 42
+* för: |48 - 49| = 1
+* hjälp: |49 - 47| = 2
+* med: |50 - 49| = 1
+* CAD: |51 - 50| = 1
+* ,: |52 - 5| = 47
+* Gudni: |53 - 54| = 1
+* Johannesson: |54 - 5| = 49
+* ,: |55 - 54| = 1
+* avdelningen: |56 - 54| = 2
+* Byggnadsteknik: |57 - 56| = 1
+* ,: |58 - 54| = 4
+* KTH: |59 - 54| = 5
+* ,: |60 - 5| = 55
+* för: |61 - 62| = 1
+* support: |62 - 5| = 57
+* och: |63 - 62| = 1
+* tillgång: |64 - 63| = 1
+* till: |65 - 64| = 1
+* programmet: |66 - 65| = 1
+* ”: |67 - 66| = 1
+* Consolis: |68 - 69| = 1
+* Energy: |69 - 66| = 3
+* +: |70 - 69| = 1
+* ”: |71 - 66| = 5
+* .: |72 - 3| = 69
+
+**Sum of Dependency Distances:** 359
+**Number of Tokens (excluding root):** 71
+**Average Dependency Distance:** 359 / 71 = 5.05633802817
+
+**Average Dependency Distance:  approximately 5.06**

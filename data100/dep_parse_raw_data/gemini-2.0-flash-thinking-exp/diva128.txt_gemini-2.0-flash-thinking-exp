@@ -1,0 +1,139 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average dependency distance for the Swedish sentence:
+
+1. **Understand the Request:** The core task is dependency parsing. This involves identifying the head of each word and representing the relationships between them. The output format is specified as a list of tuples: `(token_index, token, head_index)`. Punctuation must be included as tokens. Finally, calculate the average dependency distance.
+
+2. **Tokenization:** First, break down the sentence into individual tokens. This is usually straightforward, splitting on spaces, but being careful with punctuation. The given sentence is: "Dessutom vill jag tacka Mattias Ek, WSP Byggprojektering, för hjälpen  med programvaran som har använts."
+
+   Tokens: `Dessutom`, `vill`, `jag`, `tacka`, `Mattias`, `Ek`, `,`, `WSP`, `Byggprojektering`, `,`, `för`, `hjälpen`, `med`, `programvaran`, `som`, `har`, `använts`, `.`
+
+3. **Identify Heads and Dependencies:** This is the most crucial and iterative part. Go through the sentence word by word and determine the head of each word. Consider the grammatical roles and relationships between words.
+
+   * **Dessutom (1):**  This is an adverbial phrase modifying the entire clause. Its head is the main verb of the clause, `tacka`. `(1, Dessutom, 4)`
+   * **vill (2):** This is an auxiliary verb modifying the main verb `tacka`. `(2, vill, 4)`
+   * **jag (3):** This is the subject of the verb `tacka`. `(3, jag, 4)`
+   * **tacka (4):** This is the main verb of the independent clause. Its head is the root (0). `(4, tacka, 0)`
+   * **Mattias (5):** This is part of the direct object, specifically the name. It's likely dependent on `tacka`. However, we need to consider the entire phrase "Mattias Ek, WSP Byggprojektering". The most straightforward interpretation is that `tacka` takes a direct object which is a noun phrase. Let's consider `Mattias` the head of this phrase for now and connect it to `tacka`. `(5, Mattias, 4)`
+   * **Ek (6):**  This modifies `Mattias`, specifying the last name. `(6, Ek, 5)`
+   * **, (7):** This comma separates parts of the appositive. It likely depends on the preceding noun phrase head, `Mattias`. `(7, ,, 5)`
+   * **WSP (8):** This is part of an appositive phrase explaining who Mattias Ek is. It depends on `Mattias`. `(8, WSP, 5)`
+   * **Byggprojektering (9):** This modifies `WSP`. `(9, Byggprojektering, 8)`
+   * **, (10):** This comma separates parts of the appositive. It likely depends on the preceding noun phrase head, `Mattias`. `(10, ,, 5)`
+   * **för (11):** This is a preposition introducing a prepositional phrase. It modifies the verb `tacka`. `(11, för, 4)`
+   * **hjälpen (12):** This is the object of the preposition `för`. `(12, hjälpen, 11)`
+   * **med (13):** This is a preposition introducing another prepositional phrase modifying `hjälpen`. `(13, med, 12)`
+   * **programvaran (14):** This is the object of the preposition `med`. `(14, programvaran, 13)`
+   * **som (15):** This is a relative pronoun introducing a relative clause modifying `programvaran`. `(15, som, 14)`
+   * **har (16):** This is an auxiliary verb in the relative clause. Its head is the main verb of the relative clause, `använts`. `(16, har, 17)`
+   * **använts (17):** This is the main verb of the relative clause. Its subject is the relative pronoun `som`. `(17, använts, 15)`
+   * **. (18):**  Punctuation typically depends on the main verb of the sentence. `(18, ., 4)`
+
+4. **Assemble the Dependency Tree:** Combine the identified dependencies into the required output format.
+
+   ```
+   [(1, Dessutom, 4), (2, vill, 4), (3, jag, 4), (4, tacka, 0), (5, Mattias, 4), (6, Ek, 5), (7, ,, 5), (8, WSP, 5), (9, Byggprojektering, 8), (10, ,, 5), (11, för, 4), (12, hjälpen, 11), (13, med, 12), (14, programvaran, 13), (15, som, 14), (16, har, 17), (17, använts, 15), (18, ., 4)]
+   ```
+
+5. **Calculate Dependency Distances:** The dependency distance is the absolute difference between the head index and the dependent index.
+
+   * |1 - 4| = 3
+   * |2 - 4| = 2
+   * |3 - 4| = 1
+   * |4 - 0| = 4
+   * |5 - 4| = 1
+   * |6 - 5| = 1
+   * |7 - 5| = 2
+   * |8 - 5| = 3
+   * |9 - 8| = 1
+   * |10 - 5| = 5
+   * |11 - 4| = 7
+   * |12 - 11| = 1
+   * |13 - 12| = 1
+   * |14 - 13| = 1
+   * |15 - 14| = 1
+   * |16 - 17| = 1
+   * |17 - 15| = 2
+   * |18 - 4| = 14
+
+6. **Calculate Average Dependency Distance:** Sum the distances and divide by the number of dependencies (excluding the root).
+
+   Total distance = 3 + 2 + 1 + 4 + 1 + 1 + 2 + 3 + 1 + 5 + 7 + 1 + 1 + 1 + 1 + 1 + 2 + 14 = 51
+   Number of dependencies = 18
+
+   Average distance = 51 / 18 = 2.8333...
+
+7. **Final Output:** Present the dependency tree and the calculated average dependency distance.
+```python
+def analyze_swedish_sentence(sentence):
+    """
+    Analyzes a Swedish sentence and produces a dependency tree and average dependency distance.
+
+    Args:
+        sentence: The Swedish sentence as a string.
+
+    Returns:
+        A tuple containing:
+            - A list of dependency triples (token_index, token, head_index).
+            - The average dependency distance.
+    """
+    tokens = [token.strip() for token in sentence.replace('  ', ' ').split(' ')]
+    dependencies = []
+
+    # Manually assigning dependencies based on grammatical analysis
+    dependencies.append((1, tokens[0], 4))   # Dessutom - modifies tacka
+    dependencies.append((2, tokens[1], 4))   # vill - auxiliary for tacka
+    dependencies.append((3, tokens[2], 4))   # jag - subject of tacka
+    dependencies.append((4, tokens[3], 0))   # tacka - root
+    dependencies.append((5, tokens[4], 4))   # Mattias - direct object of tacka
+    dependencies.append((6, tokens[5], 5))   # Ek - appositive to Mattias
+    dependencies.append((7, tokens[6], 5))   # , - separates appositives
+    dependencies.append((8, tokens[7], 5))   # WSP - appositive to Mattias
+    dependencies.append((9, tokens[8], 8))   # Byggprojektering - modifies WSP
+    dependencies.append((10, tokens[9], 5))  # , - separates appositives
+    dependencies.append((11, tokens[10], 4))  # för - preposition
+    dependencies.append((12, tokens[11], 11)) # hjälpen - object of för
+    dependencies.append((13, tokens[12], 12)) # med - preposition
+    dependencies.append((14, tokens[13], 13)) # programvaran - object of med
+    dependencies.append((15, tokens[14], 14)) # som - relative pronoun, modifies programvaran
+    dependencies.append((16, tokens[15], 17)) # har - auxiliary for använts
+    dependencies.append((17, tokens[16], 15)) # använts - verb in relative clause, dependent on som
+    dependencies.append((18, tokens[17], 4)) # . - punctuation, dependent on the root
+
+    total_distance = 0
+    for dep in dependencies:
+        total_distance += abs(dep[0] - dep[2])
+
+    average_distance = total_distance / len(dependencies)
+
+    return dependencies, average_distance
+
+sentence = "Dessutom vill jag tacka Mattias Ek, WSP Byggprojektering, för hjälpen  med programvaran som har använts."
+dependency_tree, avg_distance = analyze_swedish_sentence(sentence)
+
+print(dependency_tree)
+print(f"Average dependency distance: {avg_distance}")
+```
+
+**Explanation of the Dependency Tree:**
+
+* **(1, Dessutom, 4):** "Dessutom" (Furthermore) modifies the verb "tacka" (thank).
+* **(2, vill, 4):** "vill" (want to) is an auxiliary verb for "tacka".
+* **(3, jag, 4):** "jag" (I) is the subject of the verb "tacka".
+* **(4, tacka, 0):** "tacka" (thank) is the root of the sentence.
+* **(5, Mattias, 4):** "Mattias" is the direct object of "tacka".
+* **(6, Ek, 5):** "Ek" is part of the proper noun "Mattias Ek", modifying "Mattias".
+* **(7, ,, 5):** The comma separates "Mattias Ek" from the following appositive.
+* **(8, WSP, 5):** "WSP" is part of an appositive phrase describing "Mattias Ek".
+* **(9, Byggprojektering, 8):** "Byggprojektering" modifies "WSP".
+* **(10, ,, 5):** The comma separates the appositive phrase.
+* **(11, för, 4):** "för" (for) is a preposition modifying "tacka".
+* **(12, hjälpen, 11):** "hjälpen" (the help) is the object of the preposition "för".
+* **(13, med, 12):** "med" (with) is a preposition modifying "hjälpen".
+* **(14, programvaran, 13):** "programvaran" (the software) is the object of the preposition "med".
+* **(15, som, 14):** "som" (that/which) is a relative pronoun, the subject of the relative clause, referring to "programvaran".
+* **(16, har, 17):** "har" (has) is an auxiliary verb for "använts".
+* **(17, använts, 15):** "använts" (been used) is the verb in the relative clause, dependent on "som".
+* **(18, ., 4):** The full stop is punctuation, often attached to the root verb.
+
+**Average Dependency Distance:**
+
+The average dependency distance is calculated as the sum of the absolute differences between the head and dependent token indices, divided by the total number of dependencies. In this case, it is approximately **2.83**.

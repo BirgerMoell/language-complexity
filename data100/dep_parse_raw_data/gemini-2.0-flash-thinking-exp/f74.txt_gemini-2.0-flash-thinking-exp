@@ -1,0 +1,135 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average distance:
+
+1. **Understand the Goal:** The primary goal is to create a dependency tree representation of a Swedish sentence and calculate the average dependency distance. The output format is specified as tuples of (token_index, token, head_index).
+
+2. **Tokenization:** The first step is to break down the sentence into individual tokens. This is relatively straightforward, paying attention to commas and spaces as delimiters.
+
+   * "Barnfamiljer"
+   * "som"
+   * "vistats"
+   * "i"
+   * "Sverige"
+   * "i"
+   * "minst"
+   * "4"
+   * "år"
+   * "som"
+   * "sökande"
+   * ","
+   * "anses"
+   * "ha"
+   * "skäl"
+   * "på"
+   * "grund"
+   * "av"
+   * "vistelsetiden"
+   * "."
+
+3. **Initial Head Identification (High-Level):** Before getting into specifics, identify the likely main verb or predicate of the sentence. In this case, "anses" (are considered) seems like a strong candidate for the root.
+
+4. **Dependency Parsing (Iterative Process):** Now, go through the sentence token by token and establish the head-dependent relationships. This often involves considering grammatical roles and the semantic meaning.
+
+   * **Barnfamiljer:**  Likely the subject. What verb acts on the families? "anses". So, "anses" is the head. `(1, Barnfamiljer, 13)`
+
+   * **som (relative pronoun after Barnfamiljer):** Modifies "Barnfamiljer". The head is "Barnfamiljer". `(2, som, 1)`
+
+   * **vistats:** The verb in the relative clause. What does it modify? "som". `(3, vistats, 2)`
+
+   * **i (preposition):**  Governs "Sverige". `(4, i, 3)`
+
+   * **Sverige (noun):**  Object of the preposition "i". `(5, Sverige, 4)`
+
+   * **i (preposition):**  Governs "år". This "i" refers to a duration. What is the main entity involved? "vistats". `(6, i, 3)`
+
+   * **minst (adverb):** Modifies "år". `(7, minst, 9)`
+
+   * **4 (numeral):** Modifies "år". `(8, 4, 9)`
+
+   * **år (noun):**  Object of the preposition "i". `(9, år, 6)`
+
+   * **som (relative pronoun):** Introduces another clause modifying "Barnfamiljer". Head is "Barnfamiljer". `(10, som, 1)`
+
+   * **sökande (participle/noun):**  Acts as a predicate nominative or similar within the relative clause. What word is "som" referring to here in its clause function? It's describing *the families* *as* applicants. The function ties back to the "som", thus "som" (token 10) is the head. `(11, sökande, 10)`
+
+   * **, (punctuation):** Connects clauses. Often attached to the head of the following clause. Attaches to "anses". `(12, ,, 13)`
+
+   * **anses (verb - root):** The main verb. Head is 0. `(13, anses, 0)`
+
+   * **ha (auxiliary verb):** Helps "skäl". Depends on "anses". `(14, ha, 13)`
+
+   * **skäl (noun - object):**  Object of "ha". `(15, skäl, 14)`
+
+   * **på (preposition):** Governs "grund". `(16, på, 15)`
+
+   * **grund (noun):** Object of "på". `(17, grund, 16)`
+
+   * **av (preposition):** Governs "vistelsetiden". `(18, av, 17)`
+
+   * **vistelsetiden (noun):** Object of "av". `(19, vistelsetiden, 18)`
+
+   * **. (punctuation):**  Attaches to the root verb. `(20, ., 13)`
+
+5. **Verification and Refinement:** Review the dependencies. Does each dependency make sense grammatically and semantically?  Are there any ambiguities? In this case, the relative clauses can be a bit tricky, ensuring "som" is connected properly.
+
+6. **Calculate Dependency Distances:**  Once the tree is established, calculate the absolute difference between the head index and the dependent index for each dependency.
+
+   * |Dependent Index | Head Index | Distance |
+   * |---|---|---|
+   * | 1 | 13 | 12 |
+   * | 2 | 1 | 1 |
+   * | 3 | 2 | 1 |
+   * | 4 | 3 | 1 |
+   * | 5 | 4 | 1 |
+   * | 6 | 3 | 3 |
+   * | 7 | 9 | 2 |
+   * | 8 | 9 | 1 |
+   * | 9 | 6 | 3 |
+   * | 10 | 1 | 9 |
+   * | 11 | 10 | 1 |
+   * | 12 | 13 | 1 |
+   * | 14 | 13 | 1 |
+   * | 15 | 14 | 1 |
+   * | 16 | 15 | 1 |
+   * | 17 | 16 | 1 |
+   * | 18 | 17 | 1 |
+   * | 19 | 18 | 1 |
+   * | 20 | 13 | 7 |
+
+7. **Calculate Average Distance:** Sum the distances and divide by the number of dependencies (which is the number of tokens excluding the root's representation).
+
+   * Total Distance = 12 + 1 + 1 + 1 + 1 + 3 + 2 + 1 + 3 + 9 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 7 = 51
+   * Number of Dependencies = 20
+   * Average Distance = 51 / 20 = 2.55
+
+This systematic approach, involving tokenization, iterative head identification, verification, and distance calculation, leads to the correct dependency tree and average distance.
+```
+[(1, Barnfamiljer, 13), (2, som, 1), (3, vistats, 2), (4, i, 3), (5, Sverige, 4), (6, i, 3), (7, minst, 9), (8, 4, 9), (9, år, 6), (10, som, 1), (11, sökande, 10), (12, ,, 13), (13, anses, 0), (14, ha, 13), (15, skäl, 14), (16, på, 15), (17, grund, 16), (18, av, 17), (19, vistelsetiden, 18), (20, ., 13)]
+```
+
+**Dependency Distances:**
+
+* Barnfamiljer - anses: |1 - 13| = 12
+* som - Barnfamiljer: |2 - 1| = 1
+* vistats - som: |3 - 2| = 1
+* i - vistats: |4 - 3| = 1
+* Sverige - i: |5 - 4| = 1
+* i - vistats: |6 - 3| = 3
+* minst - år: |7 - 9| = 2
+* 4 - år: |8 - 9| = 1
+* år - i: |9 - 6| = 3
+* som - Barnfamiljer: |10 - 1| = 9
+* sökande - som: |11 - 10| = 1
+* , - anses: |12 - 13| = 1
+* ha - anses: |14 - 13| = 1
+* skäl - ha: |15 - 14| = 1
+* på - skäl: |16 - 15| = 1
+* grund - på: |17 - 16| = 1
+* av - grund: |18 - 17| = 1
+* vistelsetiden - av: |19 - 18| = 1
+* . - anses: |20 - 13| = 7
+
+**Sum of Dependency Distances:** 12 + 1 + 1 + 1 + 1 + 3 + 2 + 1 + 3 + 9 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 7 = 51
+
+**Number of Dependencies:** 20
+
+**Average Dependency Distance:** 51 / 20 = 2.55

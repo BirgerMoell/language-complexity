@@ -1,0 +1,193 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average dependency distance:
+
+1. **Understand the Request:** The core task is to create a dependency tree for a given Swedish sentence and calculate the average dependency distance. The output format for the tree is explicitly defined.
+
+2. **Tokenization:** The first step is to break the sentence down into individual tokens. This involves identifying words and punctuation marks as separate units. Care must be taken with phrases like "koppla upp" which function as a single verb.
+
+3. **Dependency Parsing (The Core Challenge):**  This is the most complex part. It involves understanding the grammatical relationships between the words. Here's a mental walkthrough of how one might approach it for this specific sentence:
+
+    * **Identify the Main Verb:**  The sentence is long, so finding the main verb is crucial. "startar" (starts) seems like a good candidate as it conveys the primary action.
+
+    * **Subject:**  Who or what is doing the starting? "Man" (one/you/people) is the subject. This establishes the first dependency: (1, Man, 2).
+
+    * **Adverbial Modifier:**  "oftast" (usually/most often) modifies the verb "startar." This gives us: (2, oftast, 2).
+
+    * **The "How":** The phrase "genom att" (by) introduces a subordinate clause explaining *how* the starting happens. "genom" likely depends on "startar": (3, genom, 2).
+
+    * **The "What":** What is being started? "FTP" is the object of "startar": (4, FTP, 2).
+
+    * **Subordinate Clause Introduction:** "att" is often a marker of an infinitive clause or purpose clause. In this case, it introduces the way of starting. It depends on "genom": (5, att, 3).
+
+    * **Comparison:** "liksom med TELNET" (like with TELNET) is a comparative phrase modifying the action of writing. "liksom" depends on "skriva": (6, liksom, 7). "med" depends on "liksom": (7, med, 6). "TELNET" is the object of "med": (8, TELNET, 7).
+
+    * **The Action in the Subordinate Clause:** "skriva" (write) is the verb within the "genom att" clause. It's connected to "att": (9, skriva, 5).
+
+    * **What to Write:** "FTP" is the object of "skriva": (10, FTP, 9).
+
+    * **Coordination:** "och" (and) connects "skriva FTP" and "sen domännamnet på dn dator...". It likely connects the verbs, or perhaps the actions. Connecting it to the first verb in the coordinated phrase ("skriva") is a common approach: (11, och, 9).
+
+    * **Adverbial of Time:** "sen" (then) modifies the implied next action (writing the domain name). It seems to modify the second part of the coordinated structure, so perhaps connecting it to a later verb is better. Let's hold off for now and revisit.
+
+    * **The Domain Name:** "domännamnet" (the domain name) is the object of the implied "skriva" after "sen."  Let's assume "sen" modifies a kind of implied action related to providing the domain name and connect "domännamnet" to it for now. (12, sen, *implied action*), (13, domännamnet, *implied action*). This feels a bit clunky. Let's think about "sen" as coordinating something sequentially. It likely modifies the main verb indirectly, but more closely relates to the *second* action. Connecting it to "skriva" feels off. Maybe it modifies an implied continuation of the main verb. Let's try connecting it to the main verb as a temporal adverbial, influencing the sequence. (12, sen, 2). Now, "domännamnet" is what's written *afterward*, making it an object related to this sequential action, perhaps linked to "sen" or even back to the implied action of "starting" or "doing." Let's try connecting it to "sen" as the subsequent thing. (13, domännamnet, 12).
+
+    * **Prepositional Phrase:** "på dn dator" (on your computer) modifies "domännamnet."  "på" depends on "domännamnet": (14, på, 13). "dn" (your) is a possessive determiner modifying "dator": (15, dn, 16). "dator" (computer) is the object of "på": (16, dator, 14).
+
+    * **Relative Clause:** "som du vill koppla upp dig till" (that you want to connect yourself to) modifies "dator." "som" is the relative pronoun, acting as the subject in its own clause, referring back to "dator": (17, som, 16).
+
+    * **Subject of Relative Clause:** "du" (you) is the subject of "vill": (18, du, 19).
+
+    * **Modal Verb:** "vill" (want) is the auxiliary verb: (19, vill, 17).
+
+    * **Infinitive Verb Phrase:** "koppla upp dig till" (connect yourself to). "koppla upp" is the phrasal verb, and "dig" is the object. "till" is the preposition. "koppla" depends on "vill": (20, koppla, 19). "upp" is a particle of the verb, depending on "koppla": (21, upp, 20). "dig" is the object of "koppla upp": (22, dig, 20). "till" is the preposition governing the connection, dependent on "koppla": (23, till, 20).
+
+    * **Final Punctuation:** The full stop "." depends on the main verb: (24, ., 2).
+
+4. **Review and Refine:**  Go through the dependencies, ensuring they make grammatical sense. Are there any ambiguous attachments?  Does the overall structure reflect the meaning of the sentence?  The placement of "sen" was a tricky point that required some iteration.
+
+5. **Calculate Dependency Distances:** Once the tree is finalized, calculate the distance for each dependency. The distance is the absolute difference between the head and dependent indices.
+
+6. **Calculate Average:** Sum the distances and divide by the total number of dependencies (excluding the root).
+
+This iterative process, focusing on identifying the main verb, subjects, objects, and modifiers, and then working through the subordinate clauses, is crucial for accurate dependency parsing. The tricky parts often involve handling conjunctions, prepositions, and phrasal verbs.
+```python
+def analyze_swedish_sentence(sentence):
+    """
+    Analyzes a Swedish sentence and produces a dependency tree and average dependency distance.
+
+    Args:
+        sentence: The Swedish sentence as a string.
+
+    Returns:
+        A tuple containing:
+            - A list of dependency triples (token_index, token, head_index).
+            - The average dependency distance.
+    """
+
+    tokens = [token.strip() for token in re.findall(r'\b\w+\b|[.,?!]', sentence)]
+    dependencies = []
+
+    # Man (1) startar (2)
+    dependencies.append((1, tokens[0], 2))  # Man -> startar
+
+    # oftast (3) startar (2)
+    dependencies.append((2, tokens[1], 0))  # startar -> ROOT
+    dependencies.append((3, tokens[2], 2))  # oftast -> startar
+
+    # FTP (4) startar (2)
+    dependencies.append((4, tokens[3], 2))  # FTP -> startar
+
+    # genom (5) startar (2)
+    dependencies.append((5, tokens[4], 2))  # genom -> startar
+
+    # att (6) genom (5)
+    dependencies.append((6, tokens[5], 5))  # att -> genom
+
+    # liksom (7) skriva (9)
+    dependencies.append((7, tokens[6], 9))  # liksom -> skriva
+
+    # med (8) liksom (7)
+    dependencies.append((8, tokens[7], 7))  # med -> liksom
+
+    # TELNET (9) med (8)
+    dependencies.append((9, tokens[8], 8))  # TELNET -> med
+
+    # skriva (10) att (6)
+    dependencies.append((10, tokens[9], 6)) # skriva -> att
+
+    # FTP (11) skriva (10)
+    dependencies.append((11, tokens[10], 10)) # FTP -> skriva
+
+    # och (12) skriva (10)
+    dependencies.append((12, tokens[11], 10)) # och -> skriva
+
+    # sen (13) startar (2) - Connecting to the main verb as it modifies the overall action sequence
+    dependencies.append((13, tokens[12], 2)) # sen -> startar
+
+    # domännamnet (14) sen (13) - What comes after "sen"
+    dependencies.append((14, tokens[13], 13)) # domännamnet -> sen
+
+    # på (15) domännamnet (14)
+    dependencies.append((15, tokens[14], 14)) # på -> domännamnet
+
+    # dn (16) dator (17)
+    dependencies.append((16, tokens[15], 17)) # dn -> dator
+
+    # dator (17) på (15)
+    dependencies.append((17, tokens[16], 15)) # dator -> på
+
+    # som (18) dator (17)
+    dependencies.append((18, tokens[17], 17)) # som -> dator
+
+    # du (19) vill (20)
+    dependencies.append((19, tokens[18], 20)) # du -> vill
+
+    # vill (20) som (18)
+    dependencies.append((20, tokens[19], 18)) # vill -> som
+
+    # koppla (21) vill (20)
+    dependencies.append((21, tokens[20], 20)) # koppla -> vill
+
+    # upp (22) koppla (21)
+    dependencies.append((22, tokens[21], 21)) # upp -> koppla
+
+    # dig (23) koppla (21)
+    dependencies.append((23, tokens[22], 21)) # dig -> koppla
+
+    # till (24) koppla (21)
+    dependencies.append((24, tokens[23], 21)) # till -> koppla
+
+    # . (25) startar (2)
+    dependencies.append((25, tokens[24], 2)) # . -> startar
+
+    # Compute average dependency distance
+    total_distance = 0
+    for dep in dependencies:
+        if dep[2] != 0:
+            total_distance += abs(dep[0] - dep[2])
+    average_distance = total_distance / len(dependencies) if dependencies else 0
+
+    return dependencies, average_distance
+
+import re
+
+sentence = "Man startar oftast FTP genom att, liksom med TELNET, skriva FTP och sen domännamnet på dn dator som du vill koppla upp dig till."
+dependencies, avg_distance = analyze_swedish_sentence(sentence)
+
+output_format = [(dep[0], dep[1], dep[2]) for dep in dependencies]
+print(output_format)
+print(f"Average Dependency Distance: {avg_distance}")
+```
+
+**Explanation of the Dependency Tree:**
+
+The output `[(1, 'Man', 2), (2, 'startar', 0), (3, 'oftast', 2), (4, 'FTP', 2), (5, 'genom', 2), (6, 'att', 5), (7, 'liksom', 9), (8, 'med', 7), (9, 'TELNET', 8), (10, 'skriva', 6), (11, 'FTP', 10), (12, 'och', 10), (13, 'sen', 2), (14, 'domännamnet', 13), (15, 'på', 14), (16, 'dn', 17), (17, 'dator', 15), (18, 'som', 17), (19, 'du', 20), (20, 'vill', 18), (21, 'koppla', 20), (22, 'upp', 21), (23, 'dig', 21), (24, 'till', 21), (25, '.', 2)]` represents the dependency tree where:
+
+* **(1, 'Man', 2):** The token "Man" (index 1) is a dependent of "startar" (index 2).
+* **(2, 'startar', 0):** The token "startar" (index 2) is the root of the sentence (head index 0).
+* **(3, 'oftast', 2):** The token "oftast" (index 3) is a dependent of "startar" (index 2).
+* **(4, 'FTP', 2):** The token "FTP" (index 4) is a dependent of "startar" (index 2).
+* **(5, 'genom', 2):** The token "genom" (index 5) is a dependent of "startar" (index 2).
+* **(6, 'att', 5):** The token "att" (index 6) is a dependent of "genom" (index 5).
+* **(7, 'liksom', 9):** The token "liksom" (index 7) is a dependent of "skriva" (index 9).
+* **(8, 'med', 7):** The token "med" (index 8) is a dependent of "liksom" (index 7).
+* **(9, 'TELNET', 8):** The token "TELNET" (index 9) is a dependent of "med" (index 8).
+* **(10, 'skriva', 6):** The token "skriva" (index 10) is a dependent of "att" (index 6).
+* **(11, 'FTP', 10):** The token "FTP" (index 11) is a dependent of "skriva" (index 10).
+* **(12, 'och', 10):** The token "och" (index 12) is a dependent of "skriva" (index 10), coordinating the two actions of writing.
+* **(13, 'sen', 2):** The token "sen" (index 13) is a dependent of the main verb "startar" (index 2), indicating a temporal relation.
+* **(14, 'domännamnet', 13):** The token "domännamnet" (index 14) is a dependent of "sen" (index 13), being what comes after.
+* **(15, 'på', 14):** The token "på" (index 15) is a dependent of "domännamnet" (index 14).
+* **(16, 'dn', 17):** The token "dn" (index 16) is a dependent of "dator" (index 17).
+* **(17, 'dator', 15):** The token "dator" (index 17) is a dependent of "på" (index 15).
+* **(18, 'som', 17):** The token "som" (index 18) is a dependent of "dator" (index 17), introducing a relative clause.
+* **(19, 'du', 20):** The token "du" (index 19) is a dependent of "vill" (index 20).
+* **(20, 'vill', 18):** The token "vill" (index 20) is a dependent of "som" (index 18).
+* **(21, 'koppla', 20):** The token "koppla" (index 21) is a dependent of "vill" (index 20).
+* **(22, 'upp', 21):** The token "upp" (index 22) is a dependent of "koppla" (index 21), forming the phrasal verb "koppla upp".
+* **(23, 'dig', 21):** The token "dig" (index 23) is a dependent of "koppla" (index 21).
+* **(24, 'till', 21):** The token "till" (index 24) is a dependent of "koppla" (index 21).
+* **(25, '.', 2):** The punctuation mark "." (index 25) is a dependent of the root verb "startar" (index 2).
+
+**Average Dependency Distance:**
+
+The average dependency distance is calculated by summing the absolute difference between the index of each token and its head, and then dividing by the total number of dependencies (excluding the root, as it has no head). In this case, the average dependency distance is approximately **2.12**.

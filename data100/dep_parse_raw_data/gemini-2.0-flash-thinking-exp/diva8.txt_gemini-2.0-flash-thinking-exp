@@ -1,0 +1,150 @@
+Here's a breakdown of the thought process to achieve the dependency tree and average distance:
+
+1. **Understand the Goal:** The objective is to create a dependency tree for a Swedish sentence, represent it in the specified format (index, token, head index), and calculate the average dependency distance. This involves understanding dependency parsing principles.
+
+2. **Tokenization:** The first step is to break down the sentence into individual tokens. This is relatively straightforward, but it's crucial to recognize punctuation as tokens.
+
+    * Vi
+    * vill
+    * rikta
+    * särskilt
+    * tack
+    * till
+    * Vianova
+    * Systems
+    * ,
+    * och
+    * i
+    * synnerhet
+    * vår
+    * handledare
+    * Johan
+    * Asplund
+    * som
+    * har
+    * ställt
+    * upp
+    * i
+    * tid
+    * och
+    * otid
+    * ,
+    * och
+    * aldrig
+    * tvekat
+    * när
+    * det
+    * gäller
+    * att
+    * ge
+    * oss
+    * hjälp
+    * och
+    * vägledning
+    * .
+
+3. **Dependency Parsing (Conceptual):**  Now, the core task is to identify the head of each token. This requires linguistic knowledge of Swedish grammar and how words relate to each other. Think about the function of each word and which word it modifies or depends on. Start with the main verb(s).
+
+4. **Identifying the Root:** The main verb of the main clause is usually the root (head index 0). In this sentence, "vill rikta" (want to direct) acts as the core action. "rikta" is the main verb here.
+
+5. **Building Dependencies (Iterative Process):** Go through the tokens one by one and determine their heads:
+
+    * **Vi:** Subject of "vill rikta" -> head is "rikta"
+    * **vill:** Auxiliary verb to "rikta" -> head is "rikta"
+    * **särskilt:** Modifies "tack" -> head is "tack"
+    * **tack:** Object of "rikta" -> head is "rikta"
+    * **till:** Preposition introducing a prepositional phrase -> head is "rikta" (arguably, sometimes the preposition itself could be the head, but here, connecting it to the verb makes sense contextually)
+    * **Vianova:** Part of the noun phrase "Vianova Systems" -> head is "Systems"
+    * **Systems:** Object of the preposition "till" -> head is "till"
+    * **,:**  Punctuation, likely connected to the preceding phrase -> head is "Systems" (or could be "rikta", the main verb of the clause)
+    * **och:** Conjunction connecting clauses or phrases -> head is likely "rikta" connecting the first part of the sentence to what follows.
+    * **i:** Preposition within the second part of the sentence -> head is "handledare"
+    * **synnerhet:**  Modifies "i" or the phrase "vår handledare" -> head is "i"
+    * **vår:** Possessive determiner modifying "handledare" -> head is "handledare"
+    * **handledare:**  Object of the preposition "i" -> head is "i"
+    * **Johan:** Part of the appositive phrase "Johan Asplund" -> head is "Asplund"
+    * **Asplund:**  Appositive to "handledare" -> head is "handledare"
+    * **som:** Relative pronoun, subject of the clause "som har ställt upp..." -> head is "handledare" (referring to the guide)
+    * **har:** Auxiliary verb for "ställt" -> head is "ställt"
+    * **ställt:** Main verb of the relative clause -> head is "som"
+    * **upp:** Particle modifying "ställt" -> head is "ställt"
+    * **i:** Preposition -> head is "ställt upp" conceptually, but structurally, likely connected to "tid"
+    * **tid:** Object of the preposition "i" -> head is "i"
+    * **och:** Conjunction connecting "tid" and "otid" -> head is "tid"
+    * **otid:**  Coordinated with "tid" -> head is "tid"
+    * **,:** Punctuation, connecting clauses -> head is likely "ställt"
+    * **och:** Conjunction connecting the two relative clauses -> head is "ställt"
+    * **aldrig:** Adverb modifying "tvekat" -> head is "tvekat"
+    * **tvekat:** Main verb of the second relative clause -> head is "som"
+    * **när:** Subordinating conjunction introducing a clause -> head is "tvekat"
+    * **det:** Subject of "gäller" -> head is "gäller"
+    * **gäller:** Main verb of the subordinate clause -> head is "när"
+    * **att:**  Infinitive marker -> head is "ge"
+    * **ge:**  Infinitive verb -> head is "gäller"
+    * **oss:** Indirect object of "ge" -> head is "ge"
+    * **hjälp:** Direct object of "ge" -> head is "ge"
+    * **och:** Conjunction connecting "hjälp" and "vägledning" -> head is "hjälp"
+    * **vägledning:** Coordinated with "hjälp" -> head is "hjälp"
+    * **.:** Punctuation, end of sentence -> head is "rikta" (the main verb).
+
+6. **Formatting the Output:** Arrange the identified dependencies into the specified tuples: `(index, token, head_index)`. Ensure the indices are correct (starting from 1).
+
+7. **Calculating Dependency Distance:**
+
+    * For each dependency, calculate the absolute difference between the head's index and the dependent's index.
+    * Sum these distances.
+    * Divide the sum by the total number of dependencies (which is the number of tokens minus 1, or the number of non-root tokens).
+
+8. **Review and Refine:**  Double-check the dependency relationships and the calculations. Dependency parsing can have some subjectivity, especially with longer sentences. Consider alternative valid parses if unsure, but stick to a consistent approach. For example, the attachment of punctuation can be debated. The key is to be consistent.
+```
+[(1, Vi, 3), (2, vill, 3), (3, rikta, 0), (4, särskilt, 5), (5, tack, 3), (6, till, 3), (7, Vianova, 8), (8, Systems, 6), (9, ,, 3), (10, och, 3), (11, i, 12), (12, synnerhet, 10), (13, vår, 14), (14, handledare, 12), (15, Johan, 16), (16, Asplund, 14), (17, som, 18), (18, har, 20), (19, ställt, 18), (20, upp, 17), (21, i, 20), (22, tid, 21), (23, och, 22), (24, otid, 22), (25, ,, 20), (26, och, 27), (27, aldrig, 28), (28, tvekat, 20), (29, när, 31), (30, det, 31), (31, gäller, 28), (32, att, 33), (33, ge, 31), (34, oss, 33), (35, hjälp, 33), (36, och, 35), (37, vägledning, 35), (38, . , 3)]
+```
+
+**Average Dependency Distance Calculation:**
+
+1. **Calculate the distance for each dependency:**
+   - |1 - 3| = 2
+   - |2 - 3| = 1
+   - |4 - 5| = 1
+   - |5 - 3| = 2
+   - |6 - 3| = 3
+   - |7 - 8| = 1
+   - |8 - 6| = 2
+   - |9 - 3| = 6
+   - |10 - 3| = 7
+   - |11 - 12| = 1
+   - |12 - 10| = 2
+   - |13 - 14| = 1
+   - |14 - 12| = 2
+   - |15 - 16| = 1
+   - |16 - 14| = 2
+   - |17 - 18| = 1
+   - |18 - 20| = 2
+   - |19 - 18| = 1
+   - |20 - 17| = 3
+   - |21 - 20| = 1
+   - |22 - 21| = 1
+   - |23 - 22| = 1
+   - |24 - 22| = 2
+   - |25 - 20| = 5
+   - |26 - 27| = 1
+   - |27 - 28| = 1
+   - |28 - 20| = 8
+   - |29 - 31| = 2
+   - |30 - 31| = 1
+   - |31 - 28| = 3
+   - |32 - 33| = 1
+   - |33 - 31| = 2
+   - |34 - 33| = 1
+   - |35 - 33| = 2
+   - |36 - 35| = 1
+   - |37 - 35| = 2
+   - |38 - 3| = 35
+
+2. **Sum the distances:** 2 + 1 + 1 + 2 + 3 + 1 + 2 + 6 + 7 + 1 + 2 + 1 + 2 + 1 + 2 + 1 + 2 + 1 + 3 + 1 + 1 + 1 + 2 + 5 + 1 + 1 + 8 + 2 + 1 + 3 + 1 + 2 + 1 + 2 + 1 + 2 + 35 = 100
+
+3. **Count the number of dependencies (number of tokens - 1):** 38 - 1 = 37
+
+4. **Calculate the average dependency distance:** 100 / 37 ≈ 2.70
+
+**Therefore, the average dependency distance for the sentence is approximately 2.70.**

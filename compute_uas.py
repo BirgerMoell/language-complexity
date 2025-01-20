@@ -2,9 +2,10 @@ import os
 import csv
 import statistics
 
+model = 'gemini-2.0-flash-thinking-exp'
 ground_truth_dir = 'c:/GitHub/birger/language-complexity/data100/ground_truth'
-input_dir = 'c:/GitHub/birger/language-complexity/data100/dep_parse_results/gemini-pro'
-output_file = 'c:/GitHub/birger/language-complexity/data100/uas_results_gemini-pro.csv'
+input_dir = f'c:/GitHub/birger/language-complexity/data100/dep_parse_results/{model}/'
+output_file = 'c:/GitHub/birger/language-complexity/data100/uas_results_{model}.csv'
 
 def count_matching_lines(file1, file2):
     with open(file1, 'r', encoding='utf-8') as f1, open(file2, 'r', encoding='utf-8') as f2:
@@ -40,7 +41,7 @@ results = []
 
 for filename in os.listdir(ground_truth_dir):
     ground_truth_file = os.path.join(ground_truth_dir, filename)
-    input_file = os.path.join(input_dir, f"{filename}_gemini-pro")
+    input_file = os.path.join(input_dir, f"{filename}_{model}")
     
     if os.path.isfile(ground_truth_file) and os.path.isfile(input_file):
         print( input_file )

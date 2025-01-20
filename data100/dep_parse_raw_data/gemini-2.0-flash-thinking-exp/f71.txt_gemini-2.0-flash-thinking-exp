@@ -1,0 +1,98 @@
+Here's a breakdown of the thought process to analyze the Swedish sentence and generate the dependency tree:
+
+1. **Understand the Goal:** The primary goal is to create a dependency tree representation of the sentence and calculate the average dependency distance. This involves identifying the head of each word and its relation to the dependent. The output format is specified as a list of tuples: `(index, token, head_index)`.
+
+2. **Tokenization:** The first step is to break down the sentence into individual tokens. This includes words and punctuation marks.
+
+   * *Initial thought:* Simply split by spaces.
+   * *Refinement:*  Recognize that commas and periods should be treated as separate tokens. This leads to the following token list: `['Som', 'jag', 'sa', 'tidigare', ',', 'man', 'kan', 'inte', 'sätta', 'fingret', 'på', 'folk-mord', 'för', 'det', 'är', 'inte', 'bara', 'mördandet', 'som', 'har', 'inflytande', 'på', 'händelsen', ',', 'utan', 'det', 'är', 'så', 'många', 'olika', 'perspektiv', 'som', 'det', 'psykologiska', ',', 'biologiska', ',', 'historiska', 'osv', '.']`
+
+3. **Dependency Parsing (The Core Challenge):**  This is the most complex part and requires grammatical knowledge of Swedish. I need to determine the head of each word. This involves thinking about the syntactic function of each word.
+
+   * **Start with the main clauses:**  Identify the main verbs and their subjects.
+      * "man kan inte sätta fingret på folk-mord" -  The main verb is "kan sätta" (modal auxiliary + infinitive). The subject is "man". "inte" modifies "sätta". "fingret" is the direct object of "sätta". "på folk-mord" is a prepositional phrase modifying "fingret".
+      * "det är inte bara mördandet som har inflytande på händelsen" - The main verb is "är". The subject is "mördandet som har inflytande på händelsen". This is a relative clause. "mördandet" is the subject of "har". "inflytande" is the direct object of "har". "på händelsen" modifies "inflytande".
+      * "utan det är så många olika perspektiv som det psykologiska, biologiska, historiska osv." - The main verb is "är". The subject is "många olika perspektiv som det psykologiska, biologiska, historiska osv." Again, a relative clause. "perspektiv" is the main noun. "olika" modifies "perspektiv". The adjectives modify "perspektiv". "osv" modifies the list of adjectives.
+
+   * **Connect clauses with conjunctions:**
+      * "Som jag sa tidigare" - This is a subordinate clause modifying the main clause. "sa" is the verb, "jag" is the subject. "tidigare" modifies "sa". "Som" is the subordinating conjunction, and its head is usually the main verb of the clause it introduces.
+      * "för" - This conjunction connects the first main clause and the following one. The head of "för" will be the verb of the clause it introduces.
+      * "utan" - This conjunction connects the second and third main clauses. Its head will be the verb of the clause it introduces.
+
+   * **Process prepositional phrases:**  The head of a prepositional phrase is typically the noun or verb it modifies. The preposition is dependent on that head, and the object of the preposition is dependent on the preposition.
+
+   * **Handle relative clauses:** The relative pronoun ("som") typically depends on the verb of the relative clause. The subject and object within the relative clause connect to the verb.
+
+   * **Deal with punctuation:** Punctuation usually depends on the head of the clause or phrase it's associated with.
+
+4. **Assign Head Indices:** Once the dependencies are understood, assign the index of the head word for each token. Remember that the root of the sentence has a head index of 0.
+
+5. **Format the Output:** Create the list of tuples in the specified format `(index, token, head_index)`. Pay close attention to the indices, starting from 1.
+
+6. **Calculate Average Dependency Distance:**
+
+   * **Calculate individual distances:** For each token, find the absolute difference between its index and the index of its head.
+   * **Sum the distances:** Add up all the individual dependency distances.
+   * **Divide by the number of tokens:** Divide the sum by the total number of tokens to get the average.
+
+7. **Review and Refine:** After the initial pass, review the dependency tree to ensure it makes grammatical sense. Are the dependencies logical? Are the head-dependent relationships correct? This might involve some adjustments based on a deeper understanding of Swedish grammar. For example, double-checking the attachment of conjunctions and the structure of relative clauses. The placement of "inte" modifying the verb.
+
+**Self-Correction Example During the Process:**
+
+* *Initial thought on "Som jag sa tidigare":*  Maybe "jag" is the head of "Som".
+* *Correction:*  Realize that "Som" is a subordinator. The verb "sa" is the core of this clause. "Som" modifies the entire clause, so its head should be the main verb "sa".
+
+By following this systematic approach, combining grammatical knowledge with careful tokenization and dependency analysis, the correct dependency tree and average dependency distance can be derived.
+```
+[(1, Som, 3), (2, jag, 3), (3, sa, 0), (4, tidigare, 3), (5, ,, 3), (6, man, 9), (7, kan, 9), (8, inte, 9), (9, sätta, 3), (10, fingret, 9), (11, på, 10), (12, folk-mord, 11), (13, för, 15), (14, det, 15), (15, är, 9), (16, inte, 17), (17, bara, 15), (18, mördandet, 15), (19, som, 20), (20, har, 18), (21, inflytande, 20), (22, på, 21), (23, händelsen, 22), (24, ,, 15), (25, utan, 27), (26, det, 27), (27, är, 15), (28, så, 29), (29, många, 31), (30, olika, 31), (31, perspektiv, 27), (32, som, 36), (33, det, 36), (34, psykologiska, 36), (35, ,, 34), (36, biologiska, 31), (37, ,, 36), (38, historiska, 36), (39, osv, 36), (40, ., 3)]
+```
+
+**Average Dependency Distance Calculation:**
+
+1. **Calculate the absolute dependency distance for each token:**
+   - |1 - 3| = 2
+   - |2 - 3| = 1
+   - |3 - 0| = 3
+   - |4 - 3| = 1
+   - |5 - 3| = 2
+   - |6 - 9| = 3
+   - |7 - 9| = 2
+   - |8 - 9| = 1
+   - |9 - 0| = 9
+   - |10 - 9| = 1
+   - |11 - 10| = 1
+   - |12 - 11| = 1
+   - |13 - 15| = 2
+   - |14 - 15| = 1
+   - |15 - 9| = 6
+   - |16 - 17| = 1
+   - |17 - 15| = 2
+   - |18 - 15| = 3
+   - |19 - 20| = 1
+   - |20 - 18| = 2
+   - |21 - 20| = 1
+   - |22 - 21| = 1
+   - |23 - 22| = 1
+   - |24 - 15| = 9
+   - |25 - 27| = 2
+   - |26 - 27| = 1
+   - |27 - 15| = 12
+   - |28 - 29| = 1
+   - |29 - 31| = 2
+   - |30 - 31| = 1
+   - |31 - 27| = 4
+   - |32 - 36| = 4
+   - |33 - 36| = 3
+   - |34 - 36| = 2
+   - |35 - 34| = 1
+   - |36 - 31| = 5
+   - |37 - 36| = 1
+   - |38 - 36| = 2
+   - |39 - 36| = 3
+   - |40 - 3| = 37
+
+2. **Sum the distances:** 2 + 1 + 3 + 1 + 2 + 3 + 2 + 1 + 9 + 1 + 1 + 1 + 2 + 1 + 6 + 1 + 2 + 3 + 1 + 2 + 1 + 1 + 1 + 9 + 2 + 1 + 12 + 1 + 2 + 1 + 4 + 4 + 3 + 2 + 1 + 5 + 1 + 2 + 3 + 37 = 142
+
+3. **Divide the sum by the number of tokens (40):** 142 / 40 = 3.55
+
+**Therefore, the average dependency distance for the sentence is 3.55.**

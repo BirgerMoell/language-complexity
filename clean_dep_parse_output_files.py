@@ -35,7 +35,7 @@ def clean_file(file_path):
     with open(file_path, 'w', encoding='utf-8') as file:
         file.write('\n'.join(cleaned_lines))
 
-directory = 'c:/GitHub/birger/language-complexity/data100/dep_parse_results/gpt-4o-mini'
+directory = 'c:/GitHub/birger/language-complexity/data100/dep_parse_results/gemini-2.0-flash-thinking-exp/'
 
 for root, dirs, files in os.walk(directory):
     for file in files:

@@ -1,0 +1,106 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average dependency distance:
+
+1. **Understand the Goal:** The main goal is to create a dependency tree representation and calculate the average dependency distance for a given Swedish sentence. The output format is clearly specified.
+
+2. **Tokenization:** The first step is to break down the sentence into individual tokens. This is relatively straightforward for Swedish, as it uses spaces to separate words. Punctuation marks are treated as separate tokens.
+   * "Sedan"
+   * "försökte"
+   * "jag"
+   * "sammanställa"
+   * "det"
+   * "till"
+   * "en"
+   * "relativt"
+   * "kort"
+   * "text"
+   * "."
+
+3. **Dependency Parsing (Conceptual):**  This is the core of the task. The idea is to identify the head (governor) of each word, which determines the word's grammatical role in the sentence. This is where linguistic knowledge comes in. I'll go through each word and consider its function:
+
+   * **Sedan:**  This is an adverbial conjunction indicating time. It modifies the main verb of the clause.
+   * **försökte:** This is the main verb of the sentence (the finite verb). It's the head of the clause.
+   * **jag:** This is the subject pronoun, performing the action of "försökte".
+   * **sammanställa:** This is an infinitive verb, expressing the action being attempted. It's dependent on "försökte".
+   * **det:** This is the direct object of "sammanställa".
+   * **till:** This is a preposition, indicating a direction or purpose. It introduces a prepositional phrase.
+   * **en:** This is a determiner, modifying "text".
+   * **relativt:** This is an adverb, modifying the adjective "kort".
+   * **kort:** This is an adjective, modifying the noun "text".
+   * **text:** This is the noun that is the object of the preposition "till".
+   * **.:** This is punctuation, marking the end of the sentence and dependent on the main verb.
+
+4. **Assign Heads and Create Triples:** Now, translate the conceptual dependencies into the required output format (token index, token, head index). Start with the main verb (the root of the dependency tree) and work outwards.
+
+   * **försökte:**  This is the root, so its head is 0. `(2, försökte, 0)`
+   * **Sedan:**  Modifies "försökte". `(1, Sedan, 2)`
+   * **jag:**  Is the subject of "försökte". `(3, jag, 2)`
+   * **sammanställa:** Is the infinitive form dependent on "försökte". `(4, sammanställa, 2)`
+   * **det:** Is the object of "sammanställa". `(5, det, 4)`
+   * **till:**  Heads the prepositional phrase, and the phrase modifies "sammanställa". `(6, till, 4)`
+   * **text:**  Is the object of the preposition "till". `(10, text, 6)`
+   * **en:** Modifies "text". `(7, en, 10)`
+   * **kort:** Modifies "text". `(9, kort, 10)`
+   * **relativt:** Modifies "kort". `(8, relativt, 9)`
+   * **.:** Punctuation modifying the main verb. `(11, ., 2)`
+
+5. **Verify Dependencies (Mental Check):** Review the created triples. Does each dependency make grammatical sense?  Is the head logically the governing word?
+
+6. **Calculate Dependency Distances:**  For each triple, calculate the absolute difference between the head index and the token index.
+
+   * `|2 - 1| = 1`
+   * `|0 - 2| = 2`
+   * `|2 - 3| = 1`
+   * `|2 - 4| = 2`
+   * `|4 - 5| = 1`
+   * `|4 - 6| = 2`
+   * `|10 - 7| = 3`
+   * `|9 - 8| = 1`
+   * `|10 - 9| = 1`
+   * `|6 - 10| = 4`
+   * `|2 - 11| = 9`
+
+7. **Calculate Average Distance:** Sum the individual distances and divide by the total number of dependencies (which is the number of tokens minus 1, or the number of triples).
+
+   * Sum of distances: 1 + 2 + 1 + 2 + 1 + 2 + 3 + 1 + 1 + 4 + 9 = 27
+   * Number of dependencies: 11
+   * Average distance: 27 / 11 = 2.4545...
+
+8. **Format the Output:** Present the dependency tree and the average distance in the specified format.
+```
+[(1, Sedan, 2), (2, försökte, 0), (3, jag, 2), (4, sammanställa, 2), (5, det, 4), (6, till, 4), (7, en, 10), (8, relativt, 9), (9, kort, 10), (10, text, 6), (11, ., 2)]
+```
+
+**Explanation of the Dependency Tree:**
+
+* **(1, Sedan, 2):** "Sedan" (then) modifies the verb "försökte" (tried).
+* **(2, försökte, 0):** "försökte" is the main verb of the sentence, and its head is the root (represented by 0).
+* **(3, jag, 2):** "jag" (I) is the subject of the verb "försökte".
+* **(4, sammanställa, 2):** "sammanställa" (to compile) is the infinitive verb that is the object of "försökte".
+* **(5, det, 4):** "det" (it/that) is the direct object of "sammanställa".
+* **(6, till, 4):** "till" (to) is a preposition that introduces a prepositional phrase modifying "sammanställa".
+* **(7, en, 10):** "en" (a) is a determiner modifying the noun "text".
+* **(8, relativt, 9):** "relativt" (relatively) modifies the adjective "kort".
+* **(9, kort, 10):** "kort" (short) is an adjective modifying the noun "text".
+* **(10, text, 6):** "text" (text) is the object of the preposition "till".
+* **(11, ., 2):** The period "." marks the end of the sentence and is dependent on the main verb "försökte".
+
+**Calculation of Average Dependency Distance:**
+
+To calculate the average dependency distance, we sum the absolute differences between the head index and the dependent token index for each dependency and then divide by the total number of dependencies.
+
+* |2 - 1| = 1
+* |0 - 2| = 2
+* |2 - 3| = 1
+* |2 - 4| = 2
+* |4 - 5| = 1
+* |4 - 6| = 2
+* |10 - 7| = 3
+* |9 - 8| = 1
+* |10 - 9| = 1
+* |6 - 10| = 4
+* |2 - 11| = 9
+
+Sum of distances = 1 + 2 + 1 + 2 + 1 + 2 + 3 + 1 + 1 + 4 + 9 = 27
+Number of dependencies = 11
+
+Average dependency distance = 27 / 11 = **2.45** (rounded to two decimal places)

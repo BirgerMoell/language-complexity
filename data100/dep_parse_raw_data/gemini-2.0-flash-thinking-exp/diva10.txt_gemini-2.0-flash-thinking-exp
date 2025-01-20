@@ -1,0 +1,131 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average dependency distance:
+
+1. **Understand the Task:** The goal is to analyze a Swedish sentence, create a dependency tree representation, and calculate the average dependency distance. The output format for the tree is clearly defined.
+
+2. **Tokenization:** The first step is to break down the sentence into individual tokens. Crucially, punctuation marks are treated as separate tokens.
+
+   * "Målet"
+   * "är"
+   * "att"
+   * "skapa"
+   * "en"
+   * "mjuk"
+   * "övergång"
+   * "mellan"
+   * "bergsvägg"
+   * "och"
+   * "Hornsbruks-"  (Important to keep the hyphen here as part of the word)
+   * "gatan"
+   * ","
+   * "genom"
+   * "en"
+   * "fusion"
+   * "mellan"
+   * "byggnadstypologi"
+   * "och"
+   * "topografi"
+   * "."
+
+3. **Dependency Parsing (Conceptual):**  This is the core of the task. We need to determine the grammatical relationships between the words. Think about which word "governs" or "modifies" another. This often involves considering:
+
+   * **Verb as the Center:**  Main verbs are usually the root of a clause. In this sentence, "är" (is) and "skapa" (create) are key verbs.
+   * **Subject-Verb Relationship:**  What is the subject of "är"?  It's "Målet" (The goal).
+   * **Object of the Verb:** What is being created (skapa)? It's "en mjuk övergång" (a soft transition).
+   * **Prepositional Phrases:**  Words like "mellan" (between), "genom" (through) introduce prepositional phrases that modify other parts of the sentence.
+   * **Conjunctions:** Words like "och" (and) connect elements.
+   * **Adjectives and Determiners:** Words like "en" (a), "mjuk" (soft) modify nouns.
+
+4. **Constructing the Dependency Tree (Step-by-Step):** Now, let's go through the sentence and assign heads to each token, following the conceptual understanding:
+
+   * **Målet (1):** The subject of "är" (is). Head is "är" (2). -> (1, Målet, 2)
+   * **är (2):** The main verb. It's the root of the first clause. Head is 0. -> (2, är, 0)
+   * **att (3):** Introduces an infinitive clause. Depends on the main verb "är". Head is "är" (2). -> (3, att, 2)
+   * **skapa (4):** The infinitive verb. Depends on "att". Head is "att" (3). -> (4, skapa, 3)
+   * **en (5):** Determiner modifying "övergång". Head is "övergång" (7). -> (5, en, 7)
+   * **mjuk (6):** Adjective modifying "övergång". Head is "övergång" (7). -> (6, mjuk, 7)
+   * **övergång (7):** The object of "skapa". Head is "skapa" (4). -> (7, övergång, 4)
+   * **mellan (8):** Preposition introducing a prepositional phrase. Modifies "övergång". Head is "övergång" (7). -> (8, mellan, 7)
+   * **bergsvägg (9):** The object of the preposition "mellan". Head is "mellan" (8). -> (9, bergsvägg, 8)
+   * **och (10):** Conjunction connecting "bergsvägg" and "Hornsbruks-gatan". It typically attaches to the first conjunct. Head is "bergsvägg" (9). -> (10, och, 9)
+   * **Hornsbruks- (11):**  Part of the compound noun modifying "gatan". Head is "gatan" (12). -> (11, Hornsbruks-, 12)
+   * **gatan (12):** The second object of the preposition "mellan". Head is "mellan" (8). -> (12, gatan, 8)
+   * **,(13):** Punctuation. Often attached to the main verb of the preceding clause. Head is "är" (2). -> (13, ,, 2)
+   * **genom (14):** Preposition introducing another prepositional phrase. Modifies the main verb "är" or "skapa". Let's attach it to "skapa" as it describes *how* the creating happens. Head is "skapa" (4). -> (14, genom, 4)
+   * **en (15):** Determiner modifying "fusion". Head is "fusion" (16). -> (15, en, 16)
+   * **fusion (16):** The object of the preposition "genom". Head is "genom" (14). -> (16, fusion, 14)
+   * **mellan (17):** Preposition introducing another prepositional phrase within the "fusion" phrase. Modifies "fusion". Head is "fusion" (16). -> (17, mellan, 16)
+   * **byggnadstypologi (18):** The first object of the preposition "mellan". Head is "mellan" (17). -> (18, byggnadstypologi, 17)
+   * **och (19):** Conjunction connecting "byggnadstypologi" and "topografi". Head is "byggnadstypologi" (18). -> (19, och, 18)
+   * **topografi (20):** The second object of the preposition "mellan". Head is "mellan" (17). -> (20, topografi, 17)
+   * **. (21):**  Punctuation. Attaches to the root of the sentence. Head is "är" (2). -> (21, ., 2)
+
+5. **Calculate Dependency Distances:**  For each token, find the absolute difference between its index and the index of its head.
+
+   * | Token Index | Token          | Head Index | Distance |
+     |-------------|----------------|------------|----------|
+     | 1           | Målet          | 2          | 1        |
+     | 2           | är            | 0          | 2        |
+     | 3           | att           | 2          | 1        |
+     | 4           | skapa          | 3          | 1        |
+     | 5           | en            | 7          | 2        |
+     | 6           | mjuk          | 7          | 1        |
+     | 7           | övergång       | 4          | 3        |
+     | 8           | mellan         | 7          | 1        |
+     | 9           | bergsvägg      | 8          | 1        |
+     | 10          | och           | 9          | 1        |
+     | 11          | Hornsbruks-    | 12         | 1        |
+     | 12          | gatan          | 8          | 4        |
+     | 13          | ,             | 2          | 11       |
+     | 14          | genom         | 4          | 10       |
+     | 15          | en            | 16         | 1        |
+     | 16          | fusion         | 14         | 2        |
+     | 17          | mellan         | 16         | 1        |
+     | 18          | byggnadstypologi| 17         | 1        |
+     | 19          | och           | 18         | 1        |
+     | 20          | topografi      | 17         | 3        |
+     | 21          | .             | 2          | 19       |
+
+6. **Calculate the Average:** Sum the distances and divide by the number of dependencies (which is the number of tokens minus the root, or the number of non-zero head indices). In this case, 21 tokens.
+
+   * Total distance = 1 + 2 + 1 + 1 + 2 + 1 + 3 + 1 + 1 + 1 + 1 + 4 + 11 + 10 + 1 + 2 + 1 + 1 + 1 + 3 + 19 = 67
+   * Average distance = 67 / 21 ≈ 3.19
+
+7. **Format the Output:** Present the dependency tree in the specified format and then state the average dependency distance.
+```
+[(1, Målet, 2), (2, är, 0), (3, att, 4), (4, skapa, 2), (5, en, 7), (6, mjuk, 7), (7, övergång, 4), (8, mellan, 7), (9, bergsvägg, 8), (10, och, 9), (11, Hornsbruks-, 12), (12, gatan, 8), (13, ,, 2), (14, genom, 4), (15, en, 16), (16, fusion, 14), (17, mellan, 16), (18, byggnadstypologi, 17), (19, och, 18), (20, topografi, 17), (21, ., 2)]
+```
+
+**Average Dependency Distance Calculation:**
+
+To calculate the average dependency distance, we sum the absolute difference between the head index and the dependent index for each dependency and then divide by the total number of dependencies.
+
+* | Dependent Index | Head Index | Distance |
+* |---|---|---|
+* | 1 | 2 | 1 |
+* | 2 | 0 | 2 |
+* | 3 | 4 | 1 |
+* | 4 | 2 | 2 |
+* | 5 | 7 | 2 |
+* | 6 | 7 | 1 |
+* | 7 | 4 | 3 |
+* | 8 | 7 | 1 |
+* | 9 | 8 | 1 |
+* | 10 | 9 | 1 |
+* | 11 | 12 | 1 |
+* | 12 | 8 | 4 |
+* | 13 | 2 | 11 |
+* | 14 | 4 | 10 |
+* | 15 | 16 | 1 |
+* | 16 | 14 | 2 |
+* | 17 | 16 | 1 |
+* | 18 | 17 | 1 |
+* | 19 | 18 | 1 |
+* | 20 | 17 | 3 |
+* | 21 | 2 | 19 |
+
+Sum of distances = 1 + 2 + 1 + 2 + 2 + 1 + 3 + 1 + 1 + 1 + 1 + 4 + 11 + 10 + 1 + 2 + 1 + 1 + 1 + 3 + 19 = 70
+Number of dependencies = 21
+
+Average dependency distance = 70 / 21 = 3.33 (approximately)
+
+**Average dependency distance: 3.33**

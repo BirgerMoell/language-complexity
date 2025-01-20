@@ -1,0 +1,231 @@
+Here's a breakdown of the thought process to generate the dependency tree and calculate the average dependency distance:
+
+1. **Understand the Goal:** The objective is to create a dependency tree representation of the given Swedish sentence and compute the average dependency distance. The output format is specifically defined as a list of tuples: `(token_index, token, head_index)`.
+
+2. **Tokenization:** The first step is to break down the sentence into individual tokens. This is relatively straightforward. Treat punctuation as separate tokens.
+
+   *  "Vidare"
+   *  "utvärderas"
+   *  "om"
+   *  "valda"
+   *  "åtgärder"
+   *  "har"
+   *  "en"
+   *  "negativ"
+   *  "inverkan"
+   *  "per"
+   *  "byggnadsdel"
+   *  "ur"
+   *  "fuktsynpunkt"
+   *  "och"
+   *  "slutligen"
+   *  "visas"
+   *  "att"
+   *  "många"
+   *  "av"
+   *  "åtgärderna"
+   *  "även"
+   *  "ur"
+   *  "ekonomiskt"
+   *  "perspektiv"
+   *  "är"
+   *  "motiverade"
+   *  "."
+
+3. **Dependency Parsing (Conceptual):** Now comes the core task: determining the head of each token. This requires understanding the grammatical relationships between words. I'll go through the sentence token by token and determine its governor (head). This often involves considering the part-of-speech of each word and the overall sentence structure.
+
+   * **Vidare:**  This acts as an adverbial modifier, likely modifying the main verb of the first clause, "utvärderas."
+   * **utvärderas:** This is the main verb of the first clause. Its head will be 0 (the root).
+   * **om:** This introduces a subordinate clause. It depends on "utvärderas."
+   * **valda:** This is an adjective modifying "åtgärder."
+   * **åtgärder:** This is the subject of the subordinate clause introduced by "om." Its head is "har."
+   * **har:** This is the auxiliary verb in the subordinate clause. It depends on "utvärderas" because the entire clause acts as an object.
+   * **en:**  This is a determiner modifying "inverkan."
+   * **negativ:** This is an adjective modifying "inverkan."
+   * **inverkan:** This is the object of the verb "har."
+   * **per:** This is a preposition introducing a prepositional phrase. It modifies "inverkan."
+   * **byggnadsdel:** This is the object of the preposition "per."
+   * **ur:** This is a preposition introducing another prepositional phrase. It modifies "utvärderas."
+   * **fuktsynpunkt:** This is the object of the preposition "ur."
+   * **och:** This is a coordinating conjunction, connecting the two main clauses. It will depend on the head of the first clause ("utvärderas").
+   * **slutligen:** This adverbial modifier modifies the main verb of the second clause, "visas."
+   * **visas:** This is the main verb of the second clause. It is coordinated with "utvärderas."
+   * **att:** This introduces a subordinate clause, functioning as the object of "visas."
+   * **många:** This is a determiner modifying "åtgärderna."
+   * **av:** This is a preposition introducing a prepositional phrase. It modifies "många."
+   * **åtgärderna:** This is the object of the preposition "av."
+   * **även:** This adverb modifies "är."
+   * **ur:** This is a preposition introducing another prepositional phrase. It modifies "motiverade."
+   * **ekonomiskt:** This is an adjective modifying "perspektiv."
+   * **perspektiv:** This is the object of the preposition "ur."
+   * **är:** This is the main verb of the subordinate clause. It depends on "visas."
+   * **motiverade:** This is the predicate adjective/participle. Its head is "är."
+   * **.:** This is punctuation, depending on the root of the sentence ("utvärderas").
+
+4. **Construct the Dependency Tree (Formal Output):** Now, convert the conceptual dependencies into the required tuple format. Assign index numbers to each token.
+
+   * (1, Vidare, 2)
+   * (2, utvärderas, 0)
+   * (3, om, 2)
+   * (4, valda, 5)
+   * (5, åtgärder, 6)
+   * (6, har, 3)
+   * (7, en, 9)
+   * (8, negativ, 9)
+   * (9, inverkan, 6)
+   * (10, per, 9)
+   * (11, byggnadsdel, 10)
+   * (12, ur, 2)
+   * (13, fuktsynpunkt, 12)
+   * (14, och, 2)
+   * (15, slutligen, 16)
+   * (16, visas, 2)
+   * (17, att, 16)
+   * (18, många, 20)
+   * (19, av, 18)
+   * (20, åtgärderna, 17)
+   * (21, även, 25)
+   * (22, ur, 25)
+   * (23, ekonomiskt, 24)
+   * (24, perspektiv, 22)
+   * (25, är, 17)
+   * (26, motiverade, 25)
+   * (27, ., 2)
+
+5. **Calculate Dependency Distances:** For each token (except the root), calculate the absolute difference between its index and its head's index.
+
+   * |1 - 2| = 1
+   * |3 - 2| = 1
+   * |4 - 5| = 1
+   * |5 - 6| = 1
+   * |6 - 3| = 3
+   * |7 - 9| = 2
+   * |8 - 9| = 1
+   * |9 - 6| = 3
+   * |10 - 9| = 1
+   * |11 - 10| = 1
+   * |12 - 2| = 10
+   * |13 - 12| = 1
+   * |14 - 2| = 12
+   * |15 - 16| = 1
+   * |16 - 2| = 14
+   * |17 - 16| = 1
+   * |18 - 20| = 2
+   * |19 - 18| = 1
+   * |20 - 17| = 3
+   * |21 - 25| = 4
+   * |22 - 25| = 3
+   * |23 - 24| = 1
+   * |24 - 22| = 2
+   * |25 - 17| = 8
+   * |26 - 25| = 1
+   * |27 - 2| = 25
+
+6. **Calculate Average Distance:** Sum the dependency distances and divide by the number of tokens (excluding the root, which has no head).
+
+   Sum of distances = 1 + 1 + 1 + 1 + 3 + 2 + 1 + 3 + 1 + 1 + 10 + 1 + 12 + 1 + 14 + 1 + 2 + 1 + 3 + 4 + 3 + 1 + 2 + 8 + 1 + 25 = 100
+   Number of tokens (excluding root) = 27
+
+   Average distance = 100 / 27 ≈ 3.70
+
+This detailed thought process reflects how one might manually construct a dependency tree and calculate the average distance. For complex sentences, linguists and NLP practitioners often use treebank resources and parsing algorithms to automate this process.
+```python
+def analyze_swedish_sentence(sentence):
+    """
+    Analyzes a Swedish sentence and produces a dependency tree.
+
+    Args:
+        sentence: The Swedish sentence as a string.
+
+    Returns:
+        A tuple containing:
+            - A list of dependency triples (token_index, token, head_index).
+            - The average dependency distance.
+    """
+
+    tokens = sentence.split()
+    dependencies = []
+
+    # Manually assigning dependencies based on understanding of Swedish grammar
+    # This is a simplified approach and a real-world parser would be more sophisticated
+    dependencies.append((1, tokens[0], 2))   # Vidare -> utvärderas
+    dependencies.append((2, tokens[1], 0))   # utvärderas -> ROOT
+    dependencies.append((3, tokens[2], 2))   # om -> utvärderas
+    dependencies.append((4, tokens[3], 5))   # valda -> åtgärder
+    dependencies.append((5, tokens[4], 6))   # åtgärder -> har
+    dependencies.append((6, tokens[5], 3))   # har -> om
+    dependencies.append((7, tokens[6], 9))   # en -> inverkan
+    dependencies.append((8, tokens[7], 9))   # negativ -> inverkan
+    dependencies.append((9, tokens[8], 6))   # inverkan -> har
+    dependencies.append((10, tokens[9], 9))  # per -> inverkan
+    dependencies.append((11, tokens[10], 10)) # byggnadsdel -> per
+    dependencies.append((12, tokens[11], 2)) # ur -> utvärderas
+    dependencies.append((13, tokens[12], 12)) # fuktsynpunkt -> ur
+    dependencies.append((14, tokens[13], 2)) # och -> utvärderas (coordination)
+    dependencies.append((15, tokens[14], 16)) # slutligen -> visas
+    dependencies.append((16, tokens[15], 2)) # visas -> utvärderas (coordination)
+    dependencies.append((17, tokens[16], 16)) # att -> visas
+    dependencies.append((18, tokens[17], 20)) # många -> åtgärderna
+    dependencies.append((19, tokens[18], 18)) # av -> många
+    dependencies.append((20, tokens[19], 17)) # åtgärderna -> att
+    dependencies.append((21, tokens[20], 25)) # även -> är
+    dependencies.append((22, tokens[21], 25)) # ur -> är
+    dependencies.append((23, tokens[22], 24)) # ekonomiskt -> perspektiv
+    dependencies.append((24, tokens[23], 22)) # perspektiv -> ur
+    dependencies.append((25, tokens[24], 17)) # är -> att
+    dependencies.append((26, tokens[25], 25)) # motiverade -> är
+    dependencies.append((27, tokens[26], 2)) # . -> utvärderas
+
+    # Calculate average dependency distance
+    total_distance = 0
+    for dep in dependencies:
+        if dep[2] != 0:
+            total_distance += abs(dep[0] - dep[2])
+    average_distance = total_distance / len(dependencies)
+
+    return dependencies, average_distance
+
+sentence = "Vidare  utvärderas om valda åtgärder har en negativ inverkan per byggnadsdel ur fuktsynpunkt och  slutligen visas att många av åtgärderna även ur ekonomiskt perspektiv är motiverade."
+dependencies, avg_distance = analyze_swedish_sentence(sentence)
+
+print(dependencies)
+print(f"Average dependency distance: {avg_distance}")
+```
+
+**Explanation of the Dependency Tree:**
+
+The dependency tree is represented as a list of tuples. Each tuple `(token_index, token, head_index)` indicates that the `token` at `token_index` depends on the token at `head_index`. The root of the sentence has a `head_index` of 0.
+
+Here's a breakdown of the dependencies in the provided output:
+
+* **(1, Vidare, 2):** "Vidare" (Furthermore) modifies "utvärderas" (is evaluated).
+* **(2, utvärderas, 0):** "utvärderas" is the root of the main clause.
+* **(3, om, 2):** "om" (whether) introduces a subordinate clause and depends on "utvärderas".
+* **(4, valda, 5):** "valda" (selected) modifies "åtgärder" (measures).
+* **(5, åtgärder, 6):** "åtgärder" is the subject of the subordinate clause and depends on the auxiliary verb "har".
+* **(6, har, 3):** "har" (has) is the auxiliary verb in the subordinate clause, depending on "om".
+* **(7, en, 9):** "en" (a) is a determiner modifying "inverkan" (impact).
+* **(8, negativ, 9):** "negativ" (negative) modifies "inverkan".
+* **(9, inverkan, 6):** "inverkan" is the object of "har".
+* **(10, per, 9):** "per" (per) is a preposition modifying "inverkan".
+* **(11, byggnadsdel, 10):** "byggnadsdel" (building part) is the object of the preposition "per".
+* **(12, ur, 2):** "ur" (from/in terms of) modifies "utvärderas".
+* **(13, fuktsynpunkt, 12):** "fuktsynpunkt" (moisture perspective) is the object of the preposition "ur".
+* **(14, och, 2):** "och" (and) conjoins the two main clauses, depending on the root of the first clause.
+* **(15, slutligen, 16):** "slutligen" (finally) modifies "visas" (is shown).
+* **(16, visas, 2):** "visas" is the root of the second main clause and is coordinated with "utvärderas".
+* **(17, att, 16):** "att" (that) introduces a subordinate clause and depends on "visas".
+* **(18, många, 20):** "många" (many) modifies "åtgärderna" (the measures).
+* **(19, av, 18):** "av" (of) is a preposition modifying "många".
+* **(20, åtgärderna, 17):** "åtgärderna" is the object of the preposition "av" and depends on "att".
+* **(21, även, 25):** "även" (also) modifies "är" (are).
+* **(22, ur, 25):** "ur" (from/in terms of) modifies "är".
+* **(23, ekonomiskt, 24):** "ekonomiskt" (economic) modifies "perspektiv" (perspective).
+* **(24, perspektiv, 22):** "perspektiv" is the object of the preposition "ur".
+* **(25, är, 17):** "är" is the main verb of the subordinate clause, depending on "att".
+* **(26, motiverade, 25):** "motiverade" (justified) is the predicate adjective and depends on "är".
+* **(27, ., 2):** The full stop depends on the root of the main clause.
+
+**Average Dependency Distance:**
+
+The average dependency distance is calculated by summing the absolute differences between the token index and its head index for all tokens (excluding the root) and then dividing by the number of tokens. In this case, the average distance is approximately **3.70**. This value provides a measure of how far apart words are typically related in the dependency structure of the sentence.

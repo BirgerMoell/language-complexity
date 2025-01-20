@@ -1,0 +1,103 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average dependency distance:
+
+1. **Understanding the Request:** The goal is to create a dependency tree for a Swedish sentence, representing it as a list of tuples `(token_index, token, head_index)`. Punctuation is a token. Finally, calculate the average dependency distance.
+
+2. **Tokenization:** The first step is to break the sentence into individual tokens. This seems straightforward for most parts, but requires careful consideration of compound words or phrases that might act as a single unit in some linguistic contexts (though in dependency parsing, we generally aim for individual words).
+
+   * "Med"
+   * "den"
+   * "beräknade"
+   * "befolkningsökningen"
+   * "kommer"
+   * "efterfrågan"
+   * "på"
+   * "fisk"
+   * "år"
+   * "2010"
+   * "att"
+   * "stiga"
+   * "till"
+   * "120"
+   * "miljoner"
+   * "ton"
+   * "."
+
+3. **Identifying the Head:** The core of dependency parsing is determining the head of each token. The head is the word that governs or determines the properties of another word. This often involves understanding grammatical relationships.
+
+   * **Start with the main verb:** The central action of the sentence is "kommer att stiga" (will rise). "stiga" is the infinitive form, and "kommer" is the auxiliary verb. The finite verb "kommer" often acts as the root in Swedish declarative sentences. So, "kommer" gets a head of 0 (the root).
+
+   * **Prepositional phrases:** "Med den beräknade befolkningsökningen" is a prepositional phrase. The preposition "Med" is the head. "den" modifies "befolkningsökningen", and "beräknade" modifies "befolkningsökningen". So: `den -> befolkningsökningen`, `beräknade -> befolkningsökningen`, `befolkningsökningen -> Med`.
+
+   * **Subject:**  "efterfrågan" is the subject of the verb "kommer att stiga". So, `efterfrågan -> kommer`.
+
+   * **Another prepositional phrase:** "på fisk". "på" is the preposition, "fisk" is the object. So, `fisk -> på`.
+
+   * **Time phrase:** "år 2010". "år" is the head. "2010" modifies "år". So, `2010 -> år`.
+
+   * **Infinitive marker:** "att" precedes the infinitive "stiga" and is dependent on it. So, `att -> stiga`.
+
+   * **Goal/Direction phrase:** "till 120 miljoner ton". "till" is the preposition. "120 miljoner ton" functions as the object. Now, how do we link "120 miljoner ton"?  It's a numerical expression. "ton" is the noun specifying the unit. "miljoner" modifies "ton", and "120" modifies "miljoner". So: `miljoner -> ton`, `120 -> miljoner`, `ton -> till`.
+
+   * **Punctuation:** The full stop "." attaches to the main verb "kommer". So, `. -> kommer`.
+
+4. **Assigning Indices:** Now that the dependencies are identified, assign indices to each token starting from 1.
+
+5. **Constructing the Tuples:**  Go through the tokens and create the tuples in the specified format: `(token_index, token, head_index)`.
+
+6. **Calculating Dependency Distance:**
+
+   * For each token, find the absolute difference between its index and its head's index.
+   * Sum these distances.
+   * Divide the sum by the total number of dependencies (which is the number of tokens minus 1, since the root has no head).
+
+7. **Double-Checking:** Review the dependency relations to ensure they make grammatical sense. Are there any ambiguities?  Could a different dependency structure be argued? (In this case, the structure seems relatively straightforward).
+
+**Self-Correction Example during the process:**
+
+Initially, I might have considered attaching "år 2010" directly to "kommer". However, thinking about the semantic role, "år 2010" specifies *when* the demand will rise, modifying the verb more indirectly. Attaching it to "kommer" feels less precise than having "år" as the head and "2010" dependent on it, forming a clear temporal phrase. Similarly,  I might have initially attached "fisk" directly to "efterfrågan", but the preposition "på" introduces it, making "på" the more direct head.
+```
+[(1, Med, 5), (2, den, 4), (3, beräknade, 4), (4, befolkningsökningen, 1), (5, kommer, 0), (6, efterfrågan, 5), (7, på, 6), (8, fisk, 7), (9, år, 5), (10, 2010, 9), (11, att, 12), (12, stiga, 5), (13, till, 12), (14, 120, 16), (15, miljoner, 16), (16, ton, 13), (17, ., 5)]
+```
+
+**Dependency Tree Visualization (Conceptual):**
+
+```
+        kommer (5)
+       /     |    \      \
+      Med(1)  efterfrågan(6) år(9)  stiga(12) . (17)
+      |       /       \     /  \
+befolkningsökningen(4) på(7) 2010(10) att(11) till(13)
+     /  \      |
+    den(2) beräknade(3) fisk(8)          ton(16)
+                                     /   \
+                                   120(14) miljoner(15)
+```
+
+**Average Dependency Distance Calculation:**
+
+1. **Calculate the dependency distance for each token:**
+   * Med: |1 - 5| = 4
+   * den: |2 - 4| = 2
+   * beräknade: |3 - 4| = 1
+   * befolkningsökningen: |4 - 1| = 3
+   * kommer: |5 - 0| = 5
+   * efterfrågan: |6 - 5| = 1
+   * på: |7 - 6| = 1
+   * fisk: |8 - 7| = 1
+   * år: |9 - 5| = 4
+   * 2010: |10 - 9| = 1
+   * att: |11 - 12| = 1
+   * stiga: |12 - 5| = 7
+   * till: |13 - 12| = 1
+   * 120: |14 - 16| = 2
+   * miljoner: |15 - 16| = 1
+   * ton: |16 - 13| = 3
+   * .: |17 - 5| = 12
+
+2. **Sum the dependency distances:**
+   4 + 2 + 1 + 3 + 5 + 1 + 1 + 1 + 4 + 1 + 1 + 7 + 1 + 2 + 1 + 3 + 12 = 49
+
+3. **Divide the sum by the total number of dependencies (number of tokens - 1):**
+   49 / 16 = 3.0625
+
+**Average Dependency Distance:** 3.0625

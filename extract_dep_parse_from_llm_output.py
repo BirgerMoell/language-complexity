@@ -15,7 +15,7 @@ def extract_triples(file_path):
 import os
 
 # Replace with the actual path to your directory
-directory = 'c:/GitHub/birger/language-complexity/data100/dep_parse_results/gemini-pro'
+directory = 'c:/GitHub/birger/language-complexity/data100/dep_parse_results/gemini-2.0-flash-thinking-exp/'
 
 for root, dirs, files in os.walk(directory):
     for file in files:

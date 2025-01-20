@@ -1,0 +1,190 @@
+Here's a breakdown of the thought process to achieve the desired dependency tree and average dependency distance:
+
+1. **Understand the Request:** The core task is to analyze a Swedish sentence, generate its dependency tree in a specific format, and calculate the average dependency distance. The example clarifies the output format: `(token_index, token, head_index)`. Punctuation needs to be treated as tokens.
+
+2. **Tokenization:**  The first step is to break the sentence into individual tokens. This includes words and punctuation. A careful approach is needed to separate punctuation marks from words.
+
+    * Sentence: "Most of the environmental laws  that were studied are parts of the legal framework, which means that no exact limits or  detailed guidelines are given."
+    * Tokens: ["Most", "of", "the", "environmental", "laws", "that", "were", "studied", "are", "parts", "of", "the", "legal", "framework", ",", "which", "means", "that", "no", "exact", "limits", "or", "detailed", "guidelines", "are", "given", "."]
+
+3. **Dependency Parsing (Conceptual):**  This is the most complex part. It involves understanding the grammatical relationships between words. Imagine drawing arrows between words, where the arrow points from the dependent to the head. Here's a simplified mental process for each word:
+
+    * **Most:** Modifies "laws".
+    * **of:**  Connects "Most" to "laws".
+    * **the:**  Determines "environmental laws".
+    * **environmental:** Modifies "laws".
+    * **laws:** The noun phrase subject of the first clause. "are" is the verb.
+    * **that:** Introduces the relative clause modifying "laws".
+    * **were:** Auxiliary verb for "studied".
+    * **studied:**  The verb of the relative clause, modifying "laws".
+    * **are:** The main verb of the first clause.
+    * **parts:**  The subject complement, linked by "are".
+    * **of:** Connects "parts" to "framework".
+    * **the:**  Determines "legal framework".
+    * **legal:** Modifies "framework".
+    * **framework:**  The noun in the phrase "parts of the legal framework".
+    * **,**:  Punctuation, often attached to the main verb of the clause it separates.
+    * **which:** Connects the clauses, referring to the first clause. Its head is "means".
+    * **means:** The main verb of the second clause.
+    * **that:** Introduces the subordinate clause.
+    * **no:**  Modifies "limits".
+    * **exact:** Modifies "limits".
+    * **limits:** Part of the coordinated subject of the second clause. "are given".
+    * **or:** Connects "limits" and "guidelines".
+    * **detailed:** Modifies "guidelines".
+    * **guidelines:** Part of the coordinated subject.
+    * **are:** Auxiliary verb for "given" in the passive construction.
+    * **given:** The main verb of the second clause.
+    * **.:** Punctuation, often attached to the main verb of the sentence.
+
+4. **Creating the Dependency Tree (Formal Output):**  Now, translate the conceptual dependencies into the requested format. This involves going through each token, determining its head, and recording the indices. It's often iterative and might involve revisiting decisions.
+
+    * (1, Most, 5) - "Most" modifies "laws".
+    * (2, of, 1) - "of" depends on "Most".
+    * (3, the, 5) - "the" modifies "laws".
+    * (4, environmental, 5) - "environmental" modifies "laws".
+    * (5, laws, 9) - "laws" is the subject of "are".
+    * (6, that, 8) - "that" modifies "studied".
+    * (7, were, 8) - "were" is an auxiliary verb for "studied".
+    * (8, studied, 5) - "studied" modifies "laws".
+    * (9, are, 0) - "are" is the root verb.
+    * (10, parts, 9) - "parts" is the object of "are".
+    * (11, of, 10) - "of" connects "parts" to "framework".
+    * (12, the, 14) - "the" modifies "framework".
+    * (13, legal, 14) - "legal" modifies "framework".
+    * (14, framework, 10) - "framework" is the object of "of".
+    * (15, ,, 9) - The comma often attaches to the main verb of the clause.
+    * (16, which, 17) - "which" introduces the relative clause and depends on "means".
+    * (17, means, 9) - "means" is a main verb connected to the preceding clause.
+    * (18, that, 26) - "that" introduces the clause and depends on "given".
+    * (19, no, 21) - "no" modifies "limits".
+    * (20, exact, 21) - "exact" modifies "limits".
+    * (21, limits, 26) - "limits" is part of the subject and depends on "given".
+    * (22, or, 24) - "or" connects "limits" and "guidelines".
+    * (23, detailed, 24) - "detailed" modifies "guidelines".
+    * (24, guidelines, 21) - "guidelines" is coordinated with "limits".
+    * (25, are, 26) - "are" is the auxiliary verb for "given".
+    * (26, given, 17) - "given" is the main verb of the second clause.
+    * (27, ., 9) - The period usually attaches to the main verb.
+
+5. **Calculate Dependency Distances:** For each token, calculate the absolute difference between its index and its head's index.
+
+    * |Most| of | the | environmental | laws | that | were | studied | are | parts| of | the | legal | framework | , | which| means| that| no | exact| limits| or | detailed| guidelines| are | given| . |
+    * |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+    * |5-1|=4 |1-2|=1 |5-3|=2 |5-4|=1 |9-5|=4 |8-6|=2 |8-7|=1 |5-8|=3 |0-9|=9 |9-10|=1|10-11|=1|14-12|=2|14-13|=1|10-14|=4|9-15|=6|17-16|=1|9-17|=8|26-18|=8|21-19|=2|21-20|=1|26-21|=5|24-22|=2|21-24|=3|26-25|=1|17-26|=9|9-27|=18|
+
+6. **Calculate Average Dependency Distance:** Sum the individual distances and divide by the total number of dependencies (which is the number of tokens minus the root, or equivalently, the number of non-zero head indices).
+
+    * Total distance = 4 + 1 + 2 + 1 + 4 + 2 + 1 + 3 + 9 + 1 + 1 + 2 + 1 + 4 + 6 + 1 + 8 + 8 + 2 + 1 + 5 + 2 + 3 + 1 + 9 + 18 = 101
+    * Number of dependencies = 27
+    * Average distance = 101 / 27 ≈ 3.74
+
+7. **Format the Output:** Present the dependency tree and the average dependency distance in the requested format. Double-check the token indices and head indices for accuracy.
+```python
+def analyze_swedish_sentence(sentence):
+    """
+    Analyzes a Swedish sentence and produces a dependency tree.
+
+    Args:
+        sentence: The Swedish sentence to analyze (string).
+
+    Returns:
+        A tuple containing:
+            - A list of dependency triples (token_index, token, head_index).
+            - The average dependency distance (float).
+    """
+
+    tokens = [token for token in sentence.split()]
+    import re
+    final_tokens = []
+    for token in tokens:
+        # Split punctuation from words
+        temp_tokens = re.findall(r'\w+|[^\w\s]', token)
+        final_tokens.extend(temp_tokens)
+
+    # Manually define the dependency tree (this would ideally be done by an NLP library)
+    # Format: (token_index, token, head_index)
+    # Head index 0 represents the root of the sentence
+    dependency_tree = [
+        (1, "Most", 5),
+        (2, "of", 1),
+        (3, "the", 5),
+        (4, "environmental", 5),
+        (5, "laws", 9),
+        (6, "that", 8),
+        (7, "were", 8),
+        (8, "studied", 5),
+        (9, "are", 0),
+        (10, "parts", 9),
+        (11, "of", 10),
+        (12, "the", 14),
+        (13, "legal", 14),
+        (14, "framework", 10),
+        (15, ",", 9),
+        (16, "which", 17),
+        (17, "means", 9),
+        (18, "that", 26),
+        (19, "no", 21),
+        (20, "exact", 21),
+        (21, "limits", 26),
+        (22, "or", 24),
+        (23, "detailed", 24),
+        (24, "guidelines", 21),
+        (25, "are", 26),
+        (26, "given", 17),
+        (27, ".", 9),
+    ]
+
+    # Compute average dependency distance
+    total_distance = 0
+    num_dependencies = 0
+    for index, token, head_index in dependency_tree:
+        if head_index != 0:
+            distance = abs(index - head_index)
+            total_distance += distance
+            num_dependencies += 1
+
+    average_distance = total_distance / num_dependencies if num_dependencies > 0 else 0
+
+    return dependency_tree, average_distance
+
+sentence = "Most of the environmental laws  that were studied are parts of the legal framework, which means that no exact limits or  detailed guidelines are given."
+dependency_tree, avg_distance = analyze_swedish_sentence(sentence)
+
+print(dependency_tree)
+print(f"Average dependency distance: {avg_distance}")
+```
+
+**Explanation of the Dependency Tree:**
+
+* **(1, "Most", 5):** The word "Most" (index 1) depends on "laws" (index 5).
+* **(2, "of", 1):** The word "of" (index 2) depends on "Most" (index 1).
+* **(3, "the", 5):** The word "the" (index 3) depends on "laws" (index 5).
+* **(4, "environmental", 5):** The word "environmental" (index 4) depends on "laws" (index 5).
+* **(5, "laws", 9):** The word "laws" (index 5) is the subject and depends on the main verb "are" (index 9).
+* **(6, "that", 8):** The word "that" (index 6) introduces the relative clause and depends on the verb "studied" (index 8).
+* **(7, "were", 8):** The auxiliary verb "were" (index 7) depends on the main verb "studied" (index 8).
+* **(8, "studied", 5):** The verb "studied" (index 8) modifies "laws" (index 5).
+* **(9, "are", 0):** The main verb "are" (index 9) is the root of the main clause, hence its head index is 0.
+* **(10, "parts", 9):** The noun "parts" (index 10) is the complement and depends on the verb "are" (index 9).
+* **(11, "of", 10):** The preposition "of" (index 11) depends on "parts" (index 10).
+* **(12, "the", 14):** The article "the" (index 12) depends on "framework" (index 14).
+* **(13, "legal", 14):** The adjective "legal" (index 13) depends on "framework" (index 14).
+* **(14, "framework", 10):** The noun "framework" (index 14) is the object of the preposition "of" and depends on "parts" (index 10).
+* **(15, ",", 9):** The comma (index 15) often attaches to the main verb of the clause it separates, which is "are" (index 9).
+* **(16, "which", 17):** The relative pronoun "which" (index 16) refers to the previous clause and depends on the verb "means" (index 17).
+* **(17, "means", 9):** The verb "means" (index 17) introduces a new clause and is linked to the main clause with "are" (index 9).
+* **(18, "that", 26):** The conjunction "that" (index 18) introduces a subordinate clause and depends on the verb "given" (index 26).
+* **(19, "no", 21):** The determiner "no" (index 19) depends on "limits" (index 21).
+* **(20, "exact", 21):** The adjective "exact" (index 20) depends on "limits" (index 21).
+* **(21, "limits", 26):** The noun "limits" (index 21) is part of the subject and depends on the verb "given" (index 26).
+* **(22, "or", 24):** The conjunction "or" (index 22) connects "limits" and "guidelines" and depends on "guidelines" (index 24) in this coordination.
+* **(23, "detailed", 24):** The adjective "detailed" (index 23) depends on "guidelines" (index 24).
+* **(24, "guidelines", 21):** The noun "guidelines" (index 24) is coordinated with "limits" and depends on "limits" (index 21).
+* **(25, "are", 26):** The auxiliary verb "are" (index 25) depends on the main verb "given" (index 26).
+* **(26, "given", 17):** The verb "given" (index 26) is the main verb of the subordinate clause and depends on "means" (index 17).
+* **(27, ".", 9):** The period (index 27) typically attaches to the main verb of the sentence, which is "are" (index 9).
+
+**Average Dependency Distance:**
+
+The average dependency distance is calculated by summing the distances between each token and its head, and then dividing by the total number of dependencies (excluding the root). In this case, the average dependency distance is approximately **3.74**.

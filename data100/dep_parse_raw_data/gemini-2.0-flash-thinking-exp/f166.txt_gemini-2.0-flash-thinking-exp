@@ -1,0 +1,210 @@
+Here's a breakdown of the thought process to analyze the Swedish sentence and create the dependency tree:
+
+1. **Understand the Goal:** The core task is to create a dependency tree representation of the sentence and calculate the average dependency distance. The specific output format [(index, token, head_index)] is crucial.
+
+2. **Tokenization:** The first step is to break the sentence down into individual tokens. This includes words and punctuation. This seems straightforward:
+    * Korallreven
+    * är
+    * också
+    * beroende
+    * av
+    * mangroveskogen
+    * eftersom
+    * att
+    * den
+    * fungerar
+    * som
+    * ett
+    * filter
+    * och
+    * tar
+    * bort
+    * allt
+    * som
+    * annars
+    * skulle
+    * slamma
+    * igen
+    * korallreven
+    * .
+
+3. **Identify the Root:**  The root of the dependency tree is usually the main verb of the main clause. In this sentence, "är" (is) appears to be the main verb of the primary assertion.
+
+4. **Determine Dependencies (Iterative Process):** This is the most complex part and requires grammatical knowledge of Swedish. It often involves going through the sentence multiple times, considering different relationships. Here's a possible thought process for each word:
+
+    * **Korallreven:**  What is "Korallreven"? It's the subject of the verb "är". So, Korallreven depends on är. `(1, Korallreven, 2)`
+
+    * **är:** This is the root, so its head is 0. `(2, är, 0)`
+
+    * **också:**  "Också" modifies the verb "är". It indicates the state of being is also true. So, också depends on är. `(3, också, 2)`
+
+    * **beroende:**  "Beroende" is a predicate adjective describing "Korallreven". It depends on the verb "är". `(4, beroende, 2)`
+
+    * **av:** This preposition introduces the object of "beroende". It depends on "beroende". `(5, av, 4)`
+
+    * **mangroveskogen:** This is the object of the preposition "av". It depends on "av". `(6, mangroveskogen, 5)`
+
+    * **eftersom:** This word introduces a subordinate clause, indicating a reason. It connects the subordinate clause to the main clause. It feels like it should depend on the main verb, "är". `(7, eftersom, 2)`
+
+    * **att:** This often acts as a subordinator after "eftersom". It links the "eftersom" to the verb of the subordinate clause. It depends on "eftersom". `(8, att, 7)`
+
+    * **den:** This pronoun refers to "mangroveskogen" and is the subject of the verb "fungerar" in the subordinate clause. It depends on "fungerar". `(9, den, 10)`
+
+    * **fungerar:** This is the main verb of the subordinate clause. The subordinator "att" influences it. It depends on "att". `(10, fungerar, 8)`
+
+    * **som:** This acts as a conjunction introducing a relative clause modifying "filter". It depends on "filter". `(11, som, 13)`
+
+    * **ett:** This is a determiner modifying "filter". It depends on "filter". `(12, ett, 13)`
+
+    * **filter:** This is the predicate nominative after "fungerar som". It depends on "fungerar". `(13, filter, 10)`
+
+    * **och:** This conjunction connects two clauses or phrases. It connects the clause "den fungerar som ett filter" with "tar bort allt". It depends on the main verb of the first clause, "fungerar". `(14, och, 10)`
+
+    * **tar:** This is the verb of the second part of the coordinated clause. The subject is implicitly "den" (mangroveskogen). It depends on the conjunction "och". `(15, tar, 14)`
+
+    * **bort:** This is a particle associated with the verb "tar". It modifies the verb. It depends on "tar". `(16, bort, 15)`
+
+    * **allt:** This is the direct object of the verb "tar bort". It depends on "tar". `(17, allt, 15)`
+
+    * **som:** This is a relative pronoun modifying "allt". It's the subject of the verb "skulle slamma igen". It depends on "allt". `(18, som, 17)`
+
+    * **annars:** This adverb modifies the verb "skulle slamma igen". It depends on "skulle slamma igen" (specifically "skulle"). `(19, annars, 20)`
+
+    * **skulle:** This is an auxiliary verb. It depends on the main verb "slamma". `(20, skulle, 21)`
+
+    * **slamma:** This is the main verb of the relative clause. The relative pronoun "som" is the subject. It depends on "som". `(21, slamma, 18)`
+
+    * **igen:** This is a particle associated with the verb "slamma". It modifies the verb. It depends on "slamma". `(22, igen, 21)`
+
+    * **korallreven:** This is the object of the verb "slamma igen". It depends on "slamma". `(23, korallreven, 21)`
+
+    * **.:** Punctuation typically depends on the root of the sentence. `(24, ., 2)`
+
+5. **Verify Dependencies:** After the initial pass, review the dependencies. Do they make sense grammatically? Are there any cycles or words with multiple heads? In this case, the initial pass seems reasonably consistent.
+
+6. **Format the Output:**  Organize the dependencies into the specified list of tuples. Ensure the indices are correct and start from 1.
+
+7. **Calculate Dependency Distances:** For each dependency, calculate the absolute difference between the head index and the dependent index.
+    * |2-1| = 1
+    * |0-2| = 2
+    * |2-3| = 1
+    * |2-4| = 2
+    * |4-5| = 1
+    * |5-6| = 1
+    * |2-7| = 5
+    * |7-8| = 1
+    * |10-9| = 1
+    * |8-10| = 2
+    * |13-11| = 2
+    * |13-12| = 1
+    * |10-13| = 3
+    * |10-14| = 4
+    * |14-15| = 1
+    * |15-16| = 1
+    * |15-17| = 2
+    * |17-18| = 1
+    * |20-19| = 1
+    * |21-20| = 1
+    * |18-21| = 3
+    * |21-22| = 1
+    * |21-23| = 2
+    * |2-24| = 2
+
+8. **Calculate Average Distance:** Sum the distances and divide by the number of dependencies (excluding the root's dependency on 0).
+    * Sum = 1 + 2 + 1 + 2 + 1 + 1 + 5 + 1 + 1 + 2 + 2 + 1 + 3 + 4 + 1 + 1 + 2 + 1 + 1 + 1 + 3 + 1 + 2 + 2 = 41
+    * Count = 23
+    * Average = 41 / 23 ≈ 1.78
+
+This detailed thought process shows the steps involved, including the iterative nature of dependency parsing and the application of grammatical knowledge.
+Here's the dependency tree analysis for the Swedish sentence:
+
+**Sentence:** Korallreven är också beroende av mangroveskogen eftersom att den fungerar som ett filter och tar bort allt som annars skulle slamma igen korallreven.
+
+**Dependency Tree:**
+
+[(1, Korallreven, 2),
+ (2, är, 0),
+ (3, också, 2),
+ (4, beroende, 2),
+ (5, av, 4),
+ (6, mangroveskogen, 5),
+ (7, eftersom, 2),
+ (8, att, 7),
+ (9, den, 10),
+ (10, fungerar, 8),
+ (11, som, 13),
+ (12, ett, 13),
+ (13, filter, 10),
+ (14, och, 10),
+ (15, tar, 14),
+ (16, bort, 15),
+ (17, allt, 15),
+ (18, som, 17),
+ (19, annars, 20),
+ (20, skulle, 21),
+ (21, slamma, 18),
+ (22, igen, 21),
+ (23, korallreven, 21),
+ (24, ., 2)]
+
+**Explanation of Dependencies:**
+
+* **2 (är)** is the root of the main clause.
+* **1 (Korallreven)** is the subject of the verb "är".
+* **3 (också)** is an adverb modifying the verb "är".
+* **4 (beroende)** is a predicate adjective describing "Korallreven".
+* **5 (av)** is a preposition introducing the prepositional phrase.
+* **6 (mangroveskogen)** is the object of the preposition "av".
+* **7 (eftersom)** is a subordinator introducing a subordinate clause explaining why coral reefs are dependent.
+* **8 (att)** is another subordinator following "eftersom".
+* **9 (den)** is the subject of the verb "fungerar" in the subordinate clause, referring to "mangroveskogen".
+* **10 (fungerar)** is the main verb of the first part of the subordinate clause.
+* **11 (som)** is a subordinator introducing a relative clause modifying "filter".
+* **12 (ett)** is a determiner modifying "filter".
+* **13 (filter)** is the object of the preposition "som" and a complement to "fungerar".
+* **14 (och)** is a conjunction coordinating two clauses.
+* **15 (tar)** is the main verb of the second part of the subordinate clause.
+* **16 (bort)** is a particle modifying the verb "tar".
+* **17 (allt)** is the direct object of the verb "tar bort".
+* **18 (som)** is a relative pronoun and the subject of the relative clause.
+* **19 (annars)** is an adverb modifying the verb "skulle slamma".
+* **20 (skulle)** is an auxiliary verb.
+* **21 (slamma)** is the main verb of the relative clause.
+* **22 (igen)** is a particle modifying the verb "slamma".
+* **23 (korallreven)** is the object of the verb "slamma".
+* **24 (.)** is the sentence-ending punctuation, dependent on the root.
+
+**Average Dependency Distance:**
+
+To calculate the average dependency distance, we sum the absolute differences between the head and dependent indices and then divide by the number of dependencies (excluding the root's dependency on 0).
+
+| Dependent | Head | Distance |
+|---|---|---|
+| 1 | 2 | 1 |
+| 3 | 2 | 1 |
+| 4 | 2 | 2 |
+| 5 | 4 | 1 |
+| 6 | 5 | 1 |
+| 7 | 2 | 5 |
+| 8 | 7 | 1 |
+| 9 | 10 | 1 |
+| 10 | 8 | 2 |
+| 11 | 13 | 2 |
+| 12 | 13 | 1 |
+| 13 | 10 | 3 |
+| 14 | 10 | 4 |
+| 15 | 14 | 1 |
+| 16 | 15 | 1 |
+| 17 | 15 | 2 |
+| 18 | 17 | 1 |
+| 19 | 20 | 1 |
+| 20 | 21 | 1 |
+| 21 | 18 | 3 |
+| 22 | 21 | 1 |
+| 23 | 21 | 2 |
+| 24 | 2 | 2 |
+
+**Sum of distances:** 1 + 1 + 2 + 1 + 1 + 5 + 1 + 1 + 2 + 2 + 1 + 3 + 4 + 1 + 1 + 2 + 1 + 1 + 1 + 3 + 1 + 2 + 2 = 41
+**Number of dependencies:** 23
+
+**Average dependency distance:** 41 / 23 ≈ **1.78**

@@ -1,0 +1,160 @@
+Here's a breakdown of the thought process to generate the dependency tree and average dependency distance:
+
+1. **Understand the Request:** The core task is to create a dependency tree for a Swedish sentence and calculate the average dependency distance. The output format is clearly defined: `(token_index, token, head_index)`. Punctuation is also treated as a token.
+
+2. **Tokenization:** The first step is to break the sentence into individual tokens. This is relatively straightforward. I need to be careful with word boundaries and punctuation.
+
+   * Sentence: "Ramar skall tas bort men är praktiska på så sett att man kan dela upp en hemsida utan att behöva ladda om allt hela tiden."
+   * Tokens: ["Ramar", "skall", "tas", "bort", "men", "är", "praktiska", "på", "så", "sett", "att", "man", "kan", "dela", "upp", "en", "hemsida", "utan", "att", "behöva", "ladda", "om", "allt", "hela", "tiden", "."]
+
+3. **Dependency Parsing (the core challenge):**  This is the most complex part. I need to identify the head of each token. This involves understanding grammatical relationships in Swedish. I'll go through the sentence token by token and decide its head.
+
+   * **"Ramar"**:  This is the subject of the clause. The main verb is "tas". So, "tas" is the head. `(1, Ramar, 3)`
+   * **"skall"**: This is an auxiliary verb modifying "tas". "tas" is the head. `(2, skall, 3)`
+   * **"tas"**: This is the main verb of the first clause. It doesn't depend on any other word within this clause as its core action. The conjunction "men" connects this clause. While conceptually "men" links to the entire first clause, in a dependency structure, the main verb is often treated as the root of the clause. However, since there's a coordinating conjunction, it's better to attach "tas" to the conjunction "men". `(3, tas, 5)`
+   * **"bort"**: This is a verb particle modifying "tas". `(4, bort, 3)`
+   * **"men"**: This is a coordinating conjunction linking the two clauses. It acts as the root of the second clause. `(5, men, 0)`  (Root is indicated by 0).
+   * **"är"**:  This is the main verb of the second clause. It's connected to the conjunction "men". `(6, är, 5)`
+   * **"praktiska"**: This is the predicate adjective describing the subject (implicitly "ramar" from the first clause, but grammatically attached to "är"). `(7, praktiska, 6)`
+   * **"på"**:  This is a preposition starting a prepositional phrase. It modifies "praktiska". `(8, på, 7)`
+   * **"så"**:  This modifies the preposition "på". `(9, så, 8)`
+   * **"sett"**: This is the noun within the prepositional phrase. `(10, sett, 8)`
+   * **"att"**: This introduces a subordinate clause. It modifies "sett". `(11, att, 10)`
+   * **"man"**: This is the subject of the subordinate clause. The main verb is "kan". `(12, man, 13)`
+   * **"kan"**: This is an auxiliary verb modifying "dela". `(13, kan, 14)`
+   * **"dela"**: This is the main verb of the subordinate clause. `(14, dela, 11)`
+   * **"upp"**: This is a verb particle modifying "dela". `(15, upp, 14)`
+   * **"en"**: This is a determiner modifying "hemsida". `(16, en, 17)`
+   * **"hemsida"**: This is the object of "dela". `(17, hemsida, 14)`
+   * **"utan"**: This is a preposition introducing a phrase expressing exception/lack. It modifies "dela". `(18, utan, 14)`
+   * **"att"**: This introduces an infinitive clause. It modifies "utan". `(19, att, 18)`
+   * **"behöva"**: This is the infinitive verb. It modifies "att". `(20, behöva, 19)`
+   * **"ladda"**: This is the infinitive verb modifying "behöva". `(21, ladda, 20)`
+   * **"om"**: This is a verb particle modifying "ladda". `(22, om, 21)`
+   * **"allt"**: This is the object of "ladda". `(23, allt, 21)`
+   * **"hela"**: This modifies "tiden". `(24, hela, 25)`
+   * **"tiden"**: This modifies "ladda", indicating *when* the reloading would happen. `(25, tiden, 21)`
+   * **"."**: This is the sentence-ending punctuation and attaches to the root of the main clause. `(26, ., 5)`
+
+4. **Format the Output:**  Now, arrange the identified dependencies into the specified format: `(token_index, token, head_index)`.
+
+5. **Calculate Dependency Distances:**  For each dependency, calculate the absolute difference between the head index and the dependent index.
+
+   * | Dependent | Head | Dependent Index | Head Index | Distance |
+     |---|---|---|---|---|
+     | Ramar | tas | 1 | 3 | 2 |
+     | skall | tas | 2 | 3 | 1 |
+     | tas | men | 3 | 5 | 2 |
+     | bort | tas | 4 | 3 | 1 |
+     | men | ROOT | 5 | 0 | 5 |
+     | är | men | 6 | 5 | 1 |
+     | praktiska | är | 7 | 6 | 1 |
+     | på | praktiska | 8 | 7 | 1 |
+     | så | på | 9 | 8 | 1 |
+     | sett | på | 10 | 8 | 2 |
+     | att | sett | 11 | 10 | 1 |
+     | man | kan | 12 | 13 | 1 |
+     | kan | dela | 13 | 14 | 1 |
+     | dela | att | 14 | 11 | 3 |
+     | upp | dela | 15 | 14 | 1 |
+     | en | hemsida | 16 | 17 | 1 |
+     | hemsida | dela | 17 | 14 | 3 |
+     | utan | dela | 18 | 14 | 4 |
+     | att | utan | 19 | 18 | 1 |
+     | behöva | att | 20 | 19 | 1 |
+     | ladda | behöva | 21 | 20 | 1 |
+     | om | ladda | 22 | 21 | 1 |
+     | allt | ladda | 23 | 21 | 2 |
+     | hela | tiden | 24 | 25 | 1 |
+     | tiden | ladda | 25 | 21 | 4 |
+     | . | men | 26 | 5 | 21 |
+
+6. **Calculate Average Distance:** Sum the distances and divide by the number of dependencies.
+
+   * Total Distance = 2 + 1 + 2 + 1 + 5 + 1 + 1 + 1 + 1 + 2 + 1 + 1 + 1 + 3 + 1 + 1 + 3 + 4 + 1 + 1 + 1 + 1 + 2 + 1 + 4 + 21 = 62
+   * Number of Dependencies = 26
+   * Average Distance = 62 / 26 ≈ 2.38
+
+7. **Final Check:** Review the dependency tree and the average distance to ensure they make sense grammatically and mathematically.
+```python
+def analyze_swedish_sentence(sentence):
+    tokens = sentence.split(" ")
+    tokens_with_indices = [(i + 1, token) for i, token in enumerate(tokens)]
+    dependencies = []
+
+    # Manually determine the head of each token. This requires grammatical knowledge.
+    # This is a simplified analysis and might not be perfect.
+
+    dependencies.append((1, tokens_with_indices[0][1], 3))  # Ramar -> tas
+    dependencies.append((2, tokens_with_indices[1][1], 3))  # skall -> tas
+    dependencies.append((3, tokens_with_indices[2][1], 5))  # tas -> men
+    dependencies.append((4, tokens_with_indices[3][1], 3))  # bort -> tas
+    dependencies.append((5, tokens_with_indices[4][1], 0))  # men -> ROOT
+    dependencies.append((6, tokens_with_indices[5][1], 5))  # är -> men
+    dependencies.append((7, tokens_with_indices[6][1], 6))  # praktiska -> är
+    dependencies.append((8, tokens_with_indices[7][1], 7))  # på -> praktiska
+    dependencies.append((9, tokens_with_indices[8][1], 8))  # så -> på
+    dependencies.append((10, tokens_with_indices[9][1], 8)) # sett -> på
+    dependencies.append((11, tokens_with_indices[10][1], 10)) # att -> sett
+    dependencies.append((12, tokens_with_indices[11][1], 13)) # man -> kan
+    dependencies.append((13, tokens_with_indices[12][1], 14)) # kan -> dela
+    dependencies.append((14, tokens_with_indices[13][1], 11)) # dela -> att
+    dependencies.append((15, tokens_with_indices[14][1], 14)) # upp -> dela
+    dependencies.append((16, tokens_with_indices[15][1], 17)) # en -> hemsida
+    dependencies.append((17, tokens_with_indices[16][1], 14)) # hemsida -> dela
+    dependencies.append((18, tokens_with_indices[17][1], 14)) # utan -> dela
+    dependencies.append((19, tokens_with_indices[18][1], 18)) # att -> utan
+    dependencies.append((20, tokens_with_indices[19][1], 19)) # behöva -> att
+    dependencies.append((21, tokens_with_indices[20][1], 20)) # ladda -> behöva
+    dependencies.append((22, tokens_with_indices[21][1], 21)) # om -> ladda
+    dependencies.append((23, tokens_with_indices[22][1], 21)) # allt -> ladda
+    dependencies.append((24, tokens_with_indices[23][1], 25)) # hela -> tiden
+    dependencies.append((25, tokens_with_indices[24][1], 21)) # tiden -> ladda
+    dependencies.append((26, tokens_with_indices[25][1], 5))  # . -> men
+
+    dependency_distances = [abs(head - dep) for dep, token, head in dependencies]
+    average_distance = sum(dependency_distances) / len(dependency_distances) if dependency_distances else 0
+
+    return dependencies, average_distance
+
+sentence = "Ramar skall tas bort men är praktiska på så sett att man kan dela upp en hemsida utan att behöva ladda om allt hela tiden."
+dependency_tree, avg_distance = analyze_swedish_sentence(sentence + ".")
+
+print(dependency_tree)
+print(f"Average dependency distance: {avg_distance}")
+```
+
+**Explanation of the Dependency Tree:**
+
+Each tuple in the list represents a dependency: `(dependent_token_index, dependent_token, head_token_index)`.
+
+* **(1, 'Ramar', 3):** The noun "Ramar" (frames) depends on the verb "tas".
+* **(2, 'skall', 3):** The auxiliary verb "skall" (shall) depends on the main verb "tas".
+* **(3, 'tas', 5):** The verb "tas" (be taken) depends on the coordinating conjunction "men".
+* **(4, 'bort', 3):** The adverbial particle "bort" (away) depends on the verb "tas".
+* **(5, 'men', 0):** The coordinating conjunction "men" (but) is the root of the second clause.
+* **(6, 'är', 5):** The verb "är" (is) depends on the coordinating conjunction "men".
+* **(7, 'praktiska', 6):** The adjective "praktiska" (practical) depends on the verb "är".
+* **(8, 'på', 7):** The preposition "på" (on) depends on the adjective "praktiska".
+* **(9, 'så', 8):** The adverb "så" (so) depends on the preposition "på".
+* **(10, 'sett', 8):** The noun "sett" (way) depends on the preposition "på".
+* **(11, 'att', 10):** The conjunction "att" (that) depends on the noun "sett".
+* **(12, 'man', 13):** The pronoun "man" (one) depends on the auxiliary verb "kan".
+* **(13, 'kan', 14):** The auxiliary verb "kan" (can) depends on the main verb "dela".
+* **(14, 'dela', 11):** The verb "dela" (divide) depends on the conjunction "att".
+* **(15, 'upp', 14):** The adverbial particle "upp" (up) depends on the verb "dela".
+* **(16, 'en', 17):** The determiner "en" (a) depends on the noun "hemsida".
+* **(17, 'hemsida', 14):** The noun "hemsida" (website) depends on the verb "dela".
+* **(18, 'utan', 14):** The preposition "utan" (without) depends on the verb "dela".
+* **(19, 'att', 18):** The conjunction "att" (to) depends on the preposition "utan".
+* **(20, 'behöva', 19):** The verb "behöva" (need) depends on the conjunction "att".
+* **(21, 'ladda', 20):** The verb "ladda" (load) depends on the verb "behöva".
+* **(22, 'om', 21):** The adverbial particle "om" (again) depends on the verb "ladda".
+* **(23, 'allt', 21):** The pronoun "allt" (everything) depends on the verb "ladda".
+* **(24, 'hela', 25):** The adjective "hela" (whole) depends on the noun "tiden".
+* **(25, 'tiden', 21):** The noun "tiden" (time) depends on the verb "ladda".
+* **(26, '.', 5):** The punctuation mark "." depends on the root of the clause, "men".
+
+**Average Dependency Distance:**
+
+The average dependency distance is calculated by taking the absolute difference between the head and dependent token indices for each dependency, summing these distances, and then dividing by the total number of dependencies. In this case, the average dependency distance is approximately 2.38.

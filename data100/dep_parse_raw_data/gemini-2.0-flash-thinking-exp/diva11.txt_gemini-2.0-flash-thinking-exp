@@ -1,0 +1,152 @@
+Here's a breakdown of the thought process to arrive at the dependency tree and average dependency distance for the Swedish sentence:
+
+1. **Understand the Goal:** The primary goal is to create a dependency tree representation of the Swedish sentence and then calculate the average dependency distance. The specified output format is crucial: `(token_index, token, head_index)`.
+
+2. **Tokenization:** The first step is to break down the sentence into individual tokens. This includes words and punctuation.
+
+   *  PLATS
+   *  OCH
+   *  PROGRAM
+   *  Projektet
+   *  är
+   *  en
+   *  grundskola
+   *  med
+   *  300
+   *  elever
+   *  i
+   *  årskurserna
+   *  1-6
+   *  fördelade
+   *  på
+   *  två
+   *  klasser
+   *  per
+   *  årskurs
+   *  .
+
+3. **Dependency Parsing (The Core Task):** This is the most complex part. We need to determine the relationships between the words. I'll go through this step by step, thinking about the grammatical function of each word.
+
+   * **"PLATS OCH PROGRAM"**:  This looks like a noun phrase functioning as a subject or a title. "OCH" connects "PLATS" and "PROGRAM". Likely, "OCH" depends on one of them, and the other depends on that. Let's make "PROGRAM" the head of "OCH" and "PLATS" depend on "PROGRAM".
+
+   * **"Projektet är en grundskola..."**:  "är" is the main verb. "Projektet" is the subject. "en grundskola" is the predicate nominative (what the subject *is*). "en" modifies "grundskola".
+
+   * **"...med 300 elever..."**: "med" introduces a prepositional phrase. "elever" is the object of the preposition. "300" modifies "elever".
+
+   * **"...i årskurserna 1-6..."**:  Another prepositional phrase. "årskurserna" is the object of "i". "1-6" modifies "årskurserna".
+
+   * **"...fördelade på två klasser per årskurs."**: "fördelade" is a past participle acting as an adjective modifying "grundskola". "på två klasser per årskurs" is a prepositional phrase modifying "fördelade". "klasser" is the object of "på". "två" modifies "klasser". "per årskurs" is another prepositional phrase modifying "fördelade" (or potentially "klasser" but "fördelade" feels more accurate conceptually). Let's make it modify "fördelade". "årskurs" is the object of "per".
+
+   * **"."**: The period depends on the main verb.
+
+4. **Assigning Head Indices:** Now, go through each token and determine its head's index. Remember that the root of the sentence (the main verb) has a head index of 0.
+
+   * PLATS (1): Head is PROGRAM (3)
+   * OCH (2): Head is PROGRAM (3)
+   * PROGRAM (3): Head is är (5)  (Connecting the initial noun phrase to the main clause)
+   * Projektet (4): Head is är (5)
+   * är (5): Head is 0 (Root)
+   * en (6): Head is grundskola (7)
+   * grundskola (7): Head is är (5)
+   * med (8): Head is grundskola (7)
+   * 300 (9): Head is elever (10)
+   * elever (10): Head is med (8)
+   * i (11): Head is elever (10)
+   * årskurserna (12): Head is i (11)
+   * 1-6 (13): Head is årskurserna (12)
+   * fördelade (14): Head is grundskola (7)
+   * på (15): Head is fördelade (14)
+   * två (16): Head is klasser (17)
+   * klasser (17): Head is på (15)
+   * per (18): Head is fördelade (14)
+   * årskurs (19): Head is per (18)
+   * . (20): Head is är (5)
+
+5. **Constructing the Dependency Tree Output:** Format the information according to the specified format: `(token_index, token, head_index)`. This involves iterating through the token list and the determined head indices.
+
+6. **Calculating Dependency Distances:**
+
+   * For each token (excluding the root), calculate the absolute difference between its index and its head's index.
+   *  |1 - 3| = 2
+   *  |2 - 3| = 1
+   *  |3 - 5| = 2
+   *  |4 - 5| = 1
+   *  |6 - 7| = 1
+   *  |7 - 5| = 2
+   *  |8 - 7| = 1
+   *  |9 - 10| = 1
+   *  |10 - 8| = 2
+   *  |11 - 10| = 1
+   *  |12 - 11| = 1
+   *  |13 - 12| = 1
+   *  |14 - 7| = 7
+   *  |15 - 14| = 1
+   *  |16 - 17| = 1
+   *  |17 - 15| = 2
+   *  |18 - 14| = 4
+   *  |19 - 18| = 1
+   *  |20 - 5| = 15
+
+7. **Calculating Average Dependency Distance:** Sum the distances and divide by the number of dependencies (which is the number of tokens minus 1, or the number of non-root tokens).
+
+   * Sum of distances = 2 + 1 + 2 + 1 + 1 + 2 + 1 + 1 + 2 + 1 + 1 + 1 + 7 + 1 + 1 + 2 + 4 + 1 + 15 = 45
+   * Number of dependencies = 20 - 1 = 19
+   * Average distance = 45 / 19 ≈ 2.37
+
+8. **Final Check:** Review the dependency tree to ensure the relationships make grammatical sense and that the output format is correct. Double-check the distance calculations.
+```
+[(1, 'PLATS', 3), (2, 'OCH', 3), (3, 'PROGRAM', 5), (4, 'Projektet', 5), (5, 'är', 0), (6, 'en', 7), (7, 'grundskola', 5), (8, 'med', 7), (9, '300', 10), (10, 'elever', 8), (11, 'i', 10), (12, 'årskurserna', 11), (13, '1-6', 12), (14, 'fördelade', 7), (15, 'på', 14), (16, 'två', 17), (17, 'klasser', 15), (18, 'per', 14), (19, 'årskurs', 18), (20, '. ', 5)]
+```
+
+**Explanation of the Dependency Tree:**
+
+* **(1, 'PLATS', 3):** The noun "PLATS" (place) depends on the noun "PROGRAM" (program).
+* **(2, 'OCH', 3):** The conjunction "OCH" (and) depends on the noun "PROGRAM".
+* **(3, 'PROGRAM', 5):** The noun "PROGRAM" is the subject complement and depends on the verb "är" (is).
+* **(4, 'Projektet', 5):** The noun "Projektet" (the project) is the subject and depends on the verb "är".
+* **(5, 'är', 0):** The verb "är" is the root of the sentence, so its head is 0.
+* **(6, 'en', 7):** The determiner "en" (a) modifies the noun "grundskola".
+* **(7, 'grundskola', 5):** The noun "grundskola" (elementary school) is the subject complement and depends on the verb "är".
+* **(8, 'med', 7):** The preposition "med" (with) modifies the noun "grundskola".
+* **(9, '300', 10):** The numeral "300" modifies the noun "elever".
+* **(10, 'elever', 8):** The noun "elever" (students) is the object of the preposition "med".
+* **(11, 'i', 10):** The preposition "i" (in) modifies the noun "elever".
+* **(12, 'årskurserna', 11):** The noun "årskurserna" (the school years) is the object of the preposition "i".
+* **(13, '1-6', 12):** The numeral "1-6" modifies the noun "årskurserna".
+* **(14, 'fördelade', 7):** The past participle "fördelade" (distributed) modifies the noun "grundskola".
+* **(15, 'på', 14):** The preposition "på" (in/on) modifies the participle "fördelade".
+* **(16, 'två', 17):** The numeral "två" (two) modifies the noun "klasser".
+* **(17, 'klasser', 15):** The noun "klasser" (classes) is the object of the preposition "på".
+* **(18, 'per', 14):** The preposition "per" (per) modifies the participle "fördelade".
+* **(19, 'årskurs', 18):** The noun "årskurs" (school year) is the object of the preposition "per".
+* **(20, '.', 5):** The punctuation mark "." depends on the root verb "är".
+
+**Calculating Average Dependency Distance:**
+
+To calculate the average dependency distance, we sum the absolute differences between the head index and the dependent index for each token (excluding the root) and then divide by the total number of dependencies.
+
+* |1 - 3| = 2
+* |2 - 3| = 1
+* |3 - 5| = 2
+* |4 - 5| = 1
+* |6 - 7| = 1
+* |7 - 5| = 2
+* |8 - 7| = 1
+* |9 - 10| = 1
+* |10 - 8| = 2
+* |11 - 10| = 1
+* |12 - 11| = 1
+* |13 - 12| = 1
+* |14 - 7| = 7
+* |15 - 14| = 1
+* |16 - 17| = 1
+* |17 - 15| = 2
+* |18 - 14| = 4
+* |19 - 18| = 1
+* |20 - 5| = 15
+
+Sum of distances = 2 + 1 + 2 + 1 + 1 + 2 + 1 + 1 + 2 + 1 + 1 + 1 + 7 + 1 + 1 + 2 + 4 + 1 + 15 = 45
+
+Number of dependencies = 19 (total number of tokens - 1, as the root has no head)
+
+Average dependency distance = 45 / 19 ≈ **2.37**

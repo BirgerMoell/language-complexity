@@ -1,0 +1,149 @@
+Here's a breakdown of the thought process to analyze the Swedish sentence and create the dependency tree:
+
+1. **Understand the Goal:** The primary goal is to create a dependency tree for a given Swedish sentence and calculate the average dependency distance. The output format is clearly specified.
+
+2. **Tokenization:** The first crucial step is to break down the sentence into individual tokens. This involves identifying words and punctuation marks. I'll go through the sentence piece by piece:
+    * "Sandstormar" - Token 1
+    * "och" - Token 2
+    * "andra" - Token 3
+    * "katastrofer" - Token 4
+    * "väntar" - Token 5
+    * "den" - Token 6
+    * "alltmer" - Token 7
+    * "handlingskraftiga" - Token 8
+    * "Kuki" - Token 9
+    * "," - Token 10
+    * "som" - Token 11
+    * "växer" - Token 12
+    * "med" - Token 13
+    * "sin" - Token 14
+    * "uppgift" - Token 15
+    * "för" - Token 16
+    * "var" - Token 17
+    * "dag" - Token 18
+    * "som" - Token 19
+    * "går" - Token 20
+    * "." - Token 21
+
+3. **Dependency Parsing (The Core Task):**  This is the most complex part. I need to identify the head of each token. This requires understanding Swedish grammar and the relationships between words. I'll go through each token and determine its head:
+
+    * **Sandstormar (1):**  This is one of the subjects of the verb "väntar". So, the head is "väntar" (5).
+    * **och (2):** This conjoins "Sandstormar" and "katastrofer". The head is the first conjunct, "Sandstormar" (1).
+    * **andra (3):** This modifies "katastrofer". So, the head is "katastrofer" (4).
+    * **katastrofer (4):** This is the other subject of "väntar". So, the head is "väntar" (5).
+    * **väntar (5):** This is the main verb. The root of the sentence. Head is 0.
+    * **den (6):** This is the object of "väntar". So, the head is "väntar" (5).
+    * **alltmer (7):** This modifies "handlingskraftiga". So, the head is "handlingskraftiga" (8).
+    * **handlingskraftiga (8):** This modifies "Kuki". So, the head is "Kuki" (9).
+    * **Kuki (9):** This is the direct object of "väntar". So, the head is "väntar" (5).
+    * **,(10):** Punctuation usually attaches to the head of the clause or phrase it separates. In this case, it separates the main clause from the subordinate clause. The head is the main verb "väntar" (5).
+    * **som (11):** This introduces a relative clause modifying "Kuki". The head is the verb of the relative clause, "växer" (12).
+    * **växer (12):** This is the main verb of the relative clause. Its head in the main clause is "Kuki" (9), the noun it modifies.
+    * **med (13):** This introduces a prepositional phrase modifying "växer". The head is "växer" (12).
+    * **sin (14):** This is a possessive determiner modifying "uppgift". The head is "uppgift" (15).
+    * **uppgift (15):** This is the object of the preposition "med". The head is "med" (13).
+    * **för (16):** This introduces an adverbial phrase indicating time. It modifies "växer". The head is "växer" (12).
+    * **var (17):** This modifies "dag". The head is "dag" (18).
+    * **dag (18):** This is part of the adverbial phrase "för var dag". The head is "för" (16).
+    * **som (19):** This introduces another relative clause modifying "dag". The head is the verb of this clause, "går" (20).
+    * **går (20):** This is the verb of the relative clause modifying "dag". The head is "dag" (18).
+    * **.(21):**  The sentence-ending punctuation attaches to the root of the sentence, "väntar" (5).
+
+4. **Construct the Dependency Tree:** Now, I'll assemble the dependency tree based on the determined heads, following the specified output format: `(token_index, token, head_index)`.
+
+    * (1, Sandstormar, 5)
+    * (2, och, 1)
+    * (3, andra, 4)
+    * (4, katastrofer, 5)
+    * (5, väntar, 0)
+    * (6, den, 5)
+    * (7, alltmer, 8)
+    * (8, handlingskraftiga, 9)
+    * (9, Kuki, 5)
+    * (10, ,, 5)
+    * (11, som, 12)
+    * (12, växer, 9)
+    * (13, med, 12)
+    * (14, sin, 15)
+    * (15, uppgift, 13)
+    * (16, för, 12)
+    * (17, var, 18)
+    * (18, dag, 16)
+    * (19, som, 20)
+    * (20, går, 18)
+    * (21, ., 5)
+
+5. **Calculate Dependency Distances:**  The dependency distance is the absolute difference between the head index and the dependent index.
+
+    * |5 - 1| = 4
+    * |1 - 2| = 1
+    * |4 - 3| = 1
+    * |5 - 4| = 1
+    * |0 - 5| = 5
+    * |5 - 6| = 1
+    * |8 - 7| = 1
+    * |9 - 8| = 1
+    * |5 - 9| = 4
+    * |5 - 10| = 5
+    * |12 - 11| = 1
+    * |9 - 12| = 3
+    * |12 - 13| = 1
+    * |15 - 14| = 1
+    * |13 - 15| = 2
+    * |12 - 16| = 4
+    * |18 - 17| = 1
+    * |16 - 18| = 2
+    * |20 - 19| = 1
+    * |18 - 20| = 2
+    * |5 - 21| = 16
+
+6. **Calculate Average Dependency Distance:** Sum the distances and divide by the number of dependencies (which is the number of tokens minus 1, excluding the root).
+
+    Sum of distances = 4 + 1 + 1 + 1 + 5 + 1 + 1 + 1 + 4 + 5 + 1 + 3 + 1 + 1 + 2 + 4 + 1 + 2 + 1 + 2 + 16 = 56
+    Number of dependencies = 21
+
+    Average distance = 56 / 21 ≈ 2.67
+
+7. **Final Check and Formatting:**  Review the dependency tree and the average distance calculation to ensure accuracy and adhere to the specified output format.
+```
+[(1, Sandstormar, 5), (2, och, 1), (3, andra, 4), (4, katastrofer, 5), (5, väntar, 0), (6, den, 5), (7, alltmer, 8), (8, handlingskraftiga, 9), (9, Kuki, 5), (10, ,, 5), (11, som, 12), (12, växer, 9), (13, med, 12), (14, sin, 15), (15, uppgift, 13), (16, för, 12), (17, var, 18), (18, dag, 16), (19, som, 20), (20, går, 18), (21, ., 5)]
+```
+
+**Average Dependency Distance Calculation:**
+
+To calculate the average dependency distance, we sum the absolute differences between the head and dependent indices and then divide by the number of dependencies (which is the number of tokens minus 1).
+
+1. **Calculate the absolute differences:**
+   - |5 - 1| = 4
+   - |1 - 2| = 1
+   - |4 - 3| = 1
+   - |5 - 4| = 1
+   - |0 - 5| = 5
+   - |5 - 6| = 1
+   - |8 - 7| = 1
+   - |9 - 8| = 1
+   - |5 - 9| = 4
+   - |5 - 10| = 5
+   - |12 - 11| = 1
+   - |9 - 12| = 3
+   - |12 - 13| = 1
+   - |15 - 14| = 1
+   - |13 - 15| = 2
+   - |12 - 16| = 4
+   - |18 - 17| = 1
+   - |16 - 18| = 2
+   - |20 - 19| = 1
+   - |18 - 20| = 2
+   - |5 - 21| = 16
+
+2. **Sum the absolute differences:**
+   4 + 1 + 1 + 1 + 5 + 1 + 1 + 1 + 4 + 5 + 1 + 3 + 1 + 1 + 2 + 4 + 1 + 2 + 1 + 2 + 16 = 56
+
+3. **Count the number of dependencies:**
+   There are 21 tokens, and therefore 21 dependencies (including the root connection).
+
+4. **Calculate the average dependency distance:**
+   Average distance = Total distance / Number of dependencies
+   Average distance = 56 / 21 ≈ 2.67
+
+**Therefore, the average dependency distance for the sentence is approximately 2.67.**

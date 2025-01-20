@@ -1,0 +1,110 @@
+Here's a breakdown of the thought process to analyze the Swedish sentence and generate the dependency tree:
+
+1. **Understand the Goal:** The objective is to create a dependency tree representation of the Swedish sentence and calculate the average dependency distance. The output format is specifically defined.
+
+2. **Tokenization:** The first step is to break the sentence into individual tokens. This involves separating words and punctuation. It's important to treat punctuation as separate tokens. So, "affärsmässiga." becomes "affärsmässiga" and ".". The provided sentence has some interesting conjunctions and multi-word phrases that might require careful consideration later.
+
+3. **Dependency Parsing (Conceptual):**  The core of the task is dependency parsing. This means identifying the grammatical head of each word and drawing a directed edge from the dependent to its head. This requires understanding the grammatical relationships between words. For example:
+
+    *  "kandidatarbete" is the subject of "undersöker".
+    *  "Detta" modifies "kandidatarbete".
+    *  "vad" is the object of "undersöker".
+    *  The clause "affärsmässighet är" is the content of "vad".
+    *  "och" conjoins two clauses.
+    *  And so on.
+
+4. **Assigning Token Indices:**  Each token needs a unique index starting from 1. This is straightforward once tokenization is complete.
+
+5. **Determining Heads:**  This is the most complex part and often requires linguistic knowledge. Here’s a possible step-by-step for identifying heads (internal thought process):
+
+    * **Start with the main verb:**  The central action in the first part of the sentence is "undersöker". This will likely be the root of the first clause. Its head is 0.
+    * **Identify subjects and objects:** "Detta kandidatarbete" is the subject of "undersöker". The head of "kandidatarbete" is likely "undersöker", and "Detta" modifies "kandidatarbete".
+    * **Handle conjunctions:** "och" usually connects clauses or phrases. The head of "och" will be one of the verbs it connects. In this case, it connects "undersöker" with the implicit verb of the second part (which is within the embedded clause).
+    * **Analyze subordinate clauses:**  "vad affärsmässighet är" is a subordinate clause functioning as the object of "undersöker". The verb within this clause is "är", and "affärsmässighet" is its subject. "vad" relates to the entire clause.
+    * **Deal with complex structures:** "om det är möjligt att få en blick över hur de allmännyttiga bostadsbolagen ska agera för att vara affärsmässiga" is another complex subordinate clause. Break it down:
+        * The core is "det är möjligt att få en blick". "är" is the main verb here. "det" is the subject. "möjligt" is a predicate adjective. "att få en blick" is an infinitive phrase functioning as a complement.
+        * "få" is the head of "blick". "en" modifies "blick".
+        * "över hur de allmännyttiga bostadsbolagen ska agera" modifies "blick".
+        * Within that, "ska agera" is the core verb phrase. "bostadsbolagen" is the subject. "allmännyttiga" modifies "bostadsbolagen". "de" modifies "bostadsbolagen". "hur" introduces the adverbial clause.
+        * "för att vara affärsmässiga" is an adverbial clause of purpose. "vara" is the verb, "affärsmässiga" is the predicate adjective.
+
+6. **Constructing the Dependency Tree Representation:**  Once the head of each token is determined, create the triples (token index, token, head index).
+
+7. **Calculating Dependency Distance:**  For each token (excluding the root), calculate the absolute difference between its index and its head's index. Sum these distances and divide by the total number of dependencies (number of tokens - 1).
+
+8. **Refinement and Correction:**  Review the dependency tree and distances. Does it make grammatical sense? Are there any ambiguities?  This often involves iterating and adjusting the head assignments until a satisfactory structure is achieved. For instance, I might initially connect "vad" directly to "är", but then realize it functions more as an introducer of the entire noun clause, making "undersöker" a better head. Similarly, the connection of "och" can be tricky – ensuring it connects the main verbs of the conjoined clauses is key.
+
+This systematic approach, involving tokenization, dependency parsing with linguistic knowledge, index assignment, and distance calculation, allows for the accurate analysis and representation of the Swedish sentence.
+Here's the dependency tree analysis and average dependency distance for the given Swedish sentence:
+
+**Sentence:** Detta kandidatarbete undersöker vad affärsmässighet är och om det är möjligt att få en blick  över hur de allmännyttiga bostadsbolagen ska agera för att vara affärsmässiga.
+
+**Dependency Tree:**
+
+[(1, Detta, 2), (2, kandidatarbete, 3), (3, undersöker, 0), (4, vad, 3), (5, affärsmässighet, 6), (6, är, 4), (7, och, 6), (8, om, 6), (9, det, 10), (10, är, 8), (11, möjligt, 10), (12, att, 13), (13, få, 11), (14, en, 15), (15, blick, 13), (16, över, 15), (17, hur, 18), (18, de, 19), (19, allmännyttiga, 20), (20, bostadsbolagen, 21), (21, ska, 23), (22, agera, 21), (23, för, 22), (24, att, 25), (25, vara, 23), (26, affärsmässiga, 25), (27, ., 3)]
+
+**Explanation of Dependencies:**
+
+* **undersöker (3)** is the main verb and the root of the sentence (head 0).
+* **Detta (1)** is a determiner modifying **kandidatarbete (2)**.
+* **kandidatarbete (2)** is the subject of **undersöker (3)**.
+* **vad (4)** introduces a subordinate clause and functions as the object of **undersöker (3)**.
+* **affärsmässighet (5)** is the subject of **är (6)** within the subordinate clause.
+* **är (6)** is the verb within the first subordinate clause, headed by **vad (4)**.
+* **och (7)** is a conjunction connecting the two parts of the object clause. It's attached to the first verb of the joined clause.
+* **om (8)** introduces the second subordinate clause. It's attached to the first verb of the joined clause.
+* **det (9)** is the subject of **är (10)** in the second subordinate clause.
+* **är (10)** is the verb within the second subordinate clause, headed by **om (8)**.
+* **möjligt (11)** is an adjective complementing **är (10)**.
+* **att (12)** introduces an infinitive phrase.
+* **få (13)** is the infinitive verb, modifying **möjligt (11)**.
+* **en (14)** is a determiner modifying **blick (15)**.
+* **blick (15)** is the object of **få (13)**.
+* **över (16)** is a preposition modifying **blick (15)**, indicating what the "blick" is about.
+* **hur (17)** introduces another subordinate clause explaining the "blick".
+* **de (18)** is a determiner modifying **bostadsbolagen (20)**.
+* **allmännyttiga (19)** is an adjective modifying **bostadsbolagen (20)**.
+* **bostadsbolagen (20)** is the subject of **ska (21)** within the subordinate clause.
+* **ska (21)** is an auxiliary verb modifying **agera (22)**.
+* **agera (22)** is the main verb within this part of the subordinate clause, headed by **över (16)**.
+* **för (23)** introduces a purpose clause.
+* **att (24)** introduces the infinitive verb in the purpose clause.
+* **vara (25)** is the infinitive verb in the purpose clause, modifying **för (23)**.
+* **affärsmässiga (26)** is an adjective complementing **vara (25)**.
+* **. (27)** is the sentence-ending punctuation, attached to the root verb.
+
+**Average Dependency Distance Calculation:**
+
+1. **Calculate the dependency distance for each token (excluding the root):**
+   * |1 - 2| = 1
+   * |2 - 3| = 1
+   * |4 - 3| = 1
+   * |5 - 6| = 1
+   * |6 - 4| = 2
+   * |7 - 6| = 1
+   * |8 - 6| = 2
+   * |9 - 10| = 1
+   * |10 - 8| = 2
+   * |11 - 10| = 1
+   * |12 - 13| = 1
+   * |13 - 11| = 2
+   * |14 - 15| = 1
+   * |15 - 13| = 2
+   * |16 - 15| = 1
+   * |17 - 18| = 1
+   * |18 - 19| = 1
+   * |19 - 20| = 1
+   * |20 - 21| = 1
+   * |21 - 23| = 2
+   * |22 - 21| = 1
+   * |23 - 22| = 1
+   * |24 - 25| = 1
+   * |25 - 23| = 2
+   * |26 - 25| = 1
+   * |27 - 3| = 24
+
+2. **Sum the dependency distances:** 1 + 1 + 1 + 1 + 2 + 1 + 2 + 1 + 2 + 1 + 1 + 2 + 1 + 2 + 1 + 1 + 1 + 1 + 1 + 2 + 1 + 1 + 1 + 2 + 1 + 24 = 53
+
+3. **Divide the sum by the number of dependencies (total tokens - 1):** 53 / 26 = 2.03846...
+
+**Average Dependency Distance:** Approximately **2.04**
